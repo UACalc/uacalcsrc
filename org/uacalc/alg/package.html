@@ -1,0 +1,34 @@
+
+<body>
+<b>What is an algebra?</b> and how do we represent it in a computer?
+We bascially follow <i>Algebras, Lattices, Varieties</i> by
+McKenzie, McNulty, Taylor. The java interface <tt>Algebra</tt> 
+describes the methods an algebra should have.
+<p>
+How the algebra is represented internally depends on its size and 
+its origin: did the user input it? was it constructed as a direct 
+product of algebra? Also there needs to be different a
+representation for certain kinds of algebras such as lattices. 
+<p>
+For an algebra of size <tt>n</tt>, where <tt>n</tt> is 
+reasonably small, we will have a map between the universe of the 
+algebra and the set {0, 1, ..., n-1} and the operations will be
+represented by tables on this set of integers. 
+But for large algebras tables may be impractical or impossible. 
+So if  <b>A</b> has 7 elements and one binary operation, we might
+generate the multiplication tables for <b>A</b><sup>2</sup> but not
+for <b>A</b><sup>3</sup> and certainly not for
+<b>A</b><sup>4</sup>. Of course for <b>A</b><sup>3</sup> the
+operations would be computed componentwise.
+<p>
+
+
+
+
+
+
+
+
+
+
+</body>

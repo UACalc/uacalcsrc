@@ -1,0 +1,21 @@
+
+8/16/01
+
+currrent thoughts:
+
+1. the universe of an algebra is a java.util.Set where size() can return
+   a negative to indicate unknown or infinite and iterator() is optional
+   but contains() is not. Algebra has the negative constantst; there may
+   be more than we need. It also explain so of this stuff in more detail.
+
+2. Elements of algebras are Objects. We may want to make a special
+   Element class, but now it seems like it is not necessary.
+
+3. In a "small" algebra the universe will be linearly ordered; that is, 
+   there will be a method to obtain the kth element and a method returning
+   k for that element. This has the plus that a small int based algebra
+   need not store the universe in any sort of List or array.
+   Internally calculations will be done with int's for speed.
+
+4. Operation's have an optional public int intValueAt(int[] args) method
+   which small algebras.
