@@ -707,7 +707,7 @@ public class Malcev {
       ans.add(Variable.z);
       return ans;
     }
-    // check if we need to sort this.
+    // Not sure we need this. Check if we need to sort this.
     Comparator c = new Comparator() {
         public int compare(Object o1, Object o2) {
           IntArray ia1 = (IntArray)o1;
