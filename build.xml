@@ -1,0 +1,99 @@
+<project name="UACALC" default="compile-dist" basedir=".">
+
+  <!-- set global properties for this build -->
+  <!-- we will want debug off for dist so this should be reorganized -->
+  <property name="src" value="."/>
+  <property name="src.dir" value="."/>
+  <property name="image.dir" value="${src.dir}/org/uacalc/ui/images"/>
+  <property name="class.dir" value="../classes"/>
+  <property name="jar.dir" value="../jars"/>
+  <property name="manifest.file" value="manifest"/>
+  <!-- <property name="javadoc.dir" value="/www/ralph/UACalc/doc"/> -->
+  <property name="javadoc.dir" value="/www/uacalc/doc"/>
+  <property name="debug" value="on"/>
+  <property name="dist-debug" value="on"/>
+  <property name="verbose" value="yes"/>
+  <property name="build" value="build"/>
+  <property name="dist.dir"  value="../dist"/>
+
+  <path id="classpath">
+    <pathelement location="."/>
+    <pathelement location="./work"/>
+    <fileset dir="${jar.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="dist-classpath">
+    <pathelement location="${class.dir}"/>
+    <fileset dir="${jar.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="compile">
+    <javac srcdir="${src}" debug="${debug}">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+
+  <target name="compile-dist">
+    <mkdir dir="${class.dir}"/>
+    <javac srcdir="${src.dir}" 
+           debug="${dist-debug}"
+           destdir="${class.dir}"
+           excludes="board/geom/BSpline.java">
+      <classpath refid="dist-classpath"/>
+      <!-- <compilerarg value="-Xlint:unchecked" compiler="javac1.5"/> -->
+    </javac>
+  </target>
+
+  <target name="dist-files">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist.dir}/lib"/>
+    <copy todir="${dist.dir}/lib" overwrite="yes">
+       <fileset dir="${jar.dir}"/>
+    </copy>
+<!--
+    <copy file="${jar.dir}/LatDraw.jar"
+          tofile="${dist.dir}/lib/LatDraw.jar"
+          overwrite="yes"/>
+
+    <copy todir="${class.dir}/org/uacalc/ui/images" overwrite="yes">
+       <fileset dir="${image.dir}"/>
+    </copy>
+-->
+  </target>
+
+
+  <target name="dist" depends="clean,dist-files,compile-dist">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist.dir}/lib"/>
+    <jar jarfile="${dist.dir}/lib/uacalc.jar" 
+         manifest="${manifest.file}"
+         basedir="${class.dir}"/>
+  </target>
+
+  <target name="javadoc" depends="compile-dist">
+    <javadoc packagenames="org.uacalc.alg,org.uacalc.alg.conlat,org.uacalc.alg.sublat,org.uacalc.alg.examples,org.uacalc.io,org.uacalc.util,org.uacalc.ui,org.uacalc.lat,org.uacalc.terms"
+             sourcepath="${src.dir}"
+             destdir="${javadoc.dir}"
+             author="true"
+             version="true"
+             protected="true"
+             windowtitle="Universal Algebra Calculator API"
+             doctitle="Universal Algebra Calculator API"
+             bottom="Copyright 2003 Ralph Freese. All Rights Reserved."
+             >
+             <classpath refid="dist-classpath"/>
+    </javadoc>
+  </target>
+
+  <target name="clean">
+    <!-- Delete the ${build} and ${dist.dir} directory trees -->
+    <delete dir="${class.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+</project>
+
+
