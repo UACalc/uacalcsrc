@@ -170,6 +170,7 @@ public class Malcev {
         if (isIdempotent) break;
         if (ia.get(3) == 0) break; // last coord is x
       }
+      ia = null;
     }
     if (ia != null) return (Term)termMap.get(ia);
     return null;
