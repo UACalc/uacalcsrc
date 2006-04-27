@@ -72,10 +72,22 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
 
     HashMap termMap = new HashMap();
+    if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
+    if (gens.size() == 2) {
+      termMap.put(gens.get(0), Variable.x);
+      termMap.put(gens.get(1), Variable.y);
+    }
+    if (gens.size() == 3) {
+      termMap.put(gens.get(0), Variable.x);
+      termMap.put(gens.get(1), Variable.y);
+      termMap.put(gens.get(2), Variable.z);
+    }
     int k = 0;
-    for (Iterator it = gens.iterator(); it.hasNext(); k++) {
-      Variable var = new VariableImp("x_" + k);
-      termMap.put(it.next(), var);
+    if (gens.size() > 3) {
+      for (Iterator it = gens.iterator(); it.hasNext(); k++) {
+        Variable var = new VariableImp("x_" + k);
+        termMap.put(it.next(), var);
+      }
     }
     univ = productAlgebra.sgClose(gens, termMap);
 
