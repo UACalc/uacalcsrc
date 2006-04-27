@@ -70,7 +70,8 @@ public class NonVariableTerm implements Term {
     return op.intValueAt(arg);
   }
 
-  public TermOperation interpretation(final Algebra alg, 
+  // should be TermOperation but having trouble with casting
+  public Operation interpretation(final Algebra alg, 
                                       final List varlist, 
                                       final boolean all) {
     final int arity = varlist.size(); // if no varlist ??
@@ -93,8 +94,10 @@ public class NonVariableTerm implements Term {
           tableOp = Operations.makeIntOperation(symbol(), size, values);
         }
 
+        /*
         public Term getTerm() { return NonVariableTerm.this; }
         public List getOrderedvariables() { return varlist; }
+        */
         public int intValueAt(int[] args) {
           if (tableOp != null) return tableOp.intValueAt(args);
           Map map = new  HashMap();
@@ -104,7 +107,7 @@ public class NonVariableTerm implements Term {
           return intEval(alg, map);
         }
       };
-    return (TermOperation)op;
+    return op;
   }
 
   public TermOperation interpretation(Algebra alg) {

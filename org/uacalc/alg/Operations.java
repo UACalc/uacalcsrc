@@ -63,6 +63,20 @@ logger.setLevel(Level.FINE);
   }
 
   /**
+   * Test if an operation is idempotent.
+   */
+  public static final boolean isIdempotent(Operation op) {
+    int[] arg = new int[op.arity()];
+    for (int i = 0; i < op.getSetSize(); i++) {
+      for (int j = 0; j < arg.length; j++) {
+        arg[j] = i;
+      }
+      if (op.intValueAt(arg) != i) return false;
+    }
+    return true;
+  }
+
+  /**
    * This makes a hash map from the operation symbols to the operations.
    */
   public static Map makeMap(List ops) {

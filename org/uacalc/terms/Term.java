@@ -63,8 +63,8 @@ public interface Term {
    * @param useAll     if true, use all the variables in varlist
    * @return           the term operation
    */
-  public TermOperation interpretation(Algebra alg, List varlist, 
-                                                   boolean useAll);
+// should return TermOperation but having some trouble with casting
+  public Operation interpretation(Algebra alg, List varlist, boolean useAll);
 
   /**
    * The operation obtained from this term using the variables in the

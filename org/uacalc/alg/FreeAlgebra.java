@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.*;
 import java.math.BigInteger;
 import org.uacalc.util.*;
+import org.uacalc.terms.*;
 import org.uacalc.io.*;
 
 import org.uacalc.alg.conlat.*;
@@ -70,17 +71,46 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       inc.increment();
     }
 
-    univ = productAlgebra.sgClose(gens);
+    HashMap termMap = new HashMap();
+    int k = 0;
+    for (Iterator it = gens.iterator(); it.hasNext(); k++) {
+      Variable var = new VariableImp("x_" + k);
+      termMap.put(it.next(), var);
+    }
+    univ = productAlgebra.sgClose(gens, termMap);
+
+    //univ = productAlgebra.sgClose(gens);
     size = univ.size();
     logger.info("free algebra size = " + size);
     univHashMap = new HashMap(size);
-    int k = 0;
+    terms = new Term[univ.size()];
+    k = 0;
     for (Iterator it = univ.iterator(); it.hasNext(); k++) {
-      univHashMap.put(it.next(), new Integer(k));
+      Object elem = it.next();
+      univHashMap.put(elem, new Integer(k));
+      terms[k] = (Term)termMap.get(elem);
     }
     universe = new HashSet(univ);
     makeOperations();
   }
+
+  public List getIdempotentTerms() {
+    List ans = new ArrayList();
+    Term[] terms = getTerms();
+    int n = generators().size();
+    List varlist = new ArrayList(n);
+    for (int i = 0 ; i < n; i++) {
+      varlist.add(terms[i]);
+      ans.add(terms[i]);
+    }
+    for (int i = n; i < terms.length; i++) {
+      Term t = terms[i];
+      Operation op = t.interpretation(this, varlist, true);
+      if (Operations.isIdempotent(op)) ans.add(t);
+    }
+    return ans;
+  }
+      
 
   /**
    * Construct a FreeAlgebra when the gens and univ are already

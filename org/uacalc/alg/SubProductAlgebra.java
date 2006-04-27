@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.*;
 import java.math.BigInteger;
 import org.uacalc.util.*;
+import org.uacalc.terms.*;
 
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.sublat.*;
@@ -26,6 +27,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   protected List univ; // a list of IntArray's
   protected HashMap univHashMap; // a map from IntArray's of elements of the 
                                  // univ to Integers (the index).
+  protected Term[] terms; // term[i] is a term for the ith element
 
 
   protected SubProductAlgebra() {
@@ -41,10 +43,32 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * gens is a list of IntArray's.
    */
   public SubProductAlgebra(String name, BigProductAlgebra prod, List gens) {
+    this(name, prod, gens, false);
+  }
+
+  /**
+   * Construct the direct product of a List of SmallAlgebra's.
+   * gens is a list of IntArray's.
+   */
+  public SubProductAlgebra(String name, BigProductAlgebra prod, 
+                                        List gens, boolean findTerms) {
     super(name);
     productAlgebra = prod;
     this.gens = gens;
-    univ = productAlgebra.sgClose(gens);
+    if (findTerms) {
+      HashMap termMap = new HashMap();
+      int k = 0;
+      for (Iterator it = gens.iterator(); it.hasNext(); k++) {
+        Variable var = new VariableImp("x_" + k);
+        termMap.put(k, var);
+      }
+      univ = productAlgebra.sgClose(gens, termMap);
+      terms = new Term[univ.size()];
+      for (int i = 0; i < univ.size(); i++) {
+        terms[i] = (Term)termMap.get(i);
+      }
+    }
+    else univ = productAlgebra.sgClose(gens);
     size = univ.size();
     univHashMap = new HashMap(size);
     int k = 0;
@@ -120,6 +144,10 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     for (Iterator it = operations().iterator(); it.hasNext(); ) {
       ((Operation)it.next()).makeTable();
     }
+  }
+
+  public Term[] getTerms() {
+    return terms;
   }
 
   public BigProductAlgebra getProductAlgebra() {

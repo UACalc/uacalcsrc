@@ -60,13 +60,17 @@ public class GeneralAlgebra implements Algebra {
     this.operations = operations;
   }
 
+  public Map getOperationsMap() {
+    if (operationsMap == null) operationsMap = Operations.makeMap(operations);
+    return operationsMap;
+  }
 
   public List operations() {
     return operations;
   }
 
   public Operation getOperation(OperationSymbol sym) {
-    return (Operation)operationsMap.get(sym);
+    return (Operation)getOperationsMap().get(sym);
   }
 
   public boolean isUnary() {
