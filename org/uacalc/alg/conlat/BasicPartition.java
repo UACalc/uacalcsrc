@@ -228,7 +228,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * is in the <code>k</code>-fold relational product of <code>par0</code>
    * and <code>par1</code>, with <code>par0</code> coming first and 
    * <code>k</code> counting the total occurances of <code>par0</code>
-   * <code>par1</code>.
+   * or <code>par1</code>.
    */
   public static int permutabilityLevel(int a, int b, 
                                    Partition par0, Partition par1) {
