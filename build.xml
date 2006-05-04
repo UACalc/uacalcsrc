@@ -4,6 +4,7 @@
   <!-- we will want debug off for dist so this should be reorganized -->
   <property name="src" value="."/>
   <property name="src.dir" value="."/>
+  <property name="work.dir" value="../local"/>
   <property name="image.dir" value="${src.dir}/org/uacalc/ui/images"/>
   <property name="class.dir" value="../classes"/>
   <property name="jar.dir" value="../jars"/>
@@ -37,9 +38,22 @@
     </javac>
   </target>
 
-  <target name="compile-dist">
+  <target name="compile-dist" depends="compile-dist-src,compile-dist-work"/>
+
+  <target name="compile-dist-src">
     <mkdir dir="${class.dir}"/>
     <javac srcdir="${src.dir}" 
+           debug="${dist-debug}"
+           destdir="${class.dir}"
+           excludes="board/geom/BSpline.java">
+      <classpath refid="dist-classpath"/>
+      <!-- <compilerarg value="-Xlint:unchecked" compiler="javac1.5"/> -->
+    </javac>
+  </target>
+
+  <target name="compile-dist-work">
+    <mkdir dir="${class.dir}"/>
+    <javac srcdir="${work.dir}" 
            debug="${dist-debug}"
            destdir="${class.dir}"
            excludes="board/geom/BSpline.java">
@@ -65,8 +79,9 @@
 -->
   </target>
 
+  <target name="dist" depends="dist-jar,compile-dist-work"/>
 
-  <target name="dist" depends="clean,dist-files,compile-dist">
+  <target name="dist-jar" depends="clean,dist-files,compile-dist-src">
     <!-- Create the distribution directory -->
     <mkdir dir="${dist.dir}/lib"/>
     <jar jarfile="${dist.dir}/lib/uacalc.jar" 
