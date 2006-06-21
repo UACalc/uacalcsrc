@@ -35,7 +35,7 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   public PolinLikeAlgebra(String name, final SmallAlgebra alg0, 
                           final SmallAlgebra alg1, 
-                          final Operation map, int c0, int c1) {
+                          Operation map, final int c0, final int c1) {
     super(name, 
           new AbstractSet() {
                 final int s = alg0.cardinality() + alg1.cardinality();
@@ -55,11 +55,45 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
           null);
     this.alg0 = alg0;
     this.alg1 = alg1;
+    final int n0 = alg0.cardinality();
+    final int n1 = alg1.cardinality();
+    if (map == null) map = id(n0 + n1);
     this.map = map;  // a map from alg1 to alg0
     c0index = c0;
     c1index = c1;
-    setOperations(makeOperations(alg0, alg1, map));
+    List ops = new ArrayList();
+    for (Iterator it = alg0.similarityType().getOperationSymbols().iterator();
+                                                              it.hasNext(); ) {
+      ops.add(polinizeOperation((OperationSymbol)it.next()));
+    }
+    ops.add(new AbstractOperation("^+", 1, n0 + n1) {
+        public Object valueAt(List args) {
+          throw new UnsupportedOperationException();
+        }
+        public int intValueAt(int[] args) {
+          if (args[0] < n0) return n0 + c1;
+          return c0;
+        }
+      });
+    setOperations(ops);
+
+
+    //setOperations(makeOperations(alg0, alg1, map));
   }
+
+  private Operation id(final int k) {
+    return new AbstractOperation("id", 1, k) {
+      public Object valueAt(List args) {
+        //throw new UnsupportedOperationException();
+        return args.get(0);
+      }
+      public int intValueAt(int[] args) {
+        return args[0];
+      }
+    };
+  }
+
+
 
   private List makeOperations(SmallAlgebra alg0, 
                               SmallAlgebra alg1, Operation map) {
@@ -101,7 +135,9 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
         int[] argsx = new int[args.length];
         for (int i = 0; i < args.length; i++) {
           if (args[i] < n0) argsx[i] = args[i];
-          else argsx[i] = map.intValueAt(new int[] {args[i] - n0});
+          else {
+            argsx[i] = map.intValueAt(new int[] {args[i] - n0});
+          }
         }
         return op1.intValueAt(argsx);
       }
@@ -112,7 +148,7 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
 
   /**
-   * Gives 0 is all are in alg0; 1 is all are in alg1; else 2.
+   * Gives 0 if all are in alg0; 1 is all are in alg1; else 2.
    */
   private static int argType(final int[] args, final int n) {
     if (args.length == 0) return 0;
@@ -128,6 +164,8 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return 1;
   }
 
+  //public static void main(String[] args) {
+    //SmallAlgebra alg = new PolinLikeAlgebra("pol", 
 
 }
 
@@ -136,4 +174,8 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
 
 
+
+ //public PolinLikeAlgebra(String name, final SmallAlgebra alg0,
+                          //final SmallAlgebra alg1,
+                          //Operation map, final int c0, final int c1) {
 
