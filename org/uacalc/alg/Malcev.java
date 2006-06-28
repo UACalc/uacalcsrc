@@ -56,7 +56,7 @@ public class Malcev {
    * If \alpha = Cg(a,c) \meet Cg(a,b) 
    * and \beta = Cg(a,c) \meet Cg(b,c) this gives number of alteration
    * of \alpha and \beta to get from a to c in the join of \alpha and
-   * \beta. It return -1 if (a,c) is not in the join.
+   * \beta. It returns -1 if (a,c) is not in the join.
    */
   public static int localDistributivityLevel(int a, int b, int c, 
                                              SmallAlgebra alg) {
