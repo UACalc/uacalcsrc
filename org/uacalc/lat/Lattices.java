@@ -46,6 +46,60 @@ public class Lattices {
     return null;
   }
 
+  public static BasicLattice latticeFromMeet(final String name, 
+                                             final List univ, 
+                                             final Operation meet) {
+    final int s = univ.size();
+    final List filters = new ArrayList(s);
+    for (Iterator it = univ.iterator(); it.hasNext(); ) {
+      final Object elem = it.next();
+      final List filter = new ArrayList();
+      for (Iterator it2 = univ.iterator(); it2.hasNext(); ) {
+        final List args = new ArrayList(2);
+        final Object elem2 = it2.next();
+        args.add(elem);
+        args.add(elem2);
+        if (meet.valueAt(args).equals(elem)) filter.add(elem2);
+      }
+      filters.add(filter);
+    }
+    int maxCount = 0;
+    for (Iterator it = filters.iterator(); it.hasNext(); ) {
+      if (((List)it.next()).size() == 1) {
+        maxCount++;
+        if (maxCount > 1) break;
+      }
+    }
+    if (maxCount > 1) {
+      String top = "TOP";
+      univ.add(top);
+      filters.add(new ArrayList(1));
+      for (Iterator it = filters.iterator(); it.hasNext(); ) {
+        ((List)it.next()).add(top);
+      }
+    }
+    try {
+      org.latdraw.orderedset.OrderedSet poset =
+        org.latdraw.orderedset.OrderedSet.orderedSetFromFilters(name, 
+                                                                univ, filters);
+      return new BasicLattice(name, poset);
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static BasicLattice dual(final BasicLattice lat) {
+    Lattice latx = new BasicLattice(lat.name() + "Dual", lat) {
+      public List joinIrreducibles() { return lat.meetIrreducibles(); }      
+      public Object meet(Object a, Object b) { return lat.join(a,b); }
+      public boolean leq(Object a, Object b) { return lat.leq(b,a); }
+    };
+    return new BasicLattice(lat.name() + "Dual", latx);
+  }
+
+
   /**
    * An optional operation returning the list of join irreducible elements.
    */

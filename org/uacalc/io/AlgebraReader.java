@@ -30,6 +30,17 @@ public final class AlgebraReader extends DefaultHandler {
   public static final int QUOTIENT = 2;
   public static final int SUBALGEBRA = 3;
   public static final int POWER = 4;
+  public static final String EMPTY_STRING = "";
+
+  private String algNameString = EMPTY_STRING;
+  private String opNameString = EMPTY_STRING;
+  private String descString = EMPTY_STRING;
+  private String cardinalityString = EMPTY_STRING;
+  private String arityString = EMPTY_STRING;
+  private String powerString = EMPTY_STRING;
+  private String rowString = EMPTY_STRING;
+  private String intArrayString = EMPTY_STRING;
+
 
   private File file;
   private SmallAlgebra algebra;
@@ -37,6 +48,7 @@ public final class AlgebraReader extends DefaultHandler {
   private SimpleList tagStack = SimpleList.EMPTY_LIST;
   private String algName;
   private String opName;
+  private String desc;
   private int cardinality;
   private int arity;
   private int power;
@@ -108,6 +120,16 @@ public final class AlgebraReader extends DefaultHandler {
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
     //System.out.println("elem is " + elemName);
     tagStack = tagStack.cons(elemName);
+
+    if ("algName".equals(elemName)) algNameString = EMPTY_STRING;
+    if ("opName".equals(elemName)) opNameString = EMPTY_STRING;
+    if ("desc".equals(elemName)) descString = EMPTY_STRING;
+    if ("cardinality".equals(elemName)) cardinalityString = EMPTY_STRING;
+    if ("arity".equals(elemName)) arityString = EMPTY_STRING;
+    if ("power".equals(elemName)) powerString = EMPTY_STRING;
+    if ("row".equals(elemName)) rowString = EMPTY_STRING;
+    if ("intArray".equals(elemName)) intArrayString = EMPTY_STRING;
+
     if ("basicAlgebra".equals(elemName)) algType = BASIC;
     if ("powerAlgebra".equals(elemName)) algType = POWER;
     if ("productAlgebra".equals(elemName)) algType = PRODUCT;
@@ -127,22 +149,23 @@ public final class AlgebraReader extends DefaultHandler {
     }
   }
 
+  /**
+   * Since this is allowed to chunk the string in any way, we have to
+   * append the strings until we get to the end tag.
+   */
   public void characters(char buf[], int offset, int len) throws SAXException {
     String s = new String(buf, offset, len);
-    s = s.trim();
-    if ("algName".equals(currentTag())) algName = s;
-    if ("opName".equals(currentTag())) opName = s;
-    //if ("desc".equals(currentTag())) desc = s;
-    if ("cardinality".equals(currentTag())) cardinality = Integer.parseInt(s);
-    if ("arity".equals(currentTag())) arity = Integer.parseInt(s);
-    if ("power".equals(currentTag())) power = Integer.parseInt(s);
-    if ("row".equals(currentTag())) intRow(s);
+    if ("algName".equals(currentTag())) algNameString += s;
+    if ("opName".equals(currentTag())) opNameString += s;
+    //if ("desc".equals(currentTag())) descString += s;
+    if ("cardinality".equals(currentTag())) cardinalityString += s;
+    if ("arity".equals(currentTag())) arityString += s;
+    if ("power".equals(currentTag())) powerString += s;
+    if ("row".equals(currentTag())) rowString += s;
     if ("intArray".equals(currentTag()) 
               && "congruence".equals(parentTag()) && s.length() > 0) {
-      intArray = intArray(s);
+      intArrayString += s;
     }
-    //if ("intArray".equals(currentTag())) intArray = intArray(s);
-    // universe here
   }
 
   public void endElement(String namespaceURI, String lName, String qName) 
@@ -150,6 +173,20 @@ public final class AlgebraReader extends DefaultHandler {
     tagStack = tagStack.rest();
     String elemName = lName; // element name
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
+
+    if ("algName".equals(elemName)) algName = algNameString.trim();
+    if ("opName".equals(elemName)) opName = opNameString.trim();
+    if ("desc".equals(elemName)) desc = descString.trim();
+    if ("cardinality".equals(elemName)) 
+            cardinality = Integer.parseInt(cardinalityString.trim());
+    if ("arity".equals(elemName)) arity = Integer.parseInt(arityString.trim());
+    if ("power".equals(elemName)) power = Integer.parseInt(powerString.trim());
+    if ("row".equals(elemName)) intRow(rowString.trim());
+    if ("intArray".equals(elemName) && "congruence".equals(parentTag())) {
+      intArrayString = intArrayString.trim();
+      if (intArrayString.length() > 0) intArray = intArray(intArrayString);
+    }
+
     if ("op".equals(elemName)) {
       ops.add(Operations.makeIntOperation(opName, arity, cardinality, 
                    Horner.leftRightReverse(intArray, cardinality, arity)));

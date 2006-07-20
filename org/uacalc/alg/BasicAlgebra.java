@@ -41,7 +41,14 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
                 }
                 public int size() { return s; }
                 public Iterator iterator() {
-                  throw new UnsupportedOperationException();
+                  return new Iterator() {
+                    int current = 0;
+                    public boolean hasNext() { return current < s; }
+                    public Object next() { return new Integer(current++); }
+                    public void remove() {
+                      throw new UnsupportedOperationException();
+                    }
+                  };
                 }
               },
           operations);

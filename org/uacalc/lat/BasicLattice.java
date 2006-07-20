@@ -40,6 +40,11 @@ public class  BasicLattice extends GeneralAlgebra
   private List meetIrreducibles;
   private HashMap tctTypeMap; // from edges to the strings "1" ... "5".
 
+  /**
+   * Make a BasicLattice from a poset.
+   *
+   * @param poset    A (latdraw) poset
+   */
   public BasicLattice(String name, org.latdraw.orderedset.OrderedSet poset) {
     super(name);
     this.poset = poset;
@@ -61,6 +66,12 @@ public class  BasicLattice extends GeneralAlgebra
     operations.add(makeMeetOperation());
   }
 
+  /**
+   * Make a BasicLattice from a CongruenceLattice.
+   *
+   * @param lat    The congruence lattice
+   * @param label  indicates if this should be TCT labelled
+   */
   public BasicLattice(String name, CongruenceLattice lat, boolean label) {
     super(name);
     poset = makeOrderedSet(lat);
@@ -208,6 +219,13 @@ public class  BasicLattice extends GeneralAlgebra
 
   public boolean leq(Object obj1, Object obj2) {
     return false;
+  }
+
+  /**
+   * Form the dual of the lattice.
+   */
+  public BasicLattice dual() {
+    return Lattices.dual(this);
   }
 
   public int elementIndex(Object obj) {

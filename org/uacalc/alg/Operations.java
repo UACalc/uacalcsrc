@@ -245,7 +245,7 @@ logger.setLevel(Level.FINE);
     }
 
     public Object valueAt(List args) {
-      Integer[] argsArray = (Integer[])args.toArray(new Integer[algSize]);
+      Integer[] argsArray = (Integer[])args.toArray(new Integer[args.size()]);
       return new Integer(valueTable[Horner.horner(argsArray, algSize)]);
     }
   
