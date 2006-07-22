@@ -74,6 +74,28 @@ public abstract class AbstractOperation implements Operation {
     return true;
   }
 
+  /**
+   * Test if this operation is totally symmetric; that is, invariant
+   * under all permutation of the variables.
+   */
+  public boolean isTotallySymmetric() {
+    return Operations.isTotallySymmetric(this);
+  }
+
+  /**
+   * Test if this operation is binary and associative.
+   */
+  public boolean isAssociative() {
+    return Operations.isAssociative(this);
+  }
+
+  /**
+   * Test if this operation is binary and commutative.
+   */
+  public boolean isCommutative() {
+    return Operations.isCommutative(this);
+  }
+
   public void makeTable() {}
 
 

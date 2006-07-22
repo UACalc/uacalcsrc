@@ -77,6 +77,64 @@ logger.setLevel(Level.FINE);
   }
 
   /**
+   * Test if an operation is binary and commutative.
+   */
+  public static final boolean isCommutative(Operation op) {
+    return op.arity() == 2 && isTotallySymmetric(op);
+  }
+
+  /**
+   * Test if an operation is totally symmetric; that is, invariant
+   * under all permutation of the variables.
+   */
+  public static final boolean isTotallySymmetric(Operation op) {
+    final int[] arg = new int[op.arity()];
+    ArrayIncrementor inc =
+           SequenceGenerator.nondecreasingSequenceIncrementor(arg, 
+                                                     op.getSetSize() - 1);
+    while (inc.increment()) {  // the all 0 arg is total sym
+      final int[] argx = new int[op.arity()];
+      for (int i = 0 ; i < arg.length; i++) {
+        argx[i] = arg[i];
+      }
+      final int value = op.intValueAt(argx);
+      ArrayIncrementor incx = PermutationGenerator.arrayIncrementor(argx);
+      while (incx.increment()) {
+        if (op.intValueAt(argx) != value) return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Test if an operation is binary and associative.
+   */
+  public static final boolean isAssociative(Operation op) {
+    if (op.arity() != 2) return false;
+    final int[] arg = new int[op.arity()];
+    final int n = op.getSetSize();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        for (int k = 0; k < n; k++) {
+          arg[0] = i;
+          arg[1] = j;
+          int t = op.intValueAt(arg);
+          arg[0] = t;
+          arg[1] = k;
+          int left = op.intValueAt(arg);
+          arg[0] = j;
+          arg[1] = k;
+          t = op.intValueAt(arg);
+          arg[0] = i;
+          arg[1] = t;
+          if (left != op.intValueAt(arg)) return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
    * This makes a hash map from the operation symbols to the operations.
    */
   public static Map makeMap(List ops) {

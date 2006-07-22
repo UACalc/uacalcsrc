@@ -58,6 +58,22 @@ public interface Operation {
    */
   public boolean isIdempotent();
 
+  /**
+   * Is this operation binary and associative.
+   */
+  public boolean isAssociative();
+
+  /**
+   * Is this operation binary and commutative.
+   */
+  public boolean isCommutative();
+
+  /**
+   * Is this operation totally symmetric; that is, invariant
+   * under all permutation of the variables.
+   */
+  public boolean isTotallySymmetric();
+
 }
 
 
