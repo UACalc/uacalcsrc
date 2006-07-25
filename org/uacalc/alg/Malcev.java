@@ -457,6 +457,14 @@ public class Malcev {
     return -1;
   }
 
+  public static boolean dayQuadruple(int a, int b, int c, int d,
+                                                     SmallAlgebra alg) {
+    final Partition cgcd = alg.con().Cg(c,d);
+    final Partition cgab_cd = alg.con().Cg(a,b).join(cgcd);
+    final Partition cgac_bd = alg.con().Cg(a,c).join(alg.con().Cg(b, d));
+    return !cgcd.join(cgab_cd.meet(cgac_bd)).isRelated(a,b);
+  }
+
 
   /**
    * This returns a list of Gumm terms witnessing modularity, or null if 

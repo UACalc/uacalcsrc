@@ -54,7 +54,18 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
                                         List gens, boolean findTerms) {
     super(name);
     productAlgebra = prod;
-    this.gens = gens;
+    // some gyrations to eliminate duplicates but keep the order the same.
+    HashSet hs = new HashSet(gens.size());
+    List gens2 = new ArrayList(gens.size());
+    for (Iterator it = gens.iterator(); it.hasNext(); ) {
+      Object elem = it.next();
+      if (!hs.contains(elem)) {
+        hs.add(elem);
+        gens2.add(elem);
+      }
+    }
+    gens = gens2;
+    this.gens = gens2;
     if (findTerms) {
       HashMap termMap = new HashMap();
       int k = 0;
