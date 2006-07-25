@@ -72,11 +72,11 @@
     <copy file="${jar.dir}/LatDraw.jar"
           tofile="${dist.dir}/lib/LatDraw.jar"
           overwrite="yes"/>
+-->
 
     <copy todir="${class.dir}/org/uacalc/ui/images" overwrite="yes">
        <fileset dir="${image.dir}"/>
     </copy>
--->
   </target>
 
   <target name="dist" depends="dist-jar,compile-dist-work"/>

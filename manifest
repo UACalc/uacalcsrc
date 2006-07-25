@@ -1,0 +1,3 @@
+Main-Class: org/uacalc/ui/UACalculator
+Class-Path: LatDraw.jar
+
