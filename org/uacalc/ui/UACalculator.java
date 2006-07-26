@@ -25,6 +25,9 @@ public class UACalculator extends JFrame {
   private JPanel bottomPanel;
   private LatDrawPanel latDrawPanel;
 
+  JCheckBoxMenuItem showDiagLabelsCB;
+
+
   public UACalculator() {
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     //closes from title bar and from menu
@@ -54,7 +57,7 @@ public class UACalculator extends JFrame {
 //    bottomPanel.add(pointPanel, BorderLayout.EAST);
 //    bottomPanel.add(dimensionsPanel, BorderLayout.CENTER);
     mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-    latDrawPanel = new LatDrawPanel();
+    latDrawPanel = new LatDrawPanel(this);
     mainPanel.add(latDrawPanel, BorderLayout.CENTER);
 
     buildMenu();
@@ -134,6 +137,22 @@ public class UACalculator extends JFrame {
           drawBelinda(getAlgebra());
         }
       });
+
+    JMenu showHide = (JMenu) menuBar.add(new JMenu("Show/Hide"));
+
+    final JCheckBoxMenuItem showDiagLabelsCB = (JCheckBoxMenuItem)showHide.add(
+                         new JCheckBoxMenuItem("Show Diagram Labels", true));
+
+    showDiagLabelsCB.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          //shaper.getCurrentPanel().repaint();
+          getLatDrawPanel().getDiagram().setPaintLabels(
+                                           showDiagLabelsCB.isSelected());
+          repaint();
+        }
+      });
+
+
 
     setJMenuBar(menuBar);
 

@@ -13,7 +13,7 @@ import org.latdraw.diagram.*;
 import org.latdraw.beans.*;
 
 import org.latdraw.beans.*;
-import org.latdraw.sample.ExtFileFilter;
+//import org.latdraw.sample.ExtFileFilter;
 
 //import net.sourceforge.toscanaj.parser.BurmeisterParser;
 //import net.sourceforge.toscanaj.model.lattice.*;
@@ -40,10 +40,12 @@ import java.beans.PropertyChangeEvent;
  *
  *
  */
-public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
+public class LatDrawPanel extends JPanel {
 
   public static final Color OBJ_COLOR = new Color(204, 255, 204); //light green
   public static final Color ATT_COLOR = new Color(204, 204, 255); //light blue
+
+  private org.latdraw.beans.DrawPanel drawPanel;
 
   private JPanel mainPanel;
   private JPanel appPanel;
@@ -54,20 +56,18 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
   //private ObjAttTable objTable;
   //private ObjAttTable attTable;
   //private ConceptLattice conceptLattice;
+  private UACalculator uacalc;
 
   private static final Dimension scrollDim = new Dimension(200, 250);
 
-  public LatDrawPanel() {
-    this(null);
-  }
-
 // was ConceptLattice, leave it in case we need it as an example.
-  public LatDrawPanel(Diagram diag) {
-    //super(diag);
+  public LatDrawPanel(UACalculator uacalc) {
+    this.uacalc = uacalc;
+    drawPanel = new org.latdraw.beans.DrawPanel();
     PropertyChangeListener changeListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
-            Diagram diag = getDiagram();
+            Diagram diag = drawPanel.getDiagram();
             diag.resetVertices();
             diag.hideLabels();
             Vertex v = (Vertex)e.getNewValue();
@@ -91,61 +91,77 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
           }
         }
     };
-    getChangeSupport().addPropertyChangeListener(changeListener);
-    setFocusable(true);
-    addMouseListener(new MouseAdapter() {
+    drawPanel.getChangeSupport().addPropertyChangeListener(changeListener);
+    drawPanel.setFocusable(true);
+    drawPanel.addMouseListener(new MouseAdapter() {
         public void mouseEntered(MouseEvent e) {
           requestFocus();
         }
       });
     addKeyListener(new KeyAdapter() {
         public void keyTyped(KeyEvent e) {
+          if (drawPanel.getDiagram() == null) return;
           char key = e.getKeyChar();
           if (key == 'r' || key == 'R') {
-            if (isRotating()) stopRotation();
-            else startRotation();
+            if (drawPanel.isRotating()) drawPanel.stopRotation();
+            else drawPanel.startRotation();
           }
-          if (key == 's' || key == 'S') stopRotation();
-          if (key == '.' || key == '>') rotateOnce();
-          if (key == ',' || key == '<') rotateLeft();
-          if (key == 'd' || key == 'D') setDraggingAllowed(
-                                          !isDraggingAllowed());
-          if (key == 'h' || key == 'H') setDraggingHorizontal(
-                                          !isDraggingHorizontal());
-          if (key == 'i') improveWithDelay(40);
-          if (key == 'I') improve();
-          if (key == 'p') printDialog();
-          if (key == 'P') writeRSFDiagram("outx.ps");
+          if (key == 's' || key == 'S') drawPanel.stopRotation();
+          if (key == '.' || key == '>') drawPanel.rotateOnce();
+          if (key == ',' || key == '<') drawPanel.rotateLeft();
+          if (key == 'd' || key == 'D') drawPanel.setDraggingAllowed(
+                                          !drawPanel.isDraggingAllowed());
+          if (key == 'h' || key == 'H') drawPanel.setDraggingHorizontal(
+                                          !drawPanel.isDraggingHorizontal());
+          if (key == 'i') drawPanel.improveWithDelay(40);
+          if (key == 'I') drawPanel.improve();
+          if (key == 'p') drawPanel.printDialog();
+          if (key == 'P') drawPanel.writeRSFDiagram("outx.ps");
           if (key == '+') {
-            increaseReplusion();
-            decreaseAttraction();
+            drawPanel.increaseReplusion();
+            drawPanel.decreaseAttraction();
           }
           if (key == '-') {
-            increaseAttraction();
-            decreaseReplusion();
+            drawPanel.increaseAttraction();
+            drawPanel.decreaseReplusion();
           }
-          if (key == 'q' || key == 'Q') System.exit(0);
         }
       });
 
 
+    setLayout(new BorderLayout());
     toolBar = makeToolBar();
     appPanel = new JPanel();
     appPanel.setLayout(new BorderLayout());
-    mainPanel = this;
+    mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
-    //add(toolBar, BorderLayout.PAGE_START);
+    mainPanel.add(drawPanel, BorderLayout.CENTER);
     add(toolBar, BorderLayout.NORTH);
+    add(mainPanel, BorderLayout.CENTER);
     validate();
     repaint();
   }
 
+  public UACalculator getUACalculator() { return uacalc; }
+
+  public Diagram getDiagram() { return drawPanel.getDiagram(); }
+
+  public void setDiagram(Diagram d) { 
+    drawPanel.setDiagram(d);
+    //drawPanel = new DrawPanel(d);
+    repaint();
+  }
+
+  public org.latdraw.beans.DrawPanel getDrawPanel() { return drawPanel; }
+
   public JToolBar getToolBar() { return toolBar; }
 
+/*
   public void paint(java.awt.Graphics g) {
-    if (getDiagram() != null) super.paint(g);
+    if (drawPanel.getDiagram() != null) super.paint(g);
     toolBar.repaint();
   }
+*/
 
 /*
   public void setContent(DrawPanel dp, JToolBar tb) {
@@ -302,7 +318,7 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     forwardButton.setToolTipText("Rotate forward");
     forwardButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          rotateOnce();
+          drawPanel.rotateOnce();
         }
       });
     toolBar.add(forwardButton);
@@ -313,7 +329,7 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     backButton.setToolTipText("Rotate back");
     backButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          rotateLeft();
+          drawPanel.rotateLeft();
         }
       });
     toolBar.add(backButton);
@@ -324,8 +340,8 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     rotButton.setToolTipText("Rotate");
     rotButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (isRotating()) stopRotation();
-          else startRotation();
+          if (drawPanel.isRotating()) drawPanel.stopRotation();
+          else drawPanel.startRotation();
         }
       });
     toolBar.add(rotButton);
@@ -334,9 +350,9 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     inButton.setToolTipText("Push in horizontally");
     inButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          increaseAttraction();
-          decreaseReplusion();
-          improveWithoutDelay(40);
+          drawPanel.increaseAttraction();
+          drawPanel.decreaseReplusion();
+          drawPanel.improveWithoutDelay(40);
         }
       });
     toolBar.add(inButton);
@@ -345,9 +361,9 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     outButton.setToolTipText("Push out horizontally");
     outButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          increaseReplusion();
-          decreaseAttraction();
-          improveWithoutDelay(40);
+          drawPanel.increaseReplusion();
+          drawPanel.decreaseAttraction();
+          drawPanel.improveWithoutDelay(40);
         }
       });
     toolBar.add(outButton);
@@ -356,7 +372,7 @@ public class LatDrawPanel extends org.latdraw.beans.DrawPanel {
     improveButton.setToolTipText("Improve the diagram");
     improveButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          improve();
+          drawPanel.improve();
         }
       });
     toolBar.add(improveButton);
