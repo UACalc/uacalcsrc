@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 
 import org.uacalc.alg.conlat.CongruenceLattice;
 import org.uacalc.alg.sublat.SubalgebraLattice;
@@ -27,10 +28,22 @@ public interface SmallAlgebra extends Algebra {
 
   /**
    * This method will return <tt>k</tt> if <tt>elem</tt> 
-   * is the <tt>k</tt>th element; otherwise -1. (Should be have it
+   * is the <tt>k</tt>th element; otherwise -1. (Should we have it
    * throw an error instead?)
    */
   public int elementIndex(Object elem);
+
+  /**
+   * The universe as a List such getElement(k) will equal the kth
+   * element of the List. It is allowed to be null.
+   */
+  public List getUniverseList();
+
+  /**
+   * A map that can be used for elementIndex(a).
+   * It is allowed to be null.
+   */
+  public Map getUniverseOrder();
 
   /**
    * The congurence lattice.

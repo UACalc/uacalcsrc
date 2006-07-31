@@ -96,10 +96,15 @@ public class BasicSet extends IntArray implements Comparable {
     if (m < n) return false;
     int j = 0;
     for (int i = 0; i < n; i++) {
+      boolean ok = false;
       for ( ; j < m; j++) {
         if (u[i] > v[j]) return false;
-        if (u[i] == v[j]) break;
+        if (u[i] == v[j]) {
+          ok = true;
+          break;
+        }
       }
+      if (!ok) return false;
     }
     return true;
   }

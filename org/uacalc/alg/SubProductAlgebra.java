@@ -173,9 +173,14 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return gens;
   }
 
-  public List universeList() {
+  public List getUniverseList() {
     return univ;
   }
+
+  public Map getUniverseOrder() {
+    return univHashMap;
+  }
+
 
   public CongruenceLattice con() {
     if (con == null) con = new CongruenceLattice(this);

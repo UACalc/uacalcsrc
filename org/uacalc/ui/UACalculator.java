@@ -131,10 +131,27 @@ public class UACalculator extends JFrame {
 
     JMenu draw = (JMenu) menuBar.add(new JMenu("Draw"));
 
-    JMenuItem drawBelindaMI = (JMenuItem)draw.add(new JMenuItem("Draw Belinda"));
+    JMenuItem drawConMI = (JMenuItem)draw.add(new JMenuItem("Con"));
+
+    drawConMI.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (getAlgebra() != null) drawCon(getAlgebra());
+        }
+      });
+
+    JMenuItem drawSubMI = (JMenuItem)draw.add(new JMenuItem("Sub"));
+
+    drawSubMI.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if (getAlgebra() != null) drawSub(getAlgebra());
+        }
+      });
+
+    JMenuItem drawBelindaMI =
+                    (JMenuItem)draw.add(new JMenuItem("Belinda"));
     drawBelindaMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawBelinda(getAlgebra());
+          if (getAlgebra() != null) drawBelinda(getAlgebra());
         }
       });
 
@@ -146,8 +163,10 @@ public class UACalculator extends JFrame {
     showDiagLabelsCB.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
           //shaper.getCurrentPanel().repaint();
-          getLatDrawPanel().getDiagram().setPaintLabels(
+          if (getLatDrawPanel().getDiagram() != null) {
+            getLatDrawPanel().getDiagram().setPaintLabels(
                                            showDiagLabelsCB.isSelected());
+          }
           repaint();
         }
       });
@@ -178,12 +197,49 @@ public class UACalculator extends JFrame {
 
   public LatDrawPanel getLatDrawPanel() { return latDrawPanel; }
 
+  public void drawSub(SmallAlgebra alg) {
+    if (alg.sub().cardinality() > 50) {
+      System.out.println("Sub has " + alg.sub().cardinality() + " elements");
+      System.out.println("we allow at most 50 elements.");
+      return;
+    }
+    BasicLattice lat = new BasicLattice("", alg.sub());
+    try {
+      getLatDrawPanel().setDiagram(lat.getDiagram());
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    repaint();
+  }
+
+
+  public void drawCon(SmallAlgebra alg) {
+    if (alg.con().cardinality() > 50) {
+      System.out.println("Con has " + alg.con().cardinality() + " elements");
+      System.out.println("we allow at most 50 elements.");
+      return;
+    }
+    BasicLattice lat = new BasicLattice("", alg.con(), true);
+    try {
+      getLatDrawPanel().setDiagram(lat.getDiagram());
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    repaint();
+  }
+
+
   public void drawBelinda(SmallAlgebra alg) {
     Operation op = null;
     for (Iterator it = alg.operations().iterator(); it.hasNext(); ) {
-      op = (Operation)it.next();
-      if (Operations.isCommutative(op) && Operations.isIdempotent(op)
-                                      && Operations.isAssociative(op)) break;
+      Operation opx = (Operation)it.next();
+      if (Operations.isCommutative(opx) && Operations.isIdempotent(opx)
+                                      && Operations.isAssociative(opx)) {
+        op = opx;
+        break;
+      }
     }
     if (op == null) {
       System.out.println("Could not find a semilattice operations.");
@@ -312,7 +368,6 @@ public class UACalculator extends JFrame {
       //setModified(false);
       setAlgebra(a);
     }
-System.out.println("con of loaded alg size : " + getAlgebra().con().cardinality());
   }
 
   public File getCurrentFile() { return currentFile; }

@@ -139,14 +139,14 @@ public final class AlgebraWriter {
   }
 
   public void writeAlgebra() {
-    if (algebra instanceof BasicAlgebra) writeBasicAlgebra();
-    else if (algebra instanceof PowerAlgebra) writePowerAlgebra();
+    if (algebra instanceof PowerAlgebra) writePowerAlgebra();
     else if (algebra instanceof ProductAlgebra) writeProductAlgebra();
     else if (algebra instanceof QuotientAlgebra) writeQuotientAlgebra();
     else if (algebra instanceof Subalgebra) writeSubalgebra();
     else if (algebra instanceof FreeAlgebra) writeFreeAlgebra();
     else if (algebra instanceof BigProductAlgebra) writeBigProductAlgebra();
     else if (algebra instanceof SubProductAlgebra) writeSubProductAlgebra();
+    else writeBasicAlgebra();
   }
 
 
@@ -162,8 +162,9 @@ public final class AlgebraWriter {
     writeDesc();
     writeCardinality();
     // if alg is not instanceof BasicAlgebra, write the universe
-    if (!(algebra instanceof BasicAlgebra) ||
-             !((BasicAlgebra)algebra).intUniverse()) writeUniverse();
+    //if (!(algebra instanceof BasicAlgebra) ||
+    //         !((BasicAlgebra)algebra).intUniverse()) writeUniverse();
+    if (((SmallAlgebra)algebra).getUniverseList() != null) writeUniverse();
     writeTag(OPERATIONS_TAG);
     for (Iterator it = algebra.operations().iterator(); it.hasNext(); ) {
       writeOperation((Operation)it.next());
@@ -258,15 +259,16 @@ public final class AlgebraWriter {
       //writeIntArray(ia.toArray(), false);
     }
     writeEndTag(GENERATORS_END_TAG);
-    writeTag(UNIVERSE_TAG);
-    List univ = alg.universeList();
-    for (Iterator it = univ.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
-      writeProdElem(ia.toArray());
-      //writeIntArray(ia.toArray(), false);
+    List univ = alg.getUniverseList();
+    if (univ != null) {
+      writeTag(UNIVERSE_TAG);
+      for (Iterator it = univ.iterator(); it.hasNext(); ) {
+        IntArray ia = (IntArray)it.next();
+        writeProdElem(ia.toArray());
+        //writeIntArray(ia.toArray(), false);
+      }
+      writeEndTag(UNIVERSE_END_TAG);
     }
-    writeEndTag(UNIVERSE_END_TAG);
-
 
     writeTag(SUPER_ALGEBRA_TAG);
     algebra = prodAlg;
@@ -420,10 +422,12 @@ public final class AlgebraWriter {
   private void writeUniverse() {
     writeTag(UNIVERSE_TAG);
     //final String[] arr = new String[algebra.cardinality()];
+    List univ = ((SmallAlgebra)algebra).getUniverseList();
     for (int i = 0; i < algebra.cardinality(); i++) {
       //arr[i] = algebra.getElement(i).toString();
-      writeBeginEndTag(ELEM_TAG, ELEM_END_TAG, 
-          ((SmallAlgebra)algebra).getElement(i).toString()); 
+      //writeBeginEndTag(ELEM_TAG, ELEM_END_TAG, 
+      //    ((SmallAlgebra)algebra).getElement(i).toString()); 
+      writeBeginEndTag(ELEM_TAG, ELEM_END_TAG, univ.get(i).toString()); 
     }
     //writeStringArray(arr);
     writeEndTag(UNIVERSE_END_TAG);

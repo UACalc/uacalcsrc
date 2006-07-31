@@ -118,6 +118,11 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return new QuotientElement(this, index);
   }
 
+
+  // do something ??
+  public List getUniverseList() { return null; }
+  public Map getUniverseOrder() { return null; }
+
   /**
    * Notes: this is need a class for congruence classes.
    * Something that will print like a/\theta.

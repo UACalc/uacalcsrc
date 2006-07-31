@@ -190,6 +190,10 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return Horner.hornerInv(index, sizes);
   }
 
+  // do something ??
+  public List getUniverseList() { return null; }
+  public Map getUniverseOrder() { return null; }
+
   protected Set makeCartesianProduct(final List algs) {
     return new AbstractSet() {
         public int size() { return size; }

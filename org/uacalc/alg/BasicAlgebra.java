@@ -86,6 +86,12 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
     setOperations(ops);
   }
 
+  public List getUniverseList() { return universeList; }
+  public void setUniverseList(List lst) { universeList = lst; }
+
+  public Map getUniverseOrder() { return universeOrder; }
+  public void setUniverseOrder(Map ord) { universeOrder = ord; }
+
   /**
    * If this is true, there is no real universe; we just use 
    * Integers.

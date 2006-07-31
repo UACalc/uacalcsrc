@@ -318,7 +318,9 @@ public class LatDrawPanel extends JPanel {
     forwardButton.setToolTipText("Rotate forward");
     forwardButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawPanel.rotateOnce();
+          if (getDiagram() != null) {
+            drawPanel.rotateOnce();
+          }
         }
       });
     toolBar.add(forwardButton);
@@ -329,7 +331,9 @@ public class LatDrawPanel extends JPanel {
     backButton.setToolTipText("Rotate back");
     backButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawPanel.rotateLeft();
+          if (getDiagram() != null) {
+            drawPanel.rotateLeft();
+          }
         }
       });
     toolBar.add(backButton);
@@ -340,8 +344,10 @@ public class LatDrawPanel extends JPanel {
     rotButton.setToolTipText("Rotate");
     rotButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (drawPanel.isRotating()) drawPanel.stopRotation();
-          else drawPanel.startRotation();
+          if (getDiagram() != null) {
+            if (drawPanel.isRotating()) drawPanel.stopRotation();
+            else drawPanel.startRotation();
+          }
         }
       });
     toolBar.add(rotButton);
@@ -350,9 +356,11 @@ public class LatDrawPanel extends JPanel {
     inButton.setToolTipText("Push in horizontally");
     inButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawPanel.increaseAttraction();
-          drawPanel.decreaseReplusion();
-          drawPanel.improveWithoutDelay(40);
+          if (getDiagram() != null) {
+            drawPanel.increaseAttraction();
+            drawPanel.decreaseReplusion();
+            drawPanel.improveWithoutDelay(40);
+          }
         }
       });
     toolBar.add(inButton);
@@ -361,9 +369,11 @@ public class LatDrawPanel extends JPanel {
     outButton.setToolTipText("Push out horizontally");
     outButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawPanel.increaseReplusion();
-          drawPanel.decreaseAttraction();
-          drawPanel.improveWithoutDelay(40);
+          if (getDiagram() != null) {
+            drawPanel.increaseReplusion();
+            drawPanel.decreaseAttraction();
+            drawPanel.improveWithoutDelay(40);
+          }
         }
       });
     toolBar.add(outButton);
@@ -372,7 +382,9 @@ public class LatDrawPanel extends JPanel {
     improveButton.setToolTipText("Improve the diagram");
     improveButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          drawPanel.improve();
+          if (getDiagram() != null) {
+            drawPanel.improve();
+          }
         }
       });
     toolBar.add(improveButton);

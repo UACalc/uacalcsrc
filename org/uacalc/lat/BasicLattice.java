@@ -122,7 +122,7 @@ public class  BasicLattice extends GeneralAlgebra
               bad = true;
               break;
             }
-            if (lat.leq(elem2, join)) lstIt.remove();
+            if (lat.leq(join, elem2)) lstIt.remove();
           }
           if (!bad) covs.add(join);
         }
@@ -236,6 +236,11 @@ public class  BasicLattice extends GeneralAlgebra
   public Object getElement(int k) {
     return univList.get(k);
   }
+
+  // do something ??
+  public List getUniverseList() { return null; }
+  public Map getUniverseOrder() { return null; }
+
 
   public org.latdraw.orderedset.OrderedSet getPoset() { return poset; }
 

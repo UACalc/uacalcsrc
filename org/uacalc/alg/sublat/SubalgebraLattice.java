@@ -203,7 +203,7 @@ public class SubalgebraLattice implements Lattice {
   public Object meet(List args) { return null; }
 
   public boolean leq(Object a, Object b) {
-    return ((Set)b).containsAll((Set)a);
+    return ((BasicSet)a).leq((BasicSet)b);
   }
 
   // fix this

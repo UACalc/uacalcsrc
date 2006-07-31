@@ -155,6 +155,11 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
     return superAlgebra.getElement(univArray[index]);
   }
 
+  // do something ??
+  public List getUniverseList() { return null; }
+  public Map getUniverseOrder() { return null; }
+
+
   protected Set makeUniverse() {
     return new AbstractSet() {
         public int size() { return size; }
