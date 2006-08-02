@@ -15,8 +15,9 @@ import org.uacalc.ui.*;
 
 /**
  * Given a homomorphism f: A to B, this constructs a Polin type algebra
- * on the disjoint union of A and B. Actually for this first edition A
- * and B must be equal and f is the identity.
+ * on the disjoint union of A and B. 
+ * The elements are ordered by the elements of B first followed by those
+ * of A.
  *
  * @version $Id$
  */
@@ -27,18 +28,18 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
     logger.setLevel(Level.FINER);
   }
 
-  protected SmallAlgebra topAlg;
   protected SmallAlgebra botAlg;
+  protected SmallAlgebra topAlg;
   protected Operation map;
   //protected Object const0;
   //protected Object const1;
-  protected int c0index;
-  protected int c1index;
+  protected int botConstIndex;
+  protected int topConstIndex;
   
 
   public PolinLikeAlgebra(String name, final SmallAlgebra topAlg, 
-                          final SmallAlgebra botAlg, 
-                          Operation map, final int c0, final int c1) {
+                          final SmallAlgebra botAlg, Operation map, 
+                          final int topConstIndex, final int botConstIndex) {
     super(name, 
           new AbstractSet() {
                 final int s = topAlg.cardinality() + botAlg.cardinality();
@@ -57,13 +58,13 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
               });
     this.topAlg = topAlg;
     this.botAlg = botAlg;
-    c0index = c0;
-    c1index = c1;
+    this.topConstIndex = topConstIndex;
+    this.botConstIndex = botConstIndex;
     this.map = map;  // a map from topAlg to botAlg
     setup();
   }
 
-  public void setup() {
+  private void setup() {
     final int topSize = topAlg.cardinality();
     final int botSize = botAlg.cardinality();
     if (map == null) map = id(topSize + botSize);
@@ -77,8 +78,8 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
           throw new UnsupportedOperationException();
         }
         public int intValueAt(int[] args) {
-          if (args[0] < topSize) return topSize + c1index;
-          return c0index;
+          if (args[0] < botSize) return botSize + topConstIndex;
+          return botConstIndex;
         }
       });
 //System.out.println("ops : " + ops.size());
@@ -122,36 +123,44 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public Map getUniverseOrder() { return null; }
   public List getUniverseList() { return null; }
 
+  /**
+   * This is not implemented; don't use it.
+   */
   public static SmallAlgebra constructPolinAlgebra(SmallAlgebra alg, 
                                                    Object elem) {
     return constructPolinAlgebra(alg, alg.elementIndex(elem));
   }
 
+  /**
+   * This is not implemented; don't use it.
+   */
   public static SmallAlgebra constructPolinAlgebra(SmallAlgebra alg, 
                                                    final int elt) {
     return null;
   }
 
   public Operation polinizeOperation(final OperationSymbol sym) {
-    final Operation op0 = topAlg.getOperation(sym);
-    final Operation op1 = botAlg.getOperation(sym);
-    final int topSize = topAlg.cardinality();
-    return new AbstractOperation(sym, topAlg.cardinality() + botAlg.cardinality()) {
+    final Operation op0 = botAlg.getOperation(sym);
+    final Operation op1 = topAlg.getOperation(sym);
+    final int botSize = botAlg.cardinality();
+    return new AbstractOperation(sym, topAlg.cardinality() 
+                                                + botAlg.cardinality()) {
       public Object valueAt(List args) {
         throw new UnsupportedOperationException();
       }
       public int intValueAt(int[] args) {
-        final int type = argType(args, topSize);
+        final int type = argType(args, botSize);
         if (type == 0) return op0.intValueAt(args);
-        //if (type == 1) return op1.intValueAt(args);
         int[] argsx = new int[args.length];
+
         for (int i = 0; i < args.length; i++) {
-          if (args[i] < topSize) argsx[i] = args[i];
+          if (args[i] < botSize) argsx[i] = args[i];
           else {
-            argsx[i] = map.intValueAt(new int[] {args[i] - topSize});
+            argsx[i] = map.intValueAt(new int[] {args[i] - botSize});
           }
         }
-        return topSize + op1.intValueAt(argsx);
+        if (type == 1) return botSize + op1.intValueAt(argsx);
+        return op0.intValueAt(argsx);
       }
     };
 
@@ -160,26 +169,23 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
 
   /**
-   * Gives 0 if all are in topAlg; 1 is all are in botAlg; else 2.
+   * Gives 0 if all are in botAlg; 1 is all are in topAlg; else 2.
    */
-  private static int argType(final int[] args, final int n) {
+  private static int argType(final int[] args, final int botSize) {
     if (args.length == 0) return 0;
-    if (args[0] < n) {
+    if (args[0] < botSize) {
       for (int i = 1; i < args.length; i++) {
-        if (args[i] >= n) return 2;
+        if (args[i] >= botSize) return 2;
       }
       return 0;
     }
     for (int i = 1; i < args.length; i++) {
-      if (args[i] < n) return 2;
+      if (args[i] < botSize) return 2;
     }
     return 1;
   }
 
   public CongruenceLattice con() {
-System.out.println("this is " +  this);
-System.out.println("this operations " +  operations());
-
     if (con == null) con = new CongruenceLattice(this);
     return con;
   }
@@ -201,18 +207,9 @@ System.out.println("this operations " +  operations());
     SmallAlgebra alg2 = new PolinLikeAlgebra("pol", alg, alg, null, 1, 1);
     org.uacalc.io.AlgebraIO.writeAlgebraFile(alg2, "/tmp/newpolin2.xml");
     System.out.println("con size = " + alg2.con().cardinality());
+    //LatDrawer.drawLattice(new BasicLattice("", alg.con(), true));
     LatDrawer.drawLattice(new BasicLattice("", alg2.con(), true));
   }
 
 }
-
-
-
-
-
-
-
- //public PolinLikeAlgebra(String name, final SmallAlgebra topAlg,
-                          //final SmallAlgebra botAlg,
-                          //Operation map, final int c0, final int c1) {
 
