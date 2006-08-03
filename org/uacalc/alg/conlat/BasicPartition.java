@@ -228,7 +228,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * is in the <code>k</code>-fold relational product of <code>par0</code>
    * and <code>par1</code>, with <code>par0</code> coming first and 
    * <code>k</code> counting the total occurances of <code>par0</code>
-   * or <code>par1</code>.
+   * or <code>par1</code>. It returns -1 if <code>(a,b)</code>
+   * is not in the join.
    */
   public static int permutabilityLevel(int a, int b, 
                                    Partition par0, Partition par1) {
@@ -277,6 +278,24 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
   }
 
+  /**
+   * This is the max of  <code>permutabilityLevel(a, b, par0, par1)</code>
+   * over all (a, b) in the join.
+   */
+  public static int permutabilityLevel(Partition par0, Partition par1) {
+    int level = -1;
+    Partition join = par0.join(par1);
+    final int n = par0.size();
+    for (int i = 0; i < n; i++) {
+      for (int j = i + 1; j < n; j++) {
+        if (join.isRelated(i,j)) {
+          level = Math.max(level, permutabilityLevel(i, j, par0, par1));
+          level = Math.max(level, permutabilityLevel(j, i, par0, par1));
+        }
+      }
+    }
+    return level;
+  }
 
   public Partition meet(Partition part2) {
     return meet(this.array, part2.toArray());

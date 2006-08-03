@@ -197,18 +197,32 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
 
   public static void main(String[] args) throws java.io.IOException {
-    SmallAlgebra lat2 = null;
+    SmallAlgebra alg0 = null;
+    //try {
+    //  lat2 = org.uacalc.io.AlgebraIO.readAlgebraFile(
+    //           "/home/ralph/Java/Algebra/algebras/lat2.xml");
+    //}
     try {
-      lat2 = org.uacalc.io.AlgebraIO.readAlgebraFile(
-               "/home/ralph/Java/Algebra/algebras/lat2.xml");
+      alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile(
+               "/home/ralph/Java/Algebra/algebras/3polidpent2.xml"
+               //"/home/ralph/Java/Algebra/algebras/polin.xml"
+               );
     }
     catch(Exception e) { e.printStackTrace(); }
-    SmallAlgebra alg = new PolinLikeAlgebra("pol", lat2, lat2, null, 1, 1);
-    SmallAlgebra alg2 = new PolinLikeAlgebra("pol", alg, alg, null, 1, 1);
-    org.uacalc.io.AlgebraIO.writeAlgebraFile(alg2, "/tmp/newpolin2.xml");
+    //SmallAlgebra alg = new PolinLikeAlgebra("pol", lat2, lat2, null, 1, 1);
+    SmallAlgebra alg = new PolinLikeAlgebra("pol", alg0, alg0, null, 3, 3);
+    SmallAlgebra alg2 = new PolinLikeAlgebra("pol", alg, alg, null, 7, 7);
+    //org.uacalc.io.AlgebraIO.writeAlgebraFile(alg, "/tmp/newidempolin.xml");
     System.out.println("con size = " + alg2.con().cardinality());
     //LatDrawer.drawLattice(new BasicLattice("", alg.con(), true));
-    LatDrawer.drawLattice(new BasicLattice("", alg2.con(), true));
+    //LatDrawer.drawLattice(new BasicLattice("", alg2.con(), true));
+    //Partition p = alg2.con().Cg(0,1).join(alg2.con().Cg(2,3));
+    //SmallAlgebra q = new QuotientAlgebra(alg2,p);
+    //LatDrawer.drawLattice(new BasicLattice("", alg2.con(), true));
+    List terms = Malcev.hagemannMitschkeTerms(alg);
+    for (Iterator it = terms.iterator(); it.hasNext(); ) {
+      System.out.println(it.next());
+    }
   }
 
 }

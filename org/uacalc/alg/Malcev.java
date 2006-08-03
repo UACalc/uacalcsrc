@@ -457,6 +457,53 @@ public class Malcev {
     return -1;
   }
 
+  /**
+   * Find a Day quadruple of the form a = (x0, x1), b = (x0, y1),
+   * c = y0, x1), d = (y0, y1). Since Day quadruples are invariant
+   * undere the permutation (ab)(cd), we can take x1 &lt; y1.
+   *
+   */
+  public static IntArray findDayQuadrupleInSquare(final SmallAlgebra alg) {
+    final int n = alg.cardinality();
+    final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
+    final IntArray a = new IntArray(2);
+    final IntArray b = new IntArray(2);
+    final IntArray c = new IntArray(2);
+    final IntArray d = new IntArray(2);
+    final int[] avec = a.toArray();
+    final int[] bvec = b.toArray();
+    final int[] cvec = c.toArray();
+    final int[] dvec = d.toArray();
+    final List gens = new ArrayList(4);
+    gens.add(a);
+    gens.add(b);
+    gens.add(c);
+    gens.add(d);
+    for (int x0 = 0; x0 < n; x0++) {
+      for (int x1 = 0; x1 < n; x1++) {
+        for (int y0 = 0; y0 < n; y0++) {
+          for (int y1 = x1 + 1; y1 < n; y1++) {
+            avec[0] = x0;
+            avec[1] = x1;
+            bvec[0] = x0;
+            bvec[1] = y1;
+            cvec[0] = y0;
+            cvec[1] = x1;
+            dvec[0] = y0;
+            dvec[1] = y1;
+            final SmallAlgebra sub = new SubProductAlgebra("", sq, gens);
+            if (dayQuadruple(sub.elementIndex(a), sub.elementIndex(b),
+                             sub.elementIndex(c), sub.elementIndex(d), sub)) {
+              return new IntArray(new int[] {x0, x1, y0, y1});
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+
   public static boolean dayQuadruple(int a, int b, int c, int d,
                                                      SmallAlgebra alg) {
     final Partition cgcd = alg.con().Cg(c,d);
@@ -867,9 +914,13 @@ public class Malcev {
     catch (Exception e) {}
     //int level = Malcev.jonssonLevel(alg0);
     //System.out.println("level is " + level);
-    Term t = findNUF(alg0, arity);
-    if (t == null) System.out.println("there is no NUF with arity " + arity);
-    else System.out.println("the alg has a NUF of arity " + arity + ": " + t);
+
+    //Term t = findNUF(alg0, arity);
+    //if (t == null) System.out.println("there is no NUF with arity " + arity);
+    //else System.out.println("the alg has a NUF of arity " + arity + ": " + t);
+
+    IntArray ia = findDayQuadrupleInSquare(alg0);
+    System.out.println("day quad is " + ia);
   }
 
 
