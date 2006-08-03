@@ -413,6 +413,10 @@ if ( s % 1000 == 0) {
     upperCoversMap = ucMap;
   }
 
+  public BasicPartition Cg(Object a, Object b) {
+    return Cg(algebra().elementIndex(a), algebra().elementIndex(b));
+  }
+
   public BasicPartition Cg(int a, int b) {
     if (a == b) return (BasicPartition)zero();
     if (a > b) {

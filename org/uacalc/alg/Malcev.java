@@ -512,6 +512,28 @@ public class Malcev {
     return !cgcd.join(cgab_cd.meet(cgac_bd)).isRelated(a,b);
   }
 
+  public static boolean congruenceModularVariety(SmallAlgebra alg) {
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2);
+    f2.makeOperationTables();
+    //List gens = f2.generators();
+    IntArray a = new IntArray(new int[] {0,0});
+    IntArray b = new IntArray(new int[] {0,1});
+    IntArray c = new IntArray(new int[] {1,0});
+    IntArray d = new IntArray(new int[] {1,1});
+    List gens = new ArrayList(4);
+    gens.add(a);
+    gens.add(b);
+    gens.add(c);
+    gens.add(d);
+    BigProductAlgebra f2squared = new BigProductAlgebra(f2, 2);
+    //List sub = f2squared.sgClose(gens, termMap);
+    SmallAlgebra sub = new SubProductAlgebra("", f2squared, gens);
+    sub.makeOperationTables();
+    logger.info("sub alg of f2 square size is " + sub.cardinality());
+    Partition cgcd = sub.con().Cg(c, d);
+    return cgcd.isRelated(sub.elementIndex(a), sub.elementIndex(b));
+  }
+
 
   /**
    * This returns a list of Gumm terms witnessing modularity, or null if 
