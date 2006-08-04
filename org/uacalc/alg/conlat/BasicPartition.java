@@ -395,6 +395,33 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return sb.toString();
   }
 
+  /**
+   * Get the block form of this partition as an array of arrays.
+   */
+  public int[][] getBlocks() {
+    int[] part = getArray();
+    ArrayList[] blocks = new ArrayList[part.length];
+    for(int i = 0; i < part.length; i++) {
+      int r = root(i, part);
+      if (blocks[r] == null) blocks[r] = new ArrayList();
+      blocks[r].add(new Integer(i));
+    }
+    int[][] ans = new int[numberOfBlocks()][];
+    int blockNum = 0;
+    for (int i = 0; i < blocks.length; i++) {
+      if (blocks[i] != null) {
+        ans[blockNum] = new int[blocks[i].size()];
+        int j = 0;
+        for (Iterator it = blocks[i].iterator(); it.hasNext(); j++) {
+          ans[blockNum][j] = ((Integer)it.next()).intValue();
+        }
+        blockNum++;
+      }
+    }
+    return ans;
+  }
+        
+
 
   /** EWK
    * Make String representation of the partition in block form.

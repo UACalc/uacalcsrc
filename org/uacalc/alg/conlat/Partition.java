@@ -72,5 +72,8 @@ public interface Partition {
  
   public int[] representatives();
 
+  public int[][] getBlocks();
+
+
 }
 

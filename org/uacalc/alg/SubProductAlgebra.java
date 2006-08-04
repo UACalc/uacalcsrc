@@ -201,6 +201,22 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return univ.get(index);
   }
 
+  public BasicPartition projectionKernel(final int k) {
+    final int n = cardinality();
+    BasicPartition kern = BasicPartition.zero(n);
+    for (int i = 0; i < n; i++) {
+      for (int j = i+1; j < n; j++) {
+        if (((IntArray)getElement(i)).get(k) 
+                                  == ((IntArray)getElement(j)).get(k)) {
+          final int r = kern.representative(i);
+          final int s = kern.representative(j);
+          if (r != s) kern.joinBlocks(r, s);
+        }
+      }
+    }
+    return kern;
+  }
+
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
     if (args.length == 0) return;

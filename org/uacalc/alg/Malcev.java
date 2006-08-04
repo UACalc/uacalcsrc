@@ -513,6 +513,7 @@ public class Malcev {
   }
 
   public static boolean congruenceModularVariety(SmallAlgebra alg) {
+    if (alg.isIdempotent()) return congruenceModularForIdempotent(alg);
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     f2.makeOperationTables();
     //List gens = f2.generators();
@@ -532,6 +533,61 @@ public class Malcev {
     logger.info("sub alg of f2 square size is " + sub.cardinality());
     Partition cgcd = sub.con().Cg(c, d);
     return cgcd.isRelated(sub.elementIndex(a), sub.elementIndex(b));
+  }
+
+  public static boolean congruenceModularForIdempotent(SmallAlgebra alg) {
+System.out.println("got to idempotent");
+    if (findDayQuadrupleInSquare(alg) != null) return false;
+System.out.println("got to idempotent2");
+    final int n = alg.cardinality();
+    final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
+    final IntArray zero = new IntArray(2);
+    final IntArray one = new IntArray(2);
+    final IntArray t = new IntArray(2);
+    final int[] zerovec = zero.toArray();
+    final int[] onevec = one.toArray();
+    final int[] tvec = t.toArray();
+    final List gens = new ArrayList(3);
+    gens.add(zero);
+    gens.add(one);
+    gens.add(t);
+    for (int x0 = 0; x0 < n; x0++) {
+      for (int x1 = 0; x1 < n; x1++) {
+        for (int y0 = 0; y0 < n; y0++) {
+          for (int y1 = 0; y1 < n; y1++) {
+            zerovec[0] = x0;
+            zerovec[1] = x1;
+            onevec[0] = x0;
+            onevec[1] = y1;
+            tvec[0] = y0;
+            tvec[1] = y1;
+            final SubProductAlgebra sub = new SubProductAlgebra("", sq, gens);
+            final BasicPartition beta = sub.con().Cg(zero, one);
+            final Partition alpha = (sub.con()).lowerStar(beta);
+            if (alpha == null) continue;
+            final Partition rho2 = sub.projectionKernel(1);
+            if (rho2.join(alpha).isRelated(sub.elementIndex(zero), 
+                                          sub.elementIndex(one))) {
+
+System.out.println("rho2 join alpha is " + rho2.join(alpha));              
+System.out.println("sub size is " + sub.cardinality());              
+for (int i = 0; i < sub.cardinality(); i++) {
+  System.out.println("" + i + ": " + sub.getElement(i));
+}
+
+System.out.println("zero is " + zero);              
+System.out.println("one is " + one);              
+System.out.println("t is " + t);              
+System.out.println("rho2 is " + rho2);              
+System.out.println("alpha is " + alpha);              
+System.out.println("beta is " + beta);              
+              return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
   }
 
 
@@ -941,8 +997,10 @@ public class Malcev {
     //if (t == null) System.out.println("there is no NUF with arity " + arity);
     //else System.out.println("the alg has a NUF of arity " + arity + ": " + t);
 
-    IntArray ia = findDayQuadrupleInSquare(alg0);
-    System.out.println("day quad is " + ia);
+    //IntArray ia = findDayQuadrupleInSquare(alg0);
+    //System.out.println("day quad is " + ia);
+    System.out.println("congr mod var = " + congruenceModularVariety(alg0));
+    
   }
 
 

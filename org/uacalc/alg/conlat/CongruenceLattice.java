@@ -369,8 +369,24 @@ if ( s % 1000 == 0) {
    * cover; otherwise null.
    */
   public BasicPartition lowerStar(BasicPartition beta) {
-    joinIrreducibles();
-    return (BasicPartition)lowerCoverOfJIs.get(beta);
+    //joinIrreducibles();
+    if (joinIrreducibles != null) {
+      return (BasicPartition)lowerCoverOfJIs.get(beta);
+    }
+    if (beta.equals(zero())) return null;
+    BasicPartition alpha = (BasicPartition)zero();
+    final int[][] blocks = beta.getBlocks();
+    for (int i = 0; i < blocks.length; i++) {
+      final int[] block = blocks[i];
+      for (int j = 0; j < block.length; j++) {
+        for (int k = j + 1; k < block.length; k++) {
+          BasicPartition par = algebra().con().Cg(block[j], block[k]);
+          if (!beta.equals(par)) alpha = (BasicPartition)alpha.join(par);
+          if (beta.equals(alpha)) return null;
+        }
+      }
+    }
+    return alpha;
   }
 
   public HashMap upperCoversMap() {
