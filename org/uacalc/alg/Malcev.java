@@ -491,7 +491,12 @@ public class Malcev {
             cvec[1] = x1;
             dvec[0] = y0;
             dvec[1] = y1;
+//System.out.println("x0 = " + x0 + ", x1 = " + x1 + 
+//                  ", y0 = " + y0 + ", y1 = " + y1);
             final SmallAlgebra sub = new SubProductAlgebra("", sq, gens);
+//TypeFinder tf = new TypeFinder(sub);
+//System.out.println("types = " + tf.findTypeSet());
+
             if (dayQuadruple(sub.elementIndex(a), sub.elementIndex(b),
                              sub.elementIndex(c), sub.elementIndex(d), sub)) {
               return new IntArray(new int[] {x0, x1, y0, y1});
