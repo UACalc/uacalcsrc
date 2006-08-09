@@ -152,14 +152,18 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
         final int type = argType(args, botSize);
         if (type == 0) return op0.intValueAt(args);
         int[] argsx = new int[args.length];
-
+        if (type == 1) {
+          for (int i = 0; i < args.length; i++) {
+            argsx[i] = args[i] - botSize;
+          }
+          return op1.intValueAt(argsx);
+        }
         for (int i = 0; i < args.length; i++) {
           if (args[i] < botSize) argsx[i] = args[i];
           else {
             argsx[i] = map.intValueAt(new int[] {args[i] - botSize});
           }
         }
-        if (type == 1) return botSize + op1.intValueAt(argsx);
         return op0.intValueAt(argsx);
       }
     };
