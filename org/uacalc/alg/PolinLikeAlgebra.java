@@ -156,7 +156,7 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
           for (int i = 0; i < args.length; i++) {
             argsx[i] = args[i] - botSize;
           }
-          return op1.intValueAt(argsx);
+          return botSize + op1.intValueAt(argsx);
         }
         for (int i = 0; i < args.length; i++) {
           if (args[i] < botSize) argsx[i] = args[i];
