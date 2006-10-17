@@ -57,7 +57,7 @@ public class GeneralAlgebra implements Algebra {
   }
 
   protected void setOperations(List ops) {
-    this.operations = operations;
+    this.operations = ops;
   }
 
   public Map getOperationsMap() {
