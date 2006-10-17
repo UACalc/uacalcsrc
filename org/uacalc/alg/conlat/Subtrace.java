@@ -6,7 +6,6 @@ import org.uacalc.util.IntArray;
 
 
 import java.util.*;
-import java.io.*;
 
 /**
  * A class to hold a subtrace {a, b} and its TCT type.

@@ -6,7 +6,6 @@ import org.uacalc.util.IntArray;
 
 
 import java.util.*;
-import java.io.*;
 
 /**
  * This class implement the basic operations for partition on the set

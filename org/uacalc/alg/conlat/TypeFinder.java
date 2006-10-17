@@ -9,7 +9,6 @@ import org.uacalc.alg.conlat.*;
 
 import java.util.*;
 import java.util.logging.*;
-import java.io.*;
 
 /**
  * A utility class to find a subtrace {a, b} and its TCT type of a

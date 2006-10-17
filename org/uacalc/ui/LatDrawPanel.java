@@ -3,7 +3,6 @@ package org.uacalc.ui;
 
 
 import java.util.*;
-import java.io.*;
 import java.lang.reflect.*;
 import org.uacalc.lat.BasicLattice;
 import org.latdraw.orderedset.*;
@@ -23,11 +22,8 @@ import org.latdraw.beans.*;
 
 import javax.swing.*;
 import java.awt.Color;
-import java.awt.Event;
-import java.awt.EventQueue;
 import java.awt.event.*;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;

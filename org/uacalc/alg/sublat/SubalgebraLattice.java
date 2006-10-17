@@ -6,7 +6,6 @@ import org.uacalc.util.*;
 import org.uacalc.lat.*;
 
 import java.util.*;
-import java.io.*;
 
 /**
  * A class to represent the subalgebra lattice of a basic algebra;

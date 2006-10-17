@@ -2,7 +2,6 @@
 
 package org.uacalc.alg;
 
-import java.util.*;
 import org.uacalc.util.*;
 
 import org.uacalc.alg.conlat.*;

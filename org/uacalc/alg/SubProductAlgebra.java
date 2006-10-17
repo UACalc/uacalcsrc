@@ -3,7 +3,6 @@
 package org.uacalc.alg;
 
 import java.util.*;
-import java.math.BigInteger;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
 

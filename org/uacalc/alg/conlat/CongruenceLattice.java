@@ -6,7 +6,6 @@ import org.uacalc.lat.*;
 
 import java.util.*;
 import java.util.logging.*;
-import java.io.*;
 
 /* CongruenceLattice.java 2001/06/04 Ralph Freese */
 /* 

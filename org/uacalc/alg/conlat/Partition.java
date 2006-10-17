@@ -4,7 +4,6 @@ package org.uacalc.alg.conlat;
 /* Partition.java 2001/06/04 Ralph Freese */
 
 import java.util.*;
-import java.io.*;
 
 /**
  * This interface specifies the basic operations for partitions on the set

@@ -8,7 +8,6 @@ import org.uacalc.alg.SmallAlgebra;
 
 
 import java.util.*;
-import java.io.*;
 
 /**
  * This class implement the basic set operations on the set

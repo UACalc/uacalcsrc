@@ -3,7 +3,6 @@
 package org.uacalc.alg;
 
 import java.util.*;
-import java.math.BigInteger;
 
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.sublat.*;
