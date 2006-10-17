@@ -14,13 +14,9 @@ import org.uacalc.alg.sublat.*;
 import org.latdraw.orderedset.POElem;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Event;
 import java.awt.EventQueue;
-import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.BorderLayout;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
