@@ -7,7 +7,7 @@
   <property name="work.dir" value="../local"/>
   <property name="image.dir" value="${src.dir}/org/uacalc/ui/images"/>
   <property name="class.dir" value="../classes"/>
-  <property name="jar.dir" value="../jars"/>
+  <property name="jar.dir" value="jars"/>
   <property name="manifest.file" value="manifest"/>
   <!-- <property name="javadoc.dir" value="/www/ralph/UACalc/doc"/> -->
   <property name="javadoc.dir" value="/var/www/vhosts/uacalc/doc"/>
@@ -68,11 +68,9 @@
     <copy todir="${dist.dir}/lib" overwrite="yes">
        <fileset dir="${jar.dir}"/>
     </copy>
-<!--
     <copy file="${jar.dir}/LatDraw.jar"
           tofile="${dist.dir}/lib/LatDraw.jar"
           overwrite="yes"/>
--->
 
     <copy todir="${class.dir}/org/uacalc/ui/images" overwrite="yes">
        <fileset dir="${image.dir}"/>
