@@ -52,16 +52,16 @@ public final class AlgebraIO {
     String line = in.readLine();
     if (line == null) throw new BadAlgebraFileException("Nothing in the file");
     List ops = new ArrayList();
-    HashMap map = new HashMap();
+    //HashMap map = new HashMap();
     int size = Integer.parseInt(line);
     for (line = in.readLine(); line != null; line = in.readLine()) {
-      ops.add(readOp(Integer.parseInt(line), size, in, map));
+      ops.add(readOp(Integer.parseInt(line), size, in));
     }
     return new BasicAlgebra(f.getName(), size, ops);
   }
 
-  public static Operation readOp(int arity, int size, BufferedReader in,
-                    HashMap map) throws IOException, BadAlgebraFileException {
+  public static Operation readOp(int arity, int size, BufferedReader in)
+                     throws IOException, BadAlgebraFileException {
     int h = 1;
     for (int i = 0; i < arity; i++) {
       h = h * size;
@@ -75,7 +75,7 @@ public final class AlgebraIO {
       values[i] = Integer.parseInt(line);
     }
     return Operations.makeIntOperation(
-                OperationSymbol.getOperationSymbol(arity, map), size, values);
+                OperationSymbol.getOperationSymbol(arity), size, values);
   }
 
   /**
