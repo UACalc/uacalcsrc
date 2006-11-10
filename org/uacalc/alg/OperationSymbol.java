@@ -4,6 +4,9 @@ package org.uacalc.alg;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -17,6 +20,9 @@ public class OperationSymbol {
   public static final OperationSymbol PRODUCT = new OperationSymbol("prod", 2);
   public static final OperationSymbol INVERSE = new OperationSymbol("inv", 1);
   public static final OperationSymbol IDENTITY = new OperationSymbol("id", 0);
+  
+  static final Map<Integer, Integer> currentSymIndexMap = new HashMap<Integer, Integer>();
+  //static final Set<OperationSymbol> currentSymbols = new HashSet<OperationSymbol>();
 
   String name;
   int arity;
@@ -42,25 +48,22 @@ public class OperationSymbol {
    * @param HashMap map a map from Integer's to int[1]'s, the value will
    *                   be modified.
    */
-  public static OperationSymbol getOperationSymbol(int arity, HashMap map) {
-    Integer ar = new Integer(arity);
-    int[] value = (int[])map.get(ar);
-    if (value == null) {
-      value = new int[] {-1};
-      map.put(ar, value);
-    }
-    value[0] = value[0] + 1;
+  public static OperationSymbol getOperationSymbol(int arity) {
+    Integer index = currentSymIndexMap.get(arity);
+    if (index == null) currentSymIndexMap.put(arity, 0);
+    else currentSymIndexMap.put(arity, index + 1);
+    int ind = currentSymIndexMap.get(arity);
     switch (arity) {
       case 0:
-        return new OperationSymbol("c_" + value[0], arity);
+        return new OperationSymbol("c_" + ind, arity);
       case 1:
-        return new OperationSymbol("u_" + value[0], arity);
+        return new OperationSymbol("u_" + ind, arity);
       case 2:
-        return new OperationSymbol("b_" + value[0], arity);
+        return new OperationSymbol("b_" + ind, arity);
       case 3:
-        return new OperationSymbol("t_" + value[0], arity);
+        return new OperationSymbol("t_" + ind, arity);
       default:
-        return new OperationSymbol("op" + arity + "_" + value[0], arity);
+        return new OperationSymbol("op" + arity + "_" + ind, arity);
     }
   }
 
