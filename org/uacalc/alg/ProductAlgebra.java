@@ -123,15 +123,12 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
           public int intValueAt(int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);
             int ans = 0;
-            //final int[][] argsExpanded = new int[args.length][];
             for (int i = 0; i < args.length; i++) {
-              //argsExpanded[i] = Horner.hornerInv(args[i], sizes);
               Horner.hornerInv(args[i], sizes, argsExpanded[i]);
             }
             int s = 0;
             for (int i = numberOfProducts - 1; i >= 0; i--) {
               final Operation opx = (Operation)opList.get(i);
-              //final int[] arg = new int[opx.arity()];
               for (int j = 0; j < arg.length; j++) {
                 arg[j] = argsExpanded[j][i];
               }

@@ -23,7 +23,7 @@ public final class Horner {
     int k = args.length;
     int ans = args[k - 1];
     for (int i = k - 2; i >= 0; i--) {
-      ans = sizes[i + 1] * ans + args[i];
+      ans = sizes[i] * ans + args[i];  // had sizes[i+1] stu
     }
     return ans;
   }
@@ -155,15 +155,17 @@ public final class Horner {
   
   public static void main(String[] args) {
     //int[] a = new int[] {1, 2, 3};
-    int[] a = new int[] {0, 0, 3};
-    int[] s = new int[] {4, 5, 6};
+    //int[] a = new int[] {0, 0, 3};
+    //int[] s = new int[] {4, 5, 6};
+    int[] a = new int[] {0, 1};
+    int[] s = new int[] {1, 2};
     System.out.println(ArrayString.toString(a));
     System.out.println(ArrayString.toString(s));
-    //int k = horner(a, s);
-    int k = horner(a, 10);
-    System.out.println(k);
-    //System.out.println(ArrayString.toString(hornerInv(k, s)));
-    System.out.println(ArrayString.toString(hornerInv(k, 10, 3)));
+    int k = horner(a, s);
+    //int k = horner(a, 10);
+    System.out.println("k = " + k);
+    System.out.println(ArrayString.toString(hornerInv(k, s)));
+    //System.out.println(ArrayString.toString(hornerInv(k, 10, 3)));
   }
 
 }

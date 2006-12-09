@@ -468,8 +468,8 @@ if ( s % 1000 == 0) {
       for (Iterator it = alg.operations().iterator(); it.hasNext(); ) {
         Operation f = (Operation)it.next();
         int arity = f.arity();
-	int[] arg = new int[arity];
-	int[] arg2 = arg;
+      	int[] arg = new int[arity];
+	      int[] arg2 = arg;
         for (int index = 0; index < arity; index++) {
           arg = arg2;
           for (int k = 0; k < arity; k++ ) {
