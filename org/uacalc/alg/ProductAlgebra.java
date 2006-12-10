@@ -123,17 +123,32 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
           public int intValueAt(int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);
             int ans = 0;
+            int [] unargs = new int[args.length];
             for (int i = 0; i < args.length; i++) {
               Horner.hornerInv(args[i], sizes, argsExpanded[i]);
+              unargs[i] = Horner.horner(argsExpanded[i], sizes);
             }
-            int s = 0;
+            
+            //System.out.println("\nargs: " + ArrayString.toString(args));
+            //System.out.println("sizes: " + ArrayString.toString(sizes));
+            //System.out.println("argsExpanded: " + ArrayString.toString(argsExpanded));
+            //System.out.println("unargs: " + ArrayString.toString(unargs));
+            //for (int i = 0; i < argsExpanded.length; i++) {
+            //  argsExpanded[i] = Horner.reverseArray(argsExpanded[i]);
+            //}
+            
+            
             for (int i = numberOfProducts - 1; i >= 0; i--) {
               final Operation opx = (Operation)opList.get(i);
               for (int j = 0; j < arg.length; j++) {
                 arg[j] = argsExpanded[j][i];
               }
+              final int s = sizes[i];
+              //System.out.println("\narg: " + ArrayString.toString(arg));
+              //System.out.println("ans = " + ans + ", s = " + s);
+              
               ans = s * ans + opx.intValueAt(arg);
-              s = sizes[i];
+              //System.out.println("Now ans = " + ans);
             }
             return ans;
           }

@@ -51,8 +51,8 @@ public final class Horner {
     final int n = sizes.length;
     final int[] ans = dest == null ? new int[n] : dest;
     for (int i = 0; i < n - 1; i++) {
-      ans[i] = k % sizes[i+1];
-      k = (k - ans[i]) / sizes[i+1];
+      ans[i] = k % sizes[i];
+      k = (k - ans[i]) / sizes[i];
     }
     ans[n-1] = k;
     return ans;
@@ -157,14 +157,23 @@ public final class Horner {
     //int[] a = new int[] {1, 2, 3};
     //int[] a = new int[] {0, 0, 3};
     //int[] s = new int[] {4, 5, 6};
-    int[] a = new int[] {0, 1};
-    int[] s = new int[] {1, 2};
-    System.out.println(ArrayString.toString(a));
+    //int[] a = new int[] {0, 1};
+    int s0 = 3;
+    int s1 = 5;
+    int[] s = new int[] {s0, s1};
+    int[][] foo = new int[s0 * s1][2];
+    for (int i = 0; i < s0 * s1; i++) {
+      foo[i] = hornerInv(i, s);
+    }
     System.out.println(ArrayString.toString(s));
-    int k = horner(a, s);
+    System.out.println(ArrayString.toString(foo));
+    for (int i = 0; i < s0 * s1; i++) {
+      System.out.println(horner(foo[i], s));
+    }
+    //int k = horner(a, s);
     //int k = horner(a, 10);
-    System.out.println("k = " + k);
-    System.out.println(ArrayString.toString(hornerInv(k, s)));
+    //System.out.println("k = " + k);
+    //System.out.println(ArrayString.toString(hornerInv(k, s)));
     //System.out.println(ArrayString.toString(hornerInv(k, 10, 3)));
   }
 
