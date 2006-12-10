@@ -499,6 +499,7 @@ public final class TypeFinder {
                     return 3;
                   }
                   if (join) {
+                    logger.info("found 4");
                     subtrace.setType(4);
                     return 4;
                   }
@@ -545,15 +546,19 @@ public final class TypeFinder {
           logger.info("orig pair c = " + c + ", d = " + d);
         }
         if (join || meet) {
+          logger.info("found 5");
           subtrace.setType(5);
+          logger.info("subtrace is " + subtrace);
           return 5;
         }
         else {
           if (oneSnag) {
+            logger.info("found 2");
             subtrace.setType(2);
             return 2;
           }
           else {
+            logger.info("found 1");
             subtrace.setType(1);
             return 1;
           }
