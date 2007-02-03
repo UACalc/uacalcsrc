@@ -182,8 +182,20 @@ public class Malcev {
    * null if the algebra does generate a congruence distributive variety.
    * It is guarenteed to be the least number of terms possible.
    */
-  public static List jonssonTerms(SmallAlgebra alg) {
-    List ans = new ArrayList();
+  public static List<Term> jonssonTerms(SmallAlgebra alg) {
+    return jonssonTerms(alg, false);
+  }
+
+  /**
+   * This returns a list of Jonsson terms * witnessing distributivity, or 
+   * null if the algebra does generate a congruence distributive variety.
+   * It is guarenteed to be the least number of terms possible.
+   *
+   * @param alvinVariant interchange even and odd in Jonsson's equations
+   */
+  public static List<Term> jonssonTerms(SmallAlgebra alg, 
+                                        boolean alvinVariant) {
+    List<Term> ans = new ArrayList<Term>();
     if (alg.cardinality() == 1) {
       ans.add(Variable.x);
       ans.add(Variable.z);
@@ -199,7 +211,7 @@ public class Malcev {
     gens.add(g0);
     gens.add(g1);
     gens.add(g2);
-    final HashMap termMap = new HashMap(3);
+    final HashMap<IntArray, Term> termMap = new HashMap<IntArray, Term>(3);
     termMap.put(g0, Variable.x);
     termMap.put(g1, Variable.y);
     termMap.put(g2, Variable.z);
@@ -235,7 +247,7 @@ public class Malcev {
     for (Iterator it = middleZero.iterator(); it.hasNext(); ) {
       logger.finer("" + it.next());
     }
-    final List path = jonssonLevelPath(middleZero, g0, g2);
+    final List path = jonssonLevelPath(middleZero, g0, g2, alvinVariant);
     if (path == null) return null;
     for (Iterator it = path.iterator(); it.hasNext(); ) {
       IntArray ia = (IntArray)it.next();
@@ -247,10 +259,13 @@ public class Malcev {
   /**
    * This finds a path from g0 to g2 in <tt>middleZero</tt>, a list
    * of triples, where two triples are connected by an edge if either
-   * their first or third coordinates agree.
+   * their first or third coordinates agree. When alvinVariant is 
+   * true, it starts with changing the third coordinate; otherwise
+   * with the first.
    */
-  public static List jonssonLevelPath(List middleZero, IntArray g0, 
-                                                       IntArray g2) {
+  public static List jonssonLevelPath(List middleZero, 
+                                      IntArray g0, IntArray g2,
+                                      boolean alvinVariant) {
     // a list of lists of IntArray's
     final List levels = new ArrayList();
     final Map parentMap = new HashMap();
@@ -288,7 +303,7 @@ public class Malcev {
       }
       eqclass.add(ia);
     } 
-    boolean even = false;
+    boolean even = alvinVariant;
     while (true) {
       even = !even;
       final List nextLevel = new ArrayList();
