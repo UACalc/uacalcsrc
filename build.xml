@@ -10,7 +10,8 @@
   <property name="jar.dir" value="jars"/>
   <property name="manifest.file" value="manifest"/>
   <!-- <property name="javadoc.dir" value="/www/ralph/UACalc/doc"/> -->
-  <property name="javadoc.dir" value="/var/www/vhosts/uacalc/doc"/>
+  <!-- <property name="javadoc.dir" value="/var/www/vhosts/uacalc/doc"/> -->
+  <property name="javadoc.dir" value="/tmp/doc"/>
   <property name="debug" value="on"/>
   <property name="dist-debug" value="on"/>
   <property name="verbose" value="yes"/>
@@ -88,6 +89,7 @@
   </target>
 
   <target name="javadoc" depends="compile-dist">
+    <mkdir dir="${javadoc.dir}"/>
     <javadoc packagenames="org.uacalc.alg,org.uacalc.alg.conlat,org.uacalc.alg.sublat,org.uacalc.alg.examples,org.uacalc.io,org.uacalc.util,org.uacalc.ui,org.uacalc.lat,org.uacalc.terms"
              sourcepath="${src.dir}"
              destdir="${javadoc.dir}"
