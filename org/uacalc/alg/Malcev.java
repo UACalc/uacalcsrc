@@ -276,11 +276,18 @@ public class Malcev {
       }
       return ans;
     }
-    if (alvinVariant) {
-      if (path2 != null) return path2TermList(path2, termMap);
+    if (path2 == null || path.size() < path2.size()) {
       ans = path2TermList(path, termMap);
+      if (alvinVariant) {
+        ans.add(0, ans.get(0));
+        // add to info that the Jon is shorter than alv variant 
+      }
+      return ans;
+    }
+    if (alvinVariant) return path2TermList(path2, termMap);
+    if (path2.size() < path.size()) {
+      ans = path2TermList(path2, termMap);
       ans.add(0, ans.get(0));
-      // info that reg Jon are shorter.
       return ans;
     }
     return path2TermList(path, termMap);
