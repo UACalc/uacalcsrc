@@ -71,8 +71,8 @@ public class NonVariableTerm implements Term {
   }
 
   // should be TermOperation but having trouble with casting
-  public Operation interpretation(final Algebra alg, 
-                                      final List varlist, 
+  public Operation interpretation(final SmallAlgebra alg, 
+                                      final List<Variable> varlist, 
                                       final boolean all) {
     final int arity = varlist.size(); // if no varlist ??
     final int size = alg.cardinality();
@@ -110,11 +110,11 @@ public class NonVariableTerm implements Term {
     return op;
   }
 
-  public TermOperation interpretation(Algebra alg) {
-    return null;
+  public TermOperation interpretation(final SmallAlgebra alg) {
+    return new TermOperationImp(this, getVariableList(), alg);
   }
 
-  public List getVariableList() {
+  public List<Variable> getVariableList() {
     List lst = new ArrayList();
     addVariables(this, lst);
     return lst;

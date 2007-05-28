@@ -217,15 +217,32 @@ public class Malcev {
     termMap.put(g2, Variable.z);
     BigProductAlgebra f2cubed = new BigProductAlgebra(f2, 3);
     final IntArray zero = new IntArray(new int[] {0,0,0});
-    List sub = f2cubed.sgClose(gens, termMap, zero);
+    final IntArray pixley = new IntArray(new int[] {1,0,1});
+    List sub;
+// for testing
+    sub = f2cubed.sgClose(gens, termMap);
+    //if (alvinVariant) sub = f2cubed.sgClose(gens, termMap, pixley);
+    //else sub = f2cubed.sgClose(gens, termMap, zero);
     logger.info("sub alg of f2 cubed size is " + sub.size());
-    if (sub.contains(zero)) {
-      logger.info("this variety has a ternary majority function");
-      ans.add(Variable.x);
-      ans.add(termMap.get(zero));
-      ans.add(Variable.z);
-      return ans;
+    if (alvinVariant) {
+      if (sub.contains(pixley)) {
+        logger.info("this variety has a pixley term");
+        ans.add(Variable.x);
+        ans.add(termMap.get(pixley));
+        ans.add(Variable.z);
+        return ans;
+      }
     }
+    else {
+      if (sub.contains(zero)) {
+        logger.info("this variety has a ternary majority term");
+        ans.add(Variable.x);
+        ans.add(termMap.get(zero));
+        ans.add(Variable.z);
+        return ans;
+      }
+    }
+
     List middleZero = new ArrayList();
     for (Iterator it = sub.iterator(); it.hasNext(); ) {
       IntArray ia = (IntArray)it.next();
@@ -247,8 +264,31 @@ public class Malcev {
     for (Iterator it = middleZero.iterator(); it.hasNext(); ) {
       logger.finer("" + it.next());
     }
-    final List path = jonssonLevelPath(middleZero, g0, g2, alvinVariant);
-    if (path == null) return null;
+    //final List path = jonssonLevelPath(middleZero, g0, g2, alvinVariant);
+    final List path = jonssonLevelPath(middleZero, g0, g2, false);
+    final List path2 = jonssonLevelPath(middleZero, g0, g2, true);
+    if (path == null) {
+      if (path2 == null) return null;
+      ans = path2TermList(path2, termMap);
+      if (!alvinVariant) {
+        ans.add(0, ans.get(0));
+        // add to info that the alv variant Jon terms are shorter
+      }
+      return ans;
+    }
+    if (alvinVariant) {
+      if (path2 != null) return path2TermList(path2, termMap);
+      ans = path2TermList(path, termMap);
+      ans.add(0, ans.get(0));
+      // info that reg Jon are shorter.
+      return ans;
+    }
+    return path2TermList(path, termMap);
+  }
+
+  private static List<Term> path2TermList(List path, 
+                                          HashMap<IntArray, Term> termMap) {
+    List<Term> ans = new ArrayList<Term>();
     for (Iterator it = path.iterator(); it.hasNext(); ) {
       IntArray ia = (IntArray)it.next();
       ans.add(termMap.get(ia));
@@ -266,6 +306,15 @@ public class Malcev {
   public static List jonssonLevelPath(List middleZero, 
                                       IntArray g0, IntArray g2,
                                       boolean alvinVariant) {
+    // We need to allow for the possibility that we can't
+    // get started, especially for the alvinVariant.
+    // I suspect, but haven't been able prove, that if 
+    // terms exist in the alvinVariant, they exist (and
+    // with the same number) in the original Jonsson condition.
+    // It is easy when the "level" odd (each implies the other)
+    // and it is also true when the level is 2 (a pixley term
+    // implies a majority term).
+
     // a list of lists of IntArray's
     final List levels = new ArrayList();
     final Map parentMap = new HashMap();

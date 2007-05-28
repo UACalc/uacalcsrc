@@ -52,8 +52,9 @@ public class VariableImp implements Variable {
     return ((Integer)map.get(this)).intValue();
   }
 
-  public TermOperation interpretation(final Algebra alg, 
-                                      final List varlist, final boolean all) {
+  public TermOperation interpretation(final SmallAlgebra alg, 
+                                      final List<Variable> varlist, 
+                                      final boolean all) {
     final int index = varlist == null ? 0 : varlist.indexOf(this);
     final int arity = varlist == null ? 1 : varlist.size();
     Operation op = new AbstractOperation("Op_" + this, 
@@ -72,7 +73,7 @@ public class VariableImp implements Variable {
     return (TermOperation)op;
   }
 
-  public TermOperation interpretation(Algebra alg) {
+  public TermOperation interpretation(SmallAlgebra alg) {
     return interpretation(alg, null, false);
   }
 

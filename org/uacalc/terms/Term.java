@@ -64,7 +64,8 @@ public interface Term {
    * @return           the term operation
    */
 // should return TermOperation but having some trouble with casting
-  public Operation interpretation(Algebra alg, List varlist, boolean useAll);
+  public Operation interpretation(SmallAlgebra alg, 
+                                  List<Variable> varlist, boolean useAll);
 
   /**
    * The operation obtained from this term using the variables in the
@@ -78,7 +79,7 @@ public interface Term {
    * @return           the term operation
    * @see #interpretation(Algebra,List,boolean)
    */
-  public TermOperation interpretation(Algebra alg);
+  public TermOperation interpretation(SmallAlgebra alg);
 
   /**
    * The depth of the term tree. A variable has depth 0.
