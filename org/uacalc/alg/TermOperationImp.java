@@ -19,7 +19,7 @@ public class TermOperationImp
 
   public TermOperationImp (Term term, List<Variable> variables, 
                                                   SmallAlgebra alg) {
-    this(term.toString(), term, variables, alg);
+    this("\"" + term.toString() + "\"", term, variables, alg);
   } 
 
   public TermOperationImp (String name, Term term, 
