@@ -73,7 +73,7 @@ public interface Algebra {
    */
   public Iterator iterator();
 
-  public List operations();
+  public List<Operation> operations();
 
   /**
    * Get the operation correspond to a symbol or null if 

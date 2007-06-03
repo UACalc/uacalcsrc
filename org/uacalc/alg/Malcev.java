@@ -364,6 +364,8 @@ public class Malcev {
       even = !even;
       final List nextLevel = new ArrayList();
 //System.out.println("current level size = " + currentLevel.size());
+      //System.out.println("even = " + even);
+      //System.out.println("current level size = " + currentLevel.size());
       for (Iterator it = currentLevel.iterator(); it.hasNext(); ) {
         IntArray ia = (IntArray)it.next();
         List eqclass;
