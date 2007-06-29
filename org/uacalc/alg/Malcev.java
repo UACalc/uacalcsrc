@@ -77,10 +77,11 @@ public class Malcev {
   public static int localDistributivityLevel(SmallAlgebra alg) {
     final int size = alg.cardinality();
     int maxLevel = -1;
+    SmallAlgebra maxLevelAlg = null;
     for (int a = 0; a < size; a++) {
       for (int b = 0; b < size; b++) {
         for (int c = a + 1; c < size; c++) {  // a,c symmetry
-          if (a == b || a == c || b == c) continue;
+          if (a == b || b == c) continue; // a == c is impossible
           BasicSet bs = alg.sub().sg(new int [] {a, b, c});
           Subalgebra sub = new Subalgebra(alg, bs);
           int level = localDistributivityLevel(sub.index(a), 
@@ -88,11 +89,21 @@ public class Malcev {
           if (level == -1) return -1; // not distributive
           if (level > maxLevel) {
             maxLevel = level;
+            maxLevelAlg = sub;
             logger.info("max level now is " + maxLevel);
           }
         }
       }
     }
+/*
+System.out.println("the card of maxLevelAlg is " + maxLevelAlg.cardinality() +
+                   ", its con size is " + maxLevelAlg.con().cardinality());
+try {
+org.uacalc.io.AlgebraIO.writeAlgebraFile(maxLevelAlg, "/tmp/baker4.xml");
+}
+catch (java.io.IOException e) {}
+org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevelAlg.con(), true));
+*/
     return maxLevel;
   }
 
@@ -616,7 +627,8 @@ public class Malcev {
   public static boolean congruenceModularForIdempotent(SmallAlgebra alg) {
 System.out.println("got to idempotent");
     if (findDayQuadrupleInSquare(alg) != null) return false;
-System.out.println("got to idempotent2");
+    return true;
+/* old code for directly finding the pentagon that is in Freese-Valeriote
     final int n = alg.cardinality();
     final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
     final IntArray zero = new IntArray(2);
@@ -646,19 +658,6 @@ System.out.println("got to idempotent2");
             final Partition rho2 = sub.projectionKernel(1);
             if (rho2.join(alpha).isRelated(sub.elementIndex(zero), 
                                           sub.elementIndex(one))) {
-
-System.out.println("rho2 join alpha is " + rho2.join(alpha));              
-System.out.println("sub size is " + sub.cardinality());              
-for (int i = 0; i < sub.cardinality(); i++) {
-  System.out.println("" + i + ": " + sub.getElement(i));
-}
-
-System.out.println("zero is " + zero);              
-System.out.println("one is " + one);              
-System.out.println("t is " + t);              
-System.out.println("rho2 is " + rho2);              
-System.out.println("alpha is " + alpha);              
-System.out.println("beta is " + beta);              
               return false;
             }
           }
@@ -666,6 +665,7 @@ System.out.println("beta is " + beta);
       }
     }
     return true;
+*/
   }
 
 
