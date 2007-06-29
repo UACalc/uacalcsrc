@@ -67,6 +67,40 @@ public class Algebras {
     return true;
   }
 
+  public static SmallAlgebra makeRandomAlgebra(int n, int[] simType) {
+    List ops = makeRandomOps(n, simType);
+    // the second argument is the size of the algebra.
+    return new BasicAlgebra(
+                   "RAlg" + n + ArrayString.toString(simType), n, ops);
+  }
+
+  /**
+   */
+  public static List<Operation> makeRandomOps(final int n, 
+                                              final int[] simType) {
+    //Random random = new Random(1);
+    Random random = new Random();
+    final int len = simType.length;
+    List<Operation> ops = new ArrayList<Operation>(len);
+    for (int i = 0; i < len; i++) {
+      ops.add(makeRandomOp(n, simType[i], random, i));
+    }
+    return ops;
+  }
+    
+  public static Operation makeRandomOp(final int n, final int arity, 
+                                                    Random random, int num) {
+    int h = 1;
+    for (int i = 0; i < arity; i++) {
+      h = h * n;
+    }
+    final int[] values = new int[h];
+    for (int i = 0; i < h; i++) {
+      values[i] = random.nextInt(n);
+    }
+    return Operations.makeIntOperation("r" + num, arity, n, values);
+  }
+
   public static void main(String[] args) {
     if (args.length == 0) return;
     SmallAlgebra alg0 = null;
