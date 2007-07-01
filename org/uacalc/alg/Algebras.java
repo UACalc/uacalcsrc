@@ -67,29 +67,66 @@ public class Algebras {
     return true;
   }
 
-  public static SmallAlgebra makeRandomAlgebra(int n, int[] simType) {
-    List ops = makeRandomOps(n, simType);
+  /**
+   * Make a random algebra of a given similarity type.
+   */
+  public static SmallAlgebra makeRandomAlgebra(int n, SimilarityType simType) {
+    return makeRandomAlgebra(n, simType, -1);
+  }
+
+  /**
+   * Make a random algebra of a given similarity type, optionally 
+   * supplying a seed to the random number generator (in case
+   * regenerating the same algebra is important.
+   */
+  public static SmallAlgebra makeRandomAlgebra(int n, 
+                                      SimilarityType simType, long seed) {
+    List ops = makeRandomOps(n, simType, seed);
     // the second argument is the size of the algebra.
-    return new BasicAlgebra(
-                   "RAlg" + n + ArrayString.toString(simType), n, ops);
+    return new BasicAlgebra("RAlg" + n, n, ops);
+  }
+
+  /**
+   * Make a random algebra of a given the arities of the operations.
+   */
+  public static SmallAlgebra makeRandomAlgebra(int n, int[] arities) {
+    return makeRandomAlgebra(n, arities, -1);
+  }
+
+  /**
+   * Make a random algebra of a given the arities of the operations, 
+   * optionally supplying a seed to the random number generator (in case
+   * regenerating the same algebra is important.
+   */
+  public static SmallAlgebra makeRandomAlgebra(int n, 
+                                               int[] arities, long seed) {
+    final int len = arities.length;
+    List<OperationSymbol> syms = new ArrayList<OperationSymbol>(len);
+    for (int i = 0; i < len; i++) {
+      syms.add(new OperationSymbol("r" + i, arities[i]));
+    }
+    return makeRandomAlgebra(n, new SimilarityType(syms), seed);
   }
 
   /**
    */
-  public static List<Operation> makeRandomOps(final int n, 
-                                              final int[] simType) {
-    //Random random = new Random(1);
-    Random random = new Random();
-    final int len = simType.length;
+  private static List<Operation> makeRandomOps(final int n, 
+                                  final SimilarityType simType, long seed) {
+    Random random;
+    if (seed != -1) random = new Random(seed);
+    else random = new Random();
+    List<OperationSymbol> opSyms = simType.getOperationSymbols();
+    final int len = opSyms.size();
     List<Operation> ops = new ArrayList<Operation>(len);
     for (int i = 0; i < len; i++) {
-      ops.add(makeRandomOp(n, simType[i], random, i));
+      ops.add(makeRandomOp(n, opSyms.get(i), random));
     }
     return ops;
   }
     
-  public static Operation makeRandomOp(final int n, final int arity, 
-                                                    Random random, int num) {
+  private static Operation makeRandomOp(final int n, 
+                             final OperationSymbol opSym, Random random) {
+    final int arity = opSym.arity();
     int h = 1;
     for (int i = 0; i < arity; i++) {
       h = h * n;
@@ -98,7 +135,7 @@ public class Algebras {
     for (int i = 0; i < h; i++) {
       values[i] = random.nextInt(n);
     }
-    return Operations.makeIntOperation("r" + num, arity, n, values);
+    return Operations.makeIntOperation(opSym, n, values);
   }
 
   public static void main(String[] args) {

@@ -50,14 +50,14 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * gens is a list of IntArray's.
    */
   public SubProductAlgebra(String name, BigProductAlgebra prod, 
-                                        List gens, boolean findTerms) {
+                           List<IntArray> gens, boolean findTerms) {
     super(name);
     productAlgebra = prod;
     // some gyrations to eliminate duplicates but keep the order the same.
-    HashSet hs = new HashSet(gens.size());
-    List gens2 = new ArrayList(gens.size());
-    for (Iterator it = gens.iterator(); it.hasNext(); ) {
-      Object elem = it.next();
+    HashSet<IntArray> hs = new HashSet<IntArray>(gens.size());
+    List<IntArray> gens2 = new ArrayList<IntArray>(gens.size());
+    for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); ) {
+      IntArray elem = it.next();
       if (!hs.contains(elem)) {
         hs.add(elem);
         gens2.add(elem);
@@ -66,7 +66,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     gens = gens2;
     this.gens = gens2;
     if (findTerms) {
-      HashMap termMap = new HashMap();
+      HashMap<Integer,Term> termMap = new HashMap<Integer,Term>();
       int k = 0;
       for (Iterator it = gens.iterator(); it.hasNext(); k++) {
         Variable var = new VariableImp("x_" + k);
@@ -75,7 +75,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
       univ = productAlgebra.sgClose(gens, termMap);
       terms = new Term[univ.size()];
       for (int i = 0; i < univ.size(); i++) {
-        terms[i] = (Term)termMap.get(i);
+        terms[i] = termMap.get(i);
       }
     }
     else univ = productAlgebra.sgClose(gens);

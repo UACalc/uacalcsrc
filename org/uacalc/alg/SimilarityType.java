@@ -11,7 +11,7 @@ public class SimilarityType {
 
   public static final SimilarityType LATTICE_SIMILARITY_TYPE;
   static {
-    List opsyms = new ArrayList(2);
+    List<OperationSymbol> opsyms = new ArrayList<OperationSymbol>(2);
     opsyms.add(OperationSymbol.JOIN);
     opsyms.add(OperationSymbol.MEET);
     LATTICE_SIMILARITY_TYPE = new SimilarityType(opsyms);
@@ -19,30 +19,33 @@ public class SimilarityType {
 
   public static final SimilarityType GROUP_SIMILARITY_TYPE;
   static {
-    List opsyms = new ArrayList(3);
+    List<OperationSymbol> opsyms = new ArrayList<OperationSymbol>(3);
     opsyms.add(OperationSymbol.PRODUCT);
     opsyms.add(OperationSymbol.INVERSE);
     opsyms.add(OperationSymbol.IDENTITY);
     GROUP_SIMILARITY_TYPE = new SimilarityType(opsyms);
   }
 
-  List operationSymbols;
+  List<OperationSymbol> operationSymbols;
+
+  public SimilarityType(List<OperationSymbol> opSyms) {
+    this.operationSymbols = opSyms;
+  }
 
 /*
-  public SimilarityType(List<OperationSymbol> opSyms) {
+  public SimilarityType(List opSyms) {
     this.operationSymbols = opSyms;
   }
 */
 
-  public SimilarityType(List opSyms) {
-    this.operationSymbols = opSyms;
+  public List<OperationSymbol> getOperationSymbols() { 
+    return operationSymbols; 
   }
-
-  public List getOperationSymbols() { return operationSymbols; }
 
   public String toString() {
     StringBuffer sb = new StringBuffer("(");
-    for (Iterator it = operationSymbols.iterator(); it.hasNext(); ) {
+    for (Iterator<OperationSymbol> it = operationSymbols.iterator(); 
+                                                         it.hasNext(); ) {
       sb.append(it.next().toString());
       if (it.hasNext()) sb.append(", ");
     }
@@ -54,9 +57,10 @@ public class SimilarityType {
     if (!(obj instanceof SimilarityType)) return false;
     if (this == obj) return true;
     //SimilarityType st = (SimilarityType)obj;
-    List ops = ((SimilarityType)obj).getOperationSymbols();
+    List<OperationSymbol> ops = ((SimilarityType)obj).getOperationSymbols();
     if (ops.size() != operationSymbols.size()) return false;
-    for (Iterator it = operationSymbols.iterator(); it.hasNext(); ) {
+    for (Iterator<OperationSymbol> it = operationSymbols.iterator(); 
+                                                            it.hasNext(); ) {
       if (!ops.contains(it.next())) return false;
     }
     return true;

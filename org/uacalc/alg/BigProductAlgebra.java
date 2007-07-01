@@ -298,7 +298,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems, int closedMark, final Map termMap, 
+  public List sgClose_old(List elems, int closedMark, final Map termMap, 
                                                   final  Object elt) {
     final List lst = new ArrayList(elems);
     final HashSet su = new HashSet(lst);
@@ -344,6 +344,89 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
               if (v.equals(elt)) return lst;
             }
             if (!permInc.increment()) break;
+          }
+          if (!inc.increment()) break;
+        }
+if (false) {
+/*
+  List middleZero = new ArrayList();
+    for (Iterator it2 = lst.iterator(); it2.hasNext(); ) {
+      IntArray ia = (IntArray)it2.next();
+      if (ia.get(1) == 0) middleZero.add(ia);
+    }
+  System.out.println("jonsson level so far: "
+     + Algebras.jonssonLevelAux(middleZero, 
+                             (IntArray)lst.get(0),  (IntArray)lst.get(2)));
+*/
+}
+      }
+      closedMark = currentMark;
+      currentMark = lst.size();
+System.out.println("so far: " + currentMark);
+//if (currentMark > 7) return lst;
+    }
+    return lst;
+  }
+
+  /**
+   * Closure of <tt>elems</tt> under the operations. (Worry about
+   * nullary ops later.)
+   *
+   * @param elems a List of IntArray's
+   *
+   * @param termMap a Map from the element to the corresponding term
+   *                used to generated it. The generators should be 
+   *                already in the Map. In other words the termMap
+   *                should have the same number of entries as elems.
+   *
+   * @param elt an element to search for; if found return the closure
+                found so far.
+   *
+   * @return a List of IntArray's.
+   */
+  public List sgClose(List elems, int closedMark, final Map termMap, 
+                                                  final  Object elt) {
+    final List lst = new ArrayList(elems);
+    final HashSet su = new HashSet(lst);
+    int currentMark = lst.size();
+    while (closedMark < currentMark) {
+//if (lst.size() > 100000) return lst;
+      // close the elements in current
+      for (Iterator it = operations().iterator(); it.hasNext(); ) {
+        Operation f = (Operation)it.next();
+        final int arity = f.arity();
+        if (arity == 0) continue;  // worry about constansts later
+        int[] argIndeces = new int[arity];
+        for (int i = 0; i < arity - 1; i++) {
+          argIndeces[i] = 0;
+        }
+        argIndeces[arity - 1] = closedMark;
+        ArrayIncrementor inc =
+                    SequenceGenerator.sequenceIncrementor(
+                                  argIndeces, currentMark - 1, closedMark);
+
+        //final int[] arg = new int[arity];
+        final List arg = new ArrayList(arity);
+        for (int i = 0; i < arity; i++) {
+          arg.add(null);
+        }
+        while (true) {
+          for (int i = 0; i < arity; i++) {
+            arg.set(i, lst.get(argIndeces[i]));
+          }
+          Object v = f.valueAt(arg);
+          if (su.add(v)) {
+            lst.add(v);
+            if (termMap != null) {
+              List children = new ArrayList(arity);
+              for (int i = 0; i < arity; i++) {
+                //children.set(i, termMap.get(arg.get(i)));
+                children.add(termMap.get(arg.get(i)));
+              }
+              termMap.put(v, new NonVariableTerm(f.symbol(), children));
+              //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
+            }
+            if (v.equals(elt)) return lst;
           }
           if (!inc.increment()) break;
         }

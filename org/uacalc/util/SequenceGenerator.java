@@ -69,7 +69,6 @@ public final class SequenceGenerator {
                                             final int[] a, final int max) {
     return new ArrayIncrementor() {
         public boolean increment() {
-          boolean ans = false;
           final int len = a.length;
           for (int i = len - 1; i >= 0; i--) {
             if (a[i] < max) {
@@ -87,8 +86,42 @@ public final class SequenceGenerator {
 
   /**
    * This just increments the array through all possible tuples
+   * with entries between 0 and <code>max</code> and having at 
+   * least one entry at least as large as <code>min</code>.
+   * This increments from the right: * [0,0,0], [0,0,1], ...,[max,max,max]. 
+   * Of course <code>min</code> should be at most <code>max</code>.
+   */
+  public static ArrayIncrementor sequenceIncrementor(
+                          final int[] a, final int max, final int min) {
+    return new ArrayIncrementor() {
+        public boolean increment() {
+          final int len = a.length;
+          for (int i = len - 1; i >= 0; i--) {
+            if (a[i] < max) {
+              a[i]++;
+              for (int j = i + 1; j < len; j++) {
+                a[j] = 0;
+              }
+              boolean ok = false;
+              for (int j = i; j >= 0; j--) {
+                if (a[j] >= min) {
+                  ok = true;
+                  break;
+                }
+              }
+              if (!ok) a[len - 1] = min;
+              return true;
+            }
+          }
+          return false;
+        }
+      };
+  }
+
+  /**
+   * This just increments the array through all possible tuples
    * with entries between 0 and max from the left. This increments 
-   * from the left: [0,0,0], [1,0,0], ..., [max,max].
+   * from the left: [0,0,0], [1,0,0], ..., [max,max,max].
    */
   public static ArrayIncrementor leftSequenceIncrementor(
                                             final int[] a, final int max) {
