@@ -37,6 +37,14 @@ public interface Operation {
   public Object valueAt(List args);
 
   /**
+   * This operation is for fast product operation. 
+   *
+   *
+   * @param  args an array of arity int arrays from the product algebra.
+   */
+  public int[] valueAt(int[][] args);
+
+  /**
    * This (optional) operation is the int version.
    */
   public int intValueAt(int[] args);

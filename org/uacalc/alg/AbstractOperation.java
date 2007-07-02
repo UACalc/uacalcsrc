@@ -50,6 +50,11 @@ public abstract class AbstractOperation implements Operation {
 
   public abstract Object valueAt(List args);
 
+  public int[] valueAt(int[][] args) {
+    throw new UnsupportedOperationException();
+  }
+
+
   public int intValueAt(int[] args) {
     logger.warning("intValueAt is not define.");
     logger.info("op symbol is " + symbol());

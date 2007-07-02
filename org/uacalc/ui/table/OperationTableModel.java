@@ -8,6 +8,7 @@ import org.uacalc.alg.Operations;
 import org.uacalc.util.Horner;
 import org.uacalc.util.SequenceGenerator;
 import org.uacalc.util.ArrayIncrementor;
+import org.uacalc.util.ArrayString;
 
 public class OperationTableModel extends AbstractTableModel {
 
@@ -17,7 +18,13 @@ public class OperationTableModel extends AbstractTableModel {
   int defaultValue = -1;
   int[] valueTable;
   int[][] leftArgsTable;// all but the last arg
-  String[] colNames;
+  String[] rowNames;
+  int arity;
+  int setSize;
+
+  static final String x = "x";
+  static final String y = "y";
+  static final String z = "z";
   
   public OperationTableModel(Operation op) {
     this.op = op;
@@ -30,24 +37,31 @@ public class OperationTableModel extends AbstractTableModel {
     //                                                     setSize, -1, false);
   }
   
-  public OperationTableModel(int arity, int setSize, boolean idempotent, int defaultValue) {
-    this(OperationSymbol.getOperationSymbol(arity), setSize, false, defaultValue);
+  public OperationTableModel(int arity, int setSize, boolean idempotent, 
+                                                         int defaultValue) {
+    this(OperationSymbol.getOperationSymbol(arity), setSize, 
+                                                    idempotent, defaultValue);
   }
   
   public OperationTableModel (OperationSymbol sym, int setSize,
-                                                   boolean idempotent, int defaultValue) {
+                              boolean idempotent, int defaultValue) {
     this.defaultValue = defaultValue;
+    this.setSize = setSize;
+    this.arity = sym.arity();
     op = makeUndefinedOp(sym, setSize, idempotent);
+    setRowNames();
   }
   /**
-   * Make an int operation which returns the defaultValue. It might be the invalid value -1.
+   * Make an int operation which returns the defaultValue. 
+   * It might be the invalid value -1.
    * Also set up leftArgsTable.
    * 
    * @param sym
    * @param setSize
    * @return
    */
-  Operation makeUndefinedOp(OperationSymbol sym, int setSize, boolean idempotent) {
+  Operation makeUndefinedOp(OperationSymbol sym, int setSize, 
+                                                 boolean idempotent) {
     final int arity = sym.arity();
     int n = 1;
     for (int k = 0; k < arity; k++) {
@@ -56,17 +70,18 @@ public class OperationTableModel extends AbstractTableModel {
     final int k = n / setSize;
     valueTable = new int[n];
     leftArgsTable = new int[k][];
-    final int[] seq = new int[setSize - 1];
-    for (int i = 0; i < setSize - 1; i++) {
+    final int[] seq = new int[arity - 1];
+    for (int i = 0; i < arity - 1; i++) {
       seq[i] = 0;
     }
-    colNames = new String[k];
-    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, setSize - 1);
+    rowNames = new String[k];
+    ArrayIncrementor inc 
+             = SequenceGenerator.sequenceIncrementor(seq, setSize - 1);
     for (int j = 0 ; j < k; j++) {
-      int[] dest = new int[setSize - 1];
-      System.arraycopy(seq, 0, dest, 0, setSize - 1);
+      int[] dest = new int[arity];
+      System.arraycopy(seq, 0, dest, 0, arity - 1);
       leftArgsTable[j] = dest;
-      setColName(k, dest);
+      //setColName(k, dest);
       inc.increment();
     }
     for (int i = 0; i < n; i++) {
@@ -88,26 +103,33 @@ public class OperationTableModel extends AbstractTableModel {
     }
     return Operations.makeIntOperation(sym, setSize, valueTable);
   }
+
+  public String getLastVariable() {
+    if (op.arity() == 1) return x;
+    if (op.arity() == 2) return y;
+    return z;
+  }
+
+  public void setRowNames() {
+    for (int i = 0; i < leftArgsTable.length; i++) {
+      setRowName(i, leftArgsTable[i]);
+    }
+  }
   
-  public void setColName(int k, int[] arg) {
-    final String x = "x";
-    final String y = "y";
-    final String z = "z";
+  public void setRowName(int k, int[] arg) {
     final String left = "(";
     final String right = ")";
     final String comma = ",";
-    String free;
-    if (op.arity() == 1) free = x;
-    if (op.arity() == 2) free = y;
-    else free = z;
-    StringBuffer sb = new StringBuffer(left);
-    for (int i = 0; i < arg.length; i++) {
+    String free = getLastVariable();
+    StringBuffer sb = new StringBuffer(op.symbol().name());
+    sb.append(left);
+    for (int i = 0; i < arg.length - 1; i++) {
       sb.append(arg[i]);
       sb.append(comma);
     }
     sb.append(free);
     sb.append(right);
-    colNames[k] = sb.toString();
+    rowNames[k] = sb.toString();
   }
   
   public OperationSymbol getOperationSymbol() { return opSym; }
@@ -129,8 +151,9 @@ public class OperationTableModel extends AbstractTableModel {
     return leftArgsTable.length;
   }
 
-  public String getColumnName() {
-    return null;// fix me
+  public String getColumnName(int col) {
+    if (col == 0) return getLastVariable();
+    return "" + (col -1);
   }
   
   public Class getColumnClass(int col) {
@@ -145,14 +168,18 @@ public class OperationTableModel extends AbstractTableModel {
   
   public Object getValueAt(int rowIndex, int columnIndex) {
     if (columnIndex == 0) {
-      return colNames[rowIndex];
+      return rowNames[rowIndex];
     }
-    return op.intValueAt(rowColToArg(rowIndex, columnIndex));
+    int val = op.intValueAt(rowColToArg(rowIndex, columnIndex));
+    if (val < 0 || val >= setSize) return null;
+    return val;
   }
 
   public void setValueAt(Object val, int row, int col) {
+    if (val == null) return;
     if (col == 0) return;
     int value = ((Integer)val).intValue();
+    if (value < 0 || value >= setSize) return;  // issue a warning
     valueTable[Horner.horner(rowColToArg(row, col), op.getSetSize())] = value;
   }
   
@@ -162,7 +189,13 @@ public class OperationTableModel extends AbstractTableModel {
     int[] arg = new int[op.arity()];
     System.arraycopy(left, 0, arg, 0, left.length);
     arg[arg.length - 1] = col - 1;
-    return Horner.leftRightReverse(arg, op.getSetSize(), op.arity());
+//System.out.println("row: " + row + " col: " + col);
+//System.out.println("left: " + ArrayString.toString(left));
+//System.out.println("arg: " + ArrayString.toString(arg));
+//System.out.println("op.getSetSize(): " + op.getSetSize());
+//System.out.println("op.arity(): " + op.arity());
+    //return Horner.leftRightReverse(arg, op.getSetSize(), op.arity());
+    return arg;
   }
 }
 
