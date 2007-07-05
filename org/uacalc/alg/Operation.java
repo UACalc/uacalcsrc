@@ -55,11 +55,16 @@ public interface Operation {
    * x * y would be evaluated by finding the finding the representative
    * of x and y of the congruence; then these representatives would be
    * expanded into array representing the corresponding elements in the 
-   * direct product. These would be multipled and thenthe whole process
+   * direct product. These would be multipled and then the whole process
    * would be reversed. If A is reasonable small it may make sense to
    * make a table for the multiplication.
    */
   public void makeTable();
+
+  /**
+   * Get the table for this operation or null if it does not exist.
+   */
+  public int[] getTable();
 
   /**
    * Is this operation idempotent in the sense f(x,x,..,x) = x.

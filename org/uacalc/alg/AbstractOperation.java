@@ -25,6 +25,7 @@ public abstract class AbstractOperation implements Operation {
   //protected int arity;
   protected OperationSymbol symbol;
   protected int algSize;
+  protected int[] valueTable;
 
   public AbstractOperation(String name, int arity, int algSize) {
     this(new OperationSymbol(name, arity), algSize);
@@ -102,6 +103,8 @@ public abstract class AbstractOperation implements Operation {
   }
 
   public void makeTable() {}
+
+  public int[] getTable() { return valueTable; }
 
 
 }

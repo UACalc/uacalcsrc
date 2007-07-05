@@ -285,7 +285,7 @@ logger.setLevel(Level.FINE);
   
   static class IntOperationImp extends AbstractOperation {
 
-    private final int[] valueTable;
+    //private final int[] valueTable;
   
     public IntOperationImp(OperationSymbol symbol, int algSize, 
                                                    int[] valueTable) {
