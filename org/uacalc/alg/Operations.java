@@ -4,6 +4,7 @@ package org.uacalc.alg;
 
 import java.util.*;
 import java.util.logging.*;
+import javax.script.*;
 import org.uacalc.util.*;
 import org.uacalc.alg.conlat.BasicPartition;
 
@@ -241,6 +242,55 @@ logger.setLevel(Level.FINE);
     return ans;
   }
  
+  /**
+   * The <code>script</code> should be the body of the definition
+   * of intValueAt(int[] args).
+   */
+  public static Operation makeOperationFromScript(OperationSymbol symbol,
+                                  int arity, int algSize, String[] script) 
+                                                    throws ScriptException {
+    ScriptEngineManager manager = new ScriptEngineManager();
+    ScriptEngine gEngine = manager.getEngineByName("groovy");
+    Invocable invocable = (Invocable)gEngine;
+    gEngine.eval("int arity() { " + arity + " }\n");
+    gEngine.eval("org.uacalc.alg.OperationSymbol symbol() { " + symbol + " }\n");
+    gEngine.eval("int[] valueAt(int[][] args) "
+                + "{ throw new UnsupportedOperationException() }\n");
+    gEngine.eval("Object valueAt(List args) "
+                + "{ throw new UnsupportedOperationException() }\n");
+    // fix this
+    gEngine.eval("boolean isIdempotent() "
+                + "{ throw new UnsupportedOperationException() }\n");
+    gEngine.eval("boolean isTotallySymmetric() "
+                + "{ Operations.isTotallySymmetric() }\n");
+    gEngine.eval("boolean isAssociative() "
+                + "{ Operations.isAssociative() }\n");
+    gEngine.eval("boolean isCommutative() "
+                + "{ Operations.isCommutative() }\n");
+    // fix these ???
+    gEngine.eval("void makeTable() { }\n");
+    gEngine.eval("int[] getTable() { null }\n");
+    
+    StringBuffer sb = new StringBuffer("int intValueAt(int[] args) { \n");
+    for (int i = 0 ; i < script.length; i++) {
+      sb.append(script[i]);
+      sb.append("\n");
+    }
+    sb.append("}\n");
+    gEngine.eval(sb.toString());
+    
+/*
+    gEngine.eval("int intValueAt(int[] args) {\n");
+    for (int i = 0 ; i < script.length; i++) {
+      gEngine.eval(script[i] + "\n");
+    }
+    gEngine.eval("}\n");
+*/
+    //gEngine.eval("int intValueAt(int[] args) { 3 }\n");
+    Operation op = invocable.getInterface(Operation.class);
+    return op;
+  }
+
  
 
   /**
@@ -280,6 +330,12 @@ logger.setLevel(Level.FINE);
     return new IntOperationImp(symbol, algSize, valueTable);
   }
 
+  public static void main(String[] args) throws Exception {
+    String[] sc = new String[] {"def n = args[0] + args[1]", "n+10"};
+    Operation op =  makeOperationFromScript(
+                        new OperationSymbol("f", 2), 2, 5, sc);
+    System.out.println("f(5,4) = " + op.intValueAt(new int[] {5,4}));
+  }
 
 
   

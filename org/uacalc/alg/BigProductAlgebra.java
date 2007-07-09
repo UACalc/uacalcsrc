@@ -27,11 +27,11 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     logger.setLevel(Level.FINER);
   }
 
-  protected List algebras;
+  protected List<SmallAlgebra> algebras;
   protected int[] sizes;
   protected int numberOfProducts;
 
-  protected List rootAlgebras;
+  protected List<SmallAlgebra> rootAlgebras;
   protected int[] powers;
 
   protected BigProductAlgebra() {
@@ -45,21 +45,21 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   /**
    * Construct the direct product of a List of SmallAlgebra's.
    */
-  public BigProductAlgebra(List algs) {
+  public BigProductAlgebra(List<SmallAlgebra> algs) {
     this("", algs);
   }
 
   /**
    * Construct the direct product of a List of SmallAlgebra's.
    */
-  public BigProductAlgebra(String name, List algs) {
+  public BigProductAlgebra(String name, List<SmallAlgebra> algs) {
     super(name);
     algebras = algs;
     numberOfProducts = algs.size();
     sizes = new int[numberOfProducts];
     int k = 0;
-    for (Iterator it = algs.iterator(); it.hasNext(); k++) {
-      sizes[k] = ((SmallAlgebra)it.next()).cardinality();
+    for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
+      sizes[k] = it.next().cardinality();
     }
     makeOperations();
   }
@@ -76,7 +76,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   public BigProductAlgebra(String name, SmallAlgebra alg, int power) {
     super(name);
-    rootAlgebras = new ArrayList(1);
+    rootAlgebras = new ArrayList<SmallAlgebra>(1);
     rootAlgebras.add(alg);
     setup(rootAlgebras, new int[] {power});
   }
@@ -89,7 +89,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @param powers  an array of powers, one for each algebra in algs.
    */
-  public BigProductAlgebra(List algs, int[] powers) {
+  public BigProductAlgebra(List<SmallAlgebra> algs, int[] powers) {
     this("", algs, powers);
   }
 
@@ -101,18 +101,18 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @param powers  an array of powers, one for each algebra in algs.
    */
-  public BigProductAlgebra(String name, List algs, int[] powers) {
+  public BigProductAlgebra(String name, List<SmallAlgebra> algs, int[] powers) {
     super(name);
     setup(algs, powers);
   }
 
-  private void setup(List algs, int[] powers) {
+  private void setup(List<SmallAlgebra> algs, int[] powers) {
     this.powers = powers;
     this.rootAlgebras = algs;
-    algebras = new ArrayList(numberOfProducts);
+    algebras = new ArrayList<SmallAlgebra>(numberOfProducts);
     numberOfProducts = 0;
     for (int i = 0; i < powers.length; i++) {
-      SmallAlgebra alg = (SmallAlgebra)algs.get(i);
+      SmallAlgebra alg = algs.get(i);
       final int pow = powers[i];
       numberOfProducts = numberOfProducts + pow;
       for (int j = 0; j < pow; j++) {
@@ -121,20 +121,20 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     }
     sizes = new int[numberOfProducts];
     for (int i = 0; i < numberOfProducts; i++) {
-      sizes[i] = ((SmallAlgebra)algebras.get(i)).cardinality();
+      sizes[i] = algebras.get(i).cardinality();
     }
     makeOperations();
   }
 
   protected void makeOperations() {
-    final int k = ((Algebra)algebras.get(0)).operations().size();
+    final int k = algebras.get(0).operations().size();
     operations = new ArrayList(k);
     for (int i = 0; i < k; i++) {
       final int arity = 
-           ((Operation)((Algebra)algebras.get(0)).operations().get(i)).arity();
+           ((Operation)algebras.get(0).operations().get(i)).arity();
       final List opList = new ArrayList(numberOfProducts);
       for (int j = 0; j < numberOfProducts; j++) {
-        opList.add(((Algebra)algebras.get(j)).operations().get(i));
+        opList.add(algebras.get(j).operations().get(i));
       }
       final int[][] argsExpanded = new int[arity][numberOfProducts];
       final int[] arg = new int[arity];
@@ -190,10 +190,17 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
 
   public int[] getPowers() { return powers; }
 
-  public List rootFactors() { return rootAlgebras; }
+  /**
+   * Test if this is a power of a single algebra.
+   */
+  public boolean isPower() {
+    return powers.length == 1;
+  }
+
+  public List<SmallAlgebra> rootFactors() { return rootAlgebras; }
 
   public SmallAlgebra projection(int k) {
-    return (SmallAlgebra)algebras.get(k);
+    return algebras.get(k);
   }
 
   public BasicPartition projectionKernel(int k) {
@@ -474,6 +481,15 @@ System.out.println("so far: " + currentMark);
    */
   public List sgClose(List elems, int closedMark, final Map termMap, 
                                                   final  Object elt) {
+    if (isPower()) {
+      SmallAlgebra alg = rootFactors().get(0);
+      alg.makeOperationTables();
+      List<Operation> ops = alg.operations();
+      if (ops.size() > 0 && ops.get(0).getTable() != null) {
+        return sgClosePower(alg.cardinality(), ops, elems,
+                                               closedMark, termMap, elt);
+      }
+    }
     final List lst = new ArrayList(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator it = elems.iterator(); it.hasNext(); ) {
@@ -520,6 +536,113 @@ System.out.println("so far: " + currentMark);
           }
           if (!inc.increment()) break;
         }
+if (false) {
+/*
+  List middleZero = new ArrayList();
+    for (Iterator it2 = lst.iterator(); it2.hasNext(); ) {
+      IntArray ia = (IntArray)it2.next();
+      if (ia.get(1) == 0) middleZero.add(ia);
+    }
+  System.out.println("jonsson level so far: "
+     + Algebras.jonssonLevelAux(middleZero, 
+                             (IntArray)lst.get(0),  (IntArray)lst.get(2)));
+*/
+}
+      }
+      closedMark = currentMark;
+      currentMark = lst.size();
+System.out.println("so far: " + currentMark);
+//if (currentMark > 7) return lst;
+    }
+    return lst;
+  }
+
+  /**
+   * A fast version for powers to compute the 
+   * closure of <tt>elems</tt> under the operations. (Worry about
+   * nullary ops later.)
+   *
+   * @param elems a List of IntArray's
+   *
+   * @param termMap a Map from the element to the corresponding term
+   *                used to generated it. The generators should be 
+   *                already in the Map. In other words the termMap
+   *                should have the same number of entries as elems.
+   *
+   * @param elt an element to search for; if found return the closure
+                found so far.
+   *
+   * @return a List of IntArray's.
+   */
+  private final List sgClosePower(final int algSize, List<Operation> ops, 
+           List elems, int closedMark, final Map termMap, final  Object elt) {
+System.out.println("using power");
+    final int k = ops.size();
+    final int[][] opTables = new int[k][];
+    final int[] arities = new int[k];
+    final OperationSymbol[] symbols = new OperationSymbol[k];
+    for (int i = 0; i < k; i++) {
+      Operation op = ops.get(i);
+      opTables[i] = op.getTable();
+      arities[i] = op.arity();
+      symbols[i] = op.symbol();
+    }
+    final int power = numberOfProducts;
+    final List lst = new ArrayList(elems);// IntArrays
+    final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
+    for (Iterator it = elems.iterator(); it.hasNext(); ) {
+      rawList.add(((IntArray)it.next()).getArray());
+    }
+    final HashSet su = new HashSet(lst);
+    int currentMark = lst.size();
+    while (closedMark < currentMark) {
+      // close the elements in current
+      for (int i = 0; i < k; i++) {
+        final int arity = arities[i];
+        if (arity == 0) continue;  // worry about constansts later
+        final int[] opTable = opTables[i];
+        final int[] argIndeces = new int[arity];
+        for (int r = 0; r < arity - 1; r++) {
+          argIndeces[r] = 0;
+        }
+        argIndeces[arity - 1] = closedMark;
+        ArrayIncrementor inc =
+                    SequenceGenerator.sequenceIncrementor(
+                                  argIndeces, currentMark - 1, closedMark);
+        while (true) {
+          //for (int i = 0; i < arity; i++) {
+          //  arg[i] = rawList.get(argIndeces[i]);
+          //}
+          final int[] vRaw = new int[power];
+
+
+          for (int j = 0; j < power; j++) {
+            int factor = algSize;
+            int index = rawList.get(argIndeces[0])[j];
+            for (int r = 1; r < arity; r++) {
+              index += factor * rawList.get(argIndeces[r])[j];
+              factor = factor * algSize;
+            }
+            vRaw[j] = opTable[index];
+          }
+          IntArray v = new IntArray(vRaw);
+          if (su.add(v)) {
+            lst.add(v);
+            rawList.add(vRaw);
+            if (termMap != null) {
+              List children = new ArrayList(arity);
+              for (int r = 0; r < arity; r++) {
+                //children.set(i, termMap.get(arg.get(i)));
+                children.add(termMap.get(lst.get(argIndeces[r])));
+              }
+              termMap.put(v, new NonVariableTerm(symbols[i], children));
+              //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
+            }
+            if (v.equals(elt)) return lst;
+          }
+          if (!inc.increment()) break;
+        }
+
 if (false) {
 /*
   List middleZero = new ArrayList();
