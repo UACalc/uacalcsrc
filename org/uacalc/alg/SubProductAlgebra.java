@@ -163,6 +163,9 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return terms;
   }
 
+  /**
+   * Get the term associated with an element.
+   */
   public Term getTerm(IntArray elt) {
    if (getTerms() == null) return null;
    return getTerms()[getUniverseOrder().get(elt).intValue()];
