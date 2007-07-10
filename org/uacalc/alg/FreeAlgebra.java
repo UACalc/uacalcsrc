@@ -70,7 +70,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       inc.increment();
     }
 
-    HashMap termMap = new HashMap();
+    HashMap<IntArray,Term> termMap = new HashMap<IntArray,Term>();
     if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
     if (gens.size() == 2) {
       termMap.put(gens.get(0), Variable.x);
@@ -83,7 +83,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     int k = 0;
     if (gens.size() > 3) {
-      for (Iterator it = gens.iterator(); it.hasNext(); k++) {
+      for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
         Variable var = new VariableImp("x_" + k);
         termMap.put(it.next(), var);
       }
@@ -93,13 +93,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     //univ = productAlgebra.sgClose(gens);
     size = univ.size();
     logger.info("free algebra size = " + size);
-    univHashMap = new HashMap(size);
+    univHashMap = new HashMap<IntArray,Integer>(size);
     terms = new Term[univ.size()];
     k = 0;
-    for (Iterator it = univ.iterator(); it.hasNext(); k++) {
-      Object elem = it.next();
+    for (Iterator<IntArray> it = univ.iterator(); it.hasNext(); k++) {
+      IntArray elem = it.next();
       univHashMap.put(elem, new Integer(k));
-      terms[k] = (Term)termMap.get(elem);
+      terms[k] = termMap.get(elem);
     }
     universe = new HashSet(univ);
     makeOperations();

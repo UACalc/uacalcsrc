@@ -22,9 +22,11 @@ import org.uacalc.alg.sublat.*;
 public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   protected BigProductAlgebra productAlgebra;
-  protected List gens; // a list of IntArray's
-  protected List univ; // a list of IntArray's
-  protected HashMap univHashMap; // a map from IntArray's of elements of the 
+  protected List<IntArray> gens; // a list of IntArray's
+  protected List<IntArray> univ; // a list of IntArray's
+
+  // a map from IntArray's of elements of the 
+  protected HashMap<IntArray,Integer> univHashMap; 
                                  // univ to Integers (the index).
   protected Term[] terms; // term[i] is a term for the ith element
 
@@ -80,9 +82,9 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     }
     else univ = productAlgebra.sgClose(gens);
     size = univ.size();
-    univHashMap = new HashMap(size);
+    univHashMap = new HashMap<IntArray,Integer>(size);
     int k = 0;
-    for (Iterator it = univ.iterator(); it.hasNext(); k++) {
+    for (Iterator<IntArray> it = univ.iterator(); it.hasNext(); k++) {
       univHashMap.put(it.next(), new Integer(k));
     }
     universe = new HashSet(univ);
@@ -95,19 +97,20 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * the universe again.
   */
   public SubProductAlgebra(String name, BigProductAlgebra prod, 
-                                        List gens, List univList) {
+                           List<IntArray> gens, List<IntArray> univList) {
     super(name);
     setup(prod, gens, univList);
   }
 
-  private void setup(BigProductAlgebra prod, List gens, List univList) {
+  private void setup(BigProductAlgebra prod, List<IntArray> gens, 
+                                             List<IntArray> univList) {
     productAlgebra = prod;
     this.gens = gens;
     univ = univList;
     size = univ.size();
-    univHashMap = new HashMap(size);
+    univHashMap = new HashMap<IntArray,Integer>(size);
     int k = 0;
-    for (Iterator it = univ.iterator(); it.hasNext(); k++) {
+    for (Iterator<IntArray> it = univ.iterator(); it.hasNext(); k++) {
       univHashMap.put(it.next(), new Integer(k));
     }
     universe = new HashSet(univ);
@@ -160,6 +163,12 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return terms;
   }
 
+  public Term getTerm(IntArray elt) {
+   if (getTerms() == null) return null;
+   return getTerms()[getUniverseOrder().get(elt).intValue()];
+  }
+    
+
   public BigProductAlgebra getProductAlgebra() {
     return productAlgebra;
   }
@@ -172,11 +181,11 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return gens;
   }
 
-  public List getUniverseList() {
+  public List<IntArray> getUniverseList() {
     return univ;
   }
 
-  public Map getUniverseOrder() {
+  public Map<IntArray,Integer> getUniverseOrder() {
     return univHashMap;
   }
 
@@ -191,9 +200,20 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return sub;
   }
 
+/* here
+  public IntArray getElementFromTerm(Term t) {
+    final Term[] terms = getTerms();
+    int k = 0;
+    for (Term term : terms) {
+      if (term.equals(t) break;
+      k++
+    }
+  }
+*/
+
   public int elementIndex(Object obj) {
     IntArray elem = (IntArray)obj;
-    return ((Integer)univHashMap.get(elem)).intValue();
+    return univHashMap.get(elem).intValue();
   }
 
   public Object getElement(int index) {
