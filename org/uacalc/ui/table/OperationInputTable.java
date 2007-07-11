@@ -32,7 +32,8 @@ public class OperationInputTable extends JPanel {
     super();
     this.arity = arity;
     this.setSize = setSize;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setLayout(new BorderLayout());
 
     tableModel = new OperationTableModel(arity, setSize, false, -1);
     table = new JTable(tableModel);
@@ -51,7 +52,7 @@ public class OperationInputTable extends JPanel {
       if (i == 0) column.setPreferredWidth(100);
       else column.setPreferredWidth(30);
     }
-    add(new JScrollPane(table));
+    add(new JScrollPane(table), BorderLayout.CENTER);
 
 
     defaultValueComboBox = makeDefaultValueBox(setSize);
@@ -59,7 +60,16 @@ public class OperationInputTable extends JPanel {
 
     JPanel optionPanel = new JPanel();
     optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.X_AXIS));
-    JCheckBox idempotentCB = new JCheckBox("Idempotent");
+    final JCheckBox idempotentCB = new JCheckBox("Idempotent");
+    idempotentCB.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (idempotentCB.isSelected()) {
+          tableModel.makeIdempotent();
+          repaint();
+        }
+      }
+    });
+    
     optionPanel.add(Box.createHorizontalGlue());
     optionPanel.add(idempotentCB);
     optionPanel.add(Box.createHorizontalGlue());
@@ -70,7 +80,7 @@ public class OperationInputTable extends JPanel {
 
     //JTextField defaultValueTF = new JTextField(4);
     //optionPanel.add(defaultValueTF);
-    add(optionPanel);
+    add(optionPanel, BorderLayout.SOUTH);
 /*
     add(new JLabel("Selection Mode"));
     buttonGroup = new ButtonGroup();

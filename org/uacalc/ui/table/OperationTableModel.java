@@ -17,6 +17,7 @@ public class OperationTableModel extends AbstractTableModel {
   
   int defaultValue = -1;
   int[] valueTable;
+  int[] diagIndices;
   int[][] leftArgsTable;// all but the last arg
   String[] rowNames;
   int arity;
@@ -87,21 +88,24 @@ public class OperationTableModel extends AbstractTableModel {
     for (int i = 0; i < n; i++) {
       valueTable[i] = defaultValue;
     }
-    if (idempotent) {
-      for (int i = 0; i < n; i++) {
-        final int[] arg = Horner.hornerInv(i, setSize, arity);
-        boolean diag = true;
-        final int a = arg[0];
-        for (int j = 1; j < arity; j++) {
-          if (a != arg[j]) {
-            diag = false;
-            break;
-          }
+    if (idempotent) makeIdempotent();
+    return Operations.makeIntOperation(sym, setSize, valueTable);
+  }
+  
+  public void makeIdempotent() {
+    if (diagIndices == null) {
+      diagIndices = new int[setSize];
+      for (int i = 0; i < setSize; i++) {
+        final int[] diag = new int[arity];
+        for (int j = 0; j < arity; j++) {
+          diag[j] = i;
         }
-        if (diag) valueTable[i] = a;
+        diagIndices[i] = Horner.horner(diag, setSize);
       }
     }
-    return Operations.makeIntOperation(sym, setSize, valueTable);
+    for (int i = 0; i < setSize; i++) {
+      valueTable[diagIndices[i]] = i;
+    }
   }
 
   public String getLastVariable() {
