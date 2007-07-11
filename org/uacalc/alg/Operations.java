@@ -272,6 +272,9 @@ logger.setLevel(Level.FINE);
     gEngine.eval("int[] getTable() { null }\n");
     
     StringBuffer sb = new StringBuffer("int intValueAt(int[] args) { \n");
+    if (arity > 0) sb.append("int x = args[0]\n");
+    if (arity > 1) sb.append("int y = args[1]\n");
+    if (arity > 2) sb.append("int z = args[2]\n");
     for (int i = 0 ; i < script.length; i++) {
       sb.append(script[i]);
       sb.append("\n");
@@ -331,7 +334,7 @@ logger.setLevel(Level.FINE);
   }
 
   public static void main(String[] args) throws Exception {
-    String[] sc = new String[] {"def n = args[0] + args[1]", "n+10"};
+    String[] sc = new String[] {"def n = Math.min(x,y) + args[0] / 2", "n+10"};
     Operation op =  makeOperationFromScript(
                         new OperationSymbol("f", 2), 2, 5, sc);
     System.out.println("f(5,4) = " + op.intValueAt(new int[] {5,4}));
