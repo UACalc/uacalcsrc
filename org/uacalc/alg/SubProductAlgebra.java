@@ -203,16 +203,24 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return sub;
   }
 
-/* here
+  /**
+   * Get the element associate with a term. This is linear
+   * in the size of the subalgebra.
+   * 
+   * @param t the term
+   * @return  the element as an IntArray
+   */
   public IntArray getElementFromTerm(Term t) {
     final Term[] terms = getTerms();
-    int k = 0;
-    for (Term term : terms) {
-      if (term.equals(t) break;
-      k++
+    final int size = terms.length;
+    int i = 0;
+    for ( ; i < size; i++) {
+      if (terms[i].equals(t)) break;
     }
+    if (i < size) return (IntArray)getElement(i);
+    return null;
   }
-*/
+
 
   public int elementIndex(Object obj) {
     IntArray elem = (IntArray)obj;
