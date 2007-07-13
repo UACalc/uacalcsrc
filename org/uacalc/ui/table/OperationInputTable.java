@@ -113,8 +113,15 @@ public class OperationInputTable extends JPanel {
         //JComboBox cb = (JComboBox)e.getSource();
         int index = box.getSelectedIndex();
         System.out.println("selected index = " + index);
-        if (index > 0 && index <= setSize) 
-               System.out.println("default value = " + (index - 1));
+        if (index > 0 && index <= setSize) { 
+          System.out.println("default value = " + (index - 1));
+          tableModel.setDefaultValue(index - 1);
+          repaint();
+        }
+        if (index == 0) {
+          tableModel.setDefaultValue(-1);
+          repaint();
+        }
       }
     });
     return box;

@@ -107,6 +107,14 @@ public class OperationTableModel extends AbstractTableModel {
       valueTable[diagIndices[i]] = i;
     }
   }
+  
+  public int getDefaultValue() {
+    return defaultValue;
+  }
+  
+  public void setDefaultValue(int v) {
+    defaultValue = v;
+  }
 
   public String getLastVariable() {
     if (op.arity() == 1) return x;
@@ -175,7 +183,11 @@ public class OperationTableModel extends AbstractTableModel {
       return rowNames[rowIndex];
     }
     int val = op.intValueAt(rowColToArg(rowIndex, columnIndex));
-    if (val < 0 || val >= setSize) return null;
+    if (val == -1) {
+      if (defaultValue == -1) return null;
+      return defaultValue;
+    }
+    if (val >= setSize) return null;
     return val;
   }
 
