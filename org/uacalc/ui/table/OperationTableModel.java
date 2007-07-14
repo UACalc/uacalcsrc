@@ -22,6 +22,8 @@ public class OperationTableModel extends AbstractTableModel {
   String[] rowNames;
   int arity;
   int setSize;
+  int diagDiv;
+  boolean idempotent;  // tells if the user has set this
 
   static final String x = "x";
   static final String y = "y";
@@ -51,7 +53,18 @@ public class OperationTableModel extends AbstractTableModel {
     this.arity = sym.arity();
     op = makeUndefinedOp(sym, setSize, idempotent);
     setRowNames();
+    if (arity < 3) diagDiv = 1;
+    else {
+      int k = 1;
+      int pow = setSize;
+      for (int i = 0; i < arity - 2; i++) {
+        k = k + pow;
+        pow = pow * setSize;
+      }
+      diagDiv = k;
+    }
   }
+  
   /**
    * Make an int operation which returns the defaultValue. 
    * It might be the invalid value -1.
@@ -92,6 +105,15 @@ public class OperationTableModel extends AbstractTableModel {
     return Operations.makeIntOperation(sym, setSize, valueTable);
   }
   
+  public boolean isIdempotentSet() {
+    return idempotent;
+  }
+  
+  public void setIdempotent(boolean v) {
+    idempotent = v;
+    if (v) makeIdempotent();
+  }
+  
   public void makeIdempotent() {
     if (diagIndices == null) {
       diagIndices = new int[setSize];
@@ -106,6 +128,12 @@ public class OperationTableModel extends AbstractTableModel {
     for (int i = 0; i < setSize; i++) {
       valueTable[diagIndices[i]] = i;
     }
+  }
+  
+  public boolean isDiagonal(int row, int col) {
+    System.out.println("row = " + row + ", col = " + col + ", diagDiv = " + diagDiv); 
+    if (row % diagDiv == 0 && col == row / diagDiv) return true;
+    return false;
   }
   
   public int getDefaultValue() {
@@ -175,6 +203,7 @@ public class OperationTableModel extends AbstractTableModel {
   
   public boolean isCellEditable(int row, int col) {
     if (col == 0) return false;
+    if (idempotent && isDiagonal(row, col - 1)) return false;
     return true;
   }
   

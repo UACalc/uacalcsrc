@@ -64,7 +64,11 @@ public class OperationInputTable extends JPanel {
     idempotentCB.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (idempotentCB.isSelected()) {
-          tableModel.makeIdempotent();
+          tableModel.setIdempotent(true);
+          repaint();
+        }
+        else {
+          tableModel.setIdempotent(false);
           repaint();
         }
       }
