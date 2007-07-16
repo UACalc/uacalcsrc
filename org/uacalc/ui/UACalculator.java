@@ -24,6 +24,7 @@ public class UACalculator extends JFrame {
   private JPanel mainPanel;
   private JPanel bottomPanel;
   private LatDrawPanel latDrawPanel;
+  private NewAlgebraDialog algDialog;
 
   JCheckBoxMenuItem showDiagLabelsCB;
 
@@ -79,10 +80,19 @@ public class UACalculator extends JFrame {
     ImageIcon icon = new ImageIcon(cl.getResource(
                              "org/uacalc/ui/images/New16.gif"));
 
-    JMenuItem newMI = (JMenuItem)file.add(new JMenuItem("New", icon));
-    newMI.setMnemonic(KeyEvent.VK_N);
+    JMenu newMenu = (JMenu)file.add(new JMenu("New"));
+    JMenuItem newTablesMI = (JMenuItem)newMenu.add(new JMenuItem("New (Tables)", icon));
+    newTablesMI.setMnemonic(KeyEvent.VK_N);
     KeyStroke cntrlN = KeyStroke.getKeyStroke(KeyEvent.VK_N,Event.CTRL_MASK);
-    newMI.setAccelerator(cntrlN);
+    newTablesMI.setAccelerator(cntrlN);
+    JMenuItem newScriptMI = (JMenuItem)newMenu.add(new JMenuItem("New (Script)", icon));
+    
+    newTablesMI.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        newTableAlgebra();
+      }
+    });
+
 
     file.add(new JSeparator());
 
@@ -193,6 +203,27 @@ public class UACalculator extends JFrame {
         }
       });
 
+  }
+  
+  public void newTableAlgebra() {
+    showNewAlgebraDialog();
+    mainPanel.remove(latDrawPanel);
+    AlgebraTableInputPanel algInput 
+        = new AlgebraTableInputPanel(algDialog.getName(), 
+                                     algDialog.getCard(), 
+                                     algDialog.getDesc());
+    mainPanel.add(algInput);
+    validate();
+  }
+
+  private void showNewAlgebraDialog() {
+    if (algDialog != null) algDialog.dispose();
+    //makeAlgebraDialog();
+    algDialog = new NewAlgebraDialog(this);
+    algDialog.setVisible(true);
+    System.out.println(algDialog.getName());
+    System.out.println(algDialog.getCard());
+    System.out.println(algDialog.getDesc());
   }
 
   public LatDrawPanel getLatDrawPanel() { return latDrawPanel; }
