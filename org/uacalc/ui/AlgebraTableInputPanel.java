@@ -39,7 +39,7 @@ public class AlgebraTableInputPanel extends JPanel {
     
     descPanel.add(new JLabel("Description:"));
     JTextField desc_tf = new JTextField(desc);
-    desc_tf.setEditable(false);
+    desc_tf.setEditable(true);
     descPanel.add(desc_tf);
     
     infoPanel.add(namePanel);
