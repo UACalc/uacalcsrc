@@ -26,6 +26,11 @@ public class UACalculator extends JFrame {
   private LatDrawPanel latDrawPanel;
   private NewAlgebraDialog algDialog;
 
+  private Tabs tabs;
+  private JToolBar toolBar;
+  
+  
+  
   JCheckBoxMenuItem showDiagLabelsCB;
 
 
@@ -48,6 +53,10 @@ public class UACalculator extends JFrame {
 
     mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
+    tabs = new Tabs(this);
+    toolBar = tabs.getCurrentToolBar();
+    System.out.println("toolBar = " + toolBar + "\n");
+    mainPanel.add(toolBar, BorderLayout.NORTH);
 //    mainPanel.add(toolBar, BorderLayout.NORTH);
 //    mainPanel.add(shaper, BorderLayout.CENTER);
 //    dimensionsPanel = new DimensionsPanel(this);
@@ -55,11 +64,13 @@ public class UACalculator extends JFrame {
     bottomPanel = new JPanel();
     bottomPanel.setBackground(Color.CYAN);
     bottomPanel.setLayout(new BorderLayout());
+    bottomPanel.add(new JLabel("Testing..."));
 //    bottomPanel.add(pointPanel, BorderLayout.EAST);
 //    bottomPanel.add(dimensionsPanel, BorderLayout.CENTER);
     mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-    latDrawPanel = new LatDrawPanel(this);
-    mainPanel.add(latDrawPanel, BorderLayout.CENTER);
+    //latDrawPanel = new LatDrawPanel(this);
+    //mainPanel.add(latDrawPanel, BorderLayout.CENTER);
+    mainPanel.add(tabs, BorderLayout.CENTER);
 
     buildMenu();
     setContentPane(mainPanel);
@@ -89,7 +100,7 @@ public class UACalculator extends JFrame {
     
     newTablesMI.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        newTableAlgebra();
+        //newTableAlgebra();
       }
     });
 
@@ -205,6 +216,7 @@ public class UACalculator extends JFrame {
 
   }
   
+  /*
   public void newTableAlgebra() {
     showNewAlgebraDialog();
     mainPanel.remove(latDrawPanel);
@@ -215,8 +227,10 @@ public class UACalculator extends JFrame {
     mainPanel.add(algInput);
     validate();
   }
+  */
 
-  private void showNewAlgebraDialog() {
+  /*
+  public void showNewAlgebraDialog() {
     if (algDialog != null) algDialog.dispose();
     //makeAlgebraDialog();
     algDialog = new NewAlgebraDialog(this);
@@ -225,8 +239,21 @@ public class UACalculator extends JFrame {
     System.out.println(algDialog.getCard());
     System.out.println(algDialog.getDesc());
   }
+  */
 
-  public LatDrawPanel getLatDrawPanel() { return latDrawPanel; }
+  
+  public LatDrawPanel getLatDrawPanel() {
+    return tabs.getLatticeDrawer();
+  }
+  
+  public void resetToolBar() {
+    mainPanel.remove(toolBar);
+    toolBar = tabs.getCurrentToolBar();
+    mainPanel.add(toolBar, BorderLayout.NORTH);
+    validate();
+    repaint();
+  }
+  
 
   public void drawSub(SmallAlgebra alg) {
     if (alg.sub().cardinality() > 50) {
@@ -316,7 +343,7 @@ public class UACalculator extends JFrame {
         Object[] options = {"Yes", "No"};
         int n = JOptionPane.showOptionDialog(this,
                                 "The file already exists. Overwrite?",
-                                "Board Exists",
+                                "Algebra Exists",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE,
                                 null,
