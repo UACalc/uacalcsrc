@@ -171,6 +171,80 @@ logger.setLevel(Level.FINE);
           }
       };
   }
+  
+  /**
+   * Make an operation with the the given opeation symbol
+   * and set size.
+   * 
+   * @param n       the set size
+   * @param opSym   the operation symbol
+   * @return        the operation
+   */
+  public static Operation makeRandomOperation(final int n, 
+                                      final OperationSymbol opSym) {
+    return makeRandomOperation(n, opSym, new Random());
+  }
+  
+  /**
+   * Make an operation with the the given opeation symbol
+   * and set size.
+   * 
+   * @param n       the set size
+   * @param opSym   the operation symbol
+   * @param random  a random number generator.
+   * @return        the operation
+   */
+  public static Operation makeRandomOperation(final int n, 
+      final OperationSymbol opSym, Random random) {
+    final int arity = opSym.arity();
+    int h = 1;
+    for (int i = 0; i < arity; i++) {
+      h = h * n;
+    }
+    final int[] values = new int[h];
+    for (int i = 0; i < h; i++) {
+      values[i] = random.nextInt(n);
+    }
+    return Operations.makeIntOperation(opSym, n, values);
+  }
+  
+  /**
+   * Make a list of operations corresponding to a similarity type and a 
+   * set size.
+   * 
+  * @param n          the set size
+   * @param simType   the similarity type
+   * @return          a list of operations
+   */
+  public static List<Operation> makeRandomOperations(final int n, 
+                                        final SimilarityType simType) {
+    return makeRandomOperations(n, simType, -1);
+  }
+  
+  /**
+   * Make a list of operations corresponding to a similarity type and a 
+   * set size.
+   * 
+   * @param n         the set size
+   * @param simType   the similarity type
+   * @param seed      a random seed or -1
+   * @return          a list of operations
+   */
+  public static List<Operation> makeRandomOperations(final int n, 
+      final SimilarityType simType, long seed) {
+    Random random;
+    if (seed != -1)
+      random = new Random(seed);
+    else
+      random = new Random();
+    List<OperationSymbol> opSyms = simType.getOperationSymbols();
+    final int len = opSyms.size();
+    List<Operation> ops = new ArrayList<Operation>(len);
+    for (int i = 0; i < len; i++) {
+      ops.add(makeRandomOperation(n, opSyms.get(i), random));
+    }
+    return ops;
+  }
 
   /**
    * The operation derived by equating variables. If f(x,y,z) is an 

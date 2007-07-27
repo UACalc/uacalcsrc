@@ -81,7 +81,7 @@ public class Algebras {
    */
   public static SmallAlgebra makeRandomAlgebra(int n, 
                                       SimilarityType simType, long seed) {
-    List ops = makeRandomOps(n, simType, seed);
+    List ops = Operations.makeRandomOperations(n, simType, seed);
     // the second argument is the size of the algebra.
     return new BasicAlgebra("RAlg" + n, n, ops);
   }
@@ -108,35 +108,6 @@ public class Algebras {
     return makeRandomAlgebra(n, new SimilarityType(syms), seed);
   }
 
-  /**
-   */
-  private static List<Operation> makeRandomOps(final int n, 
-                                  final SimilarityType simType, long seed) {
-    Random random;
-    if (seed != -1) random = new Random(seed);
-    else random = new Random();
-    List<OperationSymbol> opSyms = simType.getOperationSymbols();
-    final int len = opSyms.size();
-    List<Operation> ops = new ArrayList<Operation>(len);
-    for (int i = 0; i < len; i++) {
-      ops.add(makeRandomOp(n, opSyms.get(i), random));
-    }
-    return ops;
-  }
-    
-  private static Operation makeRandomOp(final int n, 
-                             final OperationSymbol opSym, Random random) {
-    final int arity = opSym.arity();
-    int h = 1;
-    for (int i = 0; i < arity; i++) {
-      h = h * n;
-    }
-    final int[] values = new int[h];
-    for (int i = 0; i < h; i++) {
-      values[i] = random.nextInt(n);
-    }
-    return Operations.makeIntOperation(opSym, n, values);
-  }
 
   public static void main(String[] args) {
     if (args.length == 0) return;
