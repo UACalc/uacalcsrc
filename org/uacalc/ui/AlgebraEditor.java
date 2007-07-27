@@ -106,6 +106,21 @@ public class AlgebraEditor extends JPanel {
     this.alg = alg;
   }
   
+  public void setAlgebra() {
+    SmallAlgebra alg = getAlgebra();
+    if (alg == null) return;
+    name_tf.setText(alg.name());
+    card_tf.setText("" + alg.cardinality());
+    desc_tf.setText(alg.description());
+    setOpsCB();
+  }
+  
+  private void setOpsCB() {
+    java.util.List<OperationSymbol> opSyms 
+               = getAlgebra().similarityType().getOperationSymbols();
+    
+  }
+  
   private void setupNewAlgebra() {
     String name = getAlgName();
     if (name == null) return;
