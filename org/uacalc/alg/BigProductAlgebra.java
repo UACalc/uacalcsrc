@@ -4,6 +4,7 @@ package org.uacalc.alg;
 
 import java.util.*;
 import java.util.logging.*;
+import java.math.BigInteger;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
 
@@ -30,6 +31,12 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   protected List<SmallAlgebra> algebras;
   protected int[] sizes;
   protected int numberOfProducts;
+
+  /**
+   * -2 indicates the value has not been calculated; -1 that it is too big
+   * to be an int.
+   */
+  protected int cardinality = -2;
 
   protected List<SmallAlgebra> rootAlgebras;
   protected int[] powers;
@@ -178,10 +185,22 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   }
 
   /**
-   * Since this may be larger than and int, return -1.
+   * If this is larger than and int, return -1.
    */
   public int cardinality() {
-    return -1;
+    if (cardinality > -2) return cardinality;
+    final BigInteger max = BigInteger.valueOf((long)Integer.MAX_VALUE); 
+    BigInteger v = BigInteger.ONE;
+    for (int i = 0; i < sizes.length; i++) {
+      v = v.multiply(BigInteger.valueOf((long)sizes[i]));
+      if (v.compareTo(max) > 0) {
+        cardinality = -1;
+        break;
+      }
+    }
+    if (cardinality == -1) return cardinality;
+    cardinality = v.intValue();
+    return cardinality;
   }
 
   public List factors() {
@@ -203,6 +222,9 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     return algebras.get(k);
   }
 
+  /**
+   * Don't use this yet; it is not implemented.
+   */
   public BasicPartition projectionKernel(int k) {
     final int projectionSize = sizes[k];
     final int blockSize = cardinality() / projectionSize;
@@ -374,6 +396,7 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = lst.size();
+      if (cardinality() > 0 && currentMark >= cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
@@ -457,6 +480,7 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = lst.size();
+      if (cardinality() > 0 && currentMark >= cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
@@ -551,6 +575,7 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = lst.size();
+      if (cardinality() > 0 && currentMark >= cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
@@ -658,6 +683,7 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = lst.size();
+      if (cardinality() > 0 && currentMark >= cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
