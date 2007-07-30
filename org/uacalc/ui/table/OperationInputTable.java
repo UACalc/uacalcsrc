@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import org.uacalc.ui.table.OperationTableModel;
+import org.uacalc.alg.Operation;
 
 
 public class OperationInputTable extends JPanel { 
@@ -27,33 +28,62 @@ public class OperationInputTable extends JPanel {
   private int arity;
   private int setSize;
   private JComboBox defaultValueComboBox;
+  
+  public OperationInputTable() {
+    super();
+  }
 
+  public OperationInputTable(Operation op) {
+    this(op.arity(), op.getSetSize(), new OperationTableModel(op));
+  }
+  
   public OperationInputTable(int arity, int setSize) {
+    this(arity, setSize, null);
+  }
+  
+  public OperationInputTable(int arity, int setSize, OperationTableModel model) {
     super();
     this.arity = arity;
     this.setSize = setSize;
     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setLayout(new BorderLayout());
 
-    tableModel = new OperationTableModel(arity, setSize, false, -1);
+    if (model == null) model = new OperationTableModel(arity, setSize, false, -1);
+    tableModel = model;
     table = new JTable(tableModel);
-    table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+    table.setPreferredScrollableViewportSize(
+        new Dimension(Math.min(700, 30 * setSize), 
+                      Math.min(600, 20 * model.getRowCount())));
 //    table.setFillsViewportHeight(true);
     //table.getSelectionModel().addListSelectionListener(new RowListener());
     //table.getColumnModel().getSelectionModel().
       //addListSelectionListener(new ColumnListener());
+    
     table.setDefaultEditor(Integer.class, 
              new IntegerEditor(0, tableModel.getOperation().getSetSize() - 1));
     table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
     table.setCellSelectionEnabled(true);
+    table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF);
     TableColumn column = null;
     for (int i = 0; i < tableModel.getColumnCount(); i++) {
       column = table.getColumnModel().getColumn(i);
-      if (i == 0) column.setPreferredWidth(100);
-      else column.setPreferredWidth(30);
+      if (i == 0) {
+        column.setPreferredWidth(100);
+        column.setMinWidth(80);
+      }
+      else {
+        column.setPreferredWidth(30);
+        column.setMinWidth(30);
+      }
     }
-    add(new JScrollPane(table), BorderLayout.CENTER);
-
+    JPanel mainPanel = new JPanel();
+    add(mainPanel, BorderLayout.CENTER);
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+    mainPanel.add(Box.createHorizontalGlue());
+    mainPanel.add(new JScrollPane(table, 
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+    mainPanel.add(Box.createHorizontalGlue());
 
     defaultValueComboBox = makeDefaultValueBox(setSize);
     defaultValueComboBox.setPreferredSize(new Dimension(1, 1));
@@ -103,6 +133,14 @@ public class OperationInputTable extends JPanel {
     output.setEditable(false);
     add(new JScrollPane(output));
 */
+  }
+  
+  /**
+   * This was hard to figure out: needed to stop the cell editor.
+   * @return
+   */
+  public boolean stopCellEditing() {
+    return table.getDefaultEditor(tableModel.getColumnClass(1)).stopCellEditing();
   }
 
   private JComboBox makeDefaultValueBox(final int setSize) {

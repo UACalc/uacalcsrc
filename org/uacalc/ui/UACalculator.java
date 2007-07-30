@@ -246,6 +246,10 @@ public class UACalculator extends JFrame {
     return tabs.getLatticeDrawer();
   }
   
+  public AlgebraEditor getAlgebraEditor() {
+    return tabs.getAlgebraEditor();
+  }
+  
   public void resetToolBar() {
     mainPanel.remove(toolBar);
     toolBar = tabs.getCurrentToolBar();
@@ -434,7 +438,12 @@ public class UACalculator extends JFrame {
 
 
   public SmallAlgebra getAlgebra() { return algebra; }
-  public void setAlgebra(SmallAlgebra alg) { algebra = alg; }
+  
+  public void setAlgebra(SmallAlgebra alg) { 
+    algebra = alg;
+    getAlgebraEditor().setAlgebra(alg);
+    getLatDrawPanel().setDiagram(null);
+  }
 
   public boolean isDirty() { return dirty; }
 

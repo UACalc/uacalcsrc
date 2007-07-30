@@ -50,7 +50,7 @@ public class IntegerEditor extends DefaultCellEditor {
         new DefaultFormatterFactory(intFormatter));
     ftf.setValue(minimum);
     ftf.setHorizontalAlignment(JTextField.TRAILING);
-    ftf.setFocusLostBehavior(JFormattedTextField.PERSIST);
+    //ftf.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
 
     //React when the user presses Enter while the editor is
     //active.  (Tab is handled as specified by

@@ -143,9 +143,11 @@ public class LatDrawPanel extends JPanel {
   public Diagram getDiagram() { return drawPanel.getDiagram(); }
 
   public void setDiagram(Diagram d) { 
-    drawPanel.setDiagram(d);
-    //drawPanel = new DrawPanel(d);
-    repaint();
+    if (d != null) { // fix this !!!!!!!!!!!
+      drawPanel.setDiagram(d);
+      //drawPanel = new DrawPanel(d);
+      repaint();
+    }
   }
 
   public org.latdraw.beans.DrawPanel getDrawPanel() { return drawPanel; }

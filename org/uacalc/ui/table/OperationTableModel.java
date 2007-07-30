@@ -31,7 +31,7 @@ public class OperationTableModel extends AbstractTableModel {
   
   public OperationTableModel(Operation op) {
     this.op = op;
-    this.opSym = op.symbol();
+    setup();
   }
   
   public OperationTableModel(int arity, int setSize) {
@@ -53,6 +53,36 @@ public class OperationTableModel extends AbstractTableModel {
     this.arity = sym.arity();
     op = makeUndefinedOp(sym, setSize, idempotent);
     setRowNames();
+    setDiagDiv();
+  }
+  
+  private void setup() {
+    this.opSym = op.symbol();
+    this.setSize = op.getSetSize();
+    this.arity = op.arity();
+    setDiagDiv();
+    valueTable = op.getTable();
+    final int n = valueTable.length;
+    final int k = n / setSize;
+    leftArgsTable = new int[k][];
+    rowNames = new String[k];
+    final int[] seq = new int[arity - 1];
+    for (int i = 0; i < arity - 1; i++) {
+      seq[i] = 0;
+    }
+    ArrayIncrementor inc 
+             = SequenceGenerator.sequenceIncrementor(seq, setSize - 1);
+    for (int j = 0 ; j < k; j++) {
+      int[] dest = new int[arity];
+      System.arraycopy(seq, 0, dest, 0, arity - 1);
+      leftArgsTable[j] = dest;
+      //setColName(k, dest);
+      inc.increment();
+    }
+    setRowNames();
+  }
+  
+  private void setDiagDiv() {
     if (arity < 3) diagDiv = 1;
     else {
       int k = 1;
@@ -226,6 +256,7 @@ public class OperationTableModel extends AbstractTableModel {
     int value = ((Integer)val).intValue();
     if (value < 0 || value >= setSize) return;  // issue a warning
     valueTable[Horner.horner(rowColToArg(row, col), op.getSetSize())] = value;
+    fireTableCellUpdated(row, col);
   }
   
   private int[] rowColToArg(int row, int col) {
