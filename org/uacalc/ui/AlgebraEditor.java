@@ -94,6 +94,10 @@ public class AlgebraEditor extends JPanel {
     });
     addOpButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        if (!opTablePanel.stopCellEditing()) {
+          uacalc.beep();
+          return;
+        }
         String name = getOpNameDialog();
         if (name == null) return;
         int arity = getArityDialog();
@@ -128,6 +132,7 @@ public class AlgebraEditor extends JPanel {
     // we also need to save the original algebra for undo/redo ???????????
     SmallAlgebra alg2 = new BasicAlgebra(name_tf.getText(), alg.cardinality(), ops2);
     setAlgebra(alg2);
+    ops_cb.setSelectedIndex(alg2.operations().size() - 1);
     repaint();
   }
   
@@ -173,6 +178,11 @@ public class AlgebraEditor extends JPanel {
     toolBar.add(newAlgBut);
     newAlgBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        // TODO save this alg !!!!!!
+        if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
+          uacalc.beep();
+          return;
+        }
         alg = null;
         setupNewAlgebra();
         repaint();
@@ -254,12 +264,13 @@ public class AlgebraEditor extends JPanel {
   
   private String getOpNameDialog() {
     String name = JOptionPane.showInputDialog(uacalc, "Operation symbol? (with no spaces)");
-    if (name == null || name.length() == 0 || name.indexOf(" ") > 0) {
+    if (name == null) return null;
+    if (name.length() == 0 || name.indexOf(" ") > 0) {
+      uacalc.beep();
       JOptionPane.showMessageDialog(this,
           "name required, and no spaces",
           "Name format error",
           JOptionPane.ERROR_MESSAGE);
-      uacalc.beep();
       name = null; 
     }
     return name;

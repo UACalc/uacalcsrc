@@ -36,6 +36,7 @@ public class IntegerEditor extends DefaultCellEditor {
   public IntegerEditor(int min, int max) {
     super(new JFormattedTextField());
     ftf = (JFormattedTextField)getComponent();
+    ftf.setBackground(java.awt.Color.PINK);
     minimum = new Integer(min);
     maximum = new Integer(max);
 

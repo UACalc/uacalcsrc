@@ -140,6 +140,7 @@ public class OperationInputTable extends JPanel {
    * @return
    */
   public boolean stopCellEditing() {
+    if (table == null) return true;
     return table.getDefaultEditor(tableModel.getColumnClass(1)).stopCellEditing();
   }
 
