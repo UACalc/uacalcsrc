@@ -1,14 +1,14 @@
 package org.uacalc.ui;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.util.*;
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.ui.table.*;
 
 public class AlgebraEditor extends JPanel {

@@ -10,6 +10,8 @@ import java.util.prefs.*;
 
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.lat.*;
 import org.uacalc.io.*;
 

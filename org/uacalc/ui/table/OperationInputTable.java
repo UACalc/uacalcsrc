@@ -11,7 +11,7 @@ import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import org.uacalc.ui.table.OperationTableModel;
-import org.uacalc.alg.Operation;
+import org.uacalc.alg.op.Operation;
 
 
 public class OperationInputTable extends JPanel { 

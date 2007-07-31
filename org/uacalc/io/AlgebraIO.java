@@ -5,6 +5,9 @@ import java.io.*;
 import java.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.util.*;
 
 /**

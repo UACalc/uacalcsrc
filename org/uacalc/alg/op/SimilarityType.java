@@ -1,6 +1,6 @@
 /* SimilarityType.java (c) 2003/01/03  Ralph Freese */
 
-package org.uacalc.alg;
+package org.uacalc.alg.op;
 
 import java.util.*;
 

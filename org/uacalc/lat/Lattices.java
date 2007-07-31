@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.sublat.*;
 
 public class Lattices {

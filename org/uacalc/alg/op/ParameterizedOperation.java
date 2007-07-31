@@ -1,10 +1,12 @@
 /* BasicAlgebra.java (c) 2001/07/22  Ralph Freese and Emil Kiss */
 
-package org.uacalc.alg;
+package org.uacalc.alg.op;
 
 import java.util.*;
 //import org.uacalc.alg.ParameterizedAlgebra;
 import javax.script.*;
+
+import org.uacalc.alg.ParameterizedAlgebra;
 
 
 /**

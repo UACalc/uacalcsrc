@@ -5,6 +5,7 @@ package org.uacalc.alg.conlat;
 import org.uacalc.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
 
 
 import java.util.*;

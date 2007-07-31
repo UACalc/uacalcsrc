@@ -4,6 +4,10 @@ package org.uacalc.alg;
 
 import java.util.*;
 import org.uacalc.util.*;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
+import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.terms.*;
 //import org.apache.log4j.*;
 import java.util.logging.*;

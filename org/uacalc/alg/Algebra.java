@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.uacalc.alg.conlat.CongruenceLattice;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.SimilarityType;
 
 public interface Algebra {
 

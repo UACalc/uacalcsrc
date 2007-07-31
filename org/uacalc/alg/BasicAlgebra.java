@@ -5,6 +5,10 @@ package org.uacalc.alg;
 import java.util.*;
 
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.AbstractOperation;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
 
 /**

@@ -2,6 +2,9 @@ package org.uacalc.alg.sublat;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.util.*;
 import org.uacalc.lat.*;
 

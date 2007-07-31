@@ -3,6 +3,12 @@
 package org.uacalc.terms;
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.AbstractOperation;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
+import org.uacalc.alg.op.TermOperation;
+import org.uacalc.alg.op.TermOperationImp;
 import org.uacalc.util.*;
 import java.util.*;
 

@@ -1,8 +1,10 @@
 /* Operation.java (c) 2001/07/22  Ralph Freese and Emil Kiss */
 
-package org.uacalc.alg;
+package org.uacalc.alg.op;
 
 import java.util.List;
+
+import org.uacalc.alg.SmallAlgebra;
 import org.uacalc.terms.*;
 
 /**

@@ -2,9 +2,10 @@ package org.uacalc.ui.table;
 
 import javax.swing.table.AbstractTableModel;
 import java.lang.System;
-import org.uacalc.alg.Operation;
-import org.uacalc.alg.OperationSymbol;
-import org.uacalc.alg.Operations;
+
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.util.Horner;
 import org.uacalc.util.SequenceGenerator;
 import org.uacalc.util.ArrayIncrementor;

@@ -12,6 +12,9 @@ import java.awt.Toolkit;
 import javax.swing.BorderFactory;
 import java.awt.event.*;
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.AbstractOperation;
+import org.uacalc.alg.op.Operation;
+
 import java.util.List;
 import java.util.ArrayList;
 

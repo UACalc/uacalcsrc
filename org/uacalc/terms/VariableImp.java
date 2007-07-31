@@ -4,6 +4,10 @@ package org.uacalc.terms;
 
 import java.util.*;
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.AbstractOperation;
+import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.TermOperation;
 import org.uacalc.util.SimpleList;
 
 /**

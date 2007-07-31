@@ -7,6 +7,7 @@ import org.uacalc.util.*;
 import org.uacalc.terms.*;
 
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.sublat.*;
 
 /**
