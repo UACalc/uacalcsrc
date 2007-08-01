@@ -445,6 +445,7 @@ public class UACalculator extends JFrame {
     algebra = alg;
     getAlgebraEditor().setAlgebra(alg);
     getLatDrawPanel().setDiagram(null);
+    //getLatDrawPanel().repaint();
   }
 
   public boolean isDirty() { return dirty; }
