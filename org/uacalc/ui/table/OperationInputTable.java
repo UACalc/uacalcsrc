@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import org.uacalc.ui.table.OperationTableModel;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 
 
 public class OperationInputTable extends JPanel { 
@@ -34,7 +35,7 @@ public class OperationInputTable extends JPanel {
   }
 
   public OperationInputTable(Operation op) {
-    this(op.arity(), op.getSetSize(), new OperationTableModel(op));
+    this(op.arity(), op.getSetSize(), new OperationTableModel(new OperationWithDefaultValue(op)));
   }
   
   public OperationInputTable(int arity, int setSize) {

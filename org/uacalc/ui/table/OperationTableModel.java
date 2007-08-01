@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 import java.lang.System;
 
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.util.Horner;
@@ -13,10 +14,10 @@ import org.uacalc.util.ArrayString;
 
 public class OperationTableModel extends AbstractTableModel {
 
-  Operation op = null;
+  OperationWithDefaultValue op = null;
   OperationSymbol opSym;
   
-  int defaultValue = -1;
+  //int defaultValue = -1;
   int[] valueTable;
   int[] diagIndices;
   int[][] leftArgsTable;// all but the last arg
@@ -30,7 +31,7 @@ public class OperationTableModel extends AbstractTableModel {
   static final String y = "y";
   static final String z = "z";
   
-  public OperationTableModel(Operation op) {
+  public OperationTableModel(OperationWithDefaultValue op) {
     this.op = op;
     setup();
   }
@@ -49,10 +50,11 @@ public class OperationTableModel extends AbstractTableModel {
   
   public OperationTableModel (OperationSymbol sym, int setSize,
                               boolean idempotent, int defaultValue) {
-    this.defaultValue = defaultValue;
+    //this.defaultValue = defaultValue;
     this.setSize = setSize;
     this.arity = sym.arity();
-    op = makeUndefinedOp(sym, setSize, idempotent);
+    //op = makeUndefinedOp(sym, setSize, idempotent);
+    op = new OperationWithDefaultValue(sym, setSize, defaultValue);
     setRowNames();
     setDiagDiv();
   }
@@ -105,6 +107,7 @@ public class OperationTableModel extends AbstractTableModel {
    * @param setSize
    * @return
    */
+  /*
   Operation makeUndefinedOp(OperationSymbol sym, int setSize, 
                                                  boolean idempotent) {
     final int arity = sym.arity();
@@ -135,6 +138,7 @@ public class OperationTableModel extends AbstractTableModel {
     if (idempotent) makeIdempotent();
     return Operations.makeIntOperation(sym, setSize, valueTable);
   }
+  */
   
   public boolean isIdempotentSet() {
     return idempotent;
@@ -168,11 +172,11 @@ public class OperationTableModel extends AbstractTableModel {
   }
   
   public int getDefaultValue() {
-    return defaultValue;
+    return getOperation().getDefaultValue();
   }
   
   public void setDefaultValue(int v) {
-    defaultValue = v;
+    getOperation().setDefaultValue(v);
   }
 
   public String getLastVariable() {
@@ -207,7 +211,7 @@ public class OperationTableModel extends AbstractTableModel {
   
   public int[] getValueTable() { return valueTable; }
   
-  public Operation getOperation() {
+  public OperationWithDefaultValue getOperation() {
     return op;
   }
   
@@ -243,10 +247,10 @@ public class OperationTableModel extends AbstractTableModel {
       return rowNames[rowIndex];
     }
     int val = op.intValueAt(rowColToArg(rowIndex, columnIndex));
-    if (val == -1) {
-      if (defaultValue == -1) return null;
-      return defaultValue;
-    }
+    //if (val == -1) {
+    //  if (op.getDefaultValue() == -1) return null;
+    //  return defaultValue;
+    //}
     if (val >= setSize) return null;
     return val;
   }
