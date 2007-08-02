@@ -31,7 +31,7 @@ public class UACalculator extends JFrame {
   private Tabs tabs;
   private JToolBar toolBar;
   
-  
+  private final Random random = new Random();
   
   JCheckBoxMenuItem showDiagLabelsCB;
 
@@ -441,11 +441,27 @@ public class UACalculator extends JFrame {
 
   public SmallAlgebra getAlgebra() { return algebra; }
   
-  public void setAlgebra(SmallAlgebra alg) { 
-    algebra = alg;
+  public void setAlgebra(SmallAlgebra alg) {
+    updateAlgebra(alg);
     getAlgebraEditor().setAlgebra(alg);
+  }
+  
+  public Random getRandom() {
+    return random;
+  }
+  
+  public void setRandomSeed(long seed) {
+    random.setSeed(seed);
+  }
+  
+  /**
+   * Called from the edit window after the user sync's it.
+   * 
+   * @param alg
+   */
+  public void updateAlgebra(SmallAlgebra alg) {
+    algebra = alg;
     getLatDrawPanel().setDiagram(null);
-    //getLatDrawPanel().repaint();
   }
 
   public boolean isDirty() { return dirty; }

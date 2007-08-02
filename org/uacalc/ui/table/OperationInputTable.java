@@ -34,8 +34,12 @@ public class OperationInputTable extends JPanel {
     super();
   }
 
-  public OperationInputTable(Operation op) {
-    this(op.arity(), op.getSetSize(), new OperationTableModel(new OperationWithDefaultValue(op)));
+  //public OperationInputTable(Operation op) {
+  //  this(op.arity(), op.getSetSize(), new OperationTableModel(new OperationWithDefaultValue(op)));
+  //}
+  
+  public OperationInputTable(OperationWithDefaultValue op) {
+    this(op.arity(), op.getSetSize(), new OperationTableModel(op));
   }
   
   public OperationInputTable(int arity, int setSize) {
@@ -48,7 +52,6 @@ public class OperationInputTable extends JPanel {
     this.setSize = setSize;
     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setLayout(new BorderLayout());
-
     if (model == null) model = new OperationTableModel(arity, setSize, false, -1);
     tableModel = model;
     table = new JTable(tableModel);
@@ -87,7 +90,9 @@ public class OperationInputTable extends JPanel {
     mainPanel.add(Box.createHorizontalGlue());
 
     defaultValueComboBox = makeDefaultValueBox(setSize);
+    System.out.println("max size is " + defaultValueComboBox.getMaximumSize());
     defaultValueComboBox.setPreferredSize(new Dimension(1, 1));
+    defaultValueComboBox.setMaximumSize(new Dimension(8000, 8000));
 
     JPanel optionPanel = new JPanel();
     optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.X_AXIS));
@@ -146,8 +151,9 @@ public class OperationInputTable extends JPanel {
   }
 
   private JComboBox makeDefaultValueBox(final int setSize) {
-    String[] data = new String[setSize + 1];
+    String[] data = new String[setSize + 2];
     data[0] = "none";
+    data[setSize + 1] = "random";
     for (int i = 0; i < setSize; i++) {
       data[i+1] = "" + i;
     }
@@ -157,6 +163,10 @@ public class OperationInputTable extends JPanel {
         //JComboBox cb = (JComboBox)e.getSource();
         int index = box.getSelectedIndex();
         System.out.println("selected index = " + index);
+        if (index == setSize + 1) {
+          tableModel.setDefaultValue(-2);
+          repaint();
+        }
         if (index > 0 && index <= setSize) { 
           System.out.println("default value = " + (index - 1));
           tableModel.setDefaultValue(index - 1);

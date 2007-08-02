@@ -247,6 +247,7 @@ public class OperationTableModel extends AbstractTableModel {
       return rowNames[rowIndex];
     }
     int val = op.intValueAt(rowColToArg(rowIndex, columnIndex));
+    if (val == -1) return null;
     //if (val == -1) {
     //  if (op.getDefaultValue() == -1) return null;
     //  return defaultValue;

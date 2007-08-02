@@ -17,10 +17,15 @@ public class OperationWithDefaultValue extends AbstractOperation {
     super(op.symbol(), op.getSetSize());
     this.defaultValue = -1;
     this.op = op;
+    this.valueTable = op.getTable();
   }
   
   public OperationWithDefaultValue(String name, int arity, int algSize, int defaultValue) {
     this(new OperationSymbol(name, arity), algSize, null, defaultValue);
+  }
+  
+  public OperationWithDefaultValue(OperationSymbol sym, int algSize) {
+    this(sym, algSize, null, -1);
   }
   
   public OperationWithDefaultValue(OperationSymbol sym, int algSize, int defaultValue) {
@@ -29,7 +34,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
 
   public OperationWithDefaultValue(OperationSymbol sym, int algSize, int[] valueTable, int defaultValue) {
     super(sym, algSize);
-    if (valueTable == null) valueTable = makeValueTable();
+    if (valueTable == null) valueTable = makeMinusOneValueTable();
     this.valueTable = valueTable;
     this.defaultValue = defaultValue;
     op = Operations.makeIntOperation(sym, algSize, valueTable);
@@ -39,7 +44,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
     this(new OperationSymbol(name, arity), algSize, valueTable, defaultValue);
   }
   
-  private int[] makeValueTable() {
+  private int[] makeMinusOneValueTable() {
     int n = 1;
     final int s = symbol().arity();
     for (int i = 0; i < s; i++) {
@@ -50,6 +55,15 @@ public class OperationWithDefaultValue extends AbstractOperation {
       ans[i] = -1;
     }
     return ans;
+  }
+  
+  public boolean isTotal() {
+    if (defaultValue >= 0) return true;
+    final int[] tab = getTable();
+    for (int i = 0; i < tab.length; i++) {
+      if (tab[i] < 0) return false;
+    }
+    return true;
   }
   
   public int getDefaultValue() { return defaultValue; }
@@ -72,7 +86,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
    * 
    * @return an operation or null if the defaultValue is -1 and there is a -1 in the table
    */
-  public Operation makeOperation() {
+  public Operation makeOrdinaryOperation() {
     final int n = valueTable.length;
     final int[] vt = new int[n];
     for (int i = 0; i < n; i++) {

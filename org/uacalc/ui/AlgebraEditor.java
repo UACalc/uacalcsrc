@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.ui.table.*;
@@ -17,7 +18,12 @@ public class AlgebraEditor extends JPanel {
   private int card = -1;
   private String algName;
   private String desc;
-  private SmallAlgebra alg;
+  //private SmallAlgebra alg;
+  private int algSize;
+  private java.util.List<OperationWithDefaultValue> opList;
+  private java.util.List<OperationSymbol> symbolList;
+  private java.util.Map<OperationSymbol,OperationWithDefaultValue> opMap;
+  
   
   private JPanel main;
   private JToolBar toolBar;
@@ -69,7 +75,7 @@ public class AlgebraEditor extends JPanel {
         OpSymItem item = (OpSymItem)ops_cb.getSelectedItem();
         if (item == null) return;
         OperationSymbol opSym = item.getOperationSymbol();
-        Operation op = alg.getOperation(opSym);
+        OperationWithDefaultValue op = opMap.get(opSym);
         OperationInputTable opTable = new OperationInputTable(op);
         setOperationTable(opTable);
         validate();
@@ -111,7 +117,13 @@ public class AlgebraEditor extends JPanel {
   }
   
   private void addOperation(String name, int arity) {
-    int n = 1, card = alg.cardinality();
+    OperationSymbol sym = new OperationSymbol(name, arity);
+    OperationWithDefaultValue op = new OperationWithDefaultValue(sym, algSize);
+    opList.add(op);
+    symbolList.add(sym);
+    opMap.put(sym, op);
+    /*
+    int n = 1, card = algSize;
     for (int k = 0; k < arity; k++) {
       n = n * card;
     }
@@ -133,18 +145,30 @@ public class AlgebraEditor extends JPanel {
     SmallAlgebra alg2 = new BasicAlgebra(name_tf.getText(), alg.cardinality(), ops2);
     setAlgebra(alg2);
     ops_cb.setSelectedIndex(alg2.operations().size() - 1);
+    */
+    ops_cb.addItem(makeOpItem(sym));
+    ops_cb.setSelectedIndex(opList.size() - 1);
     repaint();
   }
   
-  public Operation getCurrentOperation() {
+  public OperationSymbol getCurrentSymbol() {
     OpSymItem item = (OpSymItem)ops_cb.getSelectedItem();
     if (item == null) return null;
-    OperationSymbol opSym = item.getOperationSymbol();
-    return alg.getOperation(opSym);
+    return item.getOperationSymbol();
+  }
+  
+  public OperationWithDefaultValue getCurrentOperation() {
+    return opMap.get(getCurrentSymbol());
   }
   
   public void removeCurrentOperation() {
+    OperationSymbol sym = getCurrentSymbol();
+    if (sym == null) return;
     Operation op = getCurrentOperation();
+    opList.remove(op);
+    symbolList.remove(sym);
+    opMap.remove(sym);
+    /*
     if (op == null) return;
     java.util.List<Operation> ops = alg.operations();
     java.util.List<Operation> ops2 = new ArrayList<Operation>();
@@ -155,6 +179,7 @@ public class AlgebraEditor extends JPanel {
     // we also need to save the original algebra for undo/redo ???????????
     SmallAlgebra alg2 = new BasicAlgebra(name_tf.getText(), alg.cardinality(), ops2);
     setAlgebra(alg2);
+    */
     repaint();
   }
   
@@ -183,7 +208,7 @@ public class AlgebraEditor extends JPanel {
           uacalc.beep();
           return;
         }
-        alg = null;
+        //alg = null;
         setupNewAlgebra();
         repaint();
       }
@@ -193,13 +218,41 @@ public class AlgebraEditor extends JPanel {
     toolBar.add(syncBut);
     syncBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (opTablePanel.stopCellEditing()) {
-          uacalc.setAlgebra(alg);
-          repaint();
+        if (!opTablePanel.stopCellEditing()) {
+          uacalc.beep();
+          return;
         }
-        else uacalc.beep();
+        SmallAlgebra alg = makeAlgebra();
+        if (alg == null) {
+          uacalc.beep();
+          JOptionPane.showMessageDialog(uacalc,
+              "<html><center>Not all operations are total.<br>" 
+              + "Fill in the tables<br>"
+              + "or set a default value.</center></html>",
+              "Incomplete operation(s)",
+              JOptionPane.WARNING_MESSAGE);
+          return;
+        }
+        uacalc.updateAlgebra(makeAlgebra());
+        repaint();
       }
     });
+  }
+  
+  /**
+   * Make an algebra from the operations.
+   * 
+   * @return
+   */
+  public SmallAlgebra makeAlgebra() {
+    java.util.List<Operation> ops = new ArrayList<Operation>(opList.size());
+    for (OperationWithDefaultValue op : opList) {
+      if (op.isTotal()) ops.add(op.makeOrdinaryOperation());
+      else return null;
+    }
+    SmallAlgebra alg = new BasicAlgebra(name_tf.getText(), algSize, ops);
+    //alg.setDescription(desc_tf.getText());
+    return alg;
   }
   
   public JToolBar getToolBar() {
@@ -207,15 +260,32 @@ public class AlgebraEditor extends JPanel {
     return toolBar; 
   }
   
+  /*
   public SmallAlgebra getAlgebra() {
     return alg;
   }
+  */
   
   public void setAlgebra(SmallAlgebra alg) {
-    this.alg = alg;
-    setAlgebra();
+    //this.alg = alg;
+    algSize = alg.cardinality();
+    java.util.List<Operation> ops = alg.operations();
+    symbolList = new ArrayList<OperationSymbol>();
+    opList = new ArrayList<OperationWithDefaultValue>();
+    opMap = new HashMap<OperationSymbol,OperationWithDefaultValue>();
+    for (Operation op : ops) {
+      symbolList.add(op.symbol());
+      OperationWithDefaultValue op2 = new OperationWithDefaultValue(op);
+      opList.add(op2);
+      opMap.put(op.symbol(), op2);
+    }
+    name_tf.setText(alg.name());
+    card_tf.setText("" + alg.cardinality());
+    desc_tf.setText(alg.description());
+    setOpsCB();
   }
   
+  /*
   public void setAlgebra() {
     SmallAlgebra alg = getAlgebra();
     if (alg == null) return;
@@ -224,6 +294,7 @@ public class AlgebraEditor extends JPanel {
     desc_tf.setText(alg.description());
     setOpsCB();
   }
+  */
   
   /**
    * A cute hack to get the toString method of an OperationSymbol to
@@ -235,20 +306,22 @@ public class AlgebraEditor extends JPanel {
     public OperationSymbol getOperationSymbol();
   }
   
+  private OpSymItem makeOpItem(final OperationSymbol opSym) {
+    OpSymItem item = new OpSymItem() {
+      public OperationSymbol getOperationSymbol() {
+        return opSym;
+      }
+      public String toString() {
+        return opSym.name() + " (" + opSym.arity() + ")";
+      }
+    };
+    return item;
+  }
+  
   private void setOpsCB() {
     ops_cb.removeAllItems();
-    java.util.List<OperationSymbol> opSyms 
-               = getAlgebra().similarityType().getOperationSymbols();
-    for (final OperationSymbol opSym : opSyms) {
-      OpSymItem item = new OpSymItem() {
-        public OperationSymbol getOperationSymbol() {
-          return opSym;
-        }
-        public String toString() {
-          return opSym.name() + " (" + opSym.arity() + ")";
-        }
-      };
-      ops_cb.addItem(item);
+    for (final OperationSymbol opSym : symbolList) {
+      ops_cb.addItem(makeOpItem(opSym));
     }
   }
   
