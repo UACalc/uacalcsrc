@@ -1,6 +1,9 @@
 package org.uacalc.alg.op;
 
 import java.util.List;
+import java.util.Random;
+import org.uacalc.util.Horner;
+import org.uacalc.util.ArrayString;
 
 /**
  * A convenience class for the UI.
@@ -12,36 +15,61 @@ public class OperationWithDefaultValue extends AbstractOperation {
   
   private int defaultValue;
   private Operation op;
+  private int[] randomValueTable;
+  private Random random;
   
-  public OperationWithDefaultValue(Operation op) {
+  public OperationWithDefaultValue(Operation op, Random random) {
     super(op.symbol(), op.getSetSize());
     this.defaultValue = -1;
     this.op = op;
     this.valueTable = op.getTable();
+    this.random = random;
   }
   
-  public OperationWithDefaultValue(String name, int arity, int algSize, int defaultValue) {
-    this(new OperationSymbol(name, arity), algSize, null, defaultValue);
+  public OperationWithDefaultValue(String name, int arity, int algSize, 
+                                        int defaultValue, Random random) {
+    this(new OperationSymbol(name, arity), algSize, null, defaultValue, random);
   }
   
-  public OperationWithDefaultValue(OperationSymbol sym, int algSize) {
-    this(sym, algSize, null, -1);
+  public OperationWithDefaultValue(OperationSymbol sym, int algSize, Random random) {
+    this(sym, algSize, null, -1, random);
   }
   
-  public OperationWithDefaultValue(OperationSymbol sym, int algSize, int defaultValue) {
-    this(sym, algSize, null, defaultValue);
+  public OperationWithDefaultValue(OperationSymbol sym, int algSize, int defaultValue, Random random) {
+    this(sym, algSize, null, defaultValue, random);
   }
 
-  public OperationWithDefaultValue(OperationSymbol sym, int algSize, int[] valueTable, int defaultValue) {
+  public OperationWithDefaultValue(OperationSymbol sym, int algSize, 
+                                   int[] valueTable, int defaultValue, Random random) {
     super(sym, algSize);
+    this.random = random;
     if (valueTable == null) valueTable = makeMinusOneValueTable();
     this.valueTable = valueTable;
     this.defaultValue = defaultValue;
     op = Operations.makeIntOperation(sym, algSize, valueTable);
   }
   
-  public OperationWithDefaultValue(String name, int arity, int algSize, int[] valueTable, int defaultValue) {
-    this(new OperationSymbol(name, arity), algSize, valueTable, defaultValue);
+  public OperationWithDefaultValue(String name, int arity, int algSize, 
+                           int[] valueTable, int defaultValue, Random random) {
+    this(new OperationSymbol(name, arity), algSize, valueTable, defaultValue, random);
+  }
+  
+  public void updateRandomValueTable() {
+    int n = 1;
+    final int s = symbol().arity();
+    for (int i = 0; i < s; i++) {
+      n = algSize * n;
+    }
+    int[] ans = new int[n];
+    for (int i = 0; i < n; i++) {
+      ans[i] = random.nextInt(algSize);
+    }
+    randomValueTable = ans;
+  }
+  
+  public int[] getRandomValueTable() {
+    if (randomValueTable == null) updateRandomValueTable();
+    return randomValueTable;
   }
   
   private int[] makeMinusOneValueTable() {
@@ -77,7 +105,10 @@ public class OperationWithDefaultValue extends AbstractOperation {
   
   public int intValueAt(int[] args) {
     int v = op.intValueAt(args);
-    if (v == -1) return defaultValue;
+    if (v == -1) {
+      if (defaultValue != -2) return defaultValue;
+      return getRandomValueTable()[Horner.horner(args, algSize)];
+    }
     return v;
   }
   

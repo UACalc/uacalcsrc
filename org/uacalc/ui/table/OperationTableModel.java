@@ -2,6 +2,7 @@ package org.uacalc.ui.table;
 
 import javax.swing.table.AbstractTableModel;
 import java.lang.System;
+import java.util.Random;
 
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationWithDefaultValue;
@@ -11,6 +12,7 @@ import org.uacalc.util.Horner;
 import org.uacalc.util.SequenceGenerator;
 import org.uacalc.util.ArrayIncrementor;
 import org.uacalc.util.ArrayString;
+
 
 public class OperationTableModel extends AbstractTableModel {
 
@@ -26,35 +28,39 @@ public class OperationTableModel extends AbstractTableModel {
   int setSize;
   int diagDiv;
   boolean idempotent;  // tells if the user has set this
+  
+  Random random;
 
   static final String x = "x";
   static final String y = "y";
   static final String z = "z";
   
-  public OperationTableModel(OperationWithDefaultValue op) {
+  public OperationTableModel(OperationWithDefaultValue op, Random random) {
+    this.random = random;
     this.op = op;
     setup();
   }
   
-  public OperationTableModel(int arity, int setSize) {
-    this(OperationSymbol.getOperationSymbol(arity), setSize, false, -1);
+  public OperationTableModel(int arity, int setSize, Random random) {
+    this(OperationSymbol.getOperationSymbol(arity), setSize, false, -1, random);
     //this.op = makeUndefinedOp(OperationSymbol.getOperationSymbol(arity), 
     //                                                     setSize, -1, false);
   }
   
   public OperationTableModel(int arity, int setSize, boolean idempotent, 
-                                                         int defaultValue) {
+                                        int defaultValue, Random random) {
     this(OperationSymbol.getOperationSymbol(arity), setSize, 
-                                                    idempotent, defaultValue);
+                                          idempotent, defaultValue, random);
   }
   
   public OperationTableModel (OperationSymbol sym, int setSize,
-                              boolean idempotent, int defaultValue) {
+                              boolean idempotent, int defaultValue, Random random) {
     //this.defaultValue = defaultValue;
+    this.random = random;
     this.setSize = setSize;
     this.arity = sym.arity();
     //op = makeUndefinedOp(sym, setSize, idempotent);
-    op = new OperationWithDefaultValue(sym, setSize, defaultValue);
+    op = new OperationWithDefaultValue(sym, setSize, defaultValue, random);
     setRowNames();
     setDiagDiv();
   }

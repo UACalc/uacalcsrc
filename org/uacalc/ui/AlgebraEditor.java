@@ -76,7 +76,8 @@ public class AlgebraEditor extends JPanel {
         if (item == null) return;
         OperationSymbol opSym = item.getOperationSymbol();
         OperationWithDefaultValue op = opMap.get(opSym);
-        OperationInputTable opTable = new OperationInputTable(op);
+        OperationInputTable opTable = 
+                    new OperationInputTable(op, uacalc.getRandom());
         setOperationTable(opTable);
         validate();
         repaint();
@@ -118,7 +119,18 @@ public class AlgebraEditor extends JPanel {
   
   private void addOperation(String name, int arity) {
     OperationSymbol sym = new OperationSymbol(name, arity);
-    OperationWithDefaultValue op = new OperationWithDefaultValue(sym, algSize);
+    if (symbolList.contains(sym)) {
+      uacalc.beep();
+      JOptionPane.showMessageDialog(uacalc,
+          "<html><center>There is already an operation with this symbol.<br>" 
+          + "Choose another sybmol.<br>"
+          + "</center></html>",
+          "Duplicate Operation Symbol",
+          JOptionPane.WARNING_MESSAGE);
+      return;
+    }
+    OperationWithDefaultValue op = 
+          new OperationWithDefaultValue(sym, algSize, uacalc.getRandom());
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
@@ -275,7 +287,8 @@ public class AlgebraEditor extends JPanel {
     opMap = new HashMap<OperationSymbol,OperationWithDefaultValue>();
     for (Operation op : ops) {
       symbolList.add(op.symbol());
-      OperationWithDefaultValue op2 = new OperationWithDefaultValue(op);
+      OperationWithDefaultValue op2 = 
+        new OperationWithDefaultValue(op, uacalc.getRandom());
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
@@ -372,7 +385,8 @@ public class AlgebraEditor extends JPanel {
   
   private String getAlgNameDialog() {
     String name = JOptionPane.showInputDialog(uacalc, "Short name (with no spaces) for the algebra?");
-    if (name == null || name.length() == 0 || name.indexOf(" ") > 0) {
+    if (name == null) return null;
+    if (name.length() == 0 || name.indexOf(" ") > 0) {
       JOptionPane.showMessageDialog(this,
           "name required, and no spaces",
           "Name format error",

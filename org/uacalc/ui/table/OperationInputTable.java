@@ -10,25 +10,22 @@ import java.awt.event.ActionListener;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Random;
 import org.uacalc.ui.table.OperationTableModel;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationWithDefaultValue;
+
 
 
 public class OperationInputTable extends JPanel { 
 
   private JTable table;
 
-  private JCheckBox rowCheck;
-  private JCheckBox columnCheck;
-  private JCheckBox cellCheck;
-  private ButtonGroup buttonGroup;
-  private JTextArea output;
-
   private OperationTableModel tableModel;
   private int arity;
   private int setSize;
   private JComboBox defaultValueComboBox;
+  private Random random;
   
   public OperationInputTable() {
     super();
@@ -38,21 +35,23 @@ public class OperationInputTable extends JPanel {
   //  this(op.arity(), op.getSetSize(), new OperationTableModel(new OperationWithDefaultValue(op)));
   //}
   
-  public OperationInputTable(OperationWithDefaultValue op) {
-    this(op.arity(), op.getSetSize(), new OperationTableModel(op));
+  public OperationInputTable(OperationWithDefaultValue op, Random random) {
+    this(op.arity(), op.getSetSize(), new OperationTableModel(op,random), random);
   }
   
-  public OperationInputTable(int arity, int setSize) {
-    this(arity, setSize, null);
+  public OperationInputTable(int arity, int setSize, Random random) {
+    this(arity, setSize, null, random);
   }
   
-  public OperationInputTable(int arity, int setSize, OperationTableModel model) {
+  public OperationInputTable(int arity, int setSize, 
+                             OperationTableModel model, Random random) {
     super();
+    this.random = random;
     this.arity = arity;
     this.setSize = setSize;
     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setLayout(new BorderLayout());
-    if (model == null) model = new OperationTableModel(arity, setSize, false, -1);
+    if (model == null) model = new OperationTableModel(arity, setSize, false, -1, random);
     tableModel = model;
     table = new JTable(tableModel);
     table.setPreferredScrollableViewportSize(
@@ -151,9 +150,10 @@ public class OperationInputTable extends JPanel {
   }
 
   private JComboBox makeDefaultValueBox(final int setSize) {
-    String[] data = new String[setSize + 2];
+    String[] data = new String[setSize + 3];
     data[0] = "none";
     data[setSize + 1] = "random";
+    data[setSize + 2] = "new random";
     for (int i = 0; i < setSize; i++) {
       data[i+1] = "" + i;
     }
@@ -163,6 +163,12 @@ public class OperationInputTable extends JPanel {
         //JComboBox cb = (JComboBox)e.getSource();
         int index = box.getSelectedIndex();
         System.out.println("selected index = " + index);
+        if (index == setSize + 2) {
+          tableModel.getOperation().updateRandomValueTable();
+          tableModel.setDefaultValue(-2);
+          box.setSelectedIndex(setSize + 1);
+          repaint();
+        }
         if (index == setSize + 1) {
           tableModel.setDefaultValue(-2);
           repaint();
@@ -228,7 +234,7 @@ public class OperationInputTable extends JPanel {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     //Create and set up the content pane.
-    OperationInputTable newContentPane = new OperationInputTable(3, 4);
+    OperationInputTable newContentPane = new OperationInputTable(3, 4, new Random());
     newContentPane.setOpaque(true); //content panes must be opaque
     frame.setContentPane(newContentPane);
 
