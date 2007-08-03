@@ -115,6 +115,12 @@ public class UACalculator extends JFrame {
     openMI.setMnemonic(KeyEvent.VK_O);
     KeyStroke cntrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK);
     openMI.setAccelerator(cntrlO);
+    
+    icon = new ImageIcon(cl.getResource("images/Save16.gif"));
+    JMenuItem saveMI = (JMenuItem) file.add(new JMenuItem("Save", icon));
+    saveMI.setMnemonic(KeyEvent.VK_S);
+    KeyStroke cntrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK);
+    saveMI.setAccelerator(cntrlS);
 
     icon = new ImageIcon(cl.getResource("org/uacalc/ui/images/SaveAs16.gif"));
 
@@ -146,6 +152,16 @@ public class UACalculator extends JFrame {
         }
       });
 
+    saveMI.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+          save();
+        }
+        catch (IOException ex) {
+          System.err.println("IO error in saving: " + ex.getMessage());
+        }
+      }
+    });
 
     JMenuItem exitMI = (JMenuItem)file.add(new JMenuItem("Exit"));
     exitMI.setMnemonic(KeyEvent.VK_X);
@@ -209,6 +225,8 @@ public class UACalculator extends JFrame {
              }
           }
       });
+    
+    
 
     exitMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -320,11 +338,23 @@ public class UACalculator extends JFrame {
     }
     repaint();
   }
+  
+  public boolean save() throws IOException {
+    if (getAlgebra() == null) return true;
+    File f = getCurrentFile();
+    if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
+    String ext = ExtFileFilter.getExtension(f);
+    boolean newFormat = true;
+    if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
+    AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
+    
+    return true;
+  }
 
   public boolean saveAs(String ext) throws IOException {
     if (getAlgebra() == null) return true;
     boolean newFormat = true;
-    if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
+    if (ext.equals(org.uacalc.io.ExtFileFilter.ALGEBRA_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
     JFileChooser fileChooser;
@@ -365,6 +395,7 @@ public class UACalculator extends JFrame {
       }
       AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
       // setModified(false);
+      setCurrentFile(f);
       setTitle();
       return true;
     }

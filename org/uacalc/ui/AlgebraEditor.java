@@ -76,9 +76,11 @@ public class AlgebraEditor extends JPanel {
         if (item == null) return;
         OperationSymbol opSym = item.getOperationSymbol();
         OperationWithDefaultValue op = opMap.get(opSym);
-        OperationInputTable opTable = 
+        if (op != null) {
+          OperationInputTable opTable = 
                     new OperationInputTable(op, uacalc.getRandom());
-        setOperationTable(opTable);
+          setOperationTable(opTable);
+        }
         validate();
         repaint();
       }
@@ -101,7 +103,11 @@ public class AlgebraEditor extends JPanel {
     });
     addOpButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (!opTablePanel.stopCellEditing()) {
+        if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
+          uacalc.beep();
+          return;
+        }
+        if (opList == null) {  // algebra 
           uacalc.beep();
           return;
         }
@@ -174,24 +180,15 @@ public class AlgebraEditor extends JPanel {
   }
   
   public void removeCurrentOperation() {
+    ops_cb.remove(ops_cb.getSelectedIndex());
     OperationSymbol sym = getCurrentSymbol();
     if (sym == null) return;
     Operation op = getCurrentOperation();
     opList.remove(op);
     symbolList.remove(sym);
     opMap.remove(sym);
-    /*
-    if (op == null) return;
-    java.util.List<Operation> ops = alg.operations();
-    java.util.List<Operation> ops2 = new ArrayList<Operation>();
-    for (Operation f : ops) {
-      if (!f.equals(op)) ops2.add(f);
-    }
-    // when we get symbolic universes we need to change this !!!!!!!!!!!!!
-    // we also need to save the original algebra for undo/redo ???????????
-    SmallAlgebra alg2 = new BasicAlgebra(name_tf.getText(), alg.cardinality(), ops2);
-    setAlgebra(alg2);
-    */
+    setOpsCB();
+    if (opList.size() == 0 && opTablePanel != null) main.remove(opTablePanel);
     repaint();
   }
   
