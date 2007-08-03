@@ -89,9 +89,9 @@ public class OperationInputTable extends JPanel {
     mainPanel.add(Box.createHorizontalGlue());
 
     defaultValueComboBox = makeDefaultValueBox(setSize);
-    System.out.println("max size is " + defaultValueComboBox.getMaximumSize());
+    //System.out.println("max size is " + defaultValueComboBox.getMaximumSize());
     defaultValueComboBox.setPreferredSize(new Dimension(1, 1));
-    defaultValueComboBox.setMaximumSize(new Dimension(8000, 8000));
+    defaultValueComboBox.setMaximumSize(new Dimension(10000, 8000));
 
     JPanel optionPanel = new JPanel();
     optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.X_AXIS));
@@ -162,7 +162,6 @@ public class OperationInputTable extends JPanel {
       public void actionPerformed(ActionEvent e) {
         //JComboBox cb = (JComboBox)e.getSource();
         int index = box.getSelectedIndex();
-        System.out.println("selected index = " + index);
         if (index == setSize + 2) {
           tableModel.getOperation().updateRandomValueTable();
           tableModel.setDefaultValue(-2);
@@ -174,7 +173,6 @@ public class OperationInputTable extends JPanel {
           repaint();
         }
         if (index > 0 && index <= setSize) { 
-          System.out.println("default value = " + (index - 1));
           tableModel.setDefaultValue(index - 1);
           repaint();
         }

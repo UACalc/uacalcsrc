@@ -86,7 +86,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
   }
   
   public boolean isTotal() {
-    if (defaultValue >= 0) return true;
+    if (defaultValue >= 0 || defaultValue == -2) return true;
     final int[] tab = getTable();
     for (int i = 0; i < tab.length; i++) {
       if (tab[i] < 0) return false;
@@ -123,7 +123,8 @@ public class OperationWithDefaultValue extends AbstractOperation {
     for (int i = 0; i < n; i++) {
       if (valueTable[i] == -1) {
         if (defaultValue == -1) return null;
-        vt[i] = defaultValue;
+        if (defaultValue == -2) vt[i] = getRandomValueTable()[i];
+        else vt[i] = defaultValue;
       }
       else vt[i] = valueTable[i];
     }
