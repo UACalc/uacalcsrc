@@ -26,6 +26,7 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
 
   public final static String ALGEBRA_EXT = "alg";
   public final static String XML_EXT = "xml";
+  public final static String UAC_EXT = "uac";
 
   List exts;
   String description;
