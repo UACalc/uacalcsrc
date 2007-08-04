@@ -96,7 +96,7 @@ public final class AlgebraIO {
                                throws IOException, BadAlgebraFileException {
     String[] sp = ExtFileFilter.splitOffExtension(f);
     if (sp[1] != null 
-                   && ExtFileFilter.ALGEBRA_EXT.equals(sp[1].toLowerCase())) {
+                   && ExtFileFilter.ALG_EXT.equals(sp[1].toLowerCase())) {
       SmallAlgebra alg = readAlgebraFile(f);
       AlgebraWriter xmlWriter = 
                 new AlgebraWriter(alg, sp[0] + "." + ExtFileFilter.XML_EXT);

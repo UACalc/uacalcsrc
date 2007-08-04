@@ -24,10 +24,10 @@ import java.util.*;
  */
 public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
 
-  public final static String ALGEBRA_EXT = "alg";
+  public final static String ALG_EXT = "alg";
   public final static String XML_EXT = "xml";
   public final static String UAC_EXT = "uac";
-  public static String UA_EXT = "ua";
+  public final static String UA_EXT = "ua";
 
   List exts;
   String description;

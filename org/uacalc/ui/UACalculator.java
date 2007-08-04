@@ -354,7 +354,7 @@ public class UACalculator extends JFrame {
   public boolean saveAs(String ext) throws IOException {
     if (getAlgebra() == null) return true;
     boolean newFormat = true;
-    if (ext.equals(org.uacalc.io.ExtFileFilter.ALGEBRA_EXT)) newFormat = false;
+    if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
     JFileChooser fileChooser;
