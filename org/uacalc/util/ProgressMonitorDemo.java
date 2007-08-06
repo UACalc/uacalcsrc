@@ -112,7 +112,8 @@ public class ProgressMonitorDemo extends JFrame {
     
     public static void main(String[] args) 
                             throws IOException, BadAlgebraFileException {
-        SmallAlgebra alg = AlgebraIO.readAlgebraFile(args[0]);
+        //SmallAlgebra alg = AlgebraIO.readAlgebraFile(args[0]);
+        SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/test2.ua");
         //Task task = ((CongruenceLattice)alg.con()).getUniverseTask();
         //JFrame frame = new ProgressMonitorDemo(task);
         JFrame frame = new ProgressMonitorDemo(alg);

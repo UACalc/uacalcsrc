@@ -22,6 +22,7 @@ public class UACalculator extends JFrame {
 
   private SmallAlgebra algebra;  // Small ??
   private File currentFile;
+  private String title;  // if currentFile is null this might be "New"
   private String currentFolder;
   private JPanel mainPanel;
   private JPanel bottomPanel;
@@ -116,7 +117,7 @@ public class UACalculator extends JFrame {
     KeyStroke cntrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK);
     openMI.setAccelerator(cntrlO);
     
-    icon = new ImageIcon(cl.getResource("images/Save16.gif"));
+    icon = new ImageIcon(cl.getResource("org/uacalc/ui/images/Save16.gif"));
     JMenuItem saveMI = (JMenuItem) file.add(new JMenuItem("Save", icon));
     saveMI.setMnemonic(KeyEvent.VK_S);
     KeyStroke cntrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK);
@@ -125,15 +126,15 @@ public class UACalculator extends JFrame {
     icon = new ImageIcon(cl.getResource("org/uacalc/ui/images/SaveAs16.gif"));
 
     JMenu saveAsMenu = (JMenu)file.add(new JMenu("Save As"));
-    JMenuItem saveAsXMLMI
-      = (JMenuItem)saveAsMenu.add(new JMenuItem("XML file", icon));
+    JMenuItem saveAsUAMI
+      = (JMenuItem)saveAsMenu.add(new JMenuItem("ua file (new format", icon));
     JMenuItem saveAsAlgMI
       = (JMenuItem)saveAsMenu.add(new JMenuItem("alg file (old format)", icon));
 
-    saveAsXMLMI.addActionListener(new ActionListener() {
+    saveAsUAMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           try {
-            saveAs(ExtFileFilter.XML_EXT);
+            saveAs(ExtFileFilter.UA_EXT);
           }
           catch (IOException ex) {
             System.err.println("IO error in saving: " + ex.getMessage());
@@ -230,7 +231,14 @@ public class UACalculator extends JFrame {
 
     exitMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          System.exit(0);
+          if (isDirty()) {
+            if (checkSave()) {
+              System.exit(0);
+            }
+          }
+          else {
+            System.exit(0);
+          }
         }
       });
 
@@ -340,6 +348,7 @@ public class UACalculator extends JFrame {
   }
   
   public boolean save() throws IOException {
+    if (!getAlgebraEditor().sync()) return false;
     if (getAlgebra() == null) return true;
     File f = getCurrentFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
@@ -347,7 +356,7 @@ public class UACalculator extends JFrame {
     boolean newFormat = true;
     if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
     AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
-    
+    setDirty(false);
     return true;
   }
 
@@ -365,8 +374,8 @@ public class UACalculator extends JFrame {
 
     fileChooser.addChoosableFileFilter(
          newFormat ? 
-         new ExtFileFilter("Alg Files New Format (*.xml)", 
-                            ExtFileFilter.XML_EXT) :
+         new ExtFileFilter("Alg Files New Format (*.ua, *.xml)", 
+                            ExtFileFilter.UA_EXTS) :
          new ExtFileFilter("Alg Files Old Format (*.alg)", 
                             ExtFileFilter.ALG_EXT));
     int option = fileChooser.showSaveDialog(this);
@@ -396,7 +405,7 @@ public class UACalculator extends JFrame {
       AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
       // setModified(false);
       setCurrentFile(f);
-      setTitle();
+      setDirty(false);
       return true;
     }
     return false;
@@ -462,6 +471,7 @@ public class UACalculator extends JFrame {
       setTitle();
       //setModified(false);
       setAlgebra(a);
+      setDirty(false);
     }
   }
 
@@ -496,16 +506,66 @@ public class UACalculator extends JFrame {
   }
 
   public boolean isDirty() { return dirty; }
+  
+  public void setDirty() {
+    setDirty(true);
+  }
 
+  public void setDirty(boolean v){
+    dirty = v;
+    setTitle();
+  }
+  
   public void beep() {
     Toolkit.getDefaultToolkit().beep();
   }
 
-  public void setTitle() { setTitle(currentFile.getName()); }
+  public void setTitle() {
+    if (currentFile == null) {
+      setTitle(title);
+    }
+    setTitle(currentFile.getName() + (dirty ? " **" : ""));
+  }
+  
+  public void setNew() {
+    currentFile = null;
+    this.title = "New **";
+    setTitle();
+  }
 
 
-  public boolean checkSave() { return true; }
+  //public boolean checkSave() { return true; }
 
+  public boolean checkSave() {
+    Object[] options = {"Save", "Discard", "Cancel"};
+    int n = JOptionPane.showOptionDialog(this,
+                                         "Do you want to save your algebra?",
+                                         "Save Your Algebra?",
+                                         JOptionPane.YES_NO_CANCEL_OPTION,
+                                         JOptionPane.QUESTION_MESSAGE,
+                                         null,
+                                         options,
+                                         options[0]);
+    if (n == JOptionPane.YES_OPTION) {
+         try {
+           return save();
+         }
+         catch (IOException ex) {
+           System.err.println("IO error in saving: " + ex.getMessage());
+           //setUserWarning("Error 187. File Not Saved. There is "
+           //               + "something wrong with your file.");
+         }
+         return false;
+    }
+    else if (n == JOptionPane.NO_OPTION) {
+      return true;
+    }
+    else {
+      return false;
+    }
+ }
+
+  
   // prefs stuff
 
   public Preferences getPrefs() {

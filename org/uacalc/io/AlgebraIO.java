@@ -38,7 +38,7 @@ public final class AlgebraIO {
   public static SmallAlgebra readAlgebraFile(File f) 
                                throws IOException, BadAlgebraFileException {
     String ext = ExtFileFilter.getExtension(f);
-    if (ext != null && ExtFileFilter.XML_EXT.equals(ext.toLowerCase())) {
+    if (ext != null && ExtFileFilter.UA_EXTS.contains(ext.toLowerCase())) {
       AlgebraReader r = new AlgebraReader(f);
       try {
         return r.readAlgebraFile();

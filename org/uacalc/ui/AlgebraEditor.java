@@ -78,7 +78,7 @@ public class AlgebraEditor extends JPanel {
         OperationWithDefaultValue op = opMap.get(opSym);
         if (op != null) {
           OperationInputTable opTable = 
-                    new OperationInputTable(op, uacalc.getRandom());
+                    new OperationInputTable(op, uacalc);
           setOperationTable(opTable);
         }
         validate();
@@ -227,25 +227,30 @@ public class AlgebraEditor extends JPanel {
     toolBar.add(syncBut);
     syncBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (!opTablePanel.stopCellEditing()) {
-          uacalc.beep();
-          return;
-        }
-        SmallAlgebra alg = makeAlgebra();
-        if (alg == null) {
-          uacalc.beep();
-          JOptionPane.showMessageDialog(uacalc,
-              "<html><center>Not all operations are total.<br>" 
-              + "Fill in the tables<br>"
-              + "or set a default value.</center></html>",
-              "Incomplete operation(s)",
-              JOptionPane.WARNING_MESSAGE);
-          return;
-        }
-        uacalc.updateAlgebra(makeAlgebra());
-        repaint();
+        sync();
       }
     });
+  }
+  
+  public boolean sync() {
+    if (!opTablePanel.stopCellEditing()) {
+      uacalc.beep();
+      return false;
+    }
+    SmallAlgebra alg = makeAlgebra();
+    if (alg == null) {
+      uacalc.beep();
+      JOptionPane.showMessageDialog(uacalc,
+          "<html><center>Not all operations are total.<br>" 
+          + "Fill in the tables<br>"
+          + "or set a default value.</center></html>",
+          "Incomplete operation(s)",
+          JOptionPane.WARNING_MESSAGE);
+      return false;
+    }
+    uacalc.updateAlgebra(makeAlgebra());
+    repaint();
+    return true;
   }
   
   /**
@@ -342,6 +347,7 @@ public class AlgebraEditor extends JPanel {
     if (card > 0) {
       setAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
       setOperationTable(new OperationInputTable());
+      uacalc.setDirty(true);
     }
   }
   

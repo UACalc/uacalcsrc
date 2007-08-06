@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 import java.lang.System;
 import java.util.Random;
 
+import org.uacalc.ui.UACalculator;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
@@ -16,6 +17,8 @@ import org.uacalc.util.ArrayString;
 
 public class OperationTableModel extends AbstractTableModel {
 
+  UACalculator uacalc;
+  
   OperationWithDefaultValue op = null;
   OperationSymbol opSym;
   
@@ -35,28 +38,30 @@ public class OperationTableModel extends AbstractTableModel {
   static final String y = "y";
   static final String z = "z";
   
-  public OperationTableModel(OperationWithDefaultValue op, Random random) {
-    this.random = random;
+  public OperationTableModel(OperationWithDefaultValue op, UACalculator uacalc) {
+    this.uacalc = uacalc;
+    this.random = uacalc.getRandom();
     this.op = op;
     setup();
   }
   
-  public OperationTableModel(int arity, int setSize, Random random) {
-    this(OperationSymbol.getOperationSymbol(arity), setSize, false, -1, random);
+  public OperationTableModel(int arity, int setSize, UACalculator uacalc) {
+    this(OperationSymbol.getOperationSymbol(arity), setSize, false, -1, uacalc);
     //this.op = makeUndefinedOp(OperationSymbol.getOperationSymbol(arity), 
     //                                                     setSize, -1, false);
   }
   
   public OperationTableModel(int arity, int setSize, boolean idempotent, 
-                                        int defaultValue, Random random) {
+                                        int defaultValue, UACalculator uacalc) {
     this(OperationSymbol.getOperationSymbol(arity), setSize, 
-                                          idempotent, defaultValue, random);
+                                          idempotent, defaultValue, uacalc);
   }
   
   public OperationTableModel (OperationSymbol sym, int setSize,
-                              boolean idempotent, int defaultValue, Random random) {
+                              boolean idempotent, int defaultValue, UACalculator uacalc) {
     //this.defaultValue = defaultValue;
-    this.random = random;
+    this.uacalc = uacalc;
+    this.random = uacalc.getRandom();
     this.setSize = setSize;
     this.arity = sym.arity();
     //op = makeUndefinedOp(sym, setSize, idempotent);
@@ -268,6 +273,7 @@ public class OperationTableModel extends AbstractTableModel {
     int value = ((Integer)val).intValue();
     if (value < 0 || value >= setSize) return;  // issue a warning
     valueTable[Horner.horner(rowColToArg(row, col), op.getSetSize())] = value;
+    uacalc.setDirty(true);
     fireTableCellUpdated(row, col);
   }
   

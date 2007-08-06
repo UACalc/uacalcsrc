@@ -14,12 +14,13 @@ import java.awt.event.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.util.Monitor;
 
 import java.util.List;
 import java.util.ArrayList;
 
 
-public class TaskRunner<T, V> extends SwingWorker<T, V> {
+public class TaskRunner<T> extends SwingWorker<T, String> {
   
   Task<T> task;
   
@@ -33,6 +34,10 @@ public class TaskRunner<T, V> extends SwingWorker<T, V> {
   
   public void done() {
     Toolkit.getDefaultToolkit().beep();
+    try {
+      if (!isCancelled()) System.out.println("ans: " + get());
+    }
+    catch (Exception e) { e.printStackTrace(); }
     //startButton.setEnabled(true);
     //setCursor(null); //turn off the wait cursor
     //output.append("Done!\n");
@@ -57,14 +62,15 @@ public class TaskRunner<T, V> extends SwingWorker<T, V> {
     };
     ops.add(meet);
     final SmallAlgebra semilat = new BasicAlgebra("semilat", 2, ops);
+    final Monitor monitor = new Monitor();
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
-        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 4);
-        return freeSemilattice.con().cardinality();
+        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
+        return freeSemilattice.con().cardinality(monitor);
       }
     };
-    final TaskRunner<Integer, String> runner = 
-            new TaskRunner<Integer, String>(task);
+    final TaskRunner<Integer> runner = 
+            new TaskRunner<Integer>(task);
     final Integer ans;
     JPanel panel = new JPanel(new BorderLayout());
     JButton startButton = new JButton("Start");
@@ -73,12 +79,12 @@ public class TaskRunner<T, V> extends SwingWorker<T, V> {
         public void actionPerformed(ActionEvent e) {
           runner.execute();
           output.append("Done!\n");
-          output.append("Answer\n");
-          try {
-            output.append(runner.get().toString());
-            output.append("\n\n\n");
-          }
-          catch (Exception ex) {ex.printStackTrace(); }
+          output.append("Answer: ");
+          //try {
+          //  output.append(runner.get().toString());
+          //  output.append("\n\n\n");
+          //}
+          //catch (Exception ex) {ex.printStackTrace(); }
         }
       });  
     
@@ -87,7 +93,9 @@ public class TaskRunner<T, V> extends SwingWorker<T, V> {
     cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if (task != null) {
+            System.out.println("cancelling ...");
             runner.cancel(true);
+            monitor.setCancelled(true);
           }
         }
       });

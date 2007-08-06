@@ -116,13 +116,20 @@ public class CongruenceLattice implements Lattice {
     return principalCongruences;
   }
   
-
   public int cardinality() {
-    return universe().size();
+    return cardinality(null);
   }
 
+  public int cardinality(Monitor monitor) {
+    return universe(monitor).size();
+  }
+  
   public Set universe() {
-    if (universe == null) makeUniverse();
+    return universe(null);
+  }
+
+  public Set universe(Monitor monitor) {
+    if (universe == null) makeUniverse(monitor);
     return universe;
   }
 
@@ -264,16 +271,19 @@ public class CongruenceLattice implements Lattice {
       };
   }
 
+  public void makeUniverse() {
+    makeUniverse(null);
+  }
+
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough
    * demand.
    */
-  public void makeUniverse() {
+  public void makeUniverse(final Monitor monitor) {
     ArrayList univ = new ArrayList(joinIrreducibles());
     HashSet hash = new HashSet(joinIrreducibles());
     sizeComputed = univ.size();
-    //int k = 0;
     makeUniverseK = 0;
     stopMakeUniverse = false;
     Iterator it = joinIrreducibles().iterator();
@@ -281,6 +291,7 @@ int k = 0;
     while (it.hasNext()) {
 System.out.println("k = " + k);
 k++;
+      if (monitor != null && monitor.isCancelled()) return;
       makeUniverseK++;
 //System.out.println("makeUniverseK = " + makeUniverseK);
 //System.out.println("sizeComputed = " + sizeComputed);

@@ -9,7 +9,6 @@
 
 package org.uacalc.io;
 
-import javax.swing.*;
 //import javax.swing.filechooser.*;
 import java.io.*;
 import java.util.*;
@@ -29,6 +28,12 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
   public final static String UAC_EXT = "uac";
   public final static String UA_EXT = "ua";
 
+  public final static List<String> UA_EXTS = new ArrayList<String>();
+  static {
+    UA_EXTS.add(UA_EXT);
+    UA_EXTS.add(XML_EXT);
+  }
+  
   List exts;
   String description;
 
@@ -78,10 +83,6 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
       ext = s.substring(i+1);
     }
     return ext;
-  }
-  
-  public void foo() {
-    
   }
 
   public static void main(String[] args) {
