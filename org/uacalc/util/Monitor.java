@@ -1,10 +1,15 @@
 package org.uacalc.util;
 
-import org.uacalc.ui.tm.*;
+import javax.swing.JTextArea;
 
 public class Monitor {
 
   private boolean cancelled = false;
+  private JTextArea textArea;
+  
+  public Monitor(JTextArea ta) {
+    this.textArea = ta;
+  }
   
   public boolean isCancelled() { return cancelled; }
   
@@ -12,6 +17,12 @@ public class Monitor {
   
   public void cancel() { cancelled = true; }
   
-  public void report(String s) { }
+  public void print(String s) {
+    textArea.append(s);
+  }
+  
+  public void println(String s) {
+    textArea.append(s + "\n");
+  }
   
 }

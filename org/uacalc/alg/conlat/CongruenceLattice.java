@@ -287,11 +287,16 @@ public class CongruenceLattice implements Lattice {
     makeUniverseK = 0;
     stopMakeUniverse = false;
     Iterator it = joinIrreducibles().iterator();
+    final int size = joinIrreducibles().size();
 int k = 0;
     while (it.hasNext()) {
 System.out.println("k = " + k);
 k++;
-      if (monitor != null && monitor.isCancelled()) return;
+      
+      if (monitor != null) {
+        if (monitor.isCancelled()) return;
+        else monitor.println("k = " + k + " of " + size);
+      }
       makeUniverseK++;
 //System.out.println("makeUniverseK = " + makeUniverseK);
 //System.out.println("sizeComputed = " + sizeComputed);
@@ -311,11 +316,11 @@ k++;
 	  //  Progress.ProgressLogAppend(
 	  //    "\n [ Number of congruences is already " + s);
 	  //}
-int s = univ.size();
-if ( s % 1000 == 0) {
-  System.out.println("size is " + s);
-}
-
+          int s = univ.size();
+          if ( s % 10000 == 0) {
+            System.out.println("size is " + s);
+            //if (monitor != null) monitor.println("size is " + s);
+          }
           hash.add(join);
           univ.add(join);
           sizeComputed++;

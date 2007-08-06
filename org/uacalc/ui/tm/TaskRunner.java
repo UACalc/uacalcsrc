@@ -62,7 +62,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     };
     ops.add(meet);
     final SmallAlgebra semilat = new BasicAlgebra("semilat", 2, ops);
-    final Monitor monitor = new Monitor();
+    final Monitor monitor = new Monitor(output);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
         FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
