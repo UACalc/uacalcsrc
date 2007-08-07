@@ -4,6 +4,7 @@ import javax.swing.SwingWorker;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -48,6 +49,9 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     final JTextArea output = new JTextArea(10,50);
     output.setMargin(new Insets(5,5,5,5));
     output.setEditable(false);
+    output.setAutoscrolls(true);
+    final JTextField passField = new JTextField(6);
+    final JTextField sizeField = new JTextField(12);
     List<Operation> ops = new ArrayList<Operation>();
     Operation meet = new AbstractOperation("meet", 2, 2) {
 
@@ -62,7 +66,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     };
     ops.add(meet);
     final SmallAlgebra semilat = new BasicAlgebra("semilat", 2, ops);
-    final Monitor monitor = new Monitor(output);
+    final Monitor monitor = new Monitor(output, sizeField, passField);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
         FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
@@ -103,6 +107,8 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(startButton);
     buttonPanel.add(cancelButton);
+    buttonPanel.add(passField);
+    buttonPanel.add(sizeField);
     //buttonPanel.add(progressBar);
 
     panel.add(buttonPanel, BorderLayout.PAGE_START);

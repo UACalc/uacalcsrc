@@ -295,7 +295,11 @@ k++;
       
       if (monitor != null) {
         if (monitor.isCancelled()) return;
-        else monitor.println("k = " + k + " of " + size);
+        else {
+          monitor.printlnToLog("k = " + k + " of " + size);
+          monitor.setPassFieldText(k + " of " + size);
+          monitor.setSizeFieldText("" + univ.size());
+        }
       }
       makeUniverseK++;
 //System.out.println("makeUniverseK = " + makeUniverseK);
@@ -319,7 +323,7 @@ k++;
           int s = univ.size();
           if ( s % 10000 == 0) {
             System.out.println("size is " + s);
-            //if (monitor != null) monitor.println("size is " + s);
+            //if (monitor != null) monitor.printlnToLog("size is " + s);
           }
           hash.add(join);
           univ.add(join);
