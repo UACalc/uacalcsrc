@@ -517,6 +517,7 @@ System.out.println("so far: " + currentMark);
                                                closedMark, termMap, elt);
       }
     }
+    if (monitor != null) monitor.printlnToLog("subpower closing ...");
     final List lst = new ArrayList(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator it = elems.iterator(); it.hasNext(); ) {
@@ -524,7 +525,12 @@ System.out.println("so far: " + currentMark);
     }
     final HashSet su = new HashSet(lst);
     int currentMark = lst.size();
+    int pass = 0;
     while (closedMark < currentMark) {
+      if (monitor != null) {
+        monitor.setPassFieldText("" + pass++);
+        monitor.setSizeFieldText("" + lst.size());
+      }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
       for (Iterator it = operations().iterator(); it.hasNext(); ) {
@@ -605,6 +611,7 @@ System.out.println("so far: " + currentMark);
   private final List sgClosePower(final int algSize, List<Operation> ops, 
            List elems, int closedMark, final Map termMap, final  Object elt) {
 System.out.println("using power");
+    if (monitor != null) monitor.printlnToLog("subpower closing ...");
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -623,7 +630,12 @@ System.out.println("using power");
     }
     final HashSet su = new HashSet(lst);
     int currentMark = lst.size();
+    int pass = 0;
     while (closedMark < currentMark) {
+      if (monitor != null) {
+        monitor.setPassFieldText("" + pass++);
+        monitor.setSizeFieldText("" + lst.size());
+      }
       // close the elements in current
       for (int i = 0; i < k; i++) {
         final int arity = arities[i];

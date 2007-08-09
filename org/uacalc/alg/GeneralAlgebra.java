@@ -10,6 +10,7 @@ import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.util.Monitor;
 
 /**
  * This class represents general algebras that may or may not be
@@ -31,6 +32,8 @@ public class GeneralAlgebra implements Algebra {
   protected final String name;
   protected String description;
   protected int size;
+  
+  protected static Monitor monitor;
 
   protected GeneralAlgebra(String name) {
     this.name = name;
@@ -54,6 +57,9 @@ public class GeneralAlgebra implements Algebra {
     //}
   }
 
+  public static void setMonitor(Monitor m) { monitor = m; }
+  public static Monitor getMonitor() { return monitor; }
+  
   protected void setUniverse(Set univ) {
     this.universe = univ;
     this.size = univ.size();

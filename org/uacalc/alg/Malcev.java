@@ -24,10 +24,15 @@ public class Malcev {
   static {
     logger.setLevel(Level.FINER);
   }
+  static Monitor monitor;
 
   // make sure the class cannot be instantiated.
   private Malcev() {}
 
+  //public static Monitor getMonitor() { return monitor; }
+  public static void setMonitor(Monitor m) { monitor = m; }
+  
+  
   /**
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
@@ -206,6 +211,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    */
   public static List<Term> jonssonTerms(SmallAlgebra alg, 
                                         boolean alvinVariant) {
+    if (monitor != null) monitor.printlnToLog("find Jonsson terms"
+                                        + (alvinVariant ? " (ALV variant)" : ""));
     List<Term> ans = new ArrayList<Term>();
     if (alg.cardinality() == 1) {
       ans.add(Variable.x);

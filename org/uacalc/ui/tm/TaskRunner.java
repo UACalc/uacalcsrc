@@ -24,13 +24,23 @@ import java.util.ArrayList;
 public class TaskRunner<T> extends SwingWorker<T, String> {
   
   Task<T> task;
+  static final int memReserve = 1048576;
   
   public TaskRunner(Task<T> task) {
     this.task = task;
   }
   
   public T doInBackground() {
-    return task.doIt();
+    byte[] buf = new byte[memReserve];
+    try {
+      return task.doIt();
+    }
+    catch (OutOfMemoryError e) {
+      buf = null;
+      buf = new byte[1];
+      cancel(true);
+      return null;
+    }
   }
   
   public void done() {
@@ -67,6 +77,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     ops.add(meet);
     final SmallAlgebra semilat = new BasicAlgebra("semilat", 2, ops);
     final Monitor monitor = new Monitor(output, sizeField, passField);
+    GeneralAlgebra.setMonitor(monitor);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
         FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
@@ -83,7 +94,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
         public void actionPerformed(ActionEvent e) {
           runner.execute();
           output.append("Done!\n");
-          output.append("Answer: ");
+          output.append("Answer:\n");
           //try {
           //  output.append(runner.get().toString());
           //  output.append("\n\n\n");
