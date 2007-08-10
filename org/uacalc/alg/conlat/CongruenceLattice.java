@@ -44,6 +44,8 @@ public class CongruenceLattice implements Lattice {
   static {
     logger.setLevel(Level.FINER);
   }
+  
+  protected static Monitor monitor;
 
   private SmallAlgebra alg;
   private int algSize;
@@ -99,6 +101,9 @@ public class CongruenceLattice implements Lattice {
     zeroCong = BasicPartition.zero(algSize);
     oneCong = BasicPartition.one(algSize);
   }
+  
+  public static void setMonitor(Monitor m) { monitor = m; }
+  public static Monitor getMonitor() { return monitor; }
 
   public SmallAlgebra algebra() { return alg; }
 

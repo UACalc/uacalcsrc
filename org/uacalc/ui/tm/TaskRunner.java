@@ -93,8 +93,8 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     startButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           runner.execute();
-          output.append("Done!\n");
-          output.append("Answer:\n");
+          //output.append("Done!\n");
+          //output.append("Answer:\n");
           //try {
           //  output.append(runner.get().toString());
           //  output.append("\n\n\n");

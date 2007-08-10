@@ -517,7 +517,7 @@ System.out.println("so far: " + currentMark);
                                                closedMark, termMap, elt);
       }
     }
-    if (monitor != null) monitor.printlnToLog("subpower closing ...");
+    if (monitor != null) monitor.printStart("subpower closing ...");
     final List lst = new ArrayList(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator it = elems.iterator(); it.hasNext(); ) {
@@ -565,7 +565,10 @@ System.out.println("so far: " + currentMark);
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
-            if (v.equals(elt)) return lst;
+            if (v.equals(elt)) {
+              if (monitor != null) monitor.printEnd("closing done, found " + elt);
+              return lst;
+            }
           }
           if (!inc.increment()) break;
         }
@@ -588,6 +591,7 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
+    if (monitor != null) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
   }
 
