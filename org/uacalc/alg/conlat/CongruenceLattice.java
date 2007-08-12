@@ -122,19 +122,11 @@ public class CongruenceLattice implements Lattice {
   }
   
   public int cardinality() {
-    return cardinality(null);
+    return universe().size();
   }
 
-  public int cardinality(Monitor monitor) {
-    return universe(monitor).size();
-  }
-  
   public Set universe() {
-    return universe(null);
-  }
-
-  public Set universe(Monitor monitor) {
-    if (universe == null) makeUniverse(monitor);
+    if (universe == null) makeUniverse();
     return universe;
   }
 
@@ -276,16 +268,13 @@ public class CongruenceLattice implements Lattice {
       };
   }
 
-  public void makeUniverse() {
-    makeUniverse(null);
-  }
-
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough
    * demand.
    */
-  public void makeUniverse(final Monitor monitor) {
+  public void makeUniverse() {
+    if (monitor != null) monitor.printStart("finding the universe of Con of " + alg);
     ArrayList univ = new ArrayList(joinIrreducibles());
     HashSet hash = new HashSet(joinIrreducibles());
     sizeComputed = univ.size();
@@ -293,15 +282,18 @@ public class CongruenceLattice implements Lattice {
     stopMakeUniverse = false;
     Iterator it = joinIrreducibles().iterator();
     final int size = joinIrreducibles().size();
-int k = 0;
+    int k = 0;
     while (it.hasNext()) {
-System.out.println("k = " + k);
-k++;
+      System.out.println("k = " + k);
+      k++;
       
       if (monitor != null) {
-        if (monitor.isCancelled()) return;
+        if (monitor.isCancelled()) {
+          monitor.printlnToLog("Cancelled (" + univ.size() + " elements so far)");
+          return;
+        }
         else {
-          monitor.printlnToLog("k = " + k + " of " + size);
+          //monitor.printlnToLog("k = " + k + " of " + size);
           monitor.setPassFieldText(k + " of " + size);
           monitor.setSizeFieldText("" + univ.size());
         }
@@ -338,8 +330,10 @@ k++;
     }
     hash.add(zeroCong);
     univ.add(0, zeroCong);
+    if (monitor != null) monitor.setSizeFieldText("" + univ.size());
     universe = new LinkedHashSet(univ);
     congruencesHash = hash;
+    if (monitor != null) monitor.printEnd("universe size is " + univ.size());
   }
 
   /**

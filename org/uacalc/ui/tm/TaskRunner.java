@@ -16,6 +16,7 @@ import org.uacalc.alg.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.util.Monitor;
+import org.uacalc.alg.conlat.CongruenceLattice;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -76,16 +77,40 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     };
     ops.add(meet);
     final SmallAlgebra semilat = new BasicAlgebra("semilat", 2, ops);
+    
+    List<Operation> ops2 = new ArrayList<Operation>();
+    Operation join = new AbstractOperation("join", 2, 2) {
+      
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+
+      // ordinary meet
+      public int intValueAt(int[] args) {
+        return Math.max(args[0], args[1]);
+      }
+    };
+    ops2.add(meet);
+    ops2.add(join);
+    final SmallAlgebra lat = new BasicAlgebra("lat", 2, ops2);
+    
     final Monitor monitor = new Monitor(output, sizeField, passField);
     GeneralAlgebra.setMonitor(monitor);
+    CongruenceLattice.setMonitor(monitor);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
-        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
-        return freeSemilattice.con().cardinality(monitor);
+        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 4);
+        return freeSemilattice.con().cardinality();
+      }
+    };
+    final Task<Integer> task2 = new Task<Integer>() {
+      public Integer doIt() {
+        FreeAlgebra freeDistLattice = new FreeAlgebra(lat, 5);
+        return freeDistLattice.cardinality();
       }
     };
     final TaskRunner<Integer> runner = 
-            new TaskRunner<Integer>(task);
+            new TaskRunner<Integer>(task2);
     final Integer ans;
     JPanel panel = new JPanel(new BorderLayout());
     JButton startButton = new JButton("Start");
