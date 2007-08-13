@@ -51,7 +51,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens) {
     super(name);
-    if (monitor != null) { 
+    if (monitoring()) { 
       monitor.printStart("constructing free algebra on " + numberOfGens + " generators");
     }
     final int n = alg.cardinality();
@@ -108,7 +108,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     universe = new HashSet(univ);
     makeOperations();
-    if (monitor != null) { 
+    if (monitoring()) { 
       monitor.printEnd("done constructing free algebra, size = " + size);
     }
   }

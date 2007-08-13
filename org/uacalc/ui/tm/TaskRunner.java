@@ -39,7 +39,16 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     catch (OutOfMemoryError e) {
       buf = null;
       buf = new byte[1];
+      System.out.println("Out of Memory");
       cancel(true);
+      return null;
+    }
+    catch (CancelledException e) {
+      System.out.println("caught cancellation");
+      cancel(true);
+      Toolkit.getDefaultToolkit().beep();
+      Toolkit.getDefaultToolkit().beep();
+      Toolkit.getDefaultToolkit().beep();
       return null;
     }
   }
@@ -47,6 +56,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
   public void done() {
     Toolkit.getDefaultToolkit().beep();
     try {
+      System.out.println("isCancelled() = " + isCancelled());
       if (!isCancelled()) System.out.println("ans: " + get());
     }
     catch (Exception e) { e.printStackTrace(); }
@@ -99,7 +109,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     CongruenceLattice.setMonitor(monitor);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
-        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 4);
+        FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
         return freeSemilattice.con().cardinality();
       }
     };
@@ -110,7 +120,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
       }
     };
     final TaskRunner<Integer> runner = 
-            new TaskRunner<Integer>(task2);
+            new TaskRunner<Integer>(task);
     final Integer ans;
     JPanel panel = new JPanel(new BorderLayout());
     JButton startButton = new JButton("Start");

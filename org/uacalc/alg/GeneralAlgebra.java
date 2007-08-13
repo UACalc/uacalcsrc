@@ -57,8 +57,13 @@ public class GeneralAlgebra implements Algebra {
     //}
   }
 
-  public static void setMonitor(Monitor m) { monitor = m; }
-  public static Monitor getMonitor() { return monitor; }
+  public static final void setMonitor(Monitor m) { monitor = m; }
+  public static final Monitor getMonitor() { return monitor; }
+  
+  public static final boolean monitoring() {
+    return monitor != null;
+  }
+  
   
   protected void setUniverse(Set univ) {
     this.universe = univ;

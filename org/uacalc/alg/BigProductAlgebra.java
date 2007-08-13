@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.*;
 import java.math.BigInteger;
 import org.uacalc.util.*;
+import org.uacalc.ui.tm.CancelledException;
 import org.uacalc.terms.*;
 
 import org.uacalc.alg.conlat.*;
@@ -517,7 +518,7 @@ System.out.println("so far: " + currentMark);
                                                closedMark, termMap, elt);
       }
     }
-    if (monitor != null) monitor.printStart("subpower closing ...");
+    if (monitoring()) monitor.printStart("subpower closing ...");
     final List lst = new ArrayList(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator it = elems.iterator(); it.hasNext(); ) {
@@ -527,9 +528,13 @@ System.out.println("so far: " + currentMark);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      if (monitor != null) {
+      if (monitoring()) {
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
+        if (monitor.isCancelled()) {
+          System.out.println("got here xxxx");
+          throw new CancelledException("cancelled from sgClose");
+        }
       }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
@@ -548,6 +553,12 @@ System.out.println("so far: " + currentMark);
 
         final int[][] arg = new int[arity][];
         while (true) {
+          if (monitoring()) {
+            if (monitor.isCancelled()) {
+              monitor.setSizeFieldText("" + lst.size());
+              throw new CancelledException("from sgClose");
+            }
+          }
           for (int i = 0; i < arity; i++) {
             arg[i] = rawList.get(argIndeces[i]);
           }
@@ -566,7 +577,7 @@ System.out.println("so far: " + currentMark);
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
             if (v.equals(elt)) {
-              if (monitor != null) monitor.printEnd("closing done, found " + elt);
+              if (monitoring()) monitor.printEnd("closing done, found " + elt);
               return lst;
             }
           }
@@ -591,7 +602,7 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
-    if (monitor != null) monitor.printEnd("closing done, size = " + lst.size());
+    if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
   }
 
@@ -615,7 +626,7 @@ System.out.println("so far: " + currentMark);
   private final List sgClosePower(final int algSize, List<Operation> ops, 
            List elems, int closedMark, final Map termMap, final  Object elt) {
 System.out.println("using power");
-    if (monitor != null) monitor.printlnToLog("subpower closing ...");
+    if (monitoring()) monitor.printlnToLog("subpower closing ...");
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -636,7 +647,7 @@ System.out.println("using power");
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      if (monitor != null) {
+      if (monitoring()) {
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
       }

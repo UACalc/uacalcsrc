@@ -104,6 +104,10 @@ public class CongruenceLattice implements Lattice {
   
   public static void setMonitor(Monitor m) { monitor = m; }
   public static Monitor getMonitor() { return monitor; }
+  
+  public static final boolean monitoring() {
+    return monitor != null;
+  }
 
   public SmallAlgebra algebra() { return alg; }
 
@@ -274,7 +278,7 @@ public class CongruenceLattice implements Lattice {
    * demand.
    */
   public void makeUniverse() {
-    if (monitor != null) monitor.printStart("finding the universe of Con of " + alg);
+    if (monitoring()) monitor.printStart("finding the universe of Con of " + alg);
     ArrayList univ = new ArrayList(joinIrreducibles());
     HashSet hash = new HashSet(joinIrreducibles());
     sizeComputed = univ.size();
@@ -287,7 +291,7 @@ public class CongruenceLattice implements Lattice {
       System.out.println("k = " + k);
       k++;
       
-      if (monitor != null) {
+      if (monitoring()) {
         if (monitor.isCancelled()) {
           monitor.printlnToLog("Cancelled (" + univ.size() + " elements so far)");
           return;
@@ -330,10 +334,10 @@ public class CongruenceLattice implements Lattice {
     }
     hash.add(zeroCong);
     univ.add(0, zeroCong);
-    if (monitor != null) monitor.setSizeFieldText("" + univ.size());
+    if (monitoring()) monitor.setSizeFieldText("" + univ.size());
     universe = new LinkedHashSet(univ);
     congruencesHash = hash;
-    if (monitor != null) monitor.printEnd("universe size is " + univ.size());
+    if (monitoring()) monitor.printEnd("universe size is " + univ.size());
   }
 
   /**
