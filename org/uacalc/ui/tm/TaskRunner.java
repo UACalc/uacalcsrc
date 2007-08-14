@@ -31,6 +31,8 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     this.task = task;
   }
   
+  public Task<T> getTask() { return task; }
+  
   public T doInBackground() {
     byte[] buf = new byte[memReserve];
     try {
@@ -110,6 +112,7 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
         FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);
+        freeSemilattice.con().typeSet();
         return freeSemilattice.con().cardinality();
       }
     };

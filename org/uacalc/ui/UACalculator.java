@@ -14,6 +14,7 @@ import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.lat.*;
 import org.uacalc.io.*;
+import org.uacalc.util.Monitor;
 
 
 public class UACalculator extends JFrame {
@@ -22,12 +23,14 @@ public class UACalculator extends JFrame {
 
   private SmallAlgebra algebra;  // Small ??
   private File currentFile;
-  private String title;  // if currentFile is null this might be "New"
+  private String title = "";  // if currentFile is null this might be "New"
+  private String progName = "UACalculator   ";
   private String currentFolder;
   private JPanel mainPanel;
   private JPanel bottomPanel;
   private LatDrawPanel latDrawPanel;
-  private NewAlgebraDialog algDialog;
+  //private NewAlgebraDialog algDialog;
+  private Monitor monitor;
 
   private Tabs tabs;
   private JToolBar toolBar;
@@ -522,9 +525,9 @@ public class UACalculator extends JFrame {
 
   public void setTitle() {
     if (currentFile == null) {
-      setTitle(title);
+      setTitle(progName + title);
     }
-    setTitle(currentFile.getName() + (dirty ? " **" : ""));
+    else setTitle(progName + currentFile.getName() + (dirty ? " **" : ""));
   }
   
   public void setNew() {
@@ -582,6 +585,7 @@ public class UACalculator extends JFrame {
                       (screenSize.height - height) / 2);
     frame.setSize(width, height);
     frame.isDefaultLookAndFeelDecorated();
+    frame.setTitle();
 
     Runnable  runner = new FrameShower(frame);
     EventQueue.invokeLater(runner);

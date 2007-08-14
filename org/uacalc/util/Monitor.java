@@ -2,6 +2,7 @@ package org.uacalc.util;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import java.util.*;
 
 public class Monitor {
 
@@ -10,8 +11,10 @@ public class Monitor {
   private JTextField passField;
   private JTextField sizeField;
   private int indent = 0;
+  //private List<Long> times = new ArrayList<Long>();
+  private Deque<Long> times = new ArrayDeque<Long>();
   
-  public Monitor(JTextArea ta,JTextField sizeField, JTextField passField) {
+  public Monitor(JTextArea ta, JTextField sizeField, JTextField passField) {
     this.logArea = ta;
     this.sizeField = sizeField;
     this.passField = passField;
@@ -26,6 +29,7 @@ public class Monitor {
   public void reset() {
     resetIndent();
     setCancelled(false);
+    times = new ArrayDeque<Long>();
   }
   
   public void resetIndent() { indent = 0; }
@@ -43,12 +47,14 @@ public class Monitor {
     printIndent();
     printlnToLog(s);
     indent++;
+    times.addFirst(System.currentTimeMillis());
   }
   
   public void printEnd(String s) {
+    long time = System.currentTimeMillis() - times.removeFirst();
     indent--;
     printIndent();
-    printlnToLog(s);
+    printlnToLog(s + "  (" + time + " ms)");
   }
   
   public void setPassFieldText(String s) {

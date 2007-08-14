@@ -209,6 +209,7 @@ public class CongruenceLattice implements Lattice {
   //public CongruenceLattice con() { return null; }
 
   public void makePrincipals() {
+    if (monitoring()) monitor.printStart("finding principal congruences ...");
     HashMap pcIdMap = new HashMap();  // to keep equal congruences identical
     principalCongruences = new ArrayList();
     //congruencesHash = new HashSet();
@@ -232,6 +233,8 @@ public class CongruenceLattice implements Lattice {
         //}
       }
     }
+    if (monitoring()) monitor.printEnd("principal congruences: size = " 
+                                       + principalCongruences.size());
   }
 
   public boolean universeFound() { return universe != null; }
@@ -278,7 +281,7 @@ public class CongruenceLattice implements Lattice {
    * demand.
    */
   public void makeUniverse() {
-    if (monitoring()) monitor.printStart("finding the universe of Con of " + alg);
+    if (monitoring()) monitor.printStart("finding the universe of Con of " + alg.name());
     ArrayList univ = new ArrayList(joinIrreducibles());
     HashSet hash = new HashSet(joinIrreducibles());
     sizeComputed = univ.size();
@@ -370,6 +373,7 @@ public class CongruenceLattice implements Lattice {
 //      the conlat.
 
   public void makeJoinIrreducibles() {
+    if (monitoring()) monitor.printStart("finding join irreducible congruences ...");
     joinIrreducibles = new ArrayList();
     lowerCoverOfJIs = new HashMap();
     for (Iterator it = principals().iterator(); it.hasNext(); ) {
@@ -387,6 +391,7 @@ public class CongruenceLattice implements Lattice {
         lowerCoverOfJIs.put(part, join);
       }
     }
+    if (monitoring()) monitor.printEnd("join irreducible congruences size = " + joinIrreducibles.size());
   }
 
   /**
@@ -524,10 +529,12 @@ public class CongruenceLattice implements Lattice {
   }
 
   private void makeTypeSet() {
+    if (monitoring()) monitor.printStart("computing TCT types ...");
     typeSet = new HashSet();
     for (Iterator it = joinIrreducibles().iterator(); it.hasNext(); ) {
       typeSet.add(new Integer(type((BasicPartition)it.next())));
     }
+    if (monitoring()) monitor.printEnd("TCT types = " + typeSet);
   }
 
 
