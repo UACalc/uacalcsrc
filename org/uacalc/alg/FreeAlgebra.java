@@ -42,7 +42,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * Consturct a free algebra without giving it a name.
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens) {
-    this(null, alg, numberOfGens);
+    this("Free(" + numberOfGens + ", " + alg.name() + ")", alg, numberOfGens);
   }
 
   /**
@@ -52,7 +52,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens) {
     super(name);
     if (monitoring()) { 
-      monitor.printStart("constructing free algebra on " + numberOfGens + " generators");
+      monitor.printStart("constructing free algebra on " + numberOfGens 
+                           + " generators over " + alg.name());
     }
     final int n = alg.cardinality();
     int s = 1;

@@ -109,7 +109,7 @@ public class CongruenceLattice implements Lattice {
     return monitor != null;
   }
 
-  public SmallAlgebra algebra() { return alg; }
+  public SmallAlgebra getAlgebra() { return alg; }
 
   public boolean isUnary() { return false; }
 
@@ -145,7 +145,7 @@ public class CongruenceLattice implements Lattice {
   public Iterator iterator() { return universe().iterator(); }
 
   public String name() {
-    return "Con(" + algebra() + ")";
+    return "Con(" + getAlgebra().name() + ")";
   }
 
   /**
@@ -209,7 +209,8 @@ public class CongruenceLattice implements Lattice {
   //public CongruenceLattice con() { return null; }
 
   public void makePrincipals() {
-    if (monitoring()) monitor.printStart("finding principal congruences ...");
+    if (monitoring()) monitor.printStart("finding principal congruences of " 
+                                                        + getAlgebra().name());
     HashMap pcIdMap = new HashMap();  // to keep equal congruences identical
     principalCongruences = new ArrayList();
     //congruencesHash = new HashSet();
@@ -233,8 +234,8 @@ public class CongruenceLattice implements Lattice {
         //}
       }
     }
-    if (monitoring()) monitor.printEnd("principal congruences: size = " 
-                                       + principalCongruences.size());
+    if (monitoring()) monitor.printEnd("principal congruences of " 
+               + getAlgebra().name() + ": size = " + principalCongruences.size());
   }
 
   public boolean universeFound() { return universe != null; }
@@ -281,7 +282,8 @@ public class CongruenceLattice implements Lattice {
    * demand.
    */
   public void makeUniverse() {
-    if (monitoring()) monitor.printStart("finding the universe of Con of " + alg.name());
+    if (monitoring()) monitor.printStart("finding the universe of Con(" 
+                                                     + getAlgebra().name() + ")");
     ArrayList univ = new ArrayList(joinIrreducibles());
     HashSet hash = new HashSet(joinIrreducibles());
     sizeComputed = univ.size();
@@ -291,8 +293,8 @@ public class CongruenceLattice implements Lattice {
     final int size = joinIrreducibles().size();
     int k = 0;
     while (it.hasNext()) {
-      System.out.println("k = " + k);
       k++;
+      System.out.println("k = " + k);
       
       if (monitoring()) {
         if (monitor.isCancelled()) {
@@ -340,7 +342,7 @@ public class CongruenceLattice implements Lattice {
     if (monitoring()) monitor.setSizeFieldText("" + univ.size());
     universe = new LinkedHashSet(univ);
     congruencesHash = hash;
-    if (monitoring()) monitor.printEnd("universe size is " + univ.size());
+    if (monitoring()) monitor.printEnd("|Con(" + getAlgebra().name() + ")| = " + univ.size());
   }
 
   /**
@@ -373,7 +375,7 @@ public class CongruenceLattice implements Lattice {
 //      the conlat.
 
   public void makeJoinIrreducibles() {
-    if (monitoring()) monitor.printStart("finding join irreducible congruences ...");
+    if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().name());
     joinIrreducibles = new ArrayList();
     lowerCoverOfJIs = new HashMap();
     for (Iterator it = principals().iterator(); it.hasNext(); ) {
@@ -391,7 +393,8 @@ public class CongruenceLattice implements Lattice {
         lowerCoverOfJIs.put(part, join);
       }
     }
-    if (monitoring()) monitor.printEnd("join irreducible congruences size = " + joinIrreducibles.size());
+    if (monitoring()) monitor.printEnd("join irreducible congruences of " 
+        + getAlgebra().name() + ": size = " + joinIrreducibles.size());
   }
 
   /**
@@ -410,7 +413,7 @@ public class CongruenceLattice implements Lattice {
       final int[] block = blocks[i];
       for (int j = 0; j < block.length; j++) {
         for (int k = j + 1; k < block.length; k++) {
-          BasicPartition par = algebra().con().Cg(block[j], block[k]);
+          BasicPartition par = getAlgebra().con().Cg(block[j], block[k]);
           if (!beta.equals(par)) alpha = (BasicPartition)alpha.join(par);
           if (beta.equals(alpha)) return null;
         }
@@ -460,7 +463,7 @@ public class CongruenceLattice implements Lattice {
   }
 
   public BasicPartition Cg(Object a, Object b) {
-    return Cg(algebra().elementIndex(a), algebra().elementIndex(b));
+    return Cg(getAlgebra().elementIndex(a), getAlgebra().elementIndex(b));
   }
 
   public BasicPartition Cg(int a, int b) {
@@ -584,7 +587,7 @@ public class CongruenceLattice implements Lattice {
   }
 
   public TypeFinder getTypeFinder() {
-    if (typeFinder == null) typeFinder = new TypeFinder(algebra());
+    if (typeFinder == null) typeFinder = new TypeFinder(getAlgebra());
     return typeFinder;
   }
 

@@ -3,16 +3,25 @@ package org.uacalc.util;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.util.*;
+import org.uacalc.ui.MonitorPanel;
 
 public class Monitor {
 
   private boolean cancelled = false;
+  private MonitorPanel monitorPanel;
   private JTextArea logArea;
   private JTextField passField;
   private JTextField sizeField;
   private int indent = 0;
   //private List<Long> times = new ArrayList<Long>();
   private Deque<Long> times = new ArrayDeque<Long>();
+  
+  public Monitor(MonitorPanel panel) {
+    monitorPanel = panel;
+    logArea = panel.getLogArea();
+    sizeField = panel.getSizeField();
+    passField = panel.getPassField();
+  }
   
   public Monitor(JTextArea ta, JTextField sizeField, JTextField passField) {
     this.logArea = ta;
