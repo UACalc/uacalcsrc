@@ -49,13 +49,17 @@ public class MonitorPanel extends JPanel {
     add(new JScrollPane(logArea), BorderLayout.CENTER);
     add(cancelButton, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    monitor = new Monitor(this);
   }
   
   public JTextField getPassField() { return passField; }
   public JTextField getSizeField() { return sizeField; }
   public JTextArea getLogArea() { return logArea; }
   
+  public Monitor getMonitor() { return monitor; }
   public void setMonitor(Monitor m) { monitor = m; }
+  public TaskRunner getRunner() { return runner; }
   public void setRunner(TaskRunner tr) { runner = tr; }
+  
   
 }

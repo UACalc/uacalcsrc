@@ -13,7 +13,7 @@ public class Tabs extends JTabbedPane {
   
   public final int CONSTRUCTIONS_INDEX;
   
-  public final int CALCULATIONS_INDEX;
+  public final int COMPUTATIONS_INDEX;
   
   public final int PROPERTIES_INDEX;
   
@@ -46,7 +46,7 @@ public class Tabs extends JTabbedPane {
     
     // for now
     CONSTRUCTIONS_INDEX = -1;
-    CALCULATIONS_INDEX = -1;
+    COMPUTATIONS_INDEX = -1;
     PROPERTIES_INDEX = -1;
     
     addChangeListener(new ChangeListener() {
