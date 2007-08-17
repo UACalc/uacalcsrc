@@ -4,6 +4,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.util.*;
 import org.uacalc.ui.MonitorPanel;
+import org.uacalc.ui.tm.TaskRunner;
+import org.uacalc.ui.tm.DataChunk;
+import org.uacalc.ui.tm.DataChunk.DataType;
 
 public class Monitor {
 
@@ -44,8 +47,13 @@ public class Monitor {
   public void resetIndent() { indent = 0; }
   
   public void printToLog(String s) {
-    logArea.append(s);
-    logArea.setCaretPosition(logArea.getDocument().getLength());
+    TaskRunner runner = monitorPanel.getRunner();
+    System.out.println("runner = " + runner + ", s = " + s);
+    if (runner != null && !runner.isCancelled()) {
+      runner.publishx(new DataChunk(DataType.LOG, getIndentString() + s));
+    }
+    //logArea.append(s);
+    //logArea.setCaretPosition(logArea.getDocument().getLength());
   }
   
   public void printlnToLog(String s) {
@@ -53,7 +61,7 @@ public class Monitor {
   }
   
   public void printStart(String s) {
-    printIndent();
+    //printIndent();
     printlnToLog(s);
     indent++;
     times.addFirst(System.currentTimeMillis());
@@ -62,16 +70,33 @@ public class Monitor {
   public void printEnd(String s) {
     long time = System.currentTimeMillis() - times.removeFirst();
     indent--;
-    printIndent();
+    //printIndent();
     printlnToLog(s + "  (" + time + " ms)");
   }
   
   public void setPassFieldText(String s) {
-    passField.setText(s);    
+    TaskRunner runner = monitorPanel.getRunner();
+    if (runner != null && !runner.isCancelled()) {
+      runner.publishx(new DataChunk(DataType.PASS, s));
+    }
+    //passField.setText(s);    
   }
   
   public void setSizeFieldText(String s) {
-    sizeField.setText(s);    
+    TaskRunner runner = monitorPanel.getRunner();
+    if (runner != null && !runner.isCancelled()) {
+      runner.publishx(new DataChunk(DataType.SIZE, s));
+    }
+    //sizeField.setText(s);    
+  }
+  
+  private String getIndentString() {
+    final String two = "  ";
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < indent; i++) {
+      sb.append(two);
+    }
+    return sb.toString();
   }
   
   private void printIndent() {

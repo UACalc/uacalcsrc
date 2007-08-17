@@ -7,6 +7,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -16,19 +17,32 @@ import org.uacalc.alg.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.util.Monitor;
+import org.uacalc.ui.MonitorPanel;
 import org.uacalc.alg.conlat.CongruenceLattice;
 
 import java.util.List;
 import java.util.ArrayList;
 
 
-public class TaskRunner<T> extends SwingWorker<T, String> {
+public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
   
   Task<T> task;
+  T ans = null;
+  MonitorPanel monitorPanel;
   static final int memReserve = 1048576;
   
+  /**
+   * This constructor is only used for testing.
+   * @param task
+   */
   public TaskRunner(Task<T> task) {
     this.task = task;
+  }
+  
+  public TaskRunner(Task<T> task, MonitorPanel mp) {
+    this(task);
+    this.monitorPanel = mp;
+    mp.setRunner(this);
   }
   
   public Task<T> getTask() { return task; }
@@ -58,14 +72,46 @@ public class TaskRunner<T> extends SwingWorker<T, String> {
   public void done() {
     Toolkit.getDefaultToolkit().beep();
     try {
+      ans = get();
       System.out.println("isCancelled() = " + isCancelled());
-      if (!isCancelled()) System.out.println("ans: " + get());
+      if (!isCancelled()) System.out.println("ans: " + ans);
     }
     catch (Exception e) { e.printStackTrace(); }
     //startButton.setEnabled(true);
     //setCursor(null); //turn off the wait cursor
     //output.append("Done!\n");
   }
+  
+  public T getAnswer() { return ans; }
+  
+  @Override
+  protected void process(List<DataChunk> chunkList) {
+    System.out.println("chunkList =" + chunkList);
+    for(DataChunk data: chunkList) {
+      if (isCancelled()) {
+        break;
+      }
+      String msg = data.getMessage();
+      switch (data.getDataType()) {
+        case PASS:
+          monitorPanel.getPassField().setText(msg);
+          break;
+        case SIZE:
+          monitorPanel.getSizeField().setText(msg);
+          break;
+        default:
+          JTextArea logArea = monitorPanel.getLogArea();
+          logArea.append(msg);
+          logArea.setCaretPosition(logArea.getDocument().getLength());
+      }
+    }      
+  }
+  
+  public void publishx(DataChunk dc) {
+    publish(dc);
+    System.out.println("called publish(" + dc + ")");
+  }
+
 
   
   public static void main(String[] args) {

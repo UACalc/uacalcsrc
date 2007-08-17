@@ -13,6 +13,7 @@ import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.lat.*;
+import org.uacalc.alg.conlat.*;
 import org.uacalc.io.*;
 import org.uacalc.util.Monitor;
 
@@ -272,6 +273,11 @@ public class UACalculator extends JFrame {
   }
   */
 
+  public void setMonitor(Monitor m) {
+    monitor = m;
+    CongruenceLattice.setMonitor(m);
+    GeneralAlgebra.setMonitor(m);
+  }
   
   public LatDrawPanel getLatDrawPanel() {
     return tabs.getLatticeDrawer();

@@ -12,6 +12,7 @@ import org.uacalc.ui.tm.TaskRunner;
 
 public class MonitorPanel extends JPanel {
   
+  private UACalculator uacalc;
   private Monitor monitor;
   private TaskRunner runner;
   
@@ -19,7 +20,8 @@ public class MonitorPanel extends JPanel {
   private final JTextField passField;
   private final JTextField sizeField;
 
-  public MonitorPanel() {
+  public MonitorPanel(UACalculator uacalc) {
+    this.uacalc = uacalc;
     setLayout(new BorderLayout());
     logArea = new JTextArea(10, 50);
     logArea.setMargin(new Insets(5, 5, 5, 5));
@@ -50,6 +52,7 @@ public class MonitorPanel extends JPanel {
     add(cancelButton, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     monitor = new Monitor(this);
+    uacalc.setMonitor(monitor);
   }
   
   public JTextField getPassField() { return passField; }

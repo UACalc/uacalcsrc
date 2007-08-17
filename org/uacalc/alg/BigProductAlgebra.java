@@ -528,7 +528,9 @@ System.out.println("so far: " + currentMark);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
+      System.out.println("monitor is " + monitor);
       if (monitoring()) {
+        System.out.println("subpow pass = " + pass + " size = " + lst.size());
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
         if (monitor.isCancelled()) {
@@ -647,6 +649,8 @@ System.out.println("using power");
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
+      System.out.println("xxx monitor = " + monitor);
+      System.out.println("xxx getMonitor() = " + getMonitor());
       if (monitoring()) {
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
