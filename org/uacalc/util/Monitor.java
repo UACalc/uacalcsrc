@@ -49,7 +49,7 @@ public class Monitor {
   public void printToLog(String s) {
     TaskRunner runner = monitorPanel.getRunner();
     System.out.println("runner = " + runner + ", s = " + s);
-    if (runner != null && !runner.isCancelled()) {
+    if (runner != null) {
       runner.publishx(new DataChunk(DataType.LOG, getIndentString() + s));
     }
     //logArea.append(s);
@@ -65,9 +65,11 @@ public class Monitor {
     printlnToLog(s);
     indent++;
     times.addFirst(System.currentTimeMillis());
+    System.out.println("start: s = " + s + ", times.size(0 = " + times.size());
   }
   
   public void printEnd(String s) {
+    System.out.println("end: s = " + s + ", times.size() = " + times.size());
     long time = System.currentTimeMillis() - times.removeFirst();
     indent--;
     //printIndent();

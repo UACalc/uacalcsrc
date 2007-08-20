@@ -40,6 +40,11 @@ public class TermOperationImp
   public int intValueAt(int[] args) {
     return interpretation.intValueAt(args);
   }
+  
+  @Override
+  public int[] getTable() {
+    return interpretation.getTable();
+  }
 
 
   /**

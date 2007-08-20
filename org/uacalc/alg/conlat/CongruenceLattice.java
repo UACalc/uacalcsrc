@@ -546,8 +546,17 @@ public class CongruenceLattice implements Lattice {
    * to be join irreducible.
    */
   public int type(BasicPartition beta) {
-    final Subtrace st = subtrace(beta);
+    //if (monitoring()) monitor.printStart("computing TCT type of " + beta);
+    Subtrace st = (Subtrace)getJoinIrredToSubtraceMap().get(beta);
+    if (st == null) {
+      if (monitoring()) monitor.printStart("computing TCT type of " + beta);
+      st = subtrace(beta);
+      if (st.type() <= 0) getTypeFinder().findType(st);
+      if (monitoring()) monitor.printEnd("TCT type of " + beta + " is " + st.type());
+    }
+    //final Subtrace st = subtrace(beta);
     if (st.type() <= 0) getTypeFinder().findType(st);
+    //if (monitoring()) monitor.printEnd("TCT type of " + beta + " is " + st.type());
     return st.type();
   }
 
@@ -567,7 +576,10 @@ public class CongruenceLattice implements Lattice {
   public Subtrace subtrace(BasicPartition beta) {
     final HashMap smap = getJoinIrredToSubtraceMap();
     if (smap.get(beta) == null) {
+      if (monitoring()) monitor.printStart("finding subtrace of " + beta);
       smap.put(beta, getTypeFinder().findSubtrace(beta));
+      if (monitoring()) monitor.printEnd("subtrace = " 
+          + ((Subtrace)smap.get(beta)).toString(true));
     }
     return (Subtrace)smap.get(beta);
   }

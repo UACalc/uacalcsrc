@@ -16,6 +16,9 @@ import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.io.*;
 import org.uacalc.util.Monitor;
+import org.uacalc.ui.MonitorPanel;
+import org.uacalc.ui.tm.TaskRunner;
+import org.uacalc.ui.tm.Task;
 
 
 public class UACalculator extends JFrame {
@@ -31,7 +34,8 @@ public class UACalculator extends JFrame {
   private JPanel bottomPanel;
   private LatDrawPanel latDrawPanel;
   //private NewAlgebraDialog algDialog;
-  private Monitor monitor;
+  //private Monitor monitor;
+  private MonitorPanel monitorPanel;
 
   private Tabs tabs;
   private JToolBar toolBar;
@@ -58,6 +62,17 @@ public class UACalculator extends JFrame {
       });
     buildMenu();
 
+    monitorPanel = new MonitorPanel(this);
+    final Task<Void> nullTask = new Task<Void>() {
+      public Void doIt() {
+        return null;
+      }
+    };
+    monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
+    Monitor m = monitorPanel.getMonitor();
+    CongruenceLattice.setMonitor(m);
+    GeneralAlgebra.setMonitor(m);
+    
     mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
     tabs = new Tabs(this);
@@ -273,11 +288,13 @@ public class UACalculator extends JFrame {
   }
   */
 
-  public void setMonitor(Monitor m) {
-    monitor = m;
-    CongruenceLattice.setMonitor(m);
-    GeneralAlgebra.setMonitor(m);
-  }
+  //public void setMonitor(Monitor m) {
+  //  monitor = m;
+  //  CongruenceLattice.setMonitor(m);
+  //  GeneralAlgebra.setMonitor(m);
+  //}
+  
+  public MonitorPanel getMonitorPanel() { return monitorPanel; }
   
   public LatDrawPanel getLatDrawPanel() {
     return tabs.getLatticeDrawer();
@@ -297,9 +314,13 @@ public class UACalculator extends JFrame {
   
 
   public void drawSub(SmallAlgebra alg) {
-    if (alg.sub().cardinality() > 50) {
-      System.out.println("Sub has " + alg.sub().cardinality() + " elements");
-      System.out.println("we allow at most 50 elements.");
+    final int maxSize = 100;
+    if (alg.sub().cardinality() > maxSize) {
+      JOptionPane.showMessageDialog(this,
+          "<html>This subalgebra lattice has " + alg.sub().cardinality() + " elements.<br>"
+          + "At most " + maxSize + " elements allowed.</html>",
+          "Sub Too Big",
+          JOptionPane.WARNING_MESSAGE);
       return;
     }
     BasicLattice lat = new BasicLattice("", alg.sub());
@@ -314,9 +335,15 @@ public class UACalculator extends JFrame {
 
 
   public void drawCon(SmallAlgebra alg) {
-    if (alg.con().cardinality() > 50) {
+    final int maxSize = 100;
+    if (alg.con().cardinality() > maxSize) {
+      JOptionPane.showMessageDialog(this,
+          "<html>This congruence lattice has " + alg.con().cardinality() + " elements.<br>"
+          + "At most " + maxSize + " elements allowed.</html>",
+          "Con Too Big",
+          JOptionPane.WARNING_MESSAGE);
       System.out.println("Con has " + alg.con().cardinality() + " elements");
-      System.out.println("we allow at most 50 elements.");
+      System.out.println("we allow at most " + maxSize + " elements.");
       return;
     }
     BasicLattice lat = new BasicLattice("", alg.con(), true);
@@ -331,6 +358,15 @@ public class UACalculator extends JFrame {
 
 
   public void drawBelinda(SmallAlgebra alg) {
+    final int maxSize = 100;
+    if (alg.cardinality() > maxSize) {
+      JOptionPane.showMessageDialog(this,
+          "<html>This algebra has " + alg.cardinality() + " elements.<br>"
+          + "At most " + maxSize + " elements allowed.</html>",
+          "Algebra Too Big",
+          JOptionPane.WARNING_MESSAGE);
+      return;
+    }
     Operation op = null;
     for (Iterator it = alg.operations().iterator(); it.hasNext(); ) {
       Operation opx = (Operation)it.next();
@@ -341,6 +377,10 @@ public class UACalculator extends JFrame {
       }
     }
     if (op == null) {
+      JOptionPane.showMessageDialog(this,
+          "<html>This algebra does not have any semilattice operations.<br>",
+          "No Lattice Operation",
+          JOptionPane.WARNING_MESSAGE);
       System.out.println("Could not find a semilattice operations.");
       return;
     }

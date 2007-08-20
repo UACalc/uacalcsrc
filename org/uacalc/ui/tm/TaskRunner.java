@@ -42,6 +42,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
   public TaskRunner(Task<T> task, MonitorPanel mp) {
     this(task);
     this.monitorPanel = mp;
+    mp.getMonitor().reset();
     mp.setRunner(this);
   }
   
@@ -71,6 +72,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
   
   public void done() {
     Toolkit.getDefaultToolkit().beep();
+    if (isCancelled()) return;
     try {
       ans = get();
       System.out.println("isCancelled() = " + isCancelled());
@@ -86,11 +88,9 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
   
   @Override
   protected void process(List<DataChunk> chunkList) {
-    System.out.println("chunkList =" + chunkList);
+    //System.out.println("chunkList =" + chunkList);
     for(DataChunk data: chunkList) {
-      if (isCancelled()) {
-        break;
-      }
+      //if (isCancelled()) break;
       String msg = data.getMessage();
       switch (data.getDataType()) {
         case PASS:
@@ -109,7 +109,6 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
   
   public void publishx(DataChunk dc) {
     publish(dc);
-    System.out.println("called publish(" + dc + ")");
   }
 
 

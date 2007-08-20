@@ -39,6 +39,11 @@ public class Subtrace {
   public boolean hasInvolution() { return hasInvolution; }
 
   public void setType(int t) { this.type = t; }
+  
+  public String toString(boolean brief) {
+    if (!brief) return toString();
+    return "[" + a + ", " + b + "]";
+  }
 
   public String toString() {
     return "subtrace [" + a + ", " + b + "] typ = " + type 

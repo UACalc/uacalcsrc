@@ -628,7 +628,8 @@ System.out.println("so far: " + currentMark);
   private final List sgClosePower(final int algSize, List<Operation> ops, 
            List elems, int closedMark, final Map termMap, final  Object elt) {
 System.out.println("using power");
-    if (monitoring()) monitor.printlnToLog("subpower closing ...");
+System.out.println("card = " + cardinality());
+    if (monitoring()) monitor.printStart("subpower closing ...");
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -649,8 +650,6 @@ System.out.println("using power");
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      System.out.println("xxx monitor = " + monitor);
-      System.out.println("xxx getMonitor() = " + getMonitor());
       if (monitoring()) {
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
@@ -697,6 +696,20 @@ System.out.println("using power");
               termMap.put(v, new NonVariableTerm(symbols[i], children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
+            final int size = lst.size();
+            if (cardinality() > 0 && size == cardinality()) {
+              if (monitoring()) {
+                monitor.printEnd("done closing, size = " + lst.size());
+                monitor.setSizeFieldText("" + lst.size());
+              }
+              return lst;
+            }
+            if (monitoring()) {
+              monitor.setSizeFieldText("" + lst.size());
+              if (monitor.isCancelled()) {
+                throw new CancelledException("cancelled from sgClose");
+              }
+            }
             if (v.equals(elt)) return lst;
           }
           if (!inc.increment()) break;
@@ -720,6 +733,10 @@ if (false) {
       if (cardinality() > 0 && currentMark >= cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
+    }
+    if (monitoring()) {
+      getMonitor().printEnd("done closing, size = " + lst.size());
+      getMonitor().setSizeFieldText("" + lst.size());
     }
     return lst;
   }

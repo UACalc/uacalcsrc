@@ -123,8 +123,7 @@ public class AlgebraEditor extends JPanel {
     validate();
   }
   
-  private void addOperation(String name, int arity) {
-    OperationSymbol sym = new OperationSymbol(name, arity);
+  private boolean validSymbol(OperationSymbol sym) {
     if (symbolList.contains(sym)) {
       uacalc.beep();
       JOptionPane.showMessageDialog(uacalc,
@@ -133,37 +132,33 @@ public class AlgebraEditor extends JPanel {
           + "</center></html>",
           "Duplicate Operation Symbol",
           JOptionPane.WARNING_MESSAGE);
-      return;
+      return false;
     }
+    return true;
+  }
+  
+  private void addOperation(String name, int arity) {
+    OperationSymbol sym = new OperationSymbol(name, arity);
+    if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
           new OperationWithDefaultValue(sym, algSize, uacalc.getRandom());
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
-    /*
-    int n = 1, card = algSize;
-    for (int k = 0; k < arity; k++) {
-      n = n * card;
-    }
-    int[] values = new int[n];
-    for (int i = 0; i < n; i++) {
-      values[i] = -1;
-    }
-    Operation op = Operations.makeIntOperation(name, arity, card, values);
-    java.util.List<Operation> ops = alg.operations();
-    java.util.List<Operation> ops2 = new ArrayList<Operation>(ops.size());
-    System.out.println("op arity = " + op.arity());
-    System.out.println("ops size = " + ops.size());
-    for (Operation f : ops) {
-       ops2.add(f);
-    }
-    ops2.add(op);
-    // when we get symbolic universes we need to change this !!!!!!!!!!!!!
-    // we also need to save the original algebra for undo/redo ???????????
-    SmallAlgebra alg2 = new BasicAlgebra(name_tf.getText(), alg.cardinality(), ops2);
-    setAlgebra(alg2);
-    ops_cb.setSelectedIndex(alg2.operations().size() - 1);
-    */
+    ops_cb.addItem(makeOpItem(sym));
+    ops_cb.setSelectedIndex(opList.size() - 1);
+    repaint();
+  }
+  
+  public void addOperation(Operation oper) {
+    OperationSymbol sym = oper.symbol();
+    if (!validSymbol(sym)) return;
+    OperationWithDefaultValue op = 
+      new OperationWithDefaultValue(sym, algSize, oper.getTable(), 
+                                             -1, uacalc.getRandom());
+    opList.add(op);
+    symbolList.add(sym);
+    opMap.put(sym, op);
     ops_cb.addItem(makeOpItem(sym));
     ops_cb.setSelectedIndex(opList.size() - 1);
     repaint();

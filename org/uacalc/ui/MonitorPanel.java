@@ -7,6 +7,7 @@ import javax.swing.JTextField;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import org.uacalc.util.Monitor;
 import org.uacalc.ui.tm.TaskRunner;
 
@@ -39,9 +40,17 @@ public class MonitorPanel extends JPanel {
             System.out.println("cancelling ...");
             runner.cancel(true);
             monitor.setCancelled(true);
+            monitor.printlnToLog("...cancelling...");
           }
         }
       });
+    JButton clearButton = new JButton("Clear");
+    clearButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          logArea.setText(null);
+        }
+      });
+    
     JPanel topPanel = new JPanel();
     topPanel.add(passLabel);
     topPanel.add(passField);
@@ -49,10 +58,18 @@ public class MonitorPanel extends JPanel {
     topPanel.add(sizeField);
     add(topPanel, BorderLayout.NORTH);
     add(new JScrollPane(logArea), BorderLayout.CENTER);
-    add(cancelButton, BorderLayout.SOUTH);
+    JPanel botPanel = new JPanel();
+    botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
+    botPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    botPanel.add(Box.createHorizontalGlue());
+    botPanel.add(cancelButton);
+    botPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+    botPanel.add(clearButton);
+    
+    add(botPanel, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     monitor = new Monitor(this);
-    uacalc.setMonitor(monitor);
+    //uacalc.setMonitor(monitor);
   }
   
   public JTextField getPassField() { return passField; }

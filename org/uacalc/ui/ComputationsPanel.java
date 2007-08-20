@@ -5,8 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 import org.uacalc.alg.*;
 import org.uacalc.ui.tm.*;
+import org.uacalc.ui.table.*;
 
 public class ComputationsPanel extends JPanel {
 
@@ -15,6 +17,7 @@ public class ComputationsPanel extends JPanel {
   private JToolBar toolBar;
   private JPanel main;
   private MonitorPanel monitorPanel;
+  private TermTablePanel termTablePanel;
   
   public ComputationsPanel(final UACalculator uacalc) {
     this.uacalc = uacalc;
@@ -24,7 +27,8 @@ public class ComputationsPanel extends JPanel {
     JPanel fieldsPanel = new JPanel();
     main.add(fieldsPanel, BorderLayout.NORTH);
     
-    monitorPanel = new MonitorPanel(uacalc);
+    //monitorPanel = new MonitorPanel(uacalc);
+    monitorPanel = uacalc.getMonitorPanel();
     add(monitorPanel, BorderLayout.SOUTH);
     /*
     fieldsPanel.add(new JLabel("Name:"));
@@ -115,6 +119,14 @@ public class ComputationsPanel extends JPanel {
     });
   }
   
+  public void setTermTablePanel(TermTablePanel ttp) {
+    if (termTablePanel != null) main.remove(termTablePanel);
+    termTablePanel = ttp;
+    main.add(ttp);
+    validate();
+    repaint();
+  }
+  
   private void setupFreeAlgebraPanel() {
     SmallAlgebra alg = uacalc.getAlgebra();
     if (alg == null) {
@@ -135,11 +147,26 @@ public class ComputationsPanel extends JPanel {
       }
     };
     final TaskRunner<FreeAlgebra> runner = 
-            new TaskRunner<FreeAlgebra>(freeAlgTask, monitorPanel);
+            new TaskRunner<FreeAlgebra>(freeAlgTask, monitorPanel) {
+        public void done() {
+          try {
+            if (!isCancelled()) {
+              FreeAlgebra fr = get();
+              System.out.println("fr = " + fr);
+              TermTablePanel ttp = new TermTablePanel(uacalc, fr.getTerms());
+              setTermTablePanel(ttp);
+            }
+            // the next line *is* reached!!
+            else System.out.println("done but cancelled");
+          }
+          catch (InterruptedException e) { e.printStackTrace(); }
+          catch (ExecutionException e) { e.printStackTrace(); }
+        }
+    };
     runner.execute();
-    runner.done();
-    FreeAlgebra free = runner.getAnswer();
-    System.out.println("free alg size = " + free.cardinality());
+    //runner.done();
+    //FreeAlgebra free = runner.getAnswer();
+    //System.out.println("free alg size = " + free.cardinality());
     
   }
   

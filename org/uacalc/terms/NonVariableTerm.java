@@ -88,6 +88,7 @@ public class NonVariableTerm implements Term {
           return null;  // IMPLEMENT THIS !!!!!!!!!!!
         }
         Operation tableOp = null;
+        @Override
         public void makeTable() {
           int h = 1;
           for (int i = 0; i < arity; i++) {
@@ -99,11 +100,17 @@ public class NonVariableTerm implements Term {
           }
           tableOp = Operations.makeIntOperation(symbol(), size, values);
         }
+        @Override
+        public int[] getTable() {
+          if (tableOp == null) makeTable();
+          return tableOp.getTable();
+        }
 
         /*
         public Term getTerm() { return NonVariableTerm.this; }
         public List getOrderedvariables() { return varlist; }
         */
+        @Override
         public int intValueAt(int[] args) {
           if (tableOp != null) return tableOp.intValueAt(args);
           Map map = new  HashMap();

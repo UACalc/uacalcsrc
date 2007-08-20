@@ -8,6 +8,7 @@ import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.TermOperation;
+import org.uacalc.alg.op.TermOperationImp;
 import org.uacalc.util.SimpleList;
 
 /**
@@ -56,7 +57,7 @@ public class VariableImp implements Variable {
     return ((Integer)map.get(this)).intValue();
   }
 
-  public TermOperation interpretation(final SmallAlgebra alg, 
+  public Operation interpretation(final SmallAlgebra alg, 
                                       final List<Variable> varlist, 
                                       final boolean all) {
     final int index = varlist == null ? 0 : varlist.indexOf(this);
@@ -74,11 +75,15 @@ public class VariableImp implements Variable {
           return args[index];
         }
       };
-    return (TermOperation)op;
+    return op;
   }
 
-  public TermOperation interpretation(SmallAlgebra alg) {
-    return interpretation(alg, null, false);
+  //public Operation interpretation(SmallAlgebra alg) {
+  //  return interpretation(alg, null, false);
+  //}
+  
+  public TermOperation interpretation(final SmallAlgebra alg) {
+    return new TermOperationImp(this, getVariableList(), alg);
   }
 
   public List getVariableList() {

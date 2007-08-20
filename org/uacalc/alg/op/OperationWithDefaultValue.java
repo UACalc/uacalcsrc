@@ -39,6 +39,14 @@ public class OperationWithDefaultValue extends AbstractOperation {
     this(sym, algSize, null, defaultValue, random);
   }
 
+  public OperationWithDefaultValue(Operation op, int algSize, Random random) {
+    super(op.symbol(), algSize);
+    this.random = random;
+    this.valueTable = getTable();
+    this.defaultValue = -1;
+    op = Operations.makeIntOperation(op.symbol(), algSize, valueTable);
+  }
+  
   public OperationWithDefaultValue(OperationSymbol sym, int algSize, 
                                    int[] valueTable, int defaultValue, Random random) {
     super(sym, algSize);
