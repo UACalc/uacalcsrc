@@ -15,11 +15,14 @@ public class TermTablePanel extends JPanel {
   private final UACalculator uacalc;
   private JTable table;
   private Term[] terms;
+  private final List<Variable> variables;
   
   
-  public TermTablePanel(final UACalculator uacalc, Term[] terms) {
+  public TermTablePanel(final UACalculator uacalc, Term[] terms, 
+                                          final List<Variable> variables) {
     this.uacalc = uacalc;
     this.terms = terms;
+    this.variables = variables;
     TermTableModel model = new TermTableModel(terms);
     table = new JTable(model);
     setLayout(new BorderLayout());
@@ -56,21 +59,41 @@ public class TermTablePanel extends JPanel {
         int[] rows = table.getSelectedRows();
         if (rows.length > 0) {
           SmallAlgebra alg = uacalc.getAlgebra();
-          Term term = (Term)table.getValueAt(rows[0], 1);
-          System.out.println("term = " + term);
-          TermOperation tOp = new TermOperationImp(term, 
-              term.getVariableList(), alg);
-          System.out.println("termOp = " + tOp);
-          System.out.println("termOp.getTable() = " + tOp.getTable());
-          OperationWithDefaultValue op = 
-            new OperationWithDefaultValue(tOp, uacalc.getRandom());
-          System.out.println("op = " + op);
-          System.out.println("op(0,1) = " + op.intValueAt(new int[] {0,1}));
+          for (int i = 0; i < rows.length; i++) {
+            Term term = (Term) table.getValueAt(rows[i], 1);
+            // System.out.println("term = " + term);
+            TermOperation tOp = new TermOperationImp(term, variables, alg);
+            uacalc.getAlgebraEditor().addOperation(tOp);
+            // System.out.println("termOp = " + tOp);
+            // System.out.println("termOp.getTable() = " + tOp.getTable());
+            // OperationWithDefaultValue op =
+            // new OperationWithDefaultValue(tOp, uacalc.getRandom());
+            // System.out.println("op = " + op);
+            // System.out.println("op(0,1) = " + op.intValueAt(new int[]
+            // {0,1}));
+          }
         }
+        else showNoSelectionDialog();
       }
     });
     JButton newAlg = new JButton("New Algebra");
     newAlg.setToolTipText("make a new algebra with the selected term(s)");
+    newAlg.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int[] rows = table.getSelectedRows();
+        if (rows.length > 0) {
+          List<Operation> ops = new ArrayList<Operation>(rows.length);
+          SmallAlgebra oldAlg = uacalc.getAlgebra();
+          for (int i = 0; i < rows.length; i++) {
+            Term term = (Term) table.getValueAt(rows[i], 1);
+            ops.add(new TermOperationImp(term, variables, oldAlg));
+          }
+          SmallAlgebra alg = new BasicAlgebra(oldAlg.name() + "-reduct", oldAlg.cardinality(), ops);
+          uacalc.setAlgebra(alg);
+        }
+        else showNoSelectionDialog();
+      }
+    });
     optionPanel.add(Box.createHorizontalGlue());
     optionPanel.add(addToOps);
     optionPanel.add(Box.createHorizontalGlue());
@@ -87,6 +110,16 @@ public class TermTablePanel extends JPanel {
       current = Math.max(current, terms[i].toString().length());
     }
     return 8 * current;
+  }
+  
+  private void showNoSelectionDialog() {
+    JOptionPane.showMessageDialog(uacalc,
+        "<html>Select one or more rows.<br>"
+        + "The New Algebra buttom will make an algebra<br>"
+        + "from these term operations.<br>" 
+        + "The Add to Ops will add them to the current algebra. </html>",
+        "No selected row",
+        JOptionPane.WARNING_MESSAGE);
   }
   
 }

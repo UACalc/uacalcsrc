@@ -31,8 +31,10 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   // a map from IntArray's of elements of the 
   protected HashMap<IntArray,Integer> univHashMap; 
                                  // univ to Integers (the index).
+  
   protected Term[] terms; // term[i] is a term for the ith element
 
+  protected List<Variable> variables;
 
   protected SubProductAlgebra() {
     super(null);
@@ -165,6 +167,24 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public Term[] getTerms() {
     return terms;
   }
+  
+  /**
+   * The variables corresponding to the generator in the list
+   * of terms.
+   * 
+   * @return
+   */
+  public List<Variable> getVariables() {
+    if (variables != null) return variables;
+    if (terms == null) return null;
+    if (gens == null) return null;
+    List<Variable> ans = new ArrayList<Variable>();
+    for (int i = 0; i < gens.size(); i++) {
+      ans.add((Variable)terms[i]);
+    }
+    this.variables = ans;
+    return ans;
+  }
 
   /**
    * Get the term associated with an element.
@@ -183,7 +203,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return productAlgebra;
   }
 
-  public List generators() {
+  public List<IntArray> generators() {
     return gens;
   }
 

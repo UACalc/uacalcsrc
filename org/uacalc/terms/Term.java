@@ -98,7 +98,7 @@ public interface Term {
   /**
    * The list of variables in the order they appear in the term.
    */
-  public List getVariableList();
+  public List<Variable> getVariableList();
 
   /**
    * A reasonabley good printout of the term.

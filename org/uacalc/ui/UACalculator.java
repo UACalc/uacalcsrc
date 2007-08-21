@@ -468,7 +468,6 @@ public class UACalculator extends JFrame {
   public void open() throws IOException {
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
-    SmallAlgebra a = null;
     File theFile = null;
     //pwd = currentFolder;
     JFileChooser fileChooser;
@@ -532,6 +531,7 @@ public class UACalculator extends JFrame {
   public SmallAlgebra getAlgebra() { return algebra; }
   
   public void setAlgebra(SmallAlgebra alg) {
+    if (isDirty()) checkSave();
     updateAlgebra(alg);
     getAlgebraEditor().setAlgebra(alg);
   }

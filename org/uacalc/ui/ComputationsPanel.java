@@ -153,7 +153,8 @@ public class ComputationsPanel extends JPanel {
             if (!isCancelled()) {
               FreeAlgebra fr = get();
               System.out.println("fr = " + fr);
-              TermTablePanel ttp = new TermTablePanel(uacalc, fr.getTerms());
+              TermTablePanel ttp = 
+                new TermTablePanel(uacalc, fr.getTerms(), fr.getVariables());
               setTermTablePanel(ttp);
             }
             // the next line *is* reached!!
