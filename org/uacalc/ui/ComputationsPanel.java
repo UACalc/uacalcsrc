@@ -149,6 +149,7 @@ public class ComputationsPanel extends JPanel {
     final TaskRunner<FreeAlgebra> runner = 
             new TaskRunner<FreeAlgebra>(freeAlgTask, monitorPanel) {
         public void done() {
+          System.out.println("got to done");
           try {
             if (!isCancelled()) {
               FreeAlgebra fr = get();
@@ -158,7 +159,11 @@ public class ComputationsPanel extends JPanel {
               setTermTablePanel(ttp);
             }
             // the next line *is* reached!!
-            else System.out.println("done but cancelled");
+            else {
+              System.out.println("done but cancelled");
+              monitorPanel.getMonitor().reset();
+              //cancel(false);
+            }
           }
           catch (InterruptedException e) { e.printStackTrace(); }
           catch (ExecutionException e) { e.printStackTrace(); }

@@ -58,6 +58,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
       buf = new byte[1];
       System.out.println("Out of Memory");
       cancel(true);
+      monitorPanel.getMonitor().reset();
       return null;
     }
     catch (CancelledException e) {
@@ -66,13 +67,18 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
       Toolkit.getDefaultToolkit().beep();
       Toolkit.getDefaultToolkit().beep();
       Toolkit.getDefaultToolkit().beep();
+      monitorPanel.getMonitor().reset();
       return null;
     }
   }
   
   public void done() {
     Toolkit.getDefaultToolkit().beep();
-    if (isCancelled()) return;
+    if (isCancelled()) {
+      monitorPanel.getMonitor().reset();
+      //cancel(false);
+      return;
+    }
     try {
       ans = get();
       System.out.println("isCancelled() = " + isCancelled());
