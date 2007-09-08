@@ -85,13 +85,20 @@ public class OperationInputTable extends JPanel {
     }
     JPanel mainPanel = new JPanel();
     add(mainPanel, BorderLayout.CENTER);
+    /*
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
     mainPanel.add(Box.createHorizontalGlue());
     mainPanel.add(new JScrollPane(table, 
         ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
     mainPanel.add(Box.createHorizontalGlue());
+    */
 
+    mainPanel.setLayout(new BorderLayout());
+    mainPanel.add(new JScrollPane(table, 
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+    
     defaultValueComboBox = makeDefaultValueBox(setSize);
     //System.out.println("max size is " + defaultValueComboBox.getMaximumSize());
     defaultValueComboBox.setPreferredSize(new Dimension(1, 1));
