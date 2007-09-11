@@ -34,7 +34,7 @@ public interface Term {
    * If the term is a  variable this return null; it is a constant
    * this returns the empty list.
    */
-  public List getChildren();
+  public List<Term> getChildren();
 
   /**
    * The evaluation of this term in an algebra using <code>map</code> as

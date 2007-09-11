@@ -35,6 +35,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   protected List<SmallAlgebra> algebras;
   protected int[] sizes;
   protected int numberOfProducts;
+  protected List<IntArray> constants;
+  protected Map<IntArray,OperationSymbol> constantToSymbol;
 
   /**
    * -2 indicates the value has not been calculated; -1 that it is too big
@@ -187,9 +189,39 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
       ((Operation)it.next()).makeTable();
     }
   }
+  
+  public List<IntArray> getConstants() {
+    if (constants != null) return constants;
+    constants = new ArrayList<IntArray>();
+    constantToSymbol = new HashMap<IntArray,OperationSymbol>();
+    HashSet<IntArray> hash = new HashSet<IntArray>();
+    List<IntArray> emptyList = new ArrayList<IntArray>(); 
+    List<Operation> ops = operations();
+    for (Operation op : ops) {
+      if (op.arity() == 0) {
+        IntArray ia = (IntArray)op.valueAt(emptyList);
+        if (!hash.contains(ia)) {
+          hash.add(ia);
+          constants.add(ia);
+          constantToSymbol.put(ia, op.symbol());
+        }
+      }
+    }
+    return constants;
+  }
+  
+  public OperationSymbol getConstantSymbol(IntArray constant) {
+    getConstants();  // make sure these are made
+    return constantToSymbol.get(constant);
+  }
+  
+  public Term getConstantTerm(IntArray constant) {
+    return new NonVariableTerm(getConstantSymbol(constant),
+                               new ArrayList<Term>());
+  }
 
   /**
-   * If this is larger than and int, return -1.
+   * If this is larger than an int, return -1.
    */
   public int cardinality() {
     if (cardinality > -2) return cardinality;
@@ -260,7 +292,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems) {
+  public List<IntArray> sgClose(List<IntArray> elems) {
     return sgClose(elems, 0, null);
   }
 
@@ -277,7 +309,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems, Map termMap) {
+  public List<IntArray> sgClose(List<IntArray> elems, Map<IntArray, Term> termMap) {
+    // TODO: add in constants and terms for constants
     return sgClose(elems, 0, termMap);
   }
 
@@ -297,7 +330,9 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems, Map termMap, Object elt) {
+  public List<IntArray> sgClose(List<IntArray> elems, 
+                                Map<IntArray, Term> termMap, Object elt) {
+    
     return sgClose(elems, 0, termMap, elt);
   }
 
@@ -314,7 +349,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems, int closedMark, final Map termMap) {
+  public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
+                               final Map<IntArray,Term> termMap) {
     return sgClose(elems, closedMark, termMap, null);
   }
 
@@ -507,8 +543,8 @@ System.out.println("so far: " + currentMark);
    *
    * @return a List of IntArray's.
    */
-  public List sgClose(List elems, int closedMark, final Map termMap, 
-                                                  final  Object elt) {
+  public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
+                   final Map<IntArray,Term> termMap, final  Object elt) {
     if (isPower()) {
       SmallAlgebra alg = rootFactors().get(0);
       alg.makeOperationTables();
@@ -570,7 +606,7 @@ System.out.println("so far: " + currentMark);
             lst.add(v);
             rawList.add(vRaw);
             if (termMap != null) {
-              List children = new ArrayList(arity);
+              List<Term> children = new ArrayList<Term>(arity);
               for (int i = 0; i < arity; i++) {
                 //children.set(i, termMap.get(arg.get(i)));
                 children.add(termMap.get(lst.get(argIndeces[i])));

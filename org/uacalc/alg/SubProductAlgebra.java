@@ -73,16 +73,18 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     gens = gens2;
     this.gens = gens2;
     if (findTerms) {
-      HashMap<Integer,Term> termMap = new HashMap<Integer,Term>();
+      //Map<Integer,Term> termMap = new HashMap<Integer,Term>();
+      Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
       int k = 0;
-      for (Iterator it = gens.iterator(); it.hasNext(); k++) {
+      for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
+        IntArray gen = it.next();
         Variable var = new VariableImp("x_" + k);
-        termMap.put(k, var);
+        termMap.put(gen, var);
       }
       univ = productAlgebra.sgClose(gens, termMap);
       terms = new Term[univ.size()];
       for (int i = 0; i < univ.size(); i++) {
-        terms[i] = termMap.get(i);
+        terms[i] = termMap.get(univ.get(i));
       }
     }
     else univ = productAlgebra.sgClose(gens);

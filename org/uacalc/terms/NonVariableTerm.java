@@ -22,10 +22,10 @@ public class NonVariableTerm implements Term {
   public final static String COMMA = ",";
 
   //SimilarityType similarityType;
-  List children;
+  List<Term> children;
   OperationSymbol leadingOperationSymbol;
 
-  public NonVariableTerm(OperationSymbol opSym, List children) {
+  public NonVariableTerm(OperationSymbol opSym, List<Term> children) {
     this.leadingOperationSymbol = opSym;
     this.children = children;
     //this.similarityType = st;
@@ -55,7 +55,7 @@ public class NonVariableTerm implements Term {
   /**
    * A list of terms which are the immediate children.
    */
-  public List getChildren() { return children; }
+  public List<Term> getChildren() { return children; }
 
   /**
    * The evaluation of this term in an algebra using <tt>map</tt> as

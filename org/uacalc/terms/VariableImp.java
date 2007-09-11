@@ -3,6 +3,7 @@
 package org.uacalc.terms;
 
 import java.util.*;
+
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
@@ -45,7 +46,7 @@ public class VariableImp implements Variable {
 
   //public SimilarityType similarityType() { return similarityType; }
 
-  public List getChildren() { return null; }
+  public List<Term> getChildren() { return null; }
 
   public OperationSymbol leadingOperationSymbol() { return null; }
 
