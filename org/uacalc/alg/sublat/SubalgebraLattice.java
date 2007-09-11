@@ -132,6 +132,11 @@ public class SubalgebraLattice implements Lattice {
     return ans;
   }
 
+  /**
+   * These are really one generate subuniverses.
+   * 
+   * @return
+   */
   public List oneGeneratedSubalgebras() {
     if (oneGeneratedSubalgebras == null) makeOneGeneratedSubalgebras();
     return oneGeneratedSubalgebras;
@@ -253,6 +258,14 @@ public class SubalgebraLattice implements Lattice {
     return nodups;
   }
 
+  public Subalgebra Sg(BasicSet s) {
+    return new Subalgebra("Subalgebra Of " + alg, alg,  s);
+  }
+  
+  public Subalgebra Sg(int[] gens) {
+    return Sg(sg(gens));
+  }
+  
   public BasicSet sg(int[] gens) {
     final int g = gens.length;
     if (g == 0) return zeroSubalg;

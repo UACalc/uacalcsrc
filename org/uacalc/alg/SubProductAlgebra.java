@@ -48,7 +48,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * Construct the direct product of a List of SmallAlgebra's.
    * gens is a list of IntArray's.
    */
-  public SubProductAlgebra(String name, BigProductAlgebra prod, List gens) {
+  public SubProductAlgebra(String name, BigProductAlgebra prod, List<IntArray> gens) {
     this(name, prod, gens, false);
   }
 
