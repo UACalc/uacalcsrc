@@ -240,7 +240,7 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     for (int i = 0; i < gens.length; i++) {
       gens[i] = elementIndex(elems.get(i));
     }
-    return sub.Sg(gens);
+    return sub().Sg(gens);
   }
 
   public List sgClose(List elems) {
