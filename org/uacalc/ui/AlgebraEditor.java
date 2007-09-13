@@ -371,9 +371,9 @@ public class AlgebraEditor extends JPanel {
     catch (NumberFormatException e) {
       arityOk = false;
     }
-    if (!arityOk || arity <= 0) {
+    if (!arityOk || arity < 0) {
       JOptionPane.showMessageDialog(this,
-          "cardinality must be a nonnegative integer",
+          "arity must be a nonnegative integer",
           "Number format error",
           JOptionPane.ERROR_MESSAGE);
       return -1;
