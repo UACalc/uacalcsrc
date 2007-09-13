@@ -77,21 +77,23 @@ public class OperationTableModel extends AbstractTableModel {
     setDiagDiv();
     valueTable = op.getTable();
     final int n = valueTable.length;
-    final int k = n / setSize;
+    final int k = arity == 0 ? 1 : n / setSize;
     leftArgsTable = new int[k][];
     rowNames = new String[k];
-    final int[] seq = new int[arity - 1];
-    for (int i = 0; i < arity - 1; i++) {
-      seq[i] = 0;
-    }
-    ArrayIncrementor inc 
-             = SequenceGenerator.sequenceIncrementor(seq, setSize - 1);
-    for (int j = 0 ; j < k; j++) {
-      int[] dest = new int[arity];
-      System.arraycopy(seq, 0, dest, 0, arity - 1);
-      leftArgsTable[j] = dest;
-      //setColName(k, dest);
-      inc.increment();
+    if (arity > 0) {
+      final int[] seq = new int[arity - 1];
+      for (int i = 0; i < arity - 1; i++) {
+        seq[i] = 0;
+      }
+      ArrayIncrementor inc 
+      = SequenceGenerator.sequenceIncrementor(seq, setSize - 1);
+      for (int j = 0 ; j < k; j++) {
+        int[] dest = new int[arity];
+        System.arraycopy(seq, 0, dest, 0, arity - 1);
+        leftArgsTable[j] = dest;
+        //setColName(k, dest);
+        inc.increment();
+      }
     }
     setRowNames();
   }
@@ -197,12 +199,20 @@ public class OperationTableModel extends AbstractTableModel {
   }
 
   public void setRowNames() {
+    if (arity == 0) {
+      setRowName(0, null);
+      return;
+    }
     for (int i = 0; i < leftArgsTable.length; i++) {
       setRowName(i, leftArgsTable[i]);
     }
   }
   
   public void setRowName(int k, int[] arg) {
+    if (arg == null) {  // nullary op
+      rowNames[k] = op.symbol().name() + "()";
+      return;
+    }
     final String left = "(";
     final String right = ")";
     final String comma = ",";
@@ -230,10 +240,12 @@ public class OperationTableModel extends AbstractTableModel {
    * The column of index 0 is a vector of all but the last arg.
    */
   public int getColumnCount() {
+    if (arity == 0) return 2;
     return op.getSetSize() + 1;
   }
 
   public int getRowCount() {
+    if (arity == 0) return 1;
     return leftArgsTable.length;
   }
 
@@ -278,6 +290,8 @@ public class OperationTableModel extends AbstractTableModel {
   }
   
   private int[] rowColToArg(int row, int col) {
+    final int[] empty = new int[0];
+    if (arity == 0) return empty;
     if (col == 0) return null;
     int[] left = leftArgsTable[row];
     int[] arg = new int[op.arity()];

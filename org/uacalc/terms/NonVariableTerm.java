@@ -177,7 +177,7 @@ public class NonVariableTerm implements Term {
       child.writeStringBuffer(sb);
       sb.append(COMMA);
     }
-    ((Term)children.get(n)).writeStringBuffer(sb);
+    if (n >= 0) getChildren().get(n).writeStringBuffer(sb);
     sb.append(RIGHT_PAR);
     return sb;
   }

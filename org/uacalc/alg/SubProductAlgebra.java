@@ -182,7 +182,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     if (gens == null) return null;
     List<Variable> ans = new ArrayList<Variable>();
     for (int i = 0; i < gens.size(); i++) {
-      ans.add((Variable)terms[i]);
+      if (terms[i].isaVariable()) ans.add((Variable)terms[i]);
     }
     this.variables = ans;
     return ans;

@@ -311,6 +311,14 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   public List<IntArray> sgClose(List<IntArray> elems, Map<IntArray, Term> termMap) {
     // TODO: add in constants and terms for constants
+    List<IntArray> consts = getConstants();
+    Set<IntArray> elemsHS = new HashSet<IntArray>(elems);
+    for (IntArray ia : consts) {
+      if (!elemsHS.contains(ia)) {
+        elems.add(ia);
+        if (termMap != null) termMap.put(ia, getConstantTerm(ia));
+      }
+    }
     return sgClose(elems, 0, termMap);
   }
 
