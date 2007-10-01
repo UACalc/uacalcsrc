@@ -82,6 +82,14 @@
     <jar jarfile="${dist.dir}/lib/uacalc.jar" 
          manifest="${manifest.file}"
          basedir="${class.dir}"/>
+    <signjar jar="${dist.dir}/lib/uacalc.jar"
+             alias="ralph" storepass="hawaii" />
+    <signjar jar="${dist.dir}/lib/LatDraw.jar"
+             alias="ralph" storepass="hawaii" />
+    <signjar jar="${dist.dir}/lib/groovy-all-1.0.jar"
+             alias="ralph" storepass="hawaii" />
+    <signjar jar="${dist.dir}/lib/groovy-engine.jar"
+             alias="ralph" storepass="hawaii" />
   </target>
 
   <target name="javadoc" depends="compile-dist">
