@@ -292,7 +292,7 @@ public class AlgebraEditor extends JPanel {
     name_tf.setText(alg.name());
     card_tf.setText("" + alg.cardinality());
     desc_tf.setText(alg.description());
-    setOpsCB();
+    if (alg instanceof BasicAlgebra) setOpsCB();
   }
   
   /*
