@@ -14,6 +14,7 @@ import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.sublat.*;
 import org.uacalc.io.*;
 import org.uacalc.util.Monitor;
 import org.uacalc.ui.MonitorPanel;
@@ -71,6 +72,7 @@ public class UACalculator extends JFrame {
     monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
     Monitor m = monitorPanel.getMonitor();
     CongruenceLattice.setMonitor(m);
+    SubalgebraLattice.setMonitor(m);
     GeneralAlgebra.setMonitor(m);
     
     mainPanel = new JPanel();

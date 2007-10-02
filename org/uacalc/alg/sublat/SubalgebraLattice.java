@@ -20,6 +20,8 @@ import java.util.*;
  */ 
 public class SubalgebraLattice implements Lattice {
 
+  protected static Monitor monitor;
+  
   private final SmallAlgebra alg;
   private final int algSize;
   private final int numOps;
@@ -31,20 +33,20 @@ public class SubalgebraLattice implements Lattice {
   /** 
    * A map from pairs Integer(i) to the IntegerArray representing sg(i).
    */
-  private HashMap oneGeneratedSubalgLookup = null;
+  private HashMap<Integer,BasicSet> oneGeneratedSubalgLookup = null;
 
   /** 
    * A map from one generated subalgebras to a generator of the subalgebra.
    */
-  private HashMap oneGeneratedSubalgGenerator = null;
+  private HashMap<BasicSet,Integer> oneGeneratedSubalgGenerator = null;
 
-  private Set universe = null;
-  private HashMap upperCoversMap = null;
-  private HashMap lowerCoverOfJIs = null;
-  private ArrayList oneGeneratedSubalgebras = null;
-  private ArrayList joinIrreducibles = null;
-  private ArrayList meetIrreducibles = null;
-  private HashSet jisHash = null;
+  private Set<BasicSet> universe = null;
+  private HashMap<BasicSet,List<BasicSet>> upperCoversMap = null;
+  private HashMap<BasicSet,BasicSet> lowerCoverOfJIs = null;
+  private ArrayList<BasicSet> oneGeneratedSubalgebras = null;
+  private ArrayList<BasicSet> joinIrreducibles = null;
+  private ArrayList<BasicSet> meetIrreducibles = null;
+  private HashSet<BasicSet> jisHash = null;
 
   /**
    * The size of the universe as it is being computed for the progress
@@ -78,9 +80,17 @@ public class SubalgebraLattice implements Lattice {
     }
   }
 
+  public static void setMonitor(Monitor m) { monitor = m; }
+  public static Monitor getMonitor() { return monitor; }
+  
+  public static final boolean monitoring() {
+    return monitor != null;
+  }
+
+  
   public List constantOperations() { return SimpleList.EMPTY_LIST; }
 
-  public SmallAlgebra algebra() { return alg; }
+  public SmallAlgebra getAlgebra() { return alg; }
 
   public boolean isUnary() { return false; }
 
@@ -108,7 +118,7 @@ public class SubalgebraLattice implements Lattice {
   public Iterator iterator() { return universe().iterator(); }
 
   public String name() {
-    return "Sub(" + algebra() + ")";
+    return "Sub(" + getAlgebra() + ")";
   }
 
   /**
@@ -143,10 +153,12 @@ public class SubalgebraLattice implements Lattice {
   }
 
   private void makeOneGeneratedSubalgebras() {
-    oneGeneratedSubalgebras = new ArrayList();
-    oneGeneratedSubalgGenerator = new HashMap();
-    oneGeneratedSubalgLookup = new HashMap();
-    HashMap oneGens = new HashMap();
+    if (monitoring()) monitor.printStart("finding 1 generated subalgebras of " 
+        + getAlgebra().name());
+    oneGeneratedSubalgebras = new ArrayList<BasicSet>();
+    oneGeneratedSubalgGenerator = new HashMap<BasicSet,Integer>();
+    oneGeneratedSubalgLookup = new HashMap<Integer,BasicSet>();
+    HashMap<BasicSet,BasicSet> oneGens = new HashMap<BasicSet,BasicSet>();
     for (int i = 0 ; i < algSize; i++) {
       BasicSet sub = sg(new int[]{i});
       if (!oneGens.containsKey(sub)) {
@@ -160,6 +172,8 @@ public class SubalgebraLattice implements Lattice {
       oneGeneratedSubalgLookup.put(new Integer(i), sub);
     }
     Collections.sort(oneGeneratedSubalgebras);
+    if (monitoring()) monitor.printEnd("one generated subalgebras of " 
+        + getAlgebra().name() + ": size = " + oneGeneratedSubalgebras.size());
   }
 
   /**
@@ -269,7 +283,7 @@ public class SubalgebraLattice implements Lattice {
   public BasicSet sg(int[] gens) {
     final int g = gens.length;
     if (g == 0) return zeroSubalg;
-    List gensList = new ArrayList(g + zeroSubalg.size());
+    List<Integer> gensList = new ArrayList<Integer>(g + zeroSubalg.size());
     // ToDo delete elems of gens which lie in zeroSubalg.
     // add all constants
     for (int i = 0 ; i < zeroSubalg.size(); i++) {
@@ -416,6 +430,8 @@ public class SubalgebraLattice implements Lattice {
    *
    */
   public void makeUniverse() {
+    if (monitoring()) monitor.printStart("finding the universe of Sub(" 
+        + getAlgebra().name() + ")");
     universe = joinClosure(joinIrreducibles());
     /*
     universe = new HashSet(joinIrreducibles());
@@ -433,6 +449,7 @@ public class SubalgebraLattice implements Lattice {
     }
     */
     universe.add(zeroSubalg);
+    if (monitoring()) monitor.printEnd("|Sub(" + getAlgebra().name() + ")| = " + universe.size());
   }
 
   /**
@@ -447,6 +464,17 @@ public class SubalgebraLattice implements Lattice {
       BasicSet s = (BasicSet)it.next();
       final int n = ansList.size();
       for (int i = 0; i < n; i++) {
+        if (monitoring()) {
+          if (monitor.isCancelled()) {
+            monitor.printlnToLog("Cancelled (" + ansList.size() + " elements so far)");
+            return null;
+          }
+          else {
+            //monitor.printlnToLog("k = " + k + " of " + size);
+            monitor.setPassFieldText(i + " of " + n);
+            monitor.setSizeFieldText("" + ansList.size());
+          }
+        }
         Object  join = join(s, (BasicSet)ansList.get(i));
         if (!ans.contains(join)) {
           ans.add(join);
