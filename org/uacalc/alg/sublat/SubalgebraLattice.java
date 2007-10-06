@@ -470,6 +470,7 @@ public class SubalgebraLattice implements Lattice {
             return null;
           }
           else {
+            System.out.println("i = " + i + " of " + n + ", size = " + ansList.size());
             //monitor.printlnToLog("k = " + k + " of " + size);
             monitor.setPassFieldText(i + " of " + n);
             monitor.setSizeFieldText("" + ansList.size());
