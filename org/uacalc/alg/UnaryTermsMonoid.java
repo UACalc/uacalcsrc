@@ -7,12 +7,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.AbstractSet;
 import java.util.HashSet;
+import java.io.*;
 
 import org.uacalc.alg.conlat.CongruenceLattice;
 import org.uacalc.alg.op.*;
 import org.uacalc.alg.sublat.SubalgebraLattice;
 import org.uacalc.terms.*;
 import org.uacalc.util.*;
+import org.uacalc.io.*;
 
 //TODO:
 // make a class for generating the semigroup os some self maps.
@@ -49,7 +51,7 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
       universe.add(unaryTerms[i]);
       unaryTermList.add(unaryTerms[i]);
     }
-    List<Operation> operations = new ArrayList<Operation>(1);
+    operations = new ArrayList<Operation>(1);
     final Operation opx = Operations.makeBinaryIntOperation(
         OperationSymbol.PRODUCT, free1.cardinality(), makeTable());
     Operation op = new AbstractOperation(OperationSymbol.PRODUCT, unaryTerms.length) {
@@ -63,6 +65,7 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
         return opx.intValueAt(args);
       }
     };
+    operations.add(op);
   }
   
   private int[][] makeTable() {
@@ -81,7 +84,7 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
         for (int r = 0; r < n; r++) {
           tmp[r] = termOp0.intValueAt(new int[] {termOp1.intValueAt(new int[] {r})});
         }
-        table[i][j] = map.get(new IntArray(tmp));
+        table[j][i] = map.get(new IntArray(tmp));// some reason we need this backwards
         j++;
       }
       i++;
@@ -130,6 +133,13 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
   public void makeOperationTables() {
     // TODO Auto-generated method stub
 
+  }
+  
+  public static void main(String[] args) throws IOException, BadAlgebraFileException {
+    SmallAlgebra alg = AlgebraIO.readAlgebraFile(
+        "/home/ralph/Java/Algebra/algebras/D16-set.ua");
+    UnaryTermsMonoid m = new UnaryTermsMonoid(alg);
+    AlgebraIO.writeAlgebraFile(m, "/tmp/D16.ua");
   }
 
 }
