@@ -461,7 +461,14 @@ public class SubalgebraLattice implements Lattice {
   public Set joinClosure(Collection gens) {
     Set ans = new HashSet(gens);
     List ansList = new ArrayList(gens);
+    int k = 0;
+    int g = gens.size();
     for (Iterator it = gens.iterator(); it.hasNext(); ) {
+      System.out.println("pass " + k + " of " + g + ", size = " + ansList.size());
+      if (monitoring()) {
+        monitor.setPassFieldText(k + " of " + g);
+        monitor.setSizeFieldText("" + ansList.size());
+      }
       BasicSet s = (BasicSet)it.next();
       final int n = ansList.size();
       for (int i = 0; i < n; i++) {
@@ -470,12 +477,12 @@ public class SubalgebraLattice implements Lattice {
             monitor.printlnToLog("Cancelled (" + ansList.size() + " elements so far)");
             return null;
           }
-          else {
-            System.out.println("i = " + i + " of " + n + ", size = " + ansList.size());
+          //else {
+          //  System.out.println("i = " + i + " of " + n + ", size = " + ansList.size());
             //monitor.printlnToLog("k = " + k + " of " + size);
-            monitor.setPassFieldText(i + " of " + n);
-            monitor.setSizeFieldText("" + ansList.size());
-          }
+          //  monitor.setPassFieldText(i + " of " + n);
+          //  monitor.setSizeFieldText("" + ansList.size());
+          //}
         }
         Object  join = join(s, (BasicSet)ansList.get(i));
         if (!ans.contains(join)) {
