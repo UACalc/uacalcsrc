@@ -490,6 +490,7 @@ public class SubalgebraLattice implements Lattice {
           ansList.add(join);
         }
       }
+      k++;
     }
     return ans;
   }
