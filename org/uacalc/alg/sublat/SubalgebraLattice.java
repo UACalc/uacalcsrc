@@ -172,6 +172,7 @@ public class SubalgebraLattice implements Lattice {
       oneGeneratedSubalgLookup.put(new Integer(i), sub);
     }
     Collections.sort(oneGeneratedSubalgebras);
+    System.out.println("oneGenerated size = " + oneGeneratedSubalgebras.size());
     if (monitoring()) monitor.printEnd("one generated subalgebras of " 
         + getAlgebra().name() + ": size = " + oneGeneratedSubalgebras.size());
   }
