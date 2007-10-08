@@ -137,9 +137,10 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
-        "/home/ralph/Java/Algebra/algebras/D16-set.ua");
+        //"/home/ralph/Java/Algebra/algebras/D16-set.ua"
+        "/home/ralph/Java/Algebra/algebras/Octagon4.ua");
     UnaryTermsMonoid m = new UnaryTermsMonoid(alg);
-    AlgebraIO.writeAlgebraFile(m, "/tmp/D16.ua");
+    AlgebraIO.writeAlgebraFile(m, "/tmp/D16-2.ua");
   }
 
 }
