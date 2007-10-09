@@ -64,6 +64,10 @@ public abstract class AbstractOperation implements Operation {
 
     throw new UnsupportedOperationException();
   }
+  
+  public boolean isTableBased() {
+    return false;
+  }
 
   /**
    * Is this operation idempotent in the sense f(x,x,..,x) = x.

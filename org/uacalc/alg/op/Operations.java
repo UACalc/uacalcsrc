@@ -368,7 +368,46 @@ logger.setLevel(Level.FINE);
     return op;
   }
 
- 
+  public static List<Operation> makeIntOperations(List<Operation> ops) {
+    List<Operation> ans = new ArrayList<Operation>(ops.size());
+    for (Operation op : ops) {
+      ans.add(makeIntOperation(op));
+    }
+    return ans;
+  }
+  
+  /**
+   * This makes a new operation that agrees with the original but is
+   * table based and so faster.
+   * 
+   * @param opx   the original operation
+   * @return      the new operation
+   */
+  public static Operation makeIntOperation(final Operation opx) {
+    if (opx.isTableBased()) return opx;
+    final int arity = opx.arity();
+    final int size = opx.getSetSize();
+    int h = 1;
+    for (int i = 0; i < arity; i++) {
+      h = h * size;
+    }
+    final int[] values = new int[h];
+    for (int i = 0; i < h; i++) {
+      values[i] = opx.intValueAt(Horner.hornerInv(i, size, arity));
+    }
+    Operation op = new AbstractOperation(opx.symbol(), size) {
+      public Object valueAt(List args) {
+        return opx.valueAt(args);
+      }
+      public int[] getTable() { return values; }
+      public int intValueAt(final int[] args) {
+        return values[Horner.horner(args, algSize)];
+      }
+      
+      public boolean isTableBased() { return true; }
+    };
+    return op;
+  }
 
   /**
    * Construct an Operation from a valueTable.

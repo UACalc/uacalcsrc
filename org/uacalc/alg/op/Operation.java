@@ -65,6 +65,8 @@ public interface Operation {
    * Get the table for this operation or null if it does not exist.
    */
   public int[] getTable();
+  
+  public boolean isTableBased();
 
   /**
    * Is this operation idempotent in the sense f(x,x,..,x) = x.
