@@ -61,6 +61,9 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
         int k = intValueAt(new int[] {i0,i1});
         return unaryTermList.get(k);
       }
+      public int[] getTable() {
+        return opx.getTable();
+      }
       public int intValueAt(int[] args) {
         return opx.intValueAt(args);
       }
