@@ -64,6 +64,49 @@ logger.setLevel(Level.FINE);
   }
 
   /**
+   * Test if map defines a homomorphism wrt these operations. The operations
+   * must have the same arity.
+   * 
+   * @param map      an array defining the map
+   * @param op0      the first operation
+   * @param op1      the second operation
+   * @return         true or false
+   */
+  public static boolean commutes(final int[] map, final Operation op0, 
+                                                  final Operation op1) {
+    Logger logger = Logger.getLogger("org.uacalc.alg.Operations");
+    logger.setLevel(Level.FINE);
+        final int setSize = op0.getSetSize();
+        final int[] arr = new int[op0.arity()];
+        final int[] imageArr = new int[op0.arity()];
+        final int[] unaryArg = new int[1];
+        int v = map[0];
+        for (int i = 0 ; i < op0.arity(); i++) {
+          imageArr[i] = v; // v is unaryOp([0])
+        }
+        unaryArg[0] = map[op0.intValueAt(arr)];
+        if (op1.intValueAt(imageArr) != map[op0.intValueAt(arr)]) {
+          logger.info("fails to commute at " + ArrayString.toString(arr));
+          return false;
+        }
+        ArrayIncrementor inc = 
+                   SequenceGenerator.sequenceIncrementor(arr, setSize - 1);
+        while (inc.increment()) {
+          v = map[op0.intValueAt(arr)];
+          for (int i = 0 ; i < op0.arity(); i++) {
+            imageArr[i] = map[arr[i]];
+          }
+          if (op1.intValueAt(imageArr) != v) {
+            logger.info("fails to commute at " + ArrayString.toString(arr));
+            logger.info("with op " + op0.symbol().name());
+            return false;
+          }
+        }
+        return true;
+      }
+
+  
+  /**
    * Test if an operation is idempotent.
    */
   public static final boolean isIdempotent(Operation op) {

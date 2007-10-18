@@ -70,6 +70,20 @@ public class Algebras {
     }
     return true;
   }
+  
+  public static boolean isHomomorphism(final int[] map, 
+                                       final SmallAlgebra alg0, 
+                                       final SmallAlgebra alg1) {
+    for (Iterator it = alg0.operations().iterator(); it.hasNext(); ) {
+      Operation op0 = (Operation)it.next();
+      Operation op1 = alg1.getOperation(op0.symbol());
+      if (! Operations.commutes(map, op0, op1)) {
+        logger.finer(op0 + " failed to commute with " + map);
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * Make a random algebra of a given similarity type.
