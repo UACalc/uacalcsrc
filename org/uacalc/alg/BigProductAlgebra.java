@@ -572,7 +572,7 @@ System.out.println("so far: " + currentMark);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      System.out.println("monitor is " + monitor);
+      //System.out.println("monitor is " + monitor);
       if (monitoring()) {
         System.out.println("subpow pass = " + pass + " size = " + lst.size());
         monitor.setPassFieldText("" + pass++);
