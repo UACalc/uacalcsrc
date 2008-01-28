@@ -1,4 +1,4 @@
-/* Subalgebra.java (c) 2003/07/12  Ralph Freese */
+/* ReductAlgebra.java (c) 2007/07/12  Ralph Freese */
 
 package org.uacalc.alg;
 
@@ -11,7 +11,7 @@ import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.sublat.*;
 
 /**
- * This class represents a subalgebra of a <tt>SmallAlgebra</tt>.
+ * This class represents a reduct of a <tt>SmallAlgebra</tt> to a list of <tt>Term</tt>s.
  *
  * @author Ralph Freese
  *

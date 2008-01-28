@@ -58,7 +58,7 @@ public class TermTablePanel extends JPanel {
       public void actionPerformed(ActionEvent e) {
         int[] rows = table.getSelectedRows();
         if (rows.length > 0) {
-          SmallAlgebra alg = uacalc.getAlgebra();
+          SmallAlgebra alg = uacalc.getCurrentAlgebra();
           for (int i = 0; i < rows.length; i++) {
             Term term = (Term) table.getValueAt(rows[i], 1);
             // System.out.println("term = " + term);
@@ -83,13 +83,13 @@ public class TermTablePanel extends JPanel {
         int[] rows = table.getSelectedRows();
         if (rows.length > 0) {
           List<Operation> ops = new ArrayList<Operation>(rows.length);
-          SmallAlgebra oldAlg = uacalc.getAlgebra();
+          SmallAlgebra oldAlg = uacalc.getCurrentAlgebra();
           for (int i = 0; i < rows.length; i++) {
             Term term = (Term) table.getValueAt(rows[i], 1);
             ops.add(new TermOperationImp(term, variables, oldAlg));
           }
           SmallAlgebra alg = new BasicAlgebra(oldAlg.name() + "-reduct", oldAlg.cardinality(), ops);
-          uacalc.setAlgebra(alg);
+          uacalc.setCurrentAlgebra(alg);
         }
         else showNoSelectionDialog();
       }

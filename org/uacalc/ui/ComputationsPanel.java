@@ -95,7 +95,7 @@ public class ComputationsPanel extends JPanel {
       }
     });
     */
-    add(main, BorderLayout.NORTH);
+    add(main, BorderLayout.CENTER);
     validate();
   }
   
@@ -123,12 +123,12 @@ public class ComputationsPanel extends JPanel {
     if (termTablePanel != null) main.remove(termTablePanel);
     termTablePanel = ttp;
     main.add(ttp);
-    validate();
+    uacalc.validate();
     repaint();
   }
   
   private void setupFreeAlgebraPanel() {
-    SmallAlgebra alg = uacalc.getAlgebra();
+    SmallAlgebra alg = uacalc.getCurrentAlgebra();
     if (alg == null) {
       JOptionPane.showMessageDialog(this,
           "<html>You must have an algebra loaded.<br>"
@@ -142,7 +142,7 @@ public class ComputationsPanel extends JPanel {
     System.out.println("gens = " + gens);
     final Task<FreeAlgebra> freeAlgTask = new Task<FreeAlgebra>() {
       public FreeAlgebra doIt() {
-        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getAlgebra(), gens);
+        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
         return freeAlg;
       }
     };

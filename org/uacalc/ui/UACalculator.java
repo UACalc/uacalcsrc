@@ -26,7 +26,8 @@ public class UACalculator extends JFrame {
 
   private boolean dirty = false;
 
-  private SmallAlgebra algebra;  // Small ??
+  private SmallAlgebra currentAalgebra;  // Small ??
+  private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
   private File currentFile;
   private String title = "";  // if currentFile is null this might be "New"
   private String progName = "UACalculator   ";
@@ -196,7 +197,7 @@ public class UACalculator extends JFrame {
 
     drawConMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (getAlgebra() != null) drawCon(getAlgebra());
+          if (getCurrentAlgebra() != null) drawCon(getCurrentAlgebra());
         }
       });
 
@@ -204,7 +205,7 @@ public class UACalculator extends JFrame {
 
     drawSubMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (getAlgebra() != null) drawSub(getAlgebra());
+          if (getCurrentAlgebra() != null) drawSub(getCurrentAlgebra());
         }
       });
 
@@ -212,7 +213,7 @@ public class UACalculator extends JFrame {
                     (JMenuItem)draw.add(new JMenuItem("Belinda"));
     drawBelindaMI.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (getAlgebra() != null) drawBelinda(getAlgebra());
+          if (getCurrentAlgebra() != null) drawBelinda(getCurrentAlgebra());
         }
       });
 
@@ -400,19 +401,19 @@ public class UACalculator extends JFrame {
   
   public boolean save() throws IOException {
     if (!getAlgebraEditor().sync()) return false;
-    if (getAlgebra() == null) return true;
+    if (getCurrentAlgebra() == null) return true;
     File f = getCurrentFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
     String ext = ExtFileFilter.getExtension(f);
     boolean newFormat = true;
     if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
-    AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
+    AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
     setDirty(false);
     return true;
   }
 
   public boolean saveAs(String ext) throws IOException {
-    if (getAlgebra() == null) return true;
+    if (getCurrentAlgebra() == null) return true;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);
@@ -453,7 +454,7 @@ public class UACalculator extends JFrame {
       if (extension == null || !extension.equals(ext)) {
         f = new File(f.getCanonicalPath() + "." + ext);
       }
-      AlgebraIO.writeAlgebraFile(getAlgebra(), f, !newFormat);
+      AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
       // setModified(false);
       setCurrentFile(f);
       setDirty(false);
@@ -520,7 +521,7 @@ public class UACalculator extends JFrame {
       setCurrentFile(file);
       setTitle();
       //setModified(false);
-      setAlgebra(a);
+      setCurrentAlgebra(a);
       setDirty(false);
     }
   }
@@ -530,11 +531,11 @@ public class UACalculator extends JFrame {
   
 
 
-  public SmallAlgebra getAlgebra() { return algebra; }
+  public SmallAlgebra getCurrentAlgebra() { return currentAalgebra; }
   
-  public void setAlgebra(SmallAlgebra alg) {
+  public void setCurrentAlgebra(SmallAlgebra alg) {
     if (isDirty()) checkSave();
-    updateAlgebra(alg);
+    updateCurrentAlgebra(alg);
     getAlgebraEditor().setAlgebra(alg);
   }
   
@@ -551,8 +552,8 @@ public class UACalculator extends JFrame {
    * 
    * @param alg
    */
-  public void updateAlgebra(SmallAlgebra alg) {
-    algebra = alg;
+  public void updateCurrentAlgebra(SmallAlgebra alg) {
+    currentAalgebra = alg;
     getLatDrawPanel().setDiagram(null);
   }
 

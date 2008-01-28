@@ -243,7 +243,7 @@ public class AlgebraEditor extends JPanel {
           JOptionPane.WARNING_MESSAGE);
       return false;
     }
-    uacalc.updateAlgebra(makeAlgebra());
+    uacalc.updateCurrentAlgebra(makeAlgebra());
     repaint();
     return true;
   }
