@@ -2,6 +2,8 @@ package org.uacalc.ui.util;
 
 import org.uacalc.alg.*;
 import java.io.File;
+import java.util.List;
+
 
 /**
  * A data structure to hold an algebra and some related gui 
@@ -12,7 +14,7 @@ import java.io.File;
  */
 public class GUIAlgebra {
 
-  private SmallAlgebra alg;
+  private final SmallAlgebra alg;
   private File file;
   
   private static int count = 0;
@@ -26,6 +28,8 @@ public class GUIAlgebra {
   }
   
   private AlgebraGUIType guiType;
+
+  private List<GUIAlgebra> parents; // may be empty of a singleton
   
   public GUIAlgebra(SmallAlgebra alg) {
     synchronized(this) {
@@ -34,4 +38,32 @@ public class GUIAlgebra {
     this.alg = alg;
   }
   
+  public GUIAlgebra(SmallAlgebra alg, File file) {
+    this(alg);
+    this.file = file;
+  }
+  
+  public GUIAlgebra(SmallAlgebra alg, File file, List<GUIAlgebra> parents) {
+    this(alg, file);
+    this.parents = parents;
+  }
+  
+  public void setFile (File file) {
+    this.file = file;
+  }
+  
+  public File getFile() { return file; }
+  
+  public List<GUIAlgebra> getParents() { return parents; }
+  
+  public int getSerial() { return serial; }
+  
+  public boolean equals(Object obj) {
+    if (!(obj instanceof GUIAlgebra)) return false;
+    return serial == ((GUIAlgebra)obj).getSerial();
+  }
+  
+  public int hashCode() {
+    return serial;
+  }
 }
