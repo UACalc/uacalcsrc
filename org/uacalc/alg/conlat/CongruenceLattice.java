@@ -51,37 +51,37 @@ public class CongruenceLattice implements Lattice {
   private int algSize;
   private int numOps;
 
-  private BasicPartition zeroCong;
-  private BasicPartition oneCong;
+  private Partition zeroCong;
+  private Partition oneCong;
 
 
   /** 
    * A map from pairs [i,j] to the array representing Cg(i, j).
    */
-  private HashMap principalCongruencesLookup = null;
+  private HashMap<IntArray,Partition> principalCongruencesLookup = null;
 
   /**
    * A map from principal congruences to pairs [i,j] such that Cg(i, j).
    * is the principal congruence.
    */
-  private HashMap principalCongruencesRep = null;
+  private HashMap<Partition,IntArray> principalCongruencesRep = null;
 
   /**
    * A map from principal congruences to a Subtrace for this principal.
    * The Subtrace has the TCT type as well.
    */
-  private HashMap joinIrredToSubtraceMap = null;
+  private Map<Partition,Subtrace> joinIrredToSubtraceMap = null;
 
 
-  private Set universe = null;
-  private HashMap upperCoversMap = null;
-  private ArrayList principalCongruences = null;
-  private ArrayList joinIrreducibles = null;
-  private ArrayList meetIrreducibles = null;
-  private HashMap lowerCoverOfJIs = null;
-  private HashSet congruencesHash = null;
-  private ArrayList meetIrredCongruences = null;
-  private HashSet typeSet = null;
+  private Set<Partition> universe = null;
+  private Map<Partition,List<Partition>> upperCoversMap = null;
+  private List<Partition> principalCongruences = null;
+  private List<Partition> joinIrreducibles = null;
+  private List<Partition> meetIrreducibles = null;
+  private Map<Partition,Partition> lowerCoverOfJIs = null;
+  private Set<Partition> congruencesHash = null;
+  private List<Partition> meetIrredCongruences = null;
+  private Set<Integer> typeSet = null;
 
 
   /**
@@ -117,7 +117,7 @@ public class CongruenceLattice implements Lattice {
     return "Congruence Lattice of " + alg;
   }
 
-  public List principals() {
+  public List<Partition> principals() {
     if (!principalsMade) {
       makePrincipals();
       principalsMade = true;
@@ -129,7 +129,7 @@ public class CongruenceLattice implements Lattice {
     return universe().size();
   }
 
-  public Set universe() {
+  public Set<Partition> universe() {
     if (universe == null) makeUniverse();
     return universe;
   }
@@ -151,7 +151,7 @@ public class CongruenceLattice implements Lattice {
   /**
    * A list of the join irreducibles; constructed if necessary.
    */
-  public List joinIrreducibles() {
+  public List<Partition> joinIrreducibles() {
     if (joinIrreducibles == null) makeJoinIrreducibles();
     return joinIrreducibles;
   }
@@ -162,7 +162,7 @@ public class CongruenceLattice implements Lattice {
     return lowerCoverOfJIs.get(part) != null;
   }
 
-  public List meetIrreducibles() {
+  public List<Partition> meetIrreducibles() {
     if (meetIrreducibles == null) makeMeetIrreducibles();
     return meetIrreducibles;
   }
@@ -171,6 +171,7 @@ public class CongruenceLattice implements Lattice {
     return ((Partition)a).join((Partition)b);
   }
 
+  // make this generic
   public Object join(List args) {
     Partition join = zero();
     for (Iterator it = args.iterator(); it.hasNext(); ) {
@@ -193,15 +194,15 @@ public class CongruenceLattice implements Lattice {
 
 
   public boolean leq(Object a, Object b) {
-    return ((BasicPartition)a).leq((BasicPartition)b);
+    return ((Partition)a).leq((Partition)b);
   }
 
   public List constantOperations() { return SimpleList.EMPTY_LIST; }
 
-  // fix this
+  // TODO fix this
   public List operations() { return null; }
 
-  // fix this
+  // TODO fix this
   public Operation getOperation(OperationSymbol sym) { return null; }
 
   // we weill try to convert this to a SmallLattice and find the 
@@ -211,21 +212,21 @@ public class CongruenceLattice implements Lattice {
   public void makePrincipals() {
     if (monitoring()) monitor.printStart("finding principal congruences of " 
                                                         + getAlgebra().name());
-    HashMap pcIdMap = new HashMap();  // to keep equal congruences identical
-    principalCongruences = new ArrayList();
+    HashMap<Partition,Partition> pcIdMap = new HashMap<Partition,Partition>();  // to keep equal congruences identical
+    principalCongruences = new ArrayList<Partition>();
     //congruencesHash = new HashSet();
-    principalCongruencesLookup = new HashMap();
-    principalCongruencesRep = new HashMap();
+    principalCongruencesLookup = new HashMap<IntArray,Partition>();
+    principalCongruencesRep = new HashMap<Partition,IntArray>();
     for (int i = 0; i < algSize - 1; i++) {
       for (int j = i + 1; j < algSize; j++) {
-        BasicPartition partCong = makeCg(i, j);
+        Partition partCong = makeCg(i, j);
         if (pcIdMap.get(partCong) == null) {
           pcIdMap.put(partCong, partCong);
           principalCongruences.add(partCong);
           principalCongruencesRep.put(partCong, new IntArray(new int[] {i, j}));
         }
         else {
-          partCong = (BasicPartition)pcIdMap.get(partCong);
+          partCong = (Partition)pcIdMap.get(partCong);
         }
 	principalCongruencesLookup.put(new IntArray(new int[] {i, j}),
 				       partCong);
@@ -284,8 +285,8 @@ public class CongruenceLattice implements Lattice {
   public void makeUniverse() {
     if (monitoring()) monitor.printStart("finding the universe of Con(" 
                                                      + getAlgebra().name() + ")");
-    ArrayList univ = new ArrayList(joinIrreducibles());
-    HashSet hash = new HashSet(joinIrreducibles());
+    List<Partition> univ = new ArrayList<Partition>(joinIrreducibles());
+    HashSet<Partition> hash = new HashSet<Partition>(joinIrreducibles());
     sizeComputed = univ.size();
     makeUniverseK = 0;
     stopMakeUniverse = false;
@@ -310,7 +311,7 @@ public class CongruenceLattice implements Lattice {
       makeUniverseK++;
 //System.out.println("makeUniverseK = " + makeUniverseK);
 //System.out.println("sizeComputed = " + sizeComputed);
-      BasicPartition elem = (BasicPartition)it.next();
+      Partition elem = (Partition)it.next();
       int n = univ.size();
       for (int i = makeUniverseK; i < n; i++) {
         Partition join = elem.join((Partition)univ.get(i));
@@ -340,7 +341,7 @@ public class CongruenceLattice implements Lattice {
     hash.add(zeroCong);
     univ.add(0, zeroCong);
     if (monitoring()) monitor.setSizeFieldText("" + univ.size());
-    universe = new LinkedHashSet(univ);
+    universe = new LinkedHashSet<Partition>(univ);
     congruencesHash = hash;
     if (monitoring()) monitor.printEnd("|Con(" + getAlgebra().name() + ")| = " + univ.size());
   }
@@ -376,13 +377,13 @@ public class CongruenceLattice implements Lattice {
 
   public void makeJoinIrreducibles() {
     if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().name());
-    joinIrreducibles = new ArrayList();
-    lowerCoverOfJIs = new HashMap();
+    joinIrreducibles = new ArrayList<Partition>();
+    lowerCoverOfJIs = new HashMap<Partition,Partition>();
     for (Iterator it = principals().iterator(); it.hasNext(); ) {
-      Partition part = (BasicPartition)it.next();
+      Partition part = (Partition)it.next();
       Partition join = zero();
       for (Iterator it2 = principals().iterator(); it2.hasNext(); ) {
-        BasicPartition part2 = (BasicPartition)it2.next();
+        Partition part2 = (Partition)it2.next();
         if (part2.leq(part) && (!part.equals(part2))) {
           join = join.join(part2);
         }
@@ -401,20 +402,20 @@ public class CongruenceLattice implements Lattice {
    * If <code>beta</code> is join irreducible, this gives its lower
    * cover; otherwise null.
    */
-  public BasicPartition lowerStar(BasicPartition beta) {
+  public Partition lowerStar(Partition beta) {
     //joinIrreducibles();
     if (joinIrreducibles != null) {
-      return (BasicPartition)lowerCoverOfJIs.get(beta);
+      return lowerCoverOfJIs.get(beta);
     }
     if (beta.equals(zero())) return null;
-    BasicPartition alpha = (BasicPartition)zero();
+    Partition alpha = zero();
     final int[][] blocks = beta.getBlocks();
     for (int i = 0; i < blocks.length; i++) {
       final int[] block = blocks[i];
       for (int j = 0; j < block.length; j++) {
         for (int k = j + 1; k < block.length; k++) {
-          BasicPartition par = getAlgebra().con().Cg(block[j], block[k]);
-          if (!beta.equals(par)) alpha = (BasicPartition)alpha.join(par);
+          Partition par = getAlgebra().con().Cg(block[j], block[k]);
+          if (!beta.equals(par)) alpha = alpha.join(par);
           if (beta.equals(alpha)) return null;
         }
       }
@@ -422,7 +423,7 @@ public class CongruenceLattice implements Lattice {
     return alpha;
   }
 
-  public HashMap upperCoversMap() {
+  public Map<Partition,List<Partition>> upperCoversMap() {
     if (upperCoversMap == null) makeUpperCovers();
     return upperCoversMap;
   }
@@ -432,20 +433,21 @@ public class CongruenceLattice implements Lattice {
    * made.
    */
   private void makeUpperCovers() {
-    HashMap ucMap = new HashMap();
-    for (Iterator it = universe().iterator(); it.hasNext(); ) {
-      BasicPartition elem = (BasicPartition)it.next();
-      HashSet hs = new HashSet();
-      ArrayList covs = new ArrayList();
-      for (Iterator it2 = joinIrreducibles().iterator(); it2.hasNext(); ) {
-        BasicPartition ji = (BasicPartition)it2.next();
+    Map<Partition,List<Partition>> ucMap
+          = new HashMap<Partition,List<Partition>>();
+    for (Iterator<Partition> it = universe().iterator(); it.hasNext(); ) {
+      Partition elem = it.next();
+      Set<Partition> hs = new HashSet<Partition>();
+      List<Partition> covs = new ArrayList<Partition>();
+      for (Iterator<Partition> it2 = joinIrreducibles().iterator(); it2.hasNext(); ) {
+        Partition ji = it2.next();
         if (!ji.leq(elem)) {
           Partition join = ji.join(elem);
           if (!hs.contains(join)) {
             hs.add(join);
             boolean above = false;
-            for (ListIterator it3 = covs.listIterator(); it3.hasNext(); ) {
-              BasicPartition cov = (BasicPartition)it3.next();
+            for (ListIterator<Partition> it3 = covs.listIterator(); it3.hasNext(); ) {
+              Partition cov = it3.next();
               if (cov.leq(join)) {
                 above = true;
                 break;
@@ -462,20 +464,20 @@ public class CongruenceLattice implements Lattice {
     upperCoversMap = ucMap;
   }
 
-  public BasicPartition Cg(Object a, Object b) {
+  public Partition Cg(Object a, Object b) {
     return Cg(getAlgebra().elementIndex(a), getAlgebra().elementIndex(b));
   }
 
-  public BasicPartition Cg(int a, int b) {
-    if (a == b) return (BasicPartition)zero();
+  public Partition Cg(int a, int b) {
+    if (a == b) return (Partition)zero();
     if (a > b) {
       int c = a;
       a = b;
       b = c;
     }
     if (principalCongruencesLookup != null) {
-      BasicPartition p 
-         =  (BasicPartition)principalCongruencesLookup.get(new int[] {a, b});
+      Partition p 
+         =  principalCongruencesLookup.get(new int[] {a, b});
       if (p != null) return p;
       return makeCg(a, b);
     }
@@ -485,7 +487,7 @@ public class CongruenceLattice implements Lattice {
   /**
    * This assumes a < b.
    */
-  private BasicPartition makeCg(int a, int b) {
+  private Partition makeCg(int a, int b) {
     int[] part = new int[algSize];
     for (int i = 0; i < algSize; i++ ) {
       part[i] = -1;
@@ -526,16 +528,16 @@ public class CongruenceLattice implements Lattice {
     return new BasicPartition(part);
   }
 
-  public HashSet typeSet() {
+  public Set typeSet() {
     if (typeSet == null) makeTypeSet();
     return typeSet;
   }
 
   private void makeTypeSet() {
     if (monitoring()) monitor.printStart("computing TCT types ...");
-    typeSet = new HashSet();
-    for (Iterator it = joinIrreducibles().iterator(); it.hasNext(); ) {
-      typeSet.add(new Integer(type((BasicPartition)it.next())));
+    typeSet = new HashSet<Integer>();
+    for (Iterator<Partition> it = joinIrreducibles().iterator(); it.hasNext(); ) {
+      typeSet.add(new Integer(type(it.next())));
     }
     if (monitoring()) monitor.printEnd("TCT types = " + typeSet);
   }
@@ -545,9 +547,9 @@ public class CongruenceLattice implements Lattice {
    * Find the type of beta over its lower cover. Beta is assumed
    * to be join irreducible.
    */
-  public int type(BasicPartition beta) {
+  public int type(Partition beta) {
     //if (monitoring()) monitor.printStart("computing TCT type of " + beta);
-    Subtrace st = (Subtrace)getJoinIrredToSubtraceMap().get(beta);
+    Subtrace st = getJoinIrredToSubtraceMap().get(beta);
     if (st == null) {
       if (monitoring()) monitor.printStart("computing TCT type of " + beta);
       st = subtrace(beta);
@@ -564,8 +566,8 @@ public class CongruenceLattice implements Lattice {
    * Find the type for beta over alpha. Beta is assumed
    * to cover alpha.
    */
-  public int type(BasicPartition beta, BasicPartition alpha) {
-    final BasicPartition gamma = findJoinIrred(alpha, beta);
+  public int type(Partition beta, Partition alpha) {
+    final Partition gamma = findJoinIrred(alpha, beta);
     return type(gamma);
   }
 
@@ -573,8 +575,8 @@ public class CongruenceLattice implements Lattice {
    * Find a subtrace for beta over its lower cover. Beta is assumed
    * to be join irreducible.
    */
-  public Subtrace subtrace(BasicPartition beta) {
-    final HashMap smap = getJoinIrredToSubtraceMap();
+  public Subtrace subtrace(Partition beta) {
+    final Map<Partition,Subtrace> smap = getJoinIrredToSubtraceMap();
     if (smap.get(beta) == null) {
       if (monitoring()) monitor.printStart("finding subtrace of " + beta);
       smap.put(beta, getTypeFinder().findSubtrace(beta));
@@ -588,13 +590,14 @@ public class CongruenceLattice implements Lattice {
    * Find a subtrace for beta over alpha. Beta is assumed
    * to cover alpha.
    */
-  public Subtrace subtrace(BasicPartition beta, BasicPartition alpha) {
-    final BasicPartition gamma = findJoinIrred(beta, alpha);
+  public Subtrace subtrace(Partition beta, Partition alpha) {
+    final Partition gamma = findJoinIrred(beta, alpha);
     return subtrace(gamma);
   }
 
-  public HashMap getJoinIrredToSubtraceMap() {
-    if (joinIrredToSubtraceMap == null) joinIrredToSubtraceMap = new HashMap();
+  public Map<Partition,Subtrace> getJoinIrredToSubtraceMap() {
+    if (joinIrredToSubtraceMap == null) 
+      joinIrredToSubtraceMap = new HashMap<Partition,Subtrace>();
     return joinIrredToSubtraceMap;
   }
 
@@ -626,9 +629,9 @@ public class CongruenceLattice implements Lattice {
    * Find a pair [a, b] (as an IntArray) which generates part.
    * Gives null if part is not principal.
    */
-  public IntArray generatingPair(BasicPartition part) {
+  public IntArray generatingPair(Partition part) {
     principals();
-    return (IntArray)principalCongruencesRep.get(part);
+    return principalCongruencesRep.get(part);
   }
 
 
@@ -640,9 +643,9 @@ public class CongruenceLattice implements Lattice {
    */
   public Partition findMeetIrred (Partition a, Partition b) {
     if (b.leq(a)) return null;
-    Iterator it = joinIrreducibles().iterator();
+    Iterator<Partition> it = joinIrreducibles().iterator();
     while (it.hasNext()) {
-      Partition j = ((Partition)it.next()).join(a);
+      Partition j = it.next().join(a);
       if (!b.leq(j)) a = j;
     }
     return a;
@@ -666,37 +669,71 @@ public class CongruenceLattice implements Lattice {
    * Note if <code>a</code> is covered by <code>b</code> then
    * <code>[a,b]</code> transposes down to <code>[j,j_*]</code>.
    */
-  public BasicPartition findJoinIrred (BasicPartition a, BasicPartition b) {
+  public Partition findJoinIrred (Partition a, Partition b) {
     if (b.leq(a)) return null;
-    Iterator it = joinIrreducibles().iterator();
+    Iterator<Partition> it = joinIrreducibles().iterator();
     while (it.hasNext()) {
-      BasicPartition ji = (BasicPartition)it.next();
+      Partition ji = it.next();
       if (ji.leq(b) && !ji.leq(a)) b = ji;
     }
     return b;
   }
 
   private void makeMeetIrreducibles() {
-    meetIrreducibles = new ArrayList();
-    Iterator it = universe().iterator();
+    meetIrreducibles = new ArrayList<Partition>();
+    Iterator<Partition> it = universe().iterator();
     while (it.hasNext()) {
-      BasicPartition elem = (BasicPartition)it.next();
-      if (((Collection)upperCoversMap().get(elem)).size() == 1) {
-	meetIrredCongruences.add(elem);
+      Partition elem = it.next();
+      if (upperCoversMap().get(elem).size() == 1) {
+	      meetIrredCongruences.add(elem);
       }
     }
   }
 
-  public final BasicPartition zero() { return zeroCong; }
-  public final BasicPartition one() { return oneCong; }
+  public final Partition zero() { return zeroCong; }
+  public final Partition one() { return oneCong; }
+  
+  /**
+   * Find a set of meet irreducible irredundantly meeting
+   * to zero.
+   * 
+   * @return
+   */
+  public List<Partition> irredundantMeetDecomposition() {
+    final List<Partition> decomp = new ArrayList<Partition>();
+    Partition meet = oneCong;
+    while (!meet.equals(zeroCong)) {
+      final int[][] blocks = meet.getBlocks();
+      final int k = blocks.length;
+      int a = -1;
+      int b = -1;
+      for (int i = 0; i < k; i++) {
+        if (blocks[i].length > 1) {
+          a = blocks[i][0];
+          b = blocks[i][1];
+          break;
+        }
+      }
+      Partition mi = zeroCong;
+      for (Partition ji : joinIrreducibles()) {
+        if (!ji.isRelated(a, b)) {
+          final Partition jiPlus = mi.join(ji);
+          if (!jiPlus.isRelated(a, b)) mi = jiPlus;
+        }
+      }
+      
+    }
+    
+    return null;
+  }
 
   /**
    * Find a subtrace for Cg(a, b), which is assumed to be join
    * irreducible.
    */
-  Subtrace findSubtrace(int a, int b) {
-    return findSubtrace(a, b, zero());
-  }
+  //Subtrace findSubtrace(int a, int b) {
+  //  return findSubtrace(a, b, zero());
+  //}
 
   /**
    * Find a subtrace for Cg(a, b), which is assumed to be join
@@ -705,6 +742,7 @@ public class CongruenceLattice implements Lattice {
    *
    * @param alpha  a congruence not above Cg(a, b).
    */
+  /*
   Subtrace findSubtrace(int a, int b, Partition alpha) {
     Partition part = Cg(a,b);
     if (a == b) throw new RuntimeException("a and b cannot be equal");
@@ -720,13 +758,12 @@ public class CongruenceLattice implements Lattice {
       a = b;
       b = c;
     }
-    HashSet visited = new HashSet();
-    boolean hasInvolution = false;
+    Set<IntArray> visited = new HashSet<IntArray>();
     int[] pair = new int[] {a, b};
     IntArray pairIA = new IntArray(pair);
     visited.add(pairIA);
     SimpleList universe = SimpleList.EMPTY_LIST;
-    HashSet genHashSet = new HashSet();
+    HashSet<IntArray> genHashSet = new HashSet<IntArray>();
     int[] roots = alpha.representatives();
     final int rootsSize = roots.length;
     for (int i = 0; i < rootsSize; i++) {
@@ -743,7 +780,7 @@ public class CongruenceLattice implements Lattice {
 
     return null;
   }
-
+*/
   public void makeOperationTables() {}
 
   public boolean isIdempotent() { return true; }

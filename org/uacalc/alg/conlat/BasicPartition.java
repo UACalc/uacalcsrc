@@ -360,6 +360,13 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       root(i, part);
     }
   }
+  
+  public boolean isZero() {
+    for (int i = 0; i < size; i++) {
+      if (array[i] != -1) return false;
+    }
+    return true;
+  }
 
   public String toString() {
     return toString(BLOCK);

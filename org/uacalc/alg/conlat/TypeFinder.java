@@ -4,7 +4,6 @@ package org.uacalc.alg.conlat;
 
 import org.uacalc.util.*;
 import org.uacalc.alg.*;
-import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 
 
@@ -73,7 +72,7 @@ public final class TypeFinder {
   //private CongruenceLattice con;
 
   // depends on alpha:
-  private BasicPartition alpha;
+  private Partition alpha;
   private int[] roots;
   private int rootsSize;
   private final HashSet diagonalHS;
@@ -91,7 +90,7 @@ public final class TypeFinder {
     this(alg, null);
   }
 
-  public TypeFinder(SmallAlgebra alg, BasicPartition alpha) {
+  public TypeFinder(SmallAlgebra alg, Partition alpha) {
     A = alg;
     con = (CongruenceLattice)A.con();
     algSize = A.cardinality();
@@ -104,7 +103,7 @@ public final class TypeFinder {
     setAlpha(alpha);
   }
 
-  private void setAlpha(BasicPartition alpha) {
+  private void setAlpha(Partition alpha) {
     if (alpha == null) alpha = con.zero();
     if (alpha.equals(this.alpha)) return;
     visited.clear();
@@ -133,7 +132,7 @@ public final class TypeFinder {
     init(con.zero());
   }
 
-  public void init(BasicPartition alpha) { setAlpha(alpha); }
+  public void init(Partition alpha) { setAlpha(alpha); }
 
   /**
    * Find the TCT type set of the algebra A.
@@ -143,12 +142,12 @@ public final class TypeFinder {
                                            // calculation was interupted.
     typeSet = new HashSet();
     for (Iterator it = con.joinIrreducibles().iterator(); it.hasNext(); ) {
-      typeSet.add(new Integer(findType((BasicPartition)it.next())));
+      typeSet.add(new Integer(findType((Partition)it.next())));
     }
     return typeSet;
   }
 
-  public Subtrace findSubtrace(BasicPartition beta) { 
+  public Subtrace findSubtrace(Partition beta) { 
     return findSubtrace(beta, con.lowerStar(beta));
   }
 
@@ -163,11 +162,11 @@ public final class TypeFinder {
    * @param alpha  a congruence whose join with the lower cover of
    *               beta is not above beta.
    */
-  public Subtrace findSubtrace(BasicPartition beta, BasicPartition alpha) { 
-    BasicPartition betaStar = con.lowerStar(beta);
+  public Subtrace findSubtrace(Partition beta, Partition alpha) { 
+    Partition betaStar = con.lowerStar(beta);
     if (betaStar == null) throw new IllegalArgumentException(
                          "beta = " + beta + " is not join irreducible");
-    alpha = (BasicPartition)alpha.join(betaStar);
+    alpha = (Partition)alpha.join(betaStar);
     if (beta.leq(alpha)) throw new IllegalArgumentException(
                          "beta is below its lower cover join alpha");
     setAlpha(alpha);
@@ -337,7 +336,7 @@ public final class TypeFinder {
     }
   }
 
-  public int findType(BasicPartition beta) { 
+  public int findType(Partition beta) { 
     return findType(beta, con.lowerStar(beta));
   }
 
@@ -352,11 +351,11 @@ public final class TypeFinder {
    * @param alpha  a congruence whose join with the lower cover of
    *               beta is not above beta.
    */
-  public int findType(BasicPartition beta, BasicPartition alpha) { 
-    BasicPartition betaStar = con.lowerStar(beta);
+  public int findType(Partition beta, Partition alpha) { 
+    Partition betaStar = con.lowerStar(beta);
     if (betaStar == null) throw new IllegalArgumentException(
                          "beta = " + beta + " is not join irreducible");
-    alpha = (BasicPartition)alpha.join(betaStar);
+    alpha = (Partition)alpha.join(betaStar);
     if (beta.leq(alpha)) throw new IllegalArgumentException(
                          "beta is below its lower cover join alph");
     setAlpha(alpha);

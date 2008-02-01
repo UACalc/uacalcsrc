@@ -73,6 +73,7 @@ public interface Partition {
 
   public int[][] getBlocks();
 
+  public boolean isZero();
 
 }
 
