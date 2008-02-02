@@ -721,10 +721,13 @@ public class CongruenceLattice implements Lattice {
           if (!jiPlus.isRelated(a, b)) mi = jiPlus;
         }
       }
-      
+      if (!meet.leq(mi)) {
+        meet = meet.meet(mi);
+        decomp.add(mi);
+      }
     }
-    
-    return null;
+    // TODO make the list irredundant
+    return decomp;
   }
 
   /**
