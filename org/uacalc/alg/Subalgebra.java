@@ -60,7 +60,7 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
    * Restrict a partition (or congruence) on the parent algebra to 
    * this subalgebra.
    */
-  public BasicPartition restrictPartition(BasicPartition par) {
+  public BasicPartition restrictPartition(Partition par) {
 // this is totally untested 6/11/2005
     final int[] reps = par.representatives();
     final List[] blocks = new List[reps.length];
