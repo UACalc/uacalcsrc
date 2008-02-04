@@ -29,10 +29,10 @@ public class  BasicLattice extends GeneralAlgebra
                            implements SmallAlgebra, Lattice {
 
   private org.latdraw.orderedset.OrderedSet poset;
-  private List univList;
+  private List<POElem> univList;
   private HashSet univHS;
   private int[] joinMeetTable;
-  final private List operations = new ArrayList();
+  final private List<Operation> operations = new ArrayList<Operation>();
   private Operation join;
   private Operation meet;
   private List joinIrreducibles;
@@ -151,11 +151,11 @@ public class  BasicLattice extends GeneralAlgebra
 
   public int cardinality() { return univList.size(); }
 
-  public Object zero() {
+  public POElem zero() {
     return univList.get(0);
   }
 
-  public Object one() {
+  public POElem one() {
     return univList.get(cardinality() - 1);
   }
 
@@ -194,6 +194,14 @@ public class  BasicLattice extends GeneralAlgebra
     return meet.valueAt(args);
   }
 
+  public List<POElem> atoms() {
+    return zero().upperCovers();
+  }
+  
+  public List<POElem> coatoms() {
+    return one().lowerCovers();
+  }
+  
   public List joinIrreducibles() {
     if (joinIrreducibles == null) {
       joinIrreducibles = new ArrayList();

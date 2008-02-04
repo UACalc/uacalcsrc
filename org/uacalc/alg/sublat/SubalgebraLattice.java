@@ -196,6 +196,16 @@ public class SubalgebraLattice implements Lattice {
     return meetIrreducibles;
   }
 
+  // TODO implement this
+  public List<BasicSet> atoms() {
+    return null;
+  }
+  
+  // TODO implement this.
+  public List<BasicSet> coatoms() {
+    return null;
+  }
+  
   public Object join(Object a, Object b) {
     BasicSet seta = (BasicSet)a;
     BasicSet setb = (BasicSet)b;

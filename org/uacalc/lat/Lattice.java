@@ -13,12 +13,15 @@ public interface Lattice extends Algebra, OrderedSet {
   /**
    * An optional operation returning the list of join irreducible elements.
    */
-  public List joinIrreducibles();
+  public List<? extends Object> joinIrreducibles();
 
   /**
    * An optional operation returning the list of meet irreducible elements.
    */
-  public List meetIrreducibles();
+  public List<? extends Object> meetIrreducibles();
+  
+  public List<? extends Object> atoms();
+  public List<? extends Object> coatoms();
 
   public Object join(Object a, Object b);
   public Object join(List args);

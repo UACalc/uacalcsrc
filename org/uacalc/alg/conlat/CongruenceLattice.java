@@ -77,10 +77,11 @@ public class CongruenceLattice implements Lattice {
   private Map<Partition,List<Partition>> upperCoversMap = null;
   private List<Partition> principalCongruences = null;
   private List<Partition> joinIrreducibles = null;
+  private List<Partition> atoms = null;
   private List<Partition> meetIrreducibles = null;
   private Map<Partition,Partition> lowerCoverOfJIs = null;
   private Set<Partition> congruencesHash = null;
-  private List<Partition> meetIrredCongruences = null;
+//  private List<Partition> meetIrredCongruences = null;
   private Set<Integer> typeSet = null;
 
 
@@ -166,6 +167,31 @@ public class CongruenceLattice implements Lattice {
     if (meetIrreducibles == null) makeMeetIrreducibles();
     return meetIrreducibles;
   }
+  
+  public List<Partition> atoms() {
+    if (atoms == null) makeAtoms();
+    return atoms;
+  }
+  
+  
+  public void makeAtoms() {
+    atoms = new ArrayList<Partition>();
+    for (Partition ji : joinIrreducibles()) {
+      boolean isAtom = true;
+      for (Partition par : atoms) {
+        if (par.leq(ji)) {
+          isAtom = false;
+          break;
+        }
+      }
+      if (isAtom) atoms.add(ji);
+    }
+  }
+  
+  // TODO either do something or may throw UnsupportedOperationException
+  public List<Partition> coatoms() {
+    return null;
+  }
 
   public Object join(Object a, Object b) { 
     return ((Partition)a).join((Partition)b);
@@ -228,13 +254,14 @@ public class CongruenceLattice implements Lattice {
         else {
           partCong = (Partition)pcIdMap.get(partCong);
         }
-	principalCongruencesLookup.put(new IntArray(new int[] {i, j}),
+        principalCongruencesLookup.put(new IntArray(new int[] {i, j}),
 				       partCong);
 	//if( !principalCongruences.contains(partCong)) {
         //  principalCongruences.add(partCong);
         //}
       }
     }
+    sortByRank(principalCongruences);
     if (monitoring()) monitor.printEnd("principal congruences of " 
                + getAlgebra().name() + ": size = " + principalCongruences.size());
   }
@@ -374,7 +401,7 @@ public class CongruenceLattice implements Lattice {
 // rsf: I'm putting back the stuff to calculate the lower covers of ji's
 //      It's almost free. And I need to have them without calculating
 //      the conlat.
-
+// since principalCongruences is sorted by rank, this will be too.
   public void makeJoinIrreducibles() {
     if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().name());
     joinIrreducibles = new ArrayList<Partition>();
@@ -396,6 +423,20 @@ public class CongruenceLattice implements Lattice {
     }
     if (monitoring()) monitor.printEnd("join irreducible congruences of " 
         + getAlgebra().name() + ": size = " + joinIrreducibles.size());
+  }
+  
+  /**
+   * Sort by rank. The rank in size() - numberOfBlocks().
+   * 
+   * @param lst
+   */
+  public void sortByRank(final List<Partition> lst) {
+    Comparator<Partition> c = new Comparator<Partition>() {
+      public int compare(Partition p1, Partition p2) {
+        return p2.numberOfBlocks() - p1.numberOfBlocks();
+      }
+    };
+    Collections.sort(lst, c);
   }
 
   /**
@@ -685,7 +726,7 @@ public class CongruenceLattice implements Lattice {
     while (it.hasNext()) {
       Partition elem = it.next();
       if (upperCoversMap().get(elem).size() == 1) {
-	      meetIrredCongruences.add(elem);
+	      meetIrreducibles.add(elem);
       }
     }
   }
@@ -702,7 +743,22 @@ public class CongruenceLattice implements Lattice {
   public List<Partition> irredundantMeetDecomposition() {
     final List<Partition> decomp = new ArrayList<Partition>();
     Partition meet = oneCong;
-    while (!meet.equals(zeroCong)) {
+    atoms();
+    for (Partition atom : atoms()) {
+      Partition mi = findMeetIrred(zeroCong, atom);
+      if (!meet.leq(mi)) {
+        meet = meet.meet(mi);
+        decomp.add(mi);
+        if (meet.equals(zeroCong)) break;
+      }
+    }
+    return decomp;
+  }
+      
+  public List<Partition> irredundantMeetDecompositionOld() {
+    final List<Partition> decomp = new ArrayList<Partition>();
+    Partition meet = oneCong;
+    while (!meet.equals(zeroCong)) {   
       final int[][] blocks = meet.getBlocks();
       final int k = blocks.length;
       int a = -1;
@@ -730,7 +786,16 @@ public class CongruenceLattice implements Lattice {
     return decomp;
   }
 
-  /**
+  public List<Partition> makeIrredundantMeet(List<Partition> lst) {
+    // get rid of the cast after meet is made generic
+    return makeIrredundantMeetAux(lst, (Partition)meet(lst));
+  }
+  
+  public List<Partition> makeIrredundantMeetAux(List<Partition> lst, Partition bot) {
+    return lst;
+  }
+  
+  /*
    * Find a subtrace for Cg(a, b), which is assumed to be join
    * irreducible.
    */
@@ -738,7 +803,7 @@ public class CongruenceLattice implements Lattice {
   //  return findSubtrace(a, b, zero());
   //}
 
-  /**
+  /*
    * Find a subtrace for Cg(a, b), which is assumed to be join
    * irreducible.
    *
