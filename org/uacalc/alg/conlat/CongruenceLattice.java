@@ -782,18 +782,26 @@ public class CongruenceLattice implements Lattice {
         decomp.add(mi);
       }
     }
-    // TODO make the list irredundant
-    return decomp;
+    return makeIrredundantMeet(decomp);
   }
 
-  public List<Partition> makeIrredundantMeet(List<Partition> lst) {
-    // get rid of the cast after meet is made generic
-    return makeIrredundantMeetAux(lst, (Partition)meet(lst));
+  public List<Partition> makeIrredundantMeet(List<Partition> list) {
+    SimpleList lst = new SimpleList(list);
+    final Partition bot = (Partition)meet(lst);
+    List<Partition> ans = new ArrayList<Partition>();
+    Partition ansMeet = oneCong;
+    while (!lst.isEmpty()) {
+      Partition a = (Partition)lst.first();
+      lst = lst.rest();
+      Partition b = (Partition)meet(ansMeet, meet(lst));
+      if (!b.equals(bot)){
+        ans.add(a);
+        ansMeet = (Partition)meet(ansMeet, a);
+      }
+    }
+    return ans;
   }
-  
-  public List<Partition> makeIrredundantMeetAux(List<Partition> lst, Partition bot) {
-    return lst;
-  }
+    
   
   /*
    * Find a subtrace for Cg(a, b), which is assumed to be join
