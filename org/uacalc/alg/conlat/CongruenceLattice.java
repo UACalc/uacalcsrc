@@ -742,17 +742,16 @@ public class CongruenceLattice implements Lattice {
    */
   public List<Partition> irredundantMeetDecomposition() {
     final List<Partition> decomp = new ArrayList<Partition>();
-    Partition meet = oneCong;
-    atoms();
+    Partition theta = oneCong;
     for (Partition atom : atoms()) {
       Partition mi = findMeetIrred(zeroCong, atom);
-      if (!meet.leq(mi)) {
-        meet = meet.meet(mi);
+      if (!theta.leq(mi)) {
+        theta = theta.meet(mi);
         decomp.add(mi);
-        if (meet.equals(zeroCong)) break;
+        if (theta.equals(zeroCong)) break;
       }
     }
-    return decomp;
+    return makeIrredundantMeet(decomp);
   }
       
   public List<Partition> irredundantMeetDecompositionOld() {
