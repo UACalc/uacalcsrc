@@ -29,7 +29,7 @@ public class GUIAlgebra {
   
   private AlgebraGUIType guiType;
 
-  private List<GUIAlgebra> parents; // may be empty of a singleton
+  private List<GUIAlgebra> parents; // may be empty or a singleton
   
   public GUIAlgebra(SmallAlgebra alg) {
     synchronized(this) {
