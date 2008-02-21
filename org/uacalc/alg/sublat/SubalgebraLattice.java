@@ -28,6 +28,8 @@ public class SubalgebraLattice implements Lattice {
 
   private final BasicSet zeroSubalg;
   private final BasicSet oneSubalg;
+  
+  private String description;
 
 
   /** 
@@ -95,7 +97,12 @@ public class SubalgebraLattice implements Lattice {
   public boolean isUnary() { return false; }
 
   public String description() {
+    if (description != null) return description;
     return "Subalgebra Lattice of " + alg;
+  }
+  
+  public void setDescription(String desc) {
+    this.description = desc;
   }
 
   public int cardinality() {

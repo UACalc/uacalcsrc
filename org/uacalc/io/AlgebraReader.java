@@ -160,7 +160,7 @@ public final class AlgebraReader extends DefaultHandler {
     String s = new String(buf, offset, len);
     if ("algName".equals(currentTag())) algNameString += s;
     if ("opName".equals(currentTag())) opNameString += s;
-    //if ("desc".equals(currentTag())) descString += s;
+    if ("desc".equals(currentTag())) descString += s;
     if ("cardinality".equals(currentTag())) cardinalityString += s;
     if ("arity".equals(currentTag())) arityString += s;
     if ("power".equals(currentTag())) powerString += s;
@@ -246,6 +246,7 @@ public final class AlgebraReader extends DefaultHandler {
       else algebra = new QuotientAlgebra(algName, superAlgebra, congruence);
       algName = null;
     }
+    if (algebra != null && !EMPTY_STRING.equals(descString)) algebra.setDescription(descString);
   }
 
  

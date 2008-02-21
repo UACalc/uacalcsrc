@@ -10,7 +10,7 @@ import org.uacalc.alg.*;
 import org.uacalc.ui.tm.*;
 import org.uacalc.ui.table.*;
 
-public class ComputationsPanel extends JPanel {
+public class ComputationsPanel extends JSplitPane {
 
   private final UACalculator uacalc;
   
@@ -20,16 +20,26 @@ public class ComputationsPanel extends JPanel {
   private TermTablePanel termTablePanel;
   
   public ComputationsPanel(final UACalculator uacalc) {
+    super(JSplitPane.VERTICAL_SPLIT);
+    setOneTouchExpandable(true);
+    Dimension minimumSize = new Dimension(100, 100);
+    Dimension preferredSize = new Dimension(100, 400);
+    
     this.uacalc = uacalc;
-    setLayout(new BorderLayout());
+    //setLayout(new BorderLayout());
     main = new JPanel();
+    main.setMinimumSize(minimumSize);
+    main.setPreferredSize(preferredSize);
     main.setLayout(new BorderLayout());
     JPanel fieldsPanel = new JPanel();
     main.add(fieldsPanel, BorderLayout.NORTH);
-    
+    setTopComponent(main);
     //monitorPanel = new MonitorPanel(uacalc);
     monitorPanel = uacalc.getMonitorPanel();
-    add(monitorPanel, BorderLayout.SOUTH);
+    //add(monitorPanel, BorderLayout.SOUTH);
+    setBottomComponent(monitorPanel);
+    setDividerLocation(getSize().height - getInsets().bottom
+        - getDividerSize() - 150);
     /*
     fieldsPanel.add(new JLabel("Name:"));
     name_tf.setEditable(false);
@@ -95,7 +105,7 @@ public class ComputationsPanel extends JPanel {
       }
     });
     */
-    add(main, BorderLayout.CENTER);
+    //add(main, BorderLayout.CENTER);
     validate();
   }
   
@@ -114,6 +124,7 @@ public class ComputationsPanel extends JPanel {
     freeAlgBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setupFreeAlgebraPanel();
+        setDividerLocation(0.5);
         repaint();
       }
     });

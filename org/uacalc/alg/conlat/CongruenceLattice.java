@@ -53,6 +53,8 @@ public class CongruenceLattice implements Lattice {
 
   private Partition zeroCong;
   private Partition oneCong;
+  
+  private String description;
 
 
   /** 
@@ -115,7 +117,12 @@ public class CongruenceLattice implements Lattice {
   public boolean isUnary() { return false; }
 
   public String description() {
+    if (description != null) return description;
     return "Congruence Lattice of " + alg;
+  }
+  
+  public void setDescription(String desc) {
+    this.description = desc;
   }
 
   public List<Partition> principals() {

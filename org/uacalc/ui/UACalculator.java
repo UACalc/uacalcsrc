@@ -32,6 +32,7 @@ public class UACalculator extends JFrame {
   private String title = "";  // if currentFile is null this might be "New"
   private String progName = "UACalculator   ";
   private String currentFolder;
+  private JSplitPane splitPane;
   private JPanel mainPanel;
   private JPanel bottomPanel;
   private LatDrawPanel latDrawPanel;
@@ -76,8 +77,16 @@ public class UACalculator extends JFrame {
     SubalgebraLattice.setMonitor(m);
     GeneralAlgebra.setMonitor(m);
     
+    splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    splitPane.setOneTouchExpandable(true);
+    Dimension minimumSize = new Dimension(100, 100);
+    Dimension preferredSize = new Dimension(100, 600);
+    
     mainPanel = new JPanel();
+    mainPanel.setMinimumSize(minimumSize);
+    mainPanel.setPreferredSize(preferredSize);
     mainPanel.setLayout(new BorderLayout());
+    splitPane.setTopComponent(mainPanel);
     tabs = new Tabs(this);
     toolBar = tabs.getCurrentToolBar();
     System.out.println("toolBar = " + toolBar + "\n");
@@ -90,15 +99,19 @@ public class UACalculator extends JFrame {
     bottomPanel.setBackground(Color.CYAN);
     bottomPanel.setLayout(new BorderLayout());
     bottomPanel.add(new JLabel("Testing..."));
+    bottomPanel.setMinimumSize(minimumSize);
+    bottomPanel.setPreferredSize(minimumSize);
 //    bottomPanel.add(pointPanel, BorderLayout.EAST);
 //    bottomPanel.add(dimensionsPanel, BorderLayout.CENTER);
-    mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+    //mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+    splitPane.setBottomComponent(bottomPanel);
+    
     //latDrawPanel = new LatDrawPanel(this);
     //mainPanel.add(latDrawPanel, BorderLayout.CENTER);
     mainPanel.add(tabs, BorderLayout.CENTER);
 
     buildMenu();
-    setContentPane(mainPanel);
+    setContentPane(splitPane);
 
   }
 

@@ -89,6 +89,8 @@ public interface Algebra {
   public String name();
 
   public String description();
+  
+  public void setDescription(String desc);
 
   public SimilarityType similarityType();
 

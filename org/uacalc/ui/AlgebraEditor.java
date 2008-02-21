@@ -29,7 +29,7 @@ public class AlgebraEditor extends JPanel {
   private JToolBar toolBar;
   private final JTextField name_tf = new JTextField(8);
   private final JTextField card_tf = new JTextField(4);
-  private final JTextField desc_tf = new JTextField(30);
+  private final JTextField desc_tf = new JTextField(18);
   private final JComboBox ops_cb = new JComboBox();
   private OperationInputTable opTablePanel;
   
@@ -66,6 +66,11 @@ public class AlgebraEditor extends JPanel {
     fieldsPanel.add(new JLabel("Description:"));
     desc_tf.setEditable(true);
     fieldsPanel.add(desc_tf);
+    desc_tf.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        updateDescription();
+      }
+    });
     
     fieldsPanel.add(new JLabel("Operations"));
     resetOpsCB();
@@ -123,6 +128,10 @@ public class AlgebraEditor extends JPanel {
     validate();
   }
   
+  private void updateDescription() {
+    desc = desc_tf.getText();
+  }
+
   private boolean validSymbol(OperationSymbol sym) {
     if (symbolList.contains(sym)) {
       uacalc.beep();
@@ -260,7 +269,8 @@ public class AlgebraEditor extends JPanel {
       else return null;
     }
     SmallAlgebra alg = new BasicAlgebra(name_tf.getText(), algSize, ops);
-    //alg.setDescription(desc_tf.getText());
+    updateDescription();
+    alg.setDescription(desc);
     return alg;
   }
   
@@ -291,6 +301,7 @@ public class AlgebraEditor extends JPanel {
     }
     name_tf.setText(alg.name());
     card_tf.setText("" + alg.cardinality());
+    System.out.println("desc: " + alg.description());
     desc_tf.setText(alg.description());
     if (alg instanceof BasicAlgebra) setOpsCB();
   }
