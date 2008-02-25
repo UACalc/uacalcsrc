@@ -130,6 +130,10 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
     if (sub == null) sub = new SubalgebraLattice(this);
     return sub;
   }
+  
+  public AlgebraType algebraType() {
+    return AlgebraType.BASIC;
+  }
 
   public static void main(String[] args) {
     Operation op = Operations.makeBinaryIntOperation(

@@ -21,6 +21,18 @@ import org.uacalc.alg.sublat.SubalgebraLattice;
  */
 public interface SmallAlgebra extends Algebra {
 
+  public static enum AlgebraType {
+    BASIC, BASIC_LATTICE, QUOTIENT, SUBALGEBRA, PRODUCT, POWER,
+    REDUCT, SUBPRODUCT, FREE, POLIN_LIKE, UNARY_TERMS_MONOID
+  }
+  
+  /**
+   * The type of algebra this is, like a quotient algebra.
+   * 
+   * @return
+   */
+  public AlgebraType algebraType();
+  
   /**
    * returns the <tt>k</tt>th element. 
    */

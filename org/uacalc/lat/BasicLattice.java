@@ -9,6 +9,7 @@ import org.uacalc.alg.*;
 import org.uacalc.ui.*;
 import org.uacalc.io.*;
 import org.uacalc.lat.*;
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
@@ -307,6 +308,10 @@ public class  BasicLattice extends GeneralAlgebra
         }
     };
     return meet;
+  }
+  
+  public AlgebraType algebraType() {
+    return AlgebraType.BASIC_LATTICE;
   }
 
   /**

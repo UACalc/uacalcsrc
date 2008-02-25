@@ -201,7 +201,11 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
     if (sub == null) sub = new SubalgebraLattice(this);
     return sub;
   }
-
+ 
+  public AlgebraType algebraType() {
+    return AlgebraType.POLIN_LIKE;
+  }
+  
 
   public static void main(String[] args) throws java.io.IOException {
     SmallAlgebra alg0 = null;

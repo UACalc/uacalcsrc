@@ -1,14 +1,9 @@
 package org.uacalc.alg;
 
 import java.util.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.AbstractSet;
-import java.util.HashSet;
 import java.io.*;
 
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.CongruenceLattice;
 import org.uacalc.alg.op.*;
 import org.uacalc.alg.sublat.SubalgebraLattice;
@@ -136,6 +131,10 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
   public void makeOperationTables() {
     // TODO Auto-generated method stub
 
+  }
+  
+  public AlgebraType algebraType() {
+    return AlgebraType.UNARY_TERMS_MONOID;
   }
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {

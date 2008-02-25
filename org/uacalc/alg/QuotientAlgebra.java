@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.*;
 import org.uacalc.util.*;
 
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
@@ -148,6 +149,10 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
           throw new UnsupportedOperationException();
         }
       };
+  }
+  
+  public AlgebraType algebraType() {
+    return AlgebraType.QUOTIENT;
   }
 
   public static void main(String[] args) throws java.io.IOException,

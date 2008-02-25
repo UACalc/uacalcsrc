@@ -6,6 +6,7 @@ import java.util.*;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
 
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.sublat.*;
@@ -113,6 +114,9 @@ public class ReductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return new Subalgebra(name, new ProductAlgebra(algs), univArr);
   }
 
+  public AlgebraType algebraType() {
+    return AlgebraType.REDUCT;
+  }
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {

@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.*;
 import org.uacalc.util.*;
 
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
@@ -208,6 +209,9 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
     return new Subalgebra(name, new ProductAlgebra(algs), univArr);
   }
 
+  public AlgebraType algebraType() {
+    return AlgebraType.SUBALGEBRA;
+  }
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {

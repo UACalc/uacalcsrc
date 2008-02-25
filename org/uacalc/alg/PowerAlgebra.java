@@ -59,6 +59,10 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
   public SmallAlgebra getRoot() { return root; }
 
   public int getPower() { return numberOfProducts; }
+  
+  public AlgebraType algebraType() {
+    return AlgebraType.POWER;
+  }
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {

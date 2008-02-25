@@ -8,6 +8,7 @@ import org.uacalc.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.io.*;
 
+import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
@@ -142,7 +143,9 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     super(name, prod, gens, univList);
   }
 
-
+  public AlgebraType algebraType() {
+    return AlgebraType.FREE;
+  }
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {

@@ -22,12 +22,6 @@ public class GUIAlgebra {
    * A unique int essentially giving the order of creattion.
    */
   private final int serial;
-  
-  public static enum AlgebraGUIType {
-    BASIC, QUOTIENT, SUBALGEBRA, PRODUCT, REDUCT, SUBPRODUCT, FREE
-  }
-  
-  private AlgebraGUIType guiType;
 
   private List<GUIAlgebra> parents; // may be empty or a singleton
   
