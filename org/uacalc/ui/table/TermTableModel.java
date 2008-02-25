@@ -16,11 +16,10 @@ public class TermTableModel extends AbstractTableModel {
   public void setTerms(Term[] lst) { terms = lst; }
   
   public int getColumnCount() {
-    // TODO Auto-generated method stub
     return 2;
   }
   
-/*    This causes an error
+/*    This causes an error 
   public Class getColumnClass(int col) {
     if (col == 0) return Integer.class;
     return Term.class;
@@ -28,7 +27,6 @@ public class TermTableModel extends AbstractTableModel {
 */
   
   public int getRowCount() {
-    // TODO Auto-generated method stub
     return terms.length;
   }
   

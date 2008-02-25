@@ -42,6 +42,10 @@ public class GUIAlgebra {
     this.parents = parents;
   }
   
+  public SmallAlgebra getAlgebra() {
+    return alg;
+  }
+  
   public void setFile (File file) {
     this.file = file;
   }

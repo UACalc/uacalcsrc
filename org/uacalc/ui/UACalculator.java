@@ -18,6 +18,7 @@ import org.uacalc.alg.sublat.*;
 import org.uacalc.io.*;
 import org.uacalc.util.Monitor;
 import org.uacalc.ui.MonitorPanel;
+import org.uacalc.ui.table.AlgebraTablePanel;
 import org.uacalc.ui.tm.TaskRunner;
 import org.uacalc.ui.tm.Task;
 
@@ -95,10 +96,10 @@ public class UACalculator extends JFrame {
 //    mainPanel.add(shaper, BorderLayout.CENTER);
 //    dimensionsPanel = new DimensionsPanel(this);
 //    pointPanel = new PointPanel(this);
-    bottomPanel = new JPanel();
-    bottomPanel.setBackground(Color.CYAN);
-    bottomPanel.setLayout(new BorderLayout());
-    bottomPanel.add(new JLabel("Testing..."));
+    bottomPanel = new AlgebraTablePanel();
+    //bottomPanel.setBackground(Color.CYAN);
+    //bottomPanel.setLayout(new BorderLayout());
+    //bottomPanel.add(new JLabel("Testing..."), BorderLayout.SOUTH);
     bottomPanel.setMinimumSize(minimumSize);
     bottomPanel.setPreferredSize(minimumSize);
 //    bottomPanel.add(pointPanel, BorderLayout.EAST);
@@ -509,6 +510,7 @@ public class UACalculator extends JFrame {
     SmallAlgebra a = null;
     try {
       a = AlgebraIO.readAlgebraFile(file);
+      // TODO: add to list of algs
     }
     catch (BadAlgebraFileException e) {
       System.err.println("Bad algebra file " + file);
