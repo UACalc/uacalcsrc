@@ -22,7 +22,7 @@ import org.uacalc.util.Monitor;
  */
 public class GeneralAlgebra implements Algebra {
 
-  protected List operations;
+  protected List<Operation> operations;
   protected Map operationsMap;
   protected SimilarityType similarityType;
   protected Set universe;
@@ -45,7 +45,7 @@ public class GeneralAlgebra implements Algebra {
     this.size = univ.size();
   }
 
-  public GeneralAlgebra(String name, Set univ, List operations) {
+  public GeneralAlgebra(String name, Set univ, List<Operation> operations) {
     this(name, univ);
     this.operations = operations;
     this.operationsMap = Operations.makeMap(operations);
@@ -70,7 +70,7 @@ public class GeneralAlgebra implements Algebra {
     this.size = univ.size();
   }
 
-  protected void setOperations(List ops) {
+  protected void setOperations(List<Operation> ops) {
     this.operations = ops;
   }
 
@@ -79,7 +79,7 @@ public class GeneralAlgebra implements Algebra {
     return operationsMap;
   }
 
-  public List operations() {
+  public List<Operation> operations() {
     return operations;
   }
 

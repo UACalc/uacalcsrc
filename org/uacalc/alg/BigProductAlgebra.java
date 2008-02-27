@@ -141,18 +141,17 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
 
   protected void makeOperations() {
     final int k = algebras.get(0).operations().size();
-    operations = new ArrayList(k);
+    operations = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
       final int arity = 
            ((Operation)algebras.get(0).operations().get(i)).arity();
-      final List opList = new ArrayList(numberOfProducts);
+      final List<Operation> opList = new ArrayList<Operation>(numberOfProducts);
       for (int j = 0; j < numberOfProducts; j++) {
         opList.add(algebras.get(j).operations().get(i));
       }
-      final int[][] argsExpanded = new int[arity][numberOfProducts];
+      //final int[][] argsExpanded = new int[arity][numberOfProducts];
       final int[] arg = new int[arity];
-      Operation op = new AbstractOperation(
-                              ((Operation)opList.get(0)).symbol(), size) {
+      Operation op = new AbstractOperation(opList.get(0).symbol(), size) {
           // this will act on a list of IntArray's representing elments of
           // the product and return an IntArray.
           // does this need code for zeroary ops??
@@ -164,7 +163,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
               for (Iterator it = args.iterator(); it.hasNext(); index++) {
                 arg[index] = ((IntArray)it.next()).get(j);
               }
-              ans[j] = ((Operation)opList.get(j)).intValueAt(arg);
+              ans[j] = opList.get(j).intValueAt(arg);
             }
             return new IntArray(ans);
           }
@@ -175,7 +174,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
               for (int index = 0; index < arity; index++) {
                 arg[index] = args[index][j];
               }
-              ans[j] = ((Operation)opList.get(j)).intValueAt(arg);
+              ans[j] = opList.get(j).intValueAt(arg);
             }
             return ans;
           }
@@ -185,8 +184,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   }
 
   public void makeOperationTables() {
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      ((Operation)it.next()).makeTable();
+    for (Iterator<Operation> it = operations().iterator(); it.hasNext(); ) {
+      it.next().makeTable();
     }
   }
   
@@ -669,8 +668,9 @@ System.out.println("so far: " + currentMark);
    *
    * @return a List of IntArray's.
    */
-  private final List sgClosePower(final int algSize, List<Operation> ops, 
-           List elems, int closedMark, final Map termMap, final  Object elt) {
+  private final List<IntArray> sgClosePower(final int algSize, 
+      List<Operation> ops, List<IntArray> elems, int closedMark, 
+      final Map<IntArray,Term> termMap, final  Object elt) {
 System.out.println("using power");
 System.out.println("card = " + cardinality());
     if (monitoring()) monitor.printStart("subpower closing ...");
@@ -685,12 +685,12 @@ System.out.println("card = " + cardinality());
       symbols[i] = op.symbol();
     }
     final int power = numberOfProducts;
-    final List lst = new ArrayList(elems);// IntArrays
+    final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
-    for (Iterator it = elems.iterator(); it.hasNext(); ) {
-      rawList.add(((IntArray)it.next()).getArray());
+    for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
+      rawList.add(it.next().getArray());
     }
-    final HashSet su = new HashSet(lst);
+    final HashSet<IntArray> su = new HashSet<IntArray>(lst);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
@@ -732,7 +732,7 @@ System.out.println("card = " + cardinality());
             lst.add(v);
             rawList.add(vRaw);
             if (termMap != null) {
-              List children = new ArrayList(arity);
+              List<Term> children = new ArrayList<Term>(arity);
               for (int r = 0; r < arity; r++) {
                 //children.set(i, termMap.get(arg.get(i)));
                 children.add(termMap.get(lst.get(argIndeces[r])));
