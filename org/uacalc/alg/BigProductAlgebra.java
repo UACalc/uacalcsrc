@@ -34,7 +34,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
 
   protected List<SmallAlgebra> algebras;
   protected int[] sizes;
-  protected int numberOfProducts;
+  protected int numberOfFactors;
   protected List<IntArray> constants;
   protected Map<IntArray,OperationSymbol> constantToSymbol;
 
@@ -68,8 +68,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   public BigProductAlgebra(String name, List<SmallAlgebra> algs) {
     super(name);
     algebras = algs;
-    numberOfProducts = algs.size();
-    sizes = new int[numberOfProducts];
+    numberOfFactors = algs.size();
+    sizes = new int[numberOfFactors];
     int k = 0;
     for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
       sizes[k] = it.next().cardinality();
@@ -122,18 +122,18 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   private void setup(List<SmallAlgebra> algs, int[] powers) {
     this.powers = powers;
     this.rootAlgebras = algs;
-    algebras = new ArrayList<SmallAlgebra>(numberOfProducts);
-    numberOfProducts = 0;
+    algebras = new ArrayList<SmallAlgebra>();
+    numberOfFactors = 0;
     for (int i = 0; i < powers.length; i++) {
       SmallAlgebra alg = algs.get(i);
       final int pow = powers[i];
-      numberOfProducts = numberOfProducts + pow;
+      numberOfFactors = numberOfFactors + pow;
       for (int j = 0; j < pow; j++) {
         algebras.add(alg);
       }
     }
-    sizes = new int[numberOfProducts];
-    for (int i = 0; i < numberOfProducts; i++) {
+    sizes = new int[numberOfFactors];
+    for (int i = 0; i < numberOfFactors; i++) {
       sizes[i] = algebras.get(i).cardinality();
     }
     makeOperations();
@@ -145,8 +145,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     for (int i = 0; i < k; i++) {
       final int arity = 
            ((Operation)algebras.get(0).operations().get(i)).arity();
-      final List<Operation> opList = new ArrayList<Operation>(numberOfProducts);
-      for (int j = 0; j < numberOfProducts; j++) {
+      final List<Operation> opList = new ArrayList<Operation>(numberOfFactors);
+      for (int j = 0; j < numberOfFactors; j++) {
         opList.add(algebras.get(j).operations().get(i));
       }
       //final int[][] argsExpanded = new int[arity][numberOfProducts];
@@ -157,8 +157,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
           // does this need code for zeroary ops??
           public Object valueAt(List args) {
             //List ans = new ArrayList();
-            final int[] ans = new int[numberOfProducts];
-            for (int j = 0; j < numberOfProducts; j++) {
+            final int[] ans = new int[numberOfFactors];
+            for (int j = 0; j < numberOfFactors; j++) {
               int index = 0;
               for (Iterator it = args.iterator(); it.hasNext(); index++) {
                 arg[index] = ((IntArray)it.next()).get(j);
@@ -169,8 +169,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
           }
 
           public int[] valueAt(int[][] args) {
-            final int[] ans = new int[numberOfProducts];
-            for (int j = 0; j < numberOfProducts; j++) {
+            final int[] ans = new int[numberOfFactors];
+            for (int j = 0; j < numberOfFactors; j++) {
               for (int index = 0; index < arity; index++) {
                 arg[index] = args[index][j];
               }
@@ -238,7 +238,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     return cardinality;
   }
 
-  public List factors() {
+  public List<SmallAlgebra> factors() {
     return algebras;
   }
 
@@ -252,6 +252,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   }
 
   public List<SmallAlgebra> rootFactors() { return rootAlgebras; }
+  
+  public int getNumberOfFactors() {return numberOfFactors; }
 
   public SmallAlgebra projection(int k) {
     return algebras.get(k);
@@ -562,12 +564,12 @@ System.out.println("so far: " + currentMark);
       }
     }
     if (monitoring()) monitor.printStart("subpower closing ...");
-    final List lst = new ArrayList(elems);// IntArrays
+    final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
-    for (Iterator it = elems.iterator(); it.hasNext(); ) {
-      rawList.add(((IntArray)it.next()).getArray());
+    for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
+      rawList.add(it.next().getArray());
     }
-    final HashSet su = new HashSet(lst);
+    final HashSet<IntArray> su = new HashSet<IntArray>(lst);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
@@ -583,8 +585,8 @@ System.out.println("so far: " + currentMark);
       }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
-      for (Iterator it = operations().iterator(); it.hasNext(); ) {
-        Operation f = (Operation)it.next();
+      for (Iterator<Operation> it = operations().iterator(); it.hasNext(); ) {
+        Operation f = it.next();
         final int arity = f.arity();
         if (arity == 0) continue;  // worry about constansts later
         int[] argIndeces = new int[arity];
@@ -684,7 +686,7 @@ System.out.println("card = " + cardinality());
       arities[i] = op.arity();
       symbols[i] = op.symbol();
     }
-    final int power = numberOfProducts;
+    final int power = numberOfFactors;
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
