@@ -25,12 +25,52 @@ import org.uacalc.alg.op.OperationSymbol;
 public class Closer {
   
   BigProductAlgebra algebra;
+  List<IntArray> ans;
+  boolean completed = false; // sometimes we end early
   List<IntArray> generators;
   Map<IntArray,Term> termMap; // initially a map from generators to variables.
   IntArray eltToFind;
   List<IntArray> eltsToFind;
-  SmallAlgebra imageAlg;
+  SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
+  
+  public Closer(BigProductAlgebra alg, List<IntArray> gens) {
+    this.algebra = alg;
+    this.generators = gens;
+  }
+  
+  public Closer(BigProductAlgebra alg, List<IntArray> gens, Map<IntArray,Term> termMap) {
+    this(alg, gens);
+    this.termMap = termMap;
+  }
+  
+  public Closer(BigProductAlgebra alg, List<IntArray> gens, boolean makeTermMap) {
+    this(alg, gens);
+    if (makeTermMap) setupTermMap();
+  }
+  
+  private void setupTermMap() {
+    termMap = new HashMap<IntArray,Term>();
+    if (generators.size() == 1) termMap.put(generators.get(0), Variable.x);
+    if (generators.size() == 2) {
+      termMap.put(generators.get(0), Variable.x);
+      termMap.put(generators.get(1), Variable.y);
+    }
+    if (generators.size() == 3) {
+      termMap.put(generators.get(0), Variable.x);
+      termMap.put(generators.get(1), Variable.y);
+      termMap.put(generators.get(2), Variable.z);
+    }
+    int k = 0;
+    if (generators.size() > 3) {
+      for (Iterator<IntArray> it = generators.iterator(); it.hasNext(); k++) {
+        Variable var = new VariableImp("x_" + k);
+        termMap.put(it.next(), var);
+      }
+    }
+  }
+  
+  public List<IntArray> getAnswer() { return ans; }
   
   public List<IntArray> getGenerators() { return generators; }
   
@@ -44,15 +84,32 @@ public class Closer {
     this.termMap = termMap;
   }
   
-  public SmallAlgebra getImageAlgebra() { return imageAlg; }
+  public SmallAlgebra getImageAlgebra() { return imageAlgebra; }
   
-  public void setImageAlgebra(SmallAlgebra alg) { imageAlg = alg; }
+  public void setImageAlgebra(SmallAlgebra alg) {
+    if (!alg.similarityType().equals(algebra.similarityType())) {
+      throw new IllegalArgumentException("the algebras must be similar");
+    }
+    imageAlgebra = alg;
+  }
   
   // TODO add convenience methods to build these maps.
   public Map<IntArray,Integer> getHomomorphism() { return homomorphism; }
   
   public void setHomomorphism(Map<IntArray,Integer> homomorphism) {
     this.homomorphism = homomorphism;
+  }
+  
+  public void setHomomorphism(int[] algGens) {
+    if (algGens.length != generators.size()) {
+      throw new IllegalArgumentException("wrong number of generators");
+    }
+    Map<IntArray,Integer> homo = new HashMap<IntArray,Integer>(generators.size());
+    int k = 0;
+    for (IntArray g : generators) {
+      homo.put(g, algGens[k++]);
+    }
+    this.homomorphism = homo;
   }
   
   public IntArray getElementToFind() { return eltToFind; }
@@ -73,6 +130,14 @@ public class Closer {
   public static final void setMonitor(Monitor m) { monitor = m; }
   public static final Monitor getMonitor() { return monitor; }
   
+  public List<IntArray> close() {
+    // TODO fix this
+    if (!algebra.isPower()) {
+      throw new IllegalArgumentException("only implemented for powers");
+    }
+    ans = new ArrayList<IntArray>(generators);
+    return ans;
+  }
   
   
   /**
@@ -98,8 +163,10 @@ public class Closer {
       alg.makeOperationTables();
       List<Operation> ops = alg.operations();
       if (ops.size() > 0 && ops.get(0).getTable() != null) {
-        return sgClosePower(alg.cardinality(), ops, elems,
-                                               closedMark, termMap, elt);
+        //return sgClosePower(alg.cardinality(), ops, elems,
+        //                                       closedMark, termMap, elt);
+        // TODO restore above
+        return null;
       }
     }
     if (monitoring()) monitor.printStart("subpower closing ...");
@@ -211,10 +278,11 @@ System.out.println("so far: " + currentMark);
    */
   private final List<IntArray> sgClosePower(final int algSize, 
       List<Operation> ops, List<IntArray> elems, int closedMark, 
-      final Map<IntArray,Term> termMap, final  Object elt) {
+      final Map<IntArray,Term> termMap) {
 System.out.println("using power");
 System.out.println("card = " + algebra.cardinality());
     if (monitoring()) monitor.printStart("subpower closing ...");
+ 
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -224,6 +292,11 @@ System.out.println("card = " + algebra.cardinality());
       opTables[i] = op.getTable();
       arities[i] = op.arity();
       symbols[i] = op.symbol();
+    }
+    List<Operation> imgOps = null;
+    if (homomorphism != null && imageAlgebra != null) {
+      imgOps = new ArrayList<Operation>(imageAlgebra.operations().size());
+      
     }
     final int power = algebra.getNumberOfFactors();
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
@@ -289,13 +362,17 @@ System.out.println("card = " + algebra.cardinality());
               }
               return lst;
             }
+            if (homomorphism != null) {
+              // here
+              homomorphism.put(v, 0);
+            }
             if (monitoring()) {
               monitor.setSizeFieldText("" + lst.size());
               if (monitor.isCancelled()) {
                 throw new CancelledException("cancelled from sgClose");
               }
             }
-            if (v.equals(elt)) return lst;
+            if (v.equals(eltToFind)) return lst;
           }
           if (!inc.increment()) break;
         }
