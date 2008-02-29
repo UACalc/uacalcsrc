@@ -34,6 +34,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
                                  // univ to Integers (the index).
   
   protected Term[] terms; // term[i] is a term for the ith element
+  
+  protected Map<IntArray,Term> termMap;
 
   protected List<Variable> variables;
 
@@ -74,8 +76,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     gens = gens2;
     this.gens = gens2;
     if (findTerms) {
-      //Map<Integer,Term> termMap = new HashMap<Integer,Term>();
-      Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
+      termMap = new HashMap<IntArray,Term>();
       int k = 0;
       for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
         IntArray gen = it.next();
@@ -196,7 +197,10 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    if (getTerms() == null) return null;
    return getTerms()[getUniverseOrder().get(elt).intValue()];
   }
-    
+
+  public Map<IntArray,Term> getTermMap() {
+    return termMap;
+  }
 
   public BigProductAlgebra getProductAlgebra() {
     return productAlgebra;
