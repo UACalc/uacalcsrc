@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.*;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
+import org.uacalc.eq.*;
 import org.uacalc.io.*;
 
 import org.uacalc.alg.SmallAlgebra.AlgebraType;
@@ -140,7 +141,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @param bGens
    * @return a list of two terms witnessing the failure, or null
    */
-  public static List<Term> findEquationOfAnotB(SmallAlgebra A, SmallAlgebra B, 
+  public static Equation findEquationOfAnotB(SmallAlgebra A, SmallAlgebra B, 
                                                int[] bGens) {
     FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
@@ -187,7 +188,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (args.length == 0) {
       SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.xml");
       SmallAlgebra alg1 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
-      List<Term> eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
+      Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
       System.out.println("eq is\n" + eq);
       return;
     }

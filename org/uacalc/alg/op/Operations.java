@@ -179,6 +179,31 @@ logger.setLevel(Level.FINE);
   }
 
   /**
+   * Find an argument where these operations differ. 
+   * 
+   * 
+   * @throws IllegalArgumentException if the arities or set sizes differ.
+   * @param op0
+   * @param op1
+   * @return an int[] as a witness or null if they agree.
+   */
+  public static final int[] findDifference(Operation op0, Operation op1) {
+    final int n = op0.getSetSize();
+    if (n != op1.getSetSize()) 
+      throw new IllegalArgumentException("Ops have different set sizes");
+    final int arity = op0.arity();
+    if (arity != op1.arity()) 
+      throw new IllegalArgumentException("Ops have different arities");
+    final int[] arr = new int[arity];
+    ArrayIncrementor inc = 
+      SequenceGenerator.sequenceIncrementor(arr, n - 1);
+    while (inc.increment()) {
+      if (op0.intValueAt(arr) != op1.intValueAt(arr)) return arr;
+    }
+    return null;
+  }
+  
+  /**
    * This makes a hash map from the operation symbols to the operations.
    */
   public static Map makeMap(List ops) {

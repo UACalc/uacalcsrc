@@ -18,7 +18,8 @@ public class AlgebraTableModel extends AbstractTableModel {
   }
   
   public void addAlgebra(GUIAlgebra alg) {
-    algs.add(alg); 
+    algs.add(alg);
+    fireTableDataChanged();
   }
   
   public void removeAlgebra(GUIAlgebra alg) {

@@ -8,9 +8,11 @@ import javax.swing.table.*;
 public class AlgebraTablePanel extends JPanel {
   
   private JTable table;
+  AlgebraTableModel algTableModel;
   
   public AlgebraTablePanel() {
-    table = new JTable(new AlgebraTableModel());
+    algTableModel = new AlgebraTableModel();
+    table = new JTable(algTableModel);
     setLayout(new BorderLayout());
     table.setRowSelectionAllowed(true);
     table.setColumnSelectionAllowed(false);
@@ -29,6 +31,11 @@ public class AlgebraTablePanel extends JPanel {
     addToOps.setToolTipText("add selected term(s) as operations");
   }
   
+  public AlgebraTableModel getAlgebraTableModel() { return algTableModel; }
   
+  public void scrollToBottom() {
+    int ht = table.getHeight();
+    table.scrollRectToVisible(new Rectangle(0, ht, 0, ht));
+  }
 
 }

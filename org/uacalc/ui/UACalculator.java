@@ -35,7 +35,7 @@ public class UACalculator extends JFrame {
   private String currentFolder;
   private JSplitPane splitPane;
   private JPanel mainPanel;
-  private JPanel bottomPanel;
+  private AlgebraTablePanel bottomPanel;
   private LatDrawPanel latDrawPanel;
   //private NewAlgebraDialog algDialog;
   //private Monitor monitor;
@@ -311,6 +311,15 @@ public class UACalculator extends JFrame {
   //  GeneralAlgebra.setMonitor(m);
   //}
   
+  /**
+   * right now the list of algebras is maintained the algebraTableModel.
+   * We may want to change that.
+   */
+  public void addAlgebra(SmallAlgebra alg) {
+    bottomPanel.getAlgebraTableModel().addAlgebra(alg);
+    bottomPanel.scrollToBottom();
+  }
+  
   public MonitorPanel getMonitorPanel() { return monitorPanel; }
   
   public LatDrawPanel getLatDrawPanel() {
@@ -537,7 +546,9 @@ public class UACalculator extends JFrame {
       setTitle();
       //setModified(false);
       setCurrentAlgebra(a);
+      addAlgebra(a);
       setDirty(false);
+      repaint();
     }
   }
 

@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import org.uacalc.util.*;
 import org.uacalc.ui.tm.CancelledException;
 import org.uacalc.terms.*;
+import org.uacalc.eq.*;
 
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
@@ -33,7 +34,7 @@ public class Closer {
   List<IntArray> eltsToFind;
   SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
-  List<Term> failingEquation = null; // a list of two terms
+  Equation failingEquation = null; // a list of two terms
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
     this.algebra = alg;
@@ -73,7 +74,7 @@ public class Closer {
   
   public List<IntArray> getAnswer() { return ans; }
   
-  public List<Term> getFailingEquation() { return failingEquation; }
+  public Equation getFailingEquation() { return failingEquation; }
   
   public List<IntArray> getGenerators() { return generators; }
   
@@ -408,10 +409,9 @@ System.out.println("card = " + algebra.cardinality());
                   //children.set(i, termMap.get(arg.get(i)));
                   children.add(termMap.get(ans.get(argIndeces[r])));
                 }
-                failingEquation = new ArrayList<Term>(2);
-                failingEquation.add(termMap.get(v));
-                failingEquation.add(new NonVariableTerm(symbols[i], children));
-                System.out.println("failing equation:\n" + failingEquation.get(0) + "\n=\n" + failingEquation.get(1));
+                failingEquation = new Equation(termMap.get(v),
+                    new NonVariableTerm(symbols[i], children));
+                System.out.println("failing equation:\n" + failingEquation);
                 return ans;
               }
             }
