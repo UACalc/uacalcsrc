@@ -11,7 +11,7 @@ import org.uacalc.io.*;
 /**
  * This example shows how to test if B is in V(A). 
  * The example is part of a project George McNulty and 
- * his students are working on.
+ * his student, Kate Scott, are working on.
  * 
  * @author ralph
  *
