@@ -412,6 +412,7 @@ System.out.println("card = " + algebra.cardinality());
                 failingEquation = new Equation(termMap.get(v),
                     new NonVariableTerm(symbols[i], children));
                 System.out.println("failing equation:\n" + failingEquation);
+                System.out.println("size so far: " + ans.size());
                 return ans;
               }
             }
