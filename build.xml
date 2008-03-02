@@ -2,6 +2,7 @@
 
   <!-- set global properties for this build -->
   <!-- we will want debug off for dist so this should be reorganized -->
+  <property file="build.properties"/>
   <property name="src" value="."/>
   <property name="src.dir" value="."/>
   <property name="work.dir" value="../local"/>
@@ -76,20 +77,30 @@
 
   <target name="dist" depends="dist-jar,compile-dist-work"/>
 
-  <target name="dist-jar" depends="clean,dist-files,compile-dist-src">
+  <target name="dist-signed" depends="dist-jar-signed,compile-dist-work"/>
+
+  <target name="dist-jar-signed" depends="clean,dist-files,compile-dist-src">
     <!-- Create the distribution directory -->
     <mkdir dir="${dist.dir}/lib"/>
     <jar jarfile="${dist.dir}/lib/uacalc.jar" 
          manifest="${manifest.file}"
          basedir="${class.dir}"/>
     <signjar jar="${dist.dir}/lib/uacalc.jar"
-             alias="ralph" storepass="hawaii" />
+             alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/LatDraw.jar"
-             alias="ralph" storepass="hawaii" />
+             alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/groovy-all-1.0.jar"
-             alias="ralph" storepass="hawaii" />
+             alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/groovy-engine.jar"
-             alias="ralph" storepass="hawaii" />
+             alias="${signjar.alias}" storepass="${signjar.storepass}" />
+  </target>
+
+  <target name="dist-jar" depends="clean,dist-files,compile-dist-src">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist.dir}/lib"/>
+    <jar jarfile="${dist.dir}/lib/uacalc.jar" 
+         manifest="${manifest.file}"
+         basedir="${class.dir}"/>
   </target>
 
   <target name="javadoc" depends="compile-dist">
