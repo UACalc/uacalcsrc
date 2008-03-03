@@ -276,14 +276,14 @@ public class SubalgebraLattice implements Lattice {
    *
    * @param lst    a sorted list (so duplicates occur in blocks).
    */
-  public static List noDuplicates(List lst) {
+  public static <T> List<T> noDuplicates(List<T> lst) {
     if (lst.isEmpty()) return lst;
-    List nodups = new ArrayList();
-    Iterator it = lst.iterator();
-    Object previous = it.next();
+    List<T> nodups = new ArrayList<T>();
+    Iterator<T> it = lst.iterator();
+    T previous = it.next();
     nodups.add(previous);
     for ( ; it.hasNext() ; ) {
-      Object next = it.next();
+      T next = it.next();
       if (!next.equals(previous)) nodups.add(next);
       previous = next;
     }
@@ -341,11 +341,11 @@ public class SubalgebraLattice implements Lattice {
    *                which contains all the constants of the algebra.
    *
    */
-  public BasicSet makeSg(List gens) {
+  public BasicSet makeSg(List<Integer> gens) {
     return makeSg(gens, 0);
   }
   
-  public BasicSet makeSg(List gens, int closedMark) {
+  public BasicSet makeSg(List<Integer> gens, int closedMark) {
     return makeSg(gens, closedMark, algSize - 1);
   }
   
@@ -361,15 +361,15 @@ public class SubalgebraLattice implements Lattice {
    * @param maxSize      return the whole algebra if we exceed this                    
    *
    */
-  public BasicSet makeSg(List gens, int closedMark, final int maxSize) {
+  public BasicSet makeSg(List<Integer> gens, int closedMark, final int maxSize) {
     //TODO: write things using the maxSize and also k generated subalgebras.
     int currentMark = gens.size();
-    final HashSet su = new HashSet(gens);
-    final List lst = new ArrayList(gens);
+    final HashSet<Integer> su = new HashSet<Integer>(gens);
+    final List<Integer> lst = new ArrayList<Integer>(gens);
     while (closedMark < currentMark) {
       // close the elements in current
-      for (Iterator it = alg.operations().iterator(); it.hasNext(); ) {
-        Operation f = (Operation)it.next();
+      for (Iterator<Operation> it = alg.operations().iterator(); it.hasNext(); ) {
+        Operation f = it.next();
         final int arity = f.arity();
         if (arity == 0) continue;  // constansts are already there
         int[] argIndeces = new int[arity];
@@ -404,11 +404,119 @@ public class SubalgebraLattice implements Lattice {
     Collections.sort(lst);
 
     for (int i = 0; i < currentMark; i++) {
-      ans[i] = ((Integer)lst.get(i)).intValue();
+      ans[i] = lst.get(i).intValue();
     }
     return new BasicSet(ans);
   }
+  
+  private boolean addConstantsToMap(Map<Integer,Integer> homo,
+                                           SmallAlgebra alg2) {
+    final int[] empty = new int[0];
+    for (Iterator<Operation> it = alg.operations().iterator(); it.hasNext(); ) {
+      Operation f = it.next();
+      if (f.arity() == 0) {
+        Operation g = alg2.getOperation(f.symbol());
+        int fvalue = f.intValueAt(empty);
+        int gvalue = g.intValueAt(empty);
+        if (homo.containsKey(fvalue)) {
+          if (!homo.get(fvalue).equals(gvalue)) {
+            System.out.println("map inconsistent on constant" + f.symbol());
+            return false;
+          }
+        }
+        else homo.put(fvalue, gvalue);
+      }
+    }
+    return true;
+  }
 
+  /**
+   * Try to extend the map gens[i] to gensB[i] to a homomorphism.
+   * 
+   * 
+   * @param gens
+   * @param gensB
+   * @param B
+   * @return  the homomorphism as a map or null if it does not exist.
+   */
+  public Map<Integer,Integer> extendToHomomorphism (final int[] gens, 
+                      final int[] gensB, final SmallAlgebra B) {
+    if (gens.length != gensB.length) 
+      throw new IllegalArgumentException(
+          "generating sets must have the same size");
+    final int g = gens.length;
+    final Map<Integer,Integer> homo 
+              = new HashMap<Integer,Integer>(g);
+    for (int i = 0; i < gens.length; i++) {
+      homo.put(gens[i], gensB[i]);
+    }
+    if (!addConstantsToMap(homo, B)) return null;
+    if (homo.size() == 0) return homo;  // do we really want to allow the empty homo?
+    return extendToHomomorphism(homo, B);
+  }
+  
+  /**
+   * Try to extend the map to a homomorphism.
+   * 
+   * @param homo
+   * @param B
+   * @return
+   */
+  public Map<Integer,Integer> extendToHomomorphism (
+              final Map<Integer,Integer> homo, final SmallAlgebra B) {
+    int closedMark = 0;
+    List<Integer> lst = new ArrayList<Integer>(homo.keySet());
+    Collections.sort(lst);
+    int currentMark = lst.size();
+    while (closedMark < currentMark) {
+      // close the elements in current
+      for (Iterator<Operation> it = alg.operations().iterator(); it.hasNext(); ) {
+        Operation f = it.next();
+        final int arity = f.arity();
+        if (arity == 0) continue;  // constansts are already there
+        Operation g = B.getOperation(f.symbol());
+        int[] argIndeces = new int[arity];
+        for (int i = 0; i < arity - 1; i++) {
+          argIndeces[i] = 0;
+        }
+        argIndeces[arity - 1] = closedMark;
+        ArrayIncrementor inc = 
+                    SequenceGenerator.nondecreasingSequenceIncrementor(
+                                  argIndeces, currentMark - 1, closedMark);
+        final int[] arg = new int[arity];
+        final int[] argB = new int[arity];
+        while (true) {
+          for (int i = 0; i < arity; i++) {
+            arg[i] = lst.get(argIndeces[i]).intValue();
+            argB[i] = homo.get(lst.get(argIndeces[i])).intValue();
+          }
+          ArrayIncrementor permInc = PermutationGenerator.arrayIncrementor(arg);
+          while (true) {
+            Integer v = new Integer(f.intValueAt(arg));
+            Integer w = new Integer(g.intValueAt(argB));
+            if (homo.containsKey(v)) {
+              if (!w.equals(homo.get(v))) {
+                return null; 
+              }
+            }
+            else {
+              lst.add(v);
+              homo.put(v, w);
+            }
+            if (!permInc.increment()) break;
+          }
+          if (!inc.increment()) break;
+        }
+      }
+      closedMark = currentMark;
+      currentMark = lst.size();
+      System.out.println("closedMark = " + closedMark);
+      System.out.println("currentMark = " + currentMark + "\n");
+    }
+    return homo;
+  }
+
+  
   /**
    * Test if one subuniverse is contained in another.
    */
@@ -710,9 +818,21 @@ public class SubalgebraLattice implements Lattice {
   public boolean isIdempotent() { return true; }
 
   public static void main(String[] args) {
-    if (args.length == 0) return;
-    System.out.println("reading " + args[0]);
     SmallAlgebra alg = null;
+    SmallAlgebra alg2 = null;
+    if (args.length == 0) {
+      try {
+        alg = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(
+                "/home/ralph/Java/Algebra/algebras/m3.ua");
+        alg2 = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(
+                "/home/ralph/Java/Algebra/algebras/m3.ua");
+      }
+      catch (Exception e) {}
+      System.out.println("map: " + alg.sub().extendToHomomorphism(
+          new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg2));
+      return;
+    }
+    System.out.println("reading " + args[0]);
     try {
       alg = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
     }
