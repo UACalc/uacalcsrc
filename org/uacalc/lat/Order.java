@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.uacalc.alg.*;
 
-public interface OrderedSet {
+public interface Order {
 
   /**
    * The order relation.

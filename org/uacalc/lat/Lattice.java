@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.uacalc.alg.*;
 
-public interface Lattice extends Algebra, OrderedSet {
+public interface Lattice extends Algebra, Order {
 
   /**
    * An optional operation returning the list of join irreducible elements.
