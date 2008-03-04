@@ -157,6 +157,8 @@ public final class AlgebraReader extends DefaultHandler {
    * append the strings until we get to the end tag.
    */
   public void characters(char buf[], int offset, int len) throws SAXException {
+    //System.out.println("calling characters with tagStack = " + tagStack);
+    
     String s = new String(buf, offset, len);
     if ("algName".equals(currentTag())) algNameString += s;
     if ("opName".equals(currentTag())) opNameString += s;
@@ -173,9 +175,12 @@ public final class AlgebraReader extends DefaultHandler {
 
   public void endElement(String namespaceURI, String lName, String qName) 
                                                        throws SAXException {
+    //System.out.println("calling endElement with tagstack = " + tagStack + " \nand poping");
     tagStack = tagStack.rest();
+    String parent = (String)tagStack.first();
     String elemName = lName; // element name
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
+    //System.out.println("and elemName = " + elemName);
 
     if ("algName".equals(elemName)) algName = algNameString.trim();
     if ("opName".equals(elemName)) opName = opNameString.trim();
@@ -185,7 +190,7 @@ public final class AlgebraReader extends DefaultHandler {
     if ("arity".equals(elemName)) arity = Integer.parseInt(arityString.trim());
     if ("power".equals(elemName)) power = Integer.parseInt(powerString.trim());
     if ("row".equals(elemName)) intRow(rowString.trim());
-    if ("intArray".equals(elemName) && "congruence".equals(parentTag())) {
+    if ("intArray".equals(elemName) && "congruence".equals(parent)) {
       intArrayString = intArrayString.trim();
       if (intArrayString.length() > 0) intArray = intArray(intArrayString);
     }
@@ -254,13 +259,13 @@ public final class AlgebraReader extends DefaultHandler {
                           SAXException, IOException, BadAlgebraFileException {
     //if (args.length == 0) return;
     //System.out.println("reading " + args[0]);
-    AlgebraReader r = new AlgebraReader("/tmp/foo.xml");
+    AlgebraReader r = new AlgebraReader("/tmp/lyndonQuot.ua");
     SmallAlgebra alg = r.readAlgebraFile();
     System.out.println("alg has size " + alg.cardinality());
     System.out.println("alg.con jis " + alg.con().joinIrreducibles().size());
-    AlgebraWriter xmlWriter = new AlgebraWriter(alg, "/tmp/hoo.xml");
-    xmlWriter.writeAlgebraXML();
-    System.out.println("/tmp/hoo.xml written");
+    //AlgebraWriter xmlWriter = new AlgebraWriter(alg, "/tmp/hoo.xml");
+    //xmlWriter.writeAlgebraXML();
+    //System.out.println("/tmp/hoo.xml written");
   }
 
 }
