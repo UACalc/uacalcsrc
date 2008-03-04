@@ -8,12 +8,12 @@ import java.util.Set;
 
 import org.uacalc.alg.*;
 
-public interface Order {
+public interface Order<E> {
 
   /**
    * The order relation.
    */
-  public boolean leq(Object a, Object b);
+  public boolean leq(E a, E b);
 
 
 }

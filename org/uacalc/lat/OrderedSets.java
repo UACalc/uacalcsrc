@@ -1,5 +1,7 @@
 package org.uacalc.lat;
 
+import java.util.*;
+
 /**
  * Static algorithms for ordered set and lattices.
  * 
@@ -8,6 +10,8 @@ package org.uacalc.lat;
  */
 public class OrderedSets {
   
-  
+  public static List maximals(List elems, Order order) {
+    return null; 
+  }
 
 }

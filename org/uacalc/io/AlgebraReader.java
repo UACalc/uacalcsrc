@@ -176,8 +176,8 @@ public final class AlgebraReader extends DefaultHandler {
   public void endElement(String namespaceURI, String lName, String qName) 
                                                        throws SAXException {
     //System.out.println("calling endElement with tagstack = " + tagStack + " \nand poping");
+    String parent = parentTag();
     tagStack = tagStack.rest();
-    String parent = (String)tagStack.first();
     String elemName = lName; // element name
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
     //System.out.println("and elemName = " + elemName);
