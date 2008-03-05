@@ -110,7 +110,21 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     super(name);
     setup(prod, gens, univList);
   }
+  
+  public static List<IntArray> transpose(List<IntArray> lst) {
+    final int k = lst.size(); // if k = 0 we should throw an IllegalArguementExcpetion
+    final int n = lst.get(0).size();
+    List<IntArray> transpose = new ArrayList<IntArray>(n);
 
+    
+    return transpose;
+  }
+
+  public List<IntArray> thinGenerators() {
+    List<IntArray> thinnedGens = new ArrayList<IntArray>();
+    return thinnedGens;
+  }
+  
   private void setup(BigProductAlgebra prod, List<IntArray> gens, 
                                              List<IntArray> univList) {
     productAlgebra = prod;

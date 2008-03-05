@@ -432,6 +432,9 @@ public class SubalgebraLattice implements Lattice {
 
   /**
    * Try to extend the map gens[i] to gensB[i] to a homomorphism.
+   * Both gens and gensB can have duplicates. If the induced map
+   * is inconsistent, we return null. For example gens is [1,1]
+   * and gensB is [2.3] is inconsistent.
    * 
    * 
    * @param gens
@@ -448,6 +451,8 @@ public class SubalgebraLattice implements Lattice {
     final Map<Integer,Integer> homo 
               = new HashMap<Integer,Integer>(g);
     for (int i = 0; i < gens.length; i++) {
+      if (homo.containsKey(gens[i]) 
+          && homo.get(gens[i]).intValue() != gensB[i]) return null;
       homo.put(gens[i], gensB[i]);
     }
     if (!addConstantsToMap(homo, B)) return null;
