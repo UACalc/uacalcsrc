@@ -409,10 +409,11 @@ public class SubalgebraLattice implements Lattice {
     return new BasicSet(ans);
   }
   
-  private boolean addConstantsToMap(Map<Integer,Integer> homo,
+  private static boolean addConstantsToMap(Map<Integer,Integer> homo,
+                                           SmallAlgebra alg1,
                                            SmallAlgebra alg2) {
     final int[] empty = new int[0];
-    for (Iterator<Operation> it = alg.operations().iterator(); it.hasNext(); ) {
+    for (Iterator<Operation> it = alg1.operations().iterator(); it.hasNext(); ) {
       Operation f = it.next();
       if (f.arity() == 0) {
         Operation g = alg2.getOperation(f.symbol());
@@ -442,8 +443,9 @@ public class SubalgebraLattice implements Lattice {
    * @param B
    * @return  the homomorphism as a map or null if it does not exist.
    */
-  public Map<Integer,Integer> extendToHomomorphism (final int[] gens, 
-                      final int[] gensB, final SmallAlgebra B) {
+  public static Map<Integer,Integer> extendToHomomorphism (final int[] gens, 
+                      final int[] gensB, final SmallAlgebra A, 
+                                         final SmallAlgebra B) {
     if (gens.length != gensB.length) 
       throw new IllegalArgumentException(
           "generating sets must have the same size");
@@ -455,9 +457,9 @@ public class SubalgebraLattice implements Lattice {
           && homo.get(gens[i]).intValue() != gensB[i]) return null;
       homo.put(gens[i], gensB[i]);
     }
-    if (!addConstantsToMap(homo, B)) return null;
+    if (!addConstantsToMap(homo, A, B)) return null;
     if (homo.size() == 0) return homo;  // do we really want to allow the empty homo?
-    return extendToHomomorphism(homo, B);
+    return extendToHomomorphism(homo, A, B);
   }
   
   /**
@@ -467,15 +469,16 @@ public class SubalgebraLattice implements Lattice {
    * @param B
    * @return
    */
-  public Map<Integer,Integer> extendToHomomorphism (
-              final Map<Integer,Integer> homo, final SmallAlgebra B) {
+  public static Map<Integer,Integer> extendToHomomorphism (
+              final Map<Integer,Integer> homo, final SmallAlgebra A, 
+                                               final SmallAlgebra B) {
     int closedMark = 0;
     List<Integer> lst = new ArrayList<Integer>(homo.keySet());
     Collections.sort(lst);
     int currentMark = lst.size();
     while (closedMark < currentMark) {
       // close the elements in current
-      for (Iterator<Operation> it = alg.operations().iterator(); it.hasNext(); ) {
+      for (Iterator<Operation> it = A.operations().iterator(); it.hasNext(); ) {
         Operation f = it.next();
         final int arity = f.arity();
         if (arity == 0) continue;  // constansts are already there
@@ -515,8 +518,8 @@ public class SubalgebraLattice implements Lattice {
       }
       closedMark = currentMark;
       currentMark = lst.size();
-      System.out.println("closedMark = " + closedMark);
-      System.out.println("currentMark = " + currentMark + "\n");
+      //System.out.println("closedMark = " + closedMark);
+      //System.out.println("currentMark = " + currentMark + "\n");
     }
     return homo;
   }
@@ -833,8 +836,8 @@ public class SubalgebraLattice implements Lattice {
                 "/home/ralph/Java/Algebra/algebras/m3.ua");
       }
       catch (Exception e) {}
-      System.out.println("map: " + alg.sub().extendToHomomorphism(
-          new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg2));
+      System.out.println("map: " + SubalgebraLattice.extendToHomomorphism(
+          new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg, alg2));
       return;
     }
     System.out.println("reading " + args[0]);

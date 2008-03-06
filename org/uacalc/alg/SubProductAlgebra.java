@@ -12,6 +12,7 @@ import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.lat.*;
 
 /**
  * This class represents a subalgebra of a direct product 
@@ -115,14 +116,38 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     final int k = lst.size(); // if k = 0 we should throw an IllegalArguementExcpetion
     final int n = lst.get(0).size();
     List<IntArray> transpose = new ArrayList<IntArray>(n);
-
-    
+    for (int i = 0 ; i < n ; i++) {
+      final int[] ithProj = new int[k];
+      for (int j = 0 ; j < k ; j++) {
+        ithProj[j] = lst.get(j).get(i);
+      }
+      transpose.add(new IntArray(ithProj));
+    }
     return transpose;
   }
 
   public List<IntArray> thinGenerators() {
-    List<IntArray> thinnedGens = new ArrayList<IntArray>();
-    return thinnedGens;
+    List<IntArray> projs = transpose(gens);
+    //System.out.println("gens xxx = " + gens);
+    //System.out.println("projs xxx = " + projs);
+    final Map<IntArray,SmallAlgebra> projMap = new HashMap<IntArray,SmallAlgebra>();
+    int k = 0;
+    for (IntArray ia : projs) {
+      projMap.put(ia, productAlgebra.projection(k++));
+    }
+    List<IntArray> thinnedProjs = OrderedSets.maximals(projs, new Order<IntArray>() {
+      public boolean leq(IntArray a, IntArray b) {
+        //System.out.println("a = " + a);
+        //System.out.println("b = " + b);
+        if (SubalgebraLattice.extendToHomomorphism(b.getArray(), a.getArray(), 
+                                  projMap.get(b), projMap.get(a)) != null) {
+          //System.out.println("returning true");
+          return true;
+        }
+        return false;
+      }
+    });
+    return transpose(thinnedProjs);
   }
   
   private void setup(BigProductAlgebra prod, List<IntArray> gens, 

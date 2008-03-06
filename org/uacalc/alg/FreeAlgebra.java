@@ -81,6 +81,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     for (int i = 0; i < numberOfGens; i++) {
       gens.add(new IntArray(s));
     }
+    
     for (int k = 0; k < s; k++) {
       for (int i = 0; i < numberOfGens; i++) {
         final IntArray ia = gens.get(i);
@@ -88,6 +89,18 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
       inc.increment();
     }
+
+    long time = System.currentTimeMillis();
+    List<IntArray> lst = thinGenerators();
+    time = System.currentTimeMillis() - time;
+    System.out.println("time for thinning = " +time);
+    System.out.println("thin size = " + lst.size());
+    System.out.println("thin = " + lst);
+    System.out.println("thin coord length = " + lst.get(0).size());
+    System.out.println("gens coord length = " + gens.get(0).size());
+    
+    gens = lst;
+    productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
 
     termMap = new HashMap<IntArray,Term>();
     if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
@@ -188,8 +201,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (args.length == 0) {
       SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.xml");
       SmallAlgebra alg1 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
-      Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
-      System.out.println("eq is\n" + eq);
+      SmallAlgebra lyndon = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lyndon.ua");
+      SmallAlgebra d16 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/D16.ua");
+      //Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
+      //System.out.println("eq is\n" + eq);
+      int n = 5; 
+      FreeAlgebra f = new FreeAlgebra(lyndon, n);
+      System.out.println("|F(" + n + ")| = " + f.cardinality());
       return;
     }
     System.out.println("reading " + args[0]);
