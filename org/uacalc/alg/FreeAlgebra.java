@@ -48,8 +48,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   }
   
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, boolean makeUniverse) {
+    this(alg, numberOfGens, makeUniverse, false);
+  }
+  
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
+                              boolean makeUniverse, boolean thinGenerators) {
     this("Free(" + numberOfGens + ", " + alg.name() + ")", 
-        alg, numberOfGens, makeUniverse);
+        alg, numberOfGens, makeUniverse, thinGenerators);
   }
 
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens) {
@@ -63,6 +68,22 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
                                                     boolean makeUniverse) {
+    this(name, alg, numberOfGens, makeUniverse, false);
+    
+  }
+  
+  /**
+   * Consturct the free algebra over <tt>alg</tt> 
+   * with <tt>numberOfGens</tt> generators.
+   * 
+   * @param name
+   * @param alg
+   * @param numberOfGens
+   * @param makeUniverse  if true, make the universe
+   * @param thinGens      if true, try to thin out the number of projections
+   */
+  public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
+                                  boolean makeUniverse, boolean thinGens) {
     super(name);
     if (monitoring()) { 
       monitor.printStart("constructing free algebra on " + numberOfGens 
@@ -90,17 +111,19 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       inc.increment();
     }
 
-    long time = System.currentTimeMillis();
-    List<IntArray> lst = thinGenerators();
-    time = System.currentTimeMillis() - time;
-    System.out.println("time for thinning = " +time);
-    System.out.println("thin size = " + lst.size());
-    System.out.println("thin = " + lst);
-    System.out.println("thin coord length = " + lst.get(0).size());
-    System.out.println("gens coord length = " + gens.get(0).size());
-    
-    gens = lst;
-    productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
+    if (thinGens) {
+      long time = System.currentTimeMillis();
+      List<IntArray> lst = thinGenerators();
+      time = System.currentTimeMillis() - time;
+      System.out.println("time for thinning = " + time);
+      System.out.println("thin size = " + lst.size());
+      System.out.println("thin = " + lst);
+      System.out.println("thin coord length = " + lst.get(0).size());
+      System.out.println("gens coord length = " + gens.get(0).size());
+
+      gens = lst;
+      productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
+    }
 
     termMap = new HashMap<IntArray,Term>();
     if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
