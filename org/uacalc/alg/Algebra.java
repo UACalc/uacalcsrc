@@ -108,7 +108,7 @@ public interface Algebra {
    * This gives a list of the operations of arity 0, which is
    * a little different from the constants.
    */
-  public List constantOperations();
+  public List<Operation> constantOperations();
 
   /**
    * Test if all of the operations are idempotent.

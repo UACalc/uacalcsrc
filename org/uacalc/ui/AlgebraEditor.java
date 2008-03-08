@@ -287,6 +287,7 @@ public class AlgebraEditor extends JPanel {
   
   public void setAlgebra(SmallAlgebra alg) {
     //this.alg = alg;
+    //uacalc.setCurrentAlgebra(alg);
     algSize = alg.cardinality();
     java.util.List<Operation> ops = alg.operations();
     symbolList = new ArrayList<OperationSymbol>();
@@ -347,13 +348,15 @@ public class AlgebraEditor extends JPanel {
   }
   
   private void setupNewAlgebra() {
+    if (uacalc.isDirty() && !uacalc.checkSave()) return;
     String name = getAlgNameDialog();
     if (name == null) return;
     int card = getCardDialog();
     if (card > 0) {
-      setAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
+      uacalc.setCurrentAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
       setOperationTable(new OperationInputTable());
       uacalc.setDirty(true);
+      uacalc.setCurrentFile(null);
     }
   }
   

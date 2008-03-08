@@ -311,12 +311,16 @@ public class UACalculator extends JFrame {
   //  GeneralAlgebra.setMonitor(m);
   //}
   
+  public void addAlgebra(SmallAlgebra alg) {
+    addAlgebra(alg, null);
+  }
+  
   /**
    * right now the list of algebras is maintained the algebraTableModel.
    * We may want to change that.
    */
-  public void addAlgebra(SmallAlgebra alg) {
-    bottomPanel.getAlgebraTableModel().addAlgebra(alg);
+  public void addAlgebra(SmallAlgebra alg, File file) {
+    bottomPanel.getAlgebraTableModel().addAlgebra(alg, file);
     bottomPanel.scrollToBottom();
   }
   
@@ -546,7 +550,7 @@ public class UACalculator extends JFrame {
       setTitle();
       //setModified(false);
       setCurrentAlgebra(a);
-      addAlgebra(a);
+      addAlgebra(a, file);
       setDirty(false);
       repaint();
     }
