@@ -19,8 +19,12 @@ import org.uacalc.io.*;
 public class MembershipTester {
   
   // Set these to the algebra files you want to test. Use backslashes on pc's.
+  // If you don't have these algebras, try m3.ua for alg0 and n5.ua for alg1
+  // and {1, 2, 3} for the generators of n5. Of course you will get the modular
+  // law. These are available at http://www.uacalc.org/
   static String alg0File = "/home/ralph/Java/Algebra/algebras/hajilarov.ua";
   static String alg1File = "/home/ralph/Java/Algebra/algebras/diffiq.ua";
+  // This should be a generating set of alg1. Make it as small as possible.
   static int[] alg1Generators = new int[] { 1, 2, 4, 5 };
 
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
