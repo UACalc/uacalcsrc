@@ -427,8 +427,8 @@ public class UACalculator extends JFrame {
   }
   
   public boolean save() throws IOException {
-    if (!getAlgebraEditor().sync()) return false;
     if (getCurrentAlgebra() == null) return true;
+    if (!getAlgebraEditor().sync()) return false;
     File f = getCurrentFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
     String ext = ExtFileFilter.getExtension(f);
@@ -441,6 +441,7 @@ public class UACalculator extends JFrame {
 
   public boolean saveAs(String ext) throws IOException {
     if (getCurrentAlgebra() == null) return true;
+    if (!getAlgebraEditor().sync()) return false;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);

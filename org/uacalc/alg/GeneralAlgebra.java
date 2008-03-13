@@ -159,6 +159,13 @@ public class GeneralAlgebra implements Algebra {
   public void makeOperationTables() {}
 
   public SmallAlgebra parent() { return null; }
+  
+  public List<SmallAlgebra> parents() {
+    if (parent() == null) return null;
+    List<SmallAlgebra> lst = new ArrayList<SmallAlgebra>();
+    lst.add(parent());
+    return lst;
+  }
 
   public boolean isIdempotent() {
     for (Iterator it = operations().iterator(); it.hasNext(); ) {

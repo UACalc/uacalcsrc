@@ -22,11 +22,22 @@ public class MembershipTester {
   // If you don't have these algebras, try m3.ua for alg0 and n5.ua for alg1
   // and {1, 2, 3} for the generators of n5. Of course you will get the modular
   // law. These are available at http://www.uacalc.org/
-  static String alg0File = "/home/ralph/Java/Algebra/algebras/hajilarov.ua";
-  static String alg1File = "/home/ralph/Java/Algebra/algebras/diffiq.ua";
-  // This should be a generating set of alg1. Make it as small as possible.
-  static int[] alg1Generators = new int[] { 1, 2, 4, 5 };
+  // Or, let alg0 be n5 and alg1 be m3 to see an equation holding in N_5, 
+  // failing in M_3.
+  
+  // hajilarov.ua and diffiq.ua are the McNulty-Scott example. Since you may
+  // not have those, the example is set to use N_5 and M_3.
+  
+  // The McNulty-Scott example:
+  //static String alg0File = "/home/ralph/Java/Algebra/algebras/hajilarov.ua";
+  //static String alg1File = "/home/ralph/Java/Algebra/algebras/diffiq.ua";
+  //static int[] alg1Generators = new int[] { 1, 2, 4, 5 };
 
+  static String alg0File = "/home/ralph/Java/Algebra/algebras/n5.ua";
+  static String alg1File = "/home/ralph/Java/Algebra/algebras/m3.ua";
+  // This should be a generating set of alg1. Make it as small as possible.
+  static int[] alg1Generators = new int[] { 1, 2, 3 };
+  
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
     SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile(alg0File);
     SmallAlgebra alg1 = org.uacalc.io.AlgebraIO.readAlgebraFile(alg1File);

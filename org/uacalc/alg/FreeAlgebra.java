@@ -186,6 +186,23 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     closer.sgClosePower();
     return closer.getFailingEquation();
   }
+  
+  /**
+   * Test if op is in the clone of A and return the
+   * term if it is; null otherwise.
+   * 
+   * @param op  an operation of the set of A
+   * @param A   an algebra
+   * @return    the corresponding term or null
+   */
+  public static Term findInClone(Operation op, SmallAlgebra A) {
+    FreeAlgebra F = new FreeAlgebra(A, op.arity(), false);
+    Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
+    closer.setRootAlgebra(A);
+    closer.setOperation(op);
+    closer.sgClosePower();
+    return closer.getTermForOperation();
+  }
 
   public List<Term> getIdempotentTerms() {
     List<Term> ans = new ArrayList<Term>();

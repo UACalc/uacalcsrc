@@ -72,6 +72,15 @@ public interface SmallAlgebra extends Algebra {
    * the preimage; for a Subalgebra it is the super algebra.
    */
   public SmallAlgebra parent();
+  
+  /**
+   * For a ProductAlgebra this will be the factors. For a 
+   * BasicAlgebra it will be null. Otherwise it is a list of
+   * the parent algebra.
+   * 
+   * @see parent
+   */
+  public List<SmallAlgebra> parents();
 
 }
 

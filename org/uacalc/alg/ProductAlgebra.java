@@ -27,7 +27,7 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     logger.setLevel(Level.FINER);
   }
 
-  protected List algebras;
+  protected List<SmallAlgebra> algebras;
   protected int[] sizes;
   protected int numberOfProducts;
 
@@ -39,20 +39,20 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     super(name);
   }
 
-  public ProductAlgebra(List algs) {
+  public ProductAlgebra(List<SmallAlgebra> algs) {
     this("", algs);
   }
 
   /**
    * Construct the direct product of a List of SmallAlgebra's.
    */
-  public ProductAlgebra(String name, List algs) {
+  public ProductAlgebra(String name, List<SmallAlgebra> algs) {
     super(name);
     algebras = algs;
     numberOfProducts = algs.size();
     sizes = new int[numberOfProducts];
     int k = 0;
-    for (Iterator it = algs.iterator(); it.hasNext(); k++) {
+    for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
       sizes[k] = ((SmallAlgebra)it.next()).cardinality();
     }
     int n = 1;
@@ -65,8 +65,8 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
   protected void makeOperations() {
-    final int k = ((Algebra)algebras.get(0)).operations().size();
-    operations = new ArrayList(k);
+    final int k = algebras.get(0).operations().size();
+    operations = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
       final int arity = 
            ((Operation)((Algebra)algebras.get(0)).operations().get(i)).arity();
@@ -162,12 +162,16 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
   public void makeOperationTables() {
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      ((Operation)it.next()).makeTable();
+    for (Iterator<Operation> it = operations().iterator(); it.hasNext(); ) {
+      it.next().makeTable();
     }
   }
 
-  public List factors() {
+  public List<SmallAlgebra> factors() {
+    return algebras;
+  }
+  
+  public List<SmallAlgebra> parents() {
     return algebras;
   }
 

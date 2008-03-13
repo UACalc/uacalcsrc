@@ -12,6 +12,7 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 
 /**
  * A class for finding the closure with configurations for several options
@@ -35,6 +36,10 @@ public class Closer {
   SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
   Equation failingEquation = null; // a list of two terms
+  SmallAlgebra rootAlgebra; // the root of a power algebra
+  // an operation on the set of the root algebra; to test if it is in the clone. 
+  Operation operation;
+  Term termForOperation;
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
     this.algebra = alg;
@@ -75,6 +80,14 @@ public class Closer {
   public List<IntArray> getAnswer() { return ans; }
   
   public Equation getFailingEquation() { return failingEquation; }
+  
+  // stuff for finding a term of a given operation
+  public Term getTermForOperation() { return termForOperation; }
+  
+  public void setRootAlgebra(SmallAlgebra alg) { rootAlgebra = alg; }
+  
+  public void setOperation(Operation op) { operation = op; }
+  
   
   public List<IntArray> getGenerators() { return generators; }
   
@@ -371,6 +384,18 @@ System.out.println("card = " + algebra.cardinality());
               }
               termMap.put(v, new NonVariableTerm(symbols[i], children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
+              if (operation != null) {
+                Term term = termMap.get(v);
+                List<Variable> vars = new ArrayList<Variable>(generators.size());
+                for (IntArray ia : generators) {
+                  vars.add((Variable)termMap.get(ia));
+                }
+                Operation termOp = term.interpretation(rootAlgebra, vars, true);
+                if (Operations.equalValues(termOp, operation)) {
+                  termForOperation = term;
+                  return ans;
+                }
+              }
             }
             final int size = ans.size();
             if (algebra.cardinality() > 0 && size == algebra.cardinality()) {

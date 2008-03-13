@@ -57,6 +57,14 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
   }
 
   public SmallAlgebra getRoot() { return root; }
+  
+  public SmallAlgebra parent() { return root; }
+  
+  public List<SmallAlgebra> parents() {
+    List<SmallAlgebra> ans = new ArrayList<SmallAlgebra>();
+    ans.add(root);
+    return ans; 
+  }
 
   public int getPower() { return numberOfProducts; }
   
@@ -66,7 +74,13 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
-    if (args.length == 0) return;
+    if (args.length == 0) {
+      SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
+          "/home/ralph/Java/Algebra/algebras/m3.ua");
+      SmallAlgebra alg2 = new PowerAlgebra(alg, 3);
+      System.out.println("parents: " + alg2.parents());
+      return;
+    }
     System.out.println("reading " + args[0]);
     SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
     System.out.println("The alg \n" + alg);

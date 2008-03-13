@@ -19,7 +19,7 @@ public class GUIAlgebra {
   
   private static int count = 0;
   /**
-   * A unique int essentially giving the order of creattion.
+   * A unique int essentially giving the order of creation.
    */
   private final int serial;
 

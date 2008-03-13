@@ -219,16 +219,16 @@ logger.setLevel(Level.FINE);
    * Make a direct product operation. The <tt>ops</tt> should all have
    * the same arity and symbol but this does not check that. 
    */
-  public static Operation makeDirectProductOperation(List ops, int algSize) {
+  public static Operation makeDirectProductOperation(List<Operation> ops, int algSize) {
     // it would be a disaster if the List ops got modified so we better
     // copy it. The final is so it can be used in the inner class.
-    final List opsx = new ArrayList(ops);
+    final List<Operation> opsx = new ArrayList<Operation>(ops);
     Operation op0 = (Operation)opsx.get(0);
     return new AbstractOperation(op0.symbol(), algSize) {
           public Object valueAt(List args) {
             List ans = new ArrayList();
             for (int i = 0; i < opsx.size(); i++) {
-              Operation op = (Operation)opsx.get(i);
+              Operation op = opsx.get(i);
               List arg = new ArrayList();
               for (Iterator it = args.iterator(); it.hasNext(); ) {
                 arg.add(((List)it.next()).get(i));
@@ -238,6 +238,23 @@ logger.setLevel(Level.FINE);
             return ans;
           }
       };
+  }
+  
+  /**
+   * Test if these have the same int values on the common sized set.
+   * So they are equal except they may have different symbos
+   */
+  public static boolean equalValues(Operation op0, Operation op1) {
+    if (op0.getSetSize() != op1.getSetSize()) return false;
+    if (op0.arity() != op1.arity()) return false;
+    final int[] arr = new int[op0.arity()];
+    if (op0.intValueAt(arr) != op1.intValueAt(arr)) return false;
+    ArrayIncrementor inc = 
+      SequenceGenerator.sequenceIncrementor(arr, op0.getSetSize() - 1);
+    while (inc.increment()) {
+      if (op0.intValueAt(arr) != op1.intValueAt(arr)) return false;
+    }
+    return true;
   }
   
   /**
@@ -360,9 +377,9 @@ logger.setLevel(Level.FINE);
    * the two projections.
    * See the file nuf.pdf.
    */
-  public static List makeJonssonOperationsFromNUF(final Operation nuf) {
+  public static List<Operation> makeJonssonOperationsFromNUF(final Operation nuf) {
     final int nufArity = nuf.arity();
-    List ans = new ArrayList(2 * nufArity - 5);
+    List<Operation> ans = new ArrayList<Operation>(2 * nufArity - 5);
     final int[] reductArray = new int[nufArity];
     for (int i = 0; i < nufArity; i++) {
       if (i == nufArity - 1) reductArray[i] = 2;
