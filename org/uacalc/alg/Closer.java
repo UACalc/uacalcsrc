@@ -277,8 +277,8 @@ System.out.println("so far: " + currentMark);
   }
 
   public List<IntArray> sgClosePower() {
-    System.out.println("gens = " + generators);
-    System.out.println("termMap = " + termMap);
+    //System.out.println("gens = " + generators);
+    //System.out.println("termMap = " + termMap);
     return sgClosePower(generators, 0, termMap);
   }
   
