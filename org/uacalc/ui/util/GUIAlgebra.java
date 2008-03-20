@@ -2,7 +2,7 @@ package org.uacalc.ui.util;
 
 import org.uacalc.alg.*;
 import java.io.File;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -23,13 +23,18 @@ public class GUIAlgebra {
    */
   private final int serial;
 
-  private List<GUIAlgebra> parents; // may be empty or a singleton
+  private List<GUIAlgebra> parents = new ArrayList<GUIAlgebra>(); // may be empty or a singleton
   
   public GUIAlgebra(SmallAlgebra alg) {
     synchronized(this) {
       serial = count++;
     }
     this.alg = alg;
+    if (alg.parents() != null) {
+      for (SmallAlgebra a : alg.parents()) {
+        parents.add(new GUIAlgebra(a));
+      }
+    }
   }
   
   public GUIAlgebra(SmallAlgebra alg, File file) {
@@ -37,9 +42,24 @@ public class GUIAlgebra {
     this.file = file;
   }
   
+  /**
+   * We should use this constructor when we want to specify the parents.
+   * For example, if we have an algebra on the GUIAlgebraList and we
+   * form a quotient algebra, the parent should be the algebra.  
+   */
   public GUIAlgebra(SmallAlgebra alg, File file, List<GUIAlgebra> parents) {
     this(alg, file);
     this.parents = parents;
+  }
+  
+  /**
+   * We should use this constructor when we want to specify the parents.
+   * For example, if we have an algebra on the GUIAlgebraList and we
+   * form a quotient algebra, the parent should be the algebra.  
+   */
+  public GUIAlgebra(SmallAlgebra alg, File file, GUIAlgebra parent) {
+    this(alg, file);
+    parents.add(parent);
   }
   
   public SmallAlgebra getAlgebra() {
