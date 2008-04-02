@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.uacalc.alg.conlat.CongruenceLattice;
+import org.uacalc.util.Monitor;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.SimilarityType;
@@ -114,6 +114,13 @@ public interface Algebra {
    * Test if all of the operations are idempotent.
    */
   public boolean isIdempotent();
+  
+  public boolean monitoring();
+  
+  public Monitor getMonitor();
+  
+  public void setMonitor(Monitor monitor);
+  
 }
 
 

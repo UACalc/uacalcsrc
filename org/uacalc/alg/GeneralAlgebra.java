@@ -33,7 +33,7 @@ public class GeneralAlgebra implements Algebra {
   protected String description;
   protected int size;
   
-  protected static Monitor monitor;
+  protected Monitor monitor;
 
   protected GeneralAlgebra(String name) {
     this.name = name;
@@ -57,10 +57,10 @@ public class GeneralAlgebra implements Algebra {
     //}
   }
 
-  public static final void setMonitor(Monitor m) { monitor = m; }
-  public static final Monitor getMonitor() { return monitor; }
+  public final void setMonitor(Monitor m) { monitor = m; }
+  public final Monitor getMonitor() { return monitor; }
   
-  public static final boolean monitoring() {
+  public final boolean monitoring() {
     return monitor != null;
   }
   

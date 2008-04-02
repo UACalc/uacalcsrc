@@ -20,7 +20,7 @@ import java.util.*;
  */ 
 public class SubalgebraLattice implements Lattice {
 
-  protected static Monitor monitor;
+  protected Monitor monitor;
   
   private final SmallAlgebra alg;
   private final int algSize;
@@ -82,10 +82,10 @@ public class SubalgebraLattice implements Lattice {
     }
   }
 
-  public static void setMonitor(Monitor m) { monitor = m; }
-  public static Monitor getMonitor() { return monitor; }
+  public void setMonitor(Monitor m) { monitor = m; }
+  public Monitor getMonitor() { return monitor; }
   
-  public static final boolean monitoring() {
+  public final boolean monitoring() {
     return monitor != null;
   }
 

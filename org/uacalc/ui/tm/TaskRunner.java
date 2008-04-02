@@ -158,8 +158,8 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
     final SmallAlgebra lat = new BasicAlgebra("lat", 2, ops2);
     
     final Monitor monitor = new Monitor(output, sizeField, passField);
-    GeneralAlgebra.setMonitor(monitor);
-    CongruenceLattice.setMonitor(monitor);
+    //GeneralAlgebra.setMonitor(monitor);
+    //CongruenceLattice.setMonitor(monitor);
     final Task<Integer> task = new Task<Integer>() {
       public Integer doIt() {
         FreeAlgebra freeSemilattice = new FreeAlgebra(semilat, 5);

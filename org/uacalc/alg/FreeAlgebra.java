@@ -111,7 +111,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       inc.increment();
     }
 
-    if (true || thinGens) {
+    if (thinGens) {
       long time = System.currentTimeMillis();
       List<IntArray> lst = thinGenerators();
       time = System.currentTimeMillis() - time;

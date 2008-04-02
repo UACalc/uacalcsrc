@@ -74,9 +74,9 @@ public class UACalculator extends JFrame {
     };
     monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
     Monitor m = monitorPanel.getMonitor();
-    CongruenceLattice.setMonitor(m);
-    SubalgebraLattice.setMonitor(m);
-    GeneralAlgebra.setMonitor(m);
+    //CongruenceLattice.setMonitor(m);
+    //SubalgebraLattice.setMonitor(m);
+    //GeneralAlgebra.setMonitor(m);
     
     splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     splitPane.setOneTouchExpandable(true);
