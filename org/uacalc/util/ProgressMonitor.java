@@ -4,11 +4,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.util.*;
 import org.uacalc.ui.MonitorPanel;
-import org.uacalc.ui.tm.TaskRunner;
-import org.uacalc.ui.tm.DataChunk;
-import org.uacalc.ui.tm.DataChunk.DataType;
+//import org.uacalc.ui.tm.TaskRunner;
+//import org.uacalc.ui.tm.DataChunk;
+//import org.uacalc.ui.tm.DataChunk.DataType;
+import org.uacalc.ui.tm.GuiExecutor;
 
-public class Monitor {
+public class ProgressMonitor {
 
   private boolean cancelled = false;
   private MonitorPanel monitorPanel;
@@ -19,14 +20,14 @@ public class Monitor {
   //private List<Long> times = new ArrayList<Long>();
   private Deque<Long> times = new ArrayDeque<Long>();
   
-  public Monitor(MonitorPanel panel) {
+  public ProgressMonitor(MonitorPanel panel) {
     monitorPanel = panel;
     logArea = panel.getLogArea();
     sizeField = panel.getSizeField();
     passField = panel.getPassField();
   }
   
-  public Monitor(JTextArea ta, JTextField sizeField, JTextField passField) {
+  public ProgressMonitor(JTextArea ta, JTextField sizeField, JTextField passField) {
     this.logArea = ta;
     this.sizeField = sizeField;
     this.passField = passField;
@@ -46,12 +47,18 @@ public class Monitor {
   
   public void resetIndent() { indent = 0; }
   
-  public void printToLog(String s) {
-    TaskRunner runner = monitorPanel.getRunner();
-    System.out.println("runner = " + runner + ", s = " + s);
-    if (runner != null) {
-      runner.publishx(new DataChunk(DataType.LOG, getIndentString() + s));
-    }
+  public void printToLog(final String s) {
+    //TaskRunner runner = monitorPanel.getRunner();
+    //System.out.println("runner = " + runner + ", s = " + s);
+    //if (runner != null) {
+    //  runner.publishx(new DataChunk(DataType.LOG, getIndentString() + s));
+    //}
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        logArea.append(getIndentString() + s);
+        logArea.setCaretPosition(logArea.getDocument().getLength());
+      }
+    });
     //logArea.append(s);
     //logArea.setCaretPosition(logArea.getDocument().getLength());
   }
@@ -76,19 +83,29 @@ public class Monitor {
     printlnToLog(s + "  (" + time + " ms)");
   }
   
-  public void setPassFieldText(String s) {
-    TaskRunner runner = monitorPanel.getRunner();
-    if (runner != null && !runner.isCancelled()) {
-      runner.publishx(new DataChunk(DataType.PASS, s));
-    }
-    //passField.setText(s);    
+  public void setPassFieldText(final String s) {
+    //TaskRunner runner = monitorPanel.getRunner();
+    //if (runner != null && !runner.isCancelled()) {
+    //  runner.publishx(new DataChunk(DataType.PASS, s));
+    //}
+    //passField.setText(s);
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        passField.setText(s);
+      }
+    });
   }
   
-  public void setSizeFieldText(String s) {
-    TaskRunner runner = monitorPanel.getRunner();
-    if (runner != null && !runner.isCancelled()) {
-      runner.publishx(new DataChunk(DataType.SIZE, s));
-    }
+  public void setSizeFieldText(final String s) {
+    //TaskRunner runner = monitorPanel.getRunner();
+    //if (runner != null && !runner.isCancelled()) {
+    //  runner.publishx(new DataChunk(DataType.SIZE, s));
+    //}
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        sizeField.setText(s);
+      }
+    });
     //sizeField.setText(s);    
   }
   

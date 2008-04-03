@@ -24,13 +24,13 @@ public class Malcev {
   static {
     logger.setLevel(Level.FINER);
   }
-  static Monitor monitor;
+  static ProgressMonitor monitor;
 
   // make sure the class cannot be instantiated.
   private Malcev() {}
 
   //public static Monitor getMonitor() { return monitor; }
-  public static void setMonitor(Monitor m) { monitor = m; }
+  public static void setMonitor(ProgressMonitor m) { monitor = m; }
   
   
   /**

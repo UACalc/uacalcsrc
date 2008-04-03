@@ -31,7 +31,7 @@ public class ProgressMonitorDemo extends JFrame {
         //Create the demo's UI.
         startButton = new JButton("Start");
         startButton.setActionCommand("start");
-        startButton.addActionListener(new ButtonListener());
+        //startButton.addActionListener(new ButtonListener());
 
         taskOutput = new JTextArea(5, 20);
         taskOutput.setMargin(new Insets(5,5,5,5));
@@ -46,7 +46,7 @@ public class ProgressMonitorDemo extends JFrame {
 
         //Create a timer.
         //timer = new Timer(ONE_SECOND, new TimerListener());
-        timer = new Timer(ONE_SECOND / 10, new TimerListener());
+        //timer = new Timer(ONE_SECOND / 10, new TimerListener());
     }
 
     // these will eventually get the real alg of the program
@@ -59,6 +59,7 @@ public class ProgressMonitorDemo extends JFrame {
      * The actionPerformed method in this class
      * is called each time the Timer "goes off".
      */
+    /*
     class TimerListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
             if (progressMonitor.isCanceled() || task.done()) {
@@ -84,18 +85,15 @@ public class ProgressMonitorDemo extends JFrame {
             }
         }
     }
-
+*/
     /**
      * The actionPerformed method in this class
      * is called when the user presses the start button.
      */
+    /*
     class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
-/*
-            progressMonitor = new ProgressMonitor(ProgressMonitorDemo.this,
-                                      "Running a Long Task",
-                                      "", 0, task.getLengthOfTask());
-*/
+
             task = getCongruenceLattice().getUniverseTask();
             if (task == null) return;
             progressMonitor = new ProgressMonitor(ProgressMonitorDemo.this,
@@ -109,6 +107,7 @@ public class ProgressMonitorDemo extends JFrame {
             timer.start();
         }
     }
+    */
     
     public static void main(String[] args) 
                             throws IOException, BadAlgebraFileException {

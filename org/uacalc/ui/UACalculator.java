@@ -16,7 +16,7 @@ import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.sublat.*;
 import org.uacalc.io.*;
-import org.uacalc.util.Monitor;
+import org.uacalc.util.ProgressMonitor;
 import org.uacalc.ui.MonitorPanel;
 import org.uacalc.ui.table.AlgebraTablePanel;
 import org.uacalc.ui.tm.TaskRunner;
@@ -73,10 +73,13 @@ public class UACalculator extends JFrame {
       }
     };
     monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
-    Monitor m = monitorPanel.getMonitor();
+    ProgressMonitor m = monitorPanel.getMonitor();
     //CongruenceLattice.setMonitor(m);
     //SubalgebraLattice.setMonitor(m);
     //GeneralAlgebra.setMonitor(m);
+    CongruenceLattice.monitor = m;
+    SubalgebraLattice.monitor = m;
+    GeneralAlgebra.monitor = m;
     
     splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     splitPane.setOneTouchExpandable(true);
@@ -324,7 +327,11 @@ public class UACalculator extends JFrame {
     bottomPanel.scrollToBottom();
   }
   
+  // TODO: soon each algebra will have a separate monitorPanel and these
+  // will change.
   public MonitorPanel getMonitorPanel() { return monitorPanel; }
+  
+  public ProgressMonitor getMonitor() { return monitorPanel.getMonitor(); }
   
   public LatDrawPanel getLatDrawPanel() {
     return tabs.getLatticeDrawer();

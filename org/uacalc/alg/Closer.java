@@ -137,15 +137,15 @@ public class Closer {
   
   public void setElementsToFind(List<IntArray> e) { eltsToFind = e; }
   
-  protected static Monitor monitor;
+  protected static ProgressMonitor monitor;
   
   
   public boolean monitoring() {
     return monitor != null;
   }
   
-  public static final void setMonitor(Monitor m) { monitor = m; }
-  public static final Monitor getMonitor() { return monitor; }
+  public static final void setMonitor(ProgressMonitor m) { monitor = m; }
+  public static final ProgressMonitor getMonitor() { return monitor; }
   
   public List<IntArray> close() {
     // TODO fix this

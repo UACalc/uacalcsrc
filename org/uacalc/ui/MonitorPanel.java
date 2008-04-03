@@ -8,13 +8,13 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import org.uacalc.util.Monitor;
+import org.uacalc.util.ProgressMonitor;
 import org.uacalc.ui.tm.TaskRunner;
 
 public class MonitorPanel extends JPanel {
   
   private UACalculator uacalc;
-  private Monitor monitor;
+  private ProgressMonitor monitor;
   private TaskRunner runner;
   
   private final JTextArea logArea;
@@ -68,7 +68,7 @@ public class MonitorPanel extends JPanel {
     
     add(botPanel, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    monitor = new Monitor(this);
+    monitor = new ProgressMonitor(this);
     //uacalc.setMonitor(monitor);
   }
   
@@ -76,8 +76,8 @@ public class MonitorPanel extends JPanel {
   public JTextField getSizeField() { return sizeField; }
   public JTextArea getLogArea() { return logArea; }
   
-  public Monitor getMonitor() { return monitor; }
-  public void setMonitor(Monitor m) { monitor = m; }
+  public ProgressMonitor getMonitor() { return monitor; }
+  public void setMonitor(ProgressMonitor m) { monitor = m; }
   public TaskRunner getRunner() { return runner; }
   public void setRunner(TaskRunner tr) { runner = tr; }
   

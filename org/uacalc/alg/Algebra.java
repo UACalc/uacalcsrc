@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.uacalc.util.Monitor;
+import org.uacalc.util.ProgressMonitor;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.SimilarityType;
@@ -117,9 +117,9 @@ public interface Algebra {
   
   public boolean monitoring();
   
-  public Monitor getMonitor();
+  public ProgressMonitor getMonitor();
   
-  public void setMonitor(Monitor monitor);
+  public void setMonitor(ProgressMonitor monitor);
   
 }
 
