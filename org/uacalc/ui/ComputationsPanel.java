@@ -172,7 +172,13 @@ public class ComputationsPanel extends JSplitPane {
             // the next line *is* reached!!
             else {
               System.out.println("done but cancelled");
-              monitorPanel.getMonitor().reset();
+              GuiExecutor.instance().execute(new Runnable() {
+                public void run() {
+                  monitorPanel.getMonitor().reset();
+                  monitorPanel.getMonitor().printlnToLog("computation cancelled");
+                }
+              });
+              //monitorPanel.getMonitor().reset();
               //cancel(false);
             }
           }

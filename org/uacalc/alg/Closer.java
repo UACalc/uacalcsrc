@@ -386,6 +386,7 @@ System.out.println("card = " + algebra.cardinality());
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
               if (operation != null) {
                 Term term = termMap.get(v);
+                // why are recreating vars each time ???
                 List<Variable> vars = new ArrayList<Variable>(generators.size());
                 for (IntArray ia : generators) {
                   vars.add((Variable)termMap.get(ia));
