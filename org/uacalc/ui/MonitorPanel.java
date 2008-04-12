@@ -21,6 +21,8 @@ public class MonitorPanel extends JPanel {
   private final JTextArea logArea;
   private final JTextField passField;
   private final JTextField sizeField;
+  private final JTextField descField;
+  private final JTextField passSizeField;
 
   public MonitorPanel(UACalculator uacalc) {
     this.uacalc = uacalc;
@@ -31,19 +33,22 @@ public class MonitorPanel extends JPanel {
     logArea.setAutoscrolls(true);
     JLabel passLabel = new JLabel("Pass: ");
     JLabel sizeLabel = new JLabel("Size: ");
+    JLabel currentSizeLabel = new JLabel("Now: ");
     passField = new JTextField(6);
     sizeField = new JTextField(12);
+    passSizeField = new JTextField(12);
+    descField = new JTextField(30);
     JButton cancelButton  = new JButton("Cancel");
     cancelButton.setActionCommand("cancel");
     cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           System.out.println("getTask(): " + getTask());
           if (getTask() != null) {
-            System.out.println("cancelling ...");
+            //System.out.println("cancelling ...");
             getTask().cancel(true);
             //runner.cancel(true);
             //monitor.setCancelled(true);
-            monitor.printlnToLog("...cancelling...");
+            //monitor.printlnToLog("...cancelling...");
           }
         }
       });
@@ -55,9 +60,12 @@ public class MonitorPanel extends JPanel {
       });
     
     JPanel topPanel = new JPanel();
+    topPanel.add(descField);
     topPanel.add(passLabel);
     topPanel.add(passField);
     topPanel.add(sizeLabel);
+    topPanel.add(passSizeField);
+    topPanel.add(currentSizeLabel);
     topPanel.add(sizeField);
     add(topPanel, BorderLayout.NORTH);
     add(new JScrollPane(logArea), BorderLayout.CENTER);
@@ -75,16 +83,17 @@ public class MonitorPanel extends JPanel {
     //uacalc.setMonitor(monitor);
   }
   
+  public JTextField getDescriptionField() { return descField; }
   public JTextField getPassField() { return passField; }
+  public JTextField getPassSizeField() { return passSizeField; }
   public JTextField getSizeField() { return sizeField; }
   public JTextArea getLogArea() { return logArea; }
   
+  
   public ProgressMonitor getMonitor() { return monitor; }
   public void setMonitor(ProgressMonitor m) { monitor = m; }
-  //public TaskRunner getRunner() { return runner; }
-  //public void setRunner(TaskRunner tr) { runner = tr; }
   public BackgroundTask getTask() { return task; }
-  public void setTask(BackgroundTask tr) { task = tr; }
+  public void setTask(BackgroundTask v) { task = v; }
   
   
 }

@@ -144,6 +144,9 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
     }
     if (makeUniverse) makeUniverse();
+    if (monitoring()) {
+      monitor.printEnd("done constructing free algebra, size = " + size);
+    }
   }
   
   public void makeUniverse() {
@@ -162,9 +165,6 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     universe = new HashSet(univ);
     makeOperations();
-    if (monitoring()) {
-      monitor.printEnd("done constructing free algebra, size = " + size);
-    }
   }
   
   /**

@@ -19,8 +19,6 @@ public class ComputationsPanel extends JSplitPane {
   private MonitorPanel monitorPanel;
   private TermTablePanel termTablePanel;
   
-  static final int memReserve = 1048576;
-  
   public ComputationsPanel(final UACalculator uacalc) {
     super(JSplitPane.VERTICAL_SPLIT);
     setOneTouchExpandable(true);
@@ -141,7 +139,7 @@ public class ComputationsPanel extends JSplitPane {
   }
   
   private void setupFreeAlgebraPanel() {
-    SmallAlgebra alg = uacalc.getCurrentAlgebra();
+    final SmallAlgebra alg = uacalc.getCurrentAlgebra();
     if (alg == null) {
       JOptionPane.showMessageDialog(this,
           "<html>You must have an algebra loaded.<br>"
@@ -155,24 +153,10 @@ public class ComputationsPanel extends JSplitPane {
     System.out.println("gens = " + gens);
     final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>() {
       public FreeAlgebra compute() {
-        byte[] buf = new byte[memReserve];
-        try {
-          FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
-          buf = null;
-          return freeAlg;
-        }
-        catch (IllegalArgumentException e) { return null; }
-        /*
-        catch (OutOfMemoryError e) {
-          buf = null;
-          buf = new byte[1];
-          System.out.println("Out of Memory");
-          cancel(true);
-          monitorPanel.getMonitor().reset();
-          monitorPanel.getMonitor().printlnToLog("Not enough memory");
-          return null;
-        }
-        */
+        monitorPanel.getMonitor().reset();
+        monitorPanel.getMonitor().setDescFieldText("F(" + gens + ") over " + alg.name());
+        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
+        return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, boolean cancelled) {
         System.out.println("got to completion");

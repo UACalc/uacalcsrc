@@ -577,7 +577,7 @@ System.out.println("so far: " + currentMark);
       if (monitoring()) {
         System.out.println("subpow pass = " + pass + " size = " + lst.size());
         monitor.setPassFieldText("" + pass++);
-        monitor.setSizeFieldText("" + lst.size());
+        monitor.setPassSizeFieldText("" + lst.size());
         //if (monitor.isCancelled()) {
         //  System.out.println("got here xxxx");
         //  throw new CancelledException("cancelled from sgClose");
@@ -699,7 +699,7 @@ System.out.println("card = " + cardinality());
     while (closedMark < currentMark) {
       if (monitoring()) {
         monitor.setPassFieldText("" + pass++);
-        monitor.setSizeFieldText("" + lst.size());
+        monitor.setPassSizeFieldText("" + lst.size());
       }
       // close the elements in current
       for (int i = 0; i < k; i++) {
