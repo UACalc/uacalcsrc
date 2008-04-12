@@ -43,7 +43,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
     this(task);
     this.monitorPanel = mp;
     mp.getMonitor().reset();
-    mp.setRunner(this);
+    //mp.setRunner(this);
   }
   
   public Task<T> getTask() { return task; }
@@ -199,7 +199,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
           if (task != null) {
             System.out.println("cancelling ...");
             runner.cancel(true);
-            monitor.setCancelled(true);
+            //monitor.setCancelled(true);
           }
         }
       });

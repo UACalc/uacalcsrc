@@ -11,7 +11,7 @@ import org.uacalc.ui.tm.GuiExecutor;
 
 public class ProgressMonitor {
 
-  private boolean cancelled = false;
+  //private boolean cancelled = false;
   private MonitorPanel monitorPanel;
   private JTextArea logArea;
   private JTextField passField;
@@ -33,15 +33,15 @@ public class ProgressMonitor {
     this.passField = passField;
   }
   
-  public boolean isCancelled() { return cancelled; }
+  //public boolean isCancelled() { return cancelled; }
   
-  public void setCancelled(boolean v) { cancelled = v; }
+  //public void setCancelled(boolean v) { cancelled = v; }
   
-  public void cancel() { cancelled = true; }
+  //public void cancel() { cancelled = true; }
   
   public void reset() {
     resetIndent();
-    setCancelled(false);
+    //setCancelled(false);
     times = new ArrayDeque<Long>();
   }
   

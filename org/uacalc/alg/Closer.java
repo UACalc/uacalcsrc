@@ -196,15 +196,15 @@ public class Closer {
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      //System.out.println("monitor is " + monitor);
+      if (Thread.currentThread().isInterrupted()) return null;
       if (monitoring()) {
         System.out.println("subpow pass = " + pass + " size = " + lst.size());
         monitor.setPassFieldText("" + pass++);
         monitor.setSizeFieldText("" + lst.size());
-        if (monitor.isCancelled()) {
-          System.out.println("got here xxxx");
-          throw new CancelledException("cancelled from sgClose");
-        }
+        //if (monitor.isCancelled()) {
+        //  System.out.println("got here xxxx");
+        //  throw new CancelledException("cancelled from sgClose");
+        //}
       }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
@@ -223,11 +223,9 @@ public class Closer {
 
         final int[][] arg = new int[arity][];
         while (true) {
-          if (monitoring()) {
-            if (monitor.isCancelled()) {
-              monitor.setSizeFieldText("" + lst.size());
-              throw new CancelledException("from sgClose");
-            }
+          if (Thread.currentThread().isInterrupted()) {
+            if (monitoring()) monitor.setSizeFieldText("" + lst.size());
+            return null;
           }
           for (int i = 0; i < arity; i++) {
             arg[i] = rawList.get(argIndeces[i]);
@@ -414,12 +412,18 @@ System.out.println("card = " + algebra.cardinality());
               }
               homomorphism.put(v, imgOps[i].intValueAt(args));
             }
-            if (monitoring()) {
-              monitor.setSizeFieldText("" + ans.size());
-              if (monitor.isCancelled()) {
-                throw new CancelledException("cancelled from sgClose");
+            if (Thread.currentThread().isInterrupted()) {
+              if (monitoring()) {
+                monitor.setSizeFieldText("" + ans.size());
               }
+              return null;
             }
+            //if (monitoring()) {
+            //  monitor.setSizeFieldText("" + ans.size());
+            //  if (monitor.isCancelled()) {
+            //    throw new CancelledException("cancelled from sgClose");
+            //  }
+            //}
             if (v.equals(eltToFind)) return ans;
           }
           else {

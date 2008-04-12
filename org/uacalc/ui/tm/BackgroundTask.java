@@ -17,6 +17,10 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   private final FutureTask<V> computation = new Computation();
 
   private class Computation extends FutureTask<V> {
+  
+    static final int memReserve = 1048576;
+    byte[] buf = new byte[memReserve];
+    
     public Computation() {
       super(new Callable<V>() {
         public V call() throws Exception {
@@ -26,6 +30,7 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
     }
 
     protected final void done() {
+      buf = null;
       GuiExecutor.instance().execute(new Runnable() {
         public void run() {
           V value = null;
@@ -33,12 +38,18 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
           boolean cancelled = false;
           try {
             value = get();
-          } catch (ExecutionException e) {
+          } 
+          catch (ExecutionException e) {
             thrown = e.getCause();
-          } catch (CancellationException e) {
+          } 
+          catch (CancellationException e) {
             cancelled = true;
-          } catch (InterruptedException consumed) {
-          } finally {
+          } 
+          catch (InterruptedException consumed) {
+          } 
+          finally {
+            buf = null;
+            System.out.println("thrownbgt is " + thrown);
             onCompletion(value, thrown, cancelled);
           }
         };

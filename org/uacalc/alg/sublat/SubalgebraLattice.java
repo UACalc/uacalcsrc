@@ -613,11 +613,11 @@ public class SubalgebraLattice implements Lattice {
       BasicSet s = (BasicSet)it.next();
       final int n = ansList.size();
       for (int i = 0; i < n; i++) {
-        if (monitoring()) {
-          if (monitor.isCancelled()) {
-            monitor.printlnToLog("Cancelled (" + ansList.size() + " elements so far)");
-            return null;
+        if (Thread.currentThread().isInterrupted()) { 
+          if (monitoring()) {
+              monitor.printlnToLog("Cancelled (" + ansList.size() + " elements so far)");
           }
+          return null;
           //else {
           //  System.out.println("i = " + i + " of " + n + ", size = " + ansList.size());
             //monitor.printlnToLog("k = " + k + " of " + size);

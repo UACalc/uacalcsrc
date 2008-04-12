@@ -67,12 +67,12 @@ public class UACalculator extends JFrame {
     buildMenu();
 
     monitorPanel = new MonitorPanel(this);
-    final Task<Void> nullTask = new Task<Void>() {
-      public Void doIt() {
-        return null;
-      }
-    };
-    monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
+    //final Task<Void> nullTask = new Task<Void>() {
+    //  public Void doIt() {
+    //    return null;
+    //  }
+    //};
+    //monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
     ProgressMonitor m = monitorPanel.getMonitor();
     //CongruenceLattice.setMonitor(m);
     //SubalgebraLattice.setMonitor(m);

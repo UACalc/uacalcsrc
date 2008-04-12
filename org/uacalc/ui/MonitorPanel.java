@@ -9,13 +9,14 @@ import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import org.uacalc.util.ProgressMonitor;
-import org.uacalc.ui.tm.TaskRunner;
+import org.uacalc.ui.tm.*;
 
 public class MonitorPanel extends JPanel {
   
   private UACalculator uacalc;
   private ProgressMonitor monitor;
-  private TaskRunner runner;
+  //private TaskRunner runner;
+  BackgroundTask task;
   
   private final JTextArea logArea;
   private final JTextField passField;
@@ -36,10 +37,12 @@ public class MonitorPanel extends JPanel {
     cancelButton.setActionCommand("cancel");
     cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (runner != null && runner.getTask() != null) {
+          System.out.println("getTask(): " + getTask());
+          if (getTask() != null) {
             System.out.println("cancelling ...");
-            runner.cancel(true);
-            monitor.setCancelled(true);
+            getTask().cancel(true);
+            //runner.cancel(true);
+            //monitor.setCancelled(true);
             monitor.printlnToLog("...cancelling...");
           }
         }
@@ -78,8 +81,10 @@ public class MonitorPanel extends JPanel {
   
   public ProgressMonitor getMonitor() { return monitor; }
   public void setMonitor(ProgressMonitor m) { monitor = m; }
-  public TaskRunner getRunner() { return runner; }
-  public void setRunner(TaskRunner tr) { runner = tr; }
+  //public TaskRunner getRunner() { return runner; }
+  //public void setRunner(TaskRunner tr) { runner = tr; }
+  public BackgroundTask getTask() { return task; }
+  public void setTask(BackgroundTask tr) { task = tr; }
   
   
 }

@@ -331,16 +331,16 @@ public class CongruenceLattice implements Lattice {
     while (it.hasNext()) {
       k++;
       System.out.println("k = " + k);
-      
-      if (monitoring()) {
-        if (monitor.isCancelled()) {
-          monitor.printlnToLog("Cancelled (" + univ.size() + " elements so far)");
-          return;
+      if (Thread.currentThread().isInterrupted()) {
+        if (monitoring()) {
+            monitor.printlnToLog("Cancelled (" + univ.size() + " elements so far)");
+            return;
         }
-        else {
-          //monitor.printlnToLog("k = " + k + " of " + size);
-          monitor.setPassFieldText(k + " of " + size);
-          monitor.setSizeFieldText("" + univ.size());
+      }
+      else {
+        if (monitoring()) {
+            monitor.setPassFieldText(k + " of " + size);
+            monitor.setSizeFieldText("" + univ.size());
         }
       }
       makeUniverseK++;
