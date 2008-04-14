@@ -15,23 +15,31 @@ public class ProgressMonitor {
   private MonitorPanel monitorPanel;
   private JTextArea logArea;
   private JTextField passField;
+  private JTextField passSizeField;
   private JTextField sizeField;
+  private JTextField descField;
+  
   private int indent = 0;
   //private List<Long> times = new ArrayList<Long>();
   private Deque<Long> times = new ArrayDeque<Long>();
   
+
   public ProgressMonitor(MonitorPanel panel) {
     monitorPanel = panel;
     logArea = panel.getLogArea();
     sizeField = panel.getSizeField();
     passField = panel.getPassField();
+    passSizeField = panel.getPassSizeField();
+    descField = panel.getDescriptionField();
   }
   
+  /*
   public ProgressMonitor(JTextArea ta, JTextField sizeField, JTextField passField) {
     this.logArea = ta;
     this.sizeField = sizeField;
     this.passField = passField;
   }
+  */
   
   //public boolean isCancelled() { return cancelled; }
   
@@ -40,55 +48,78 @@ public class ProgressMonitor {
   //public void cancel() { cancelled = true; }
   
   public void reset() {
-    resetIndent();
-    //setCancelled(false);
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        resetAux();
+      }
+    });
+  }
+  
+  private void resetAux() {
+    indent = 0;
     times = new ArrayDeque<Long>();
   }
   
-  public void resetIndent() { indent = 0; }
-  
-  public void printToLog(final String s) {
-    //TaskRunner runner = monitorPanel.getRunner();
-    //System.out.println("runner = " + runner + ", s = " + s);
-    //if (runner != null) {
-    //  runner.publishx(new DataChunk(DataType.LOG, getIndentString() + s));
-    //}
-    GuiExecutor.instance().execute(new Runnable() {
-      public void run() {
-        logArea.append(getIndentString() + s);
-        logArea.setCaretPosition(logArea.getDocument().getLength());
-      }
-    });
-    //logArea.append(s);
-    //logArea.setCaretPosition(logArea.getDocument().getLength());
+  private void printToLogAux(final String s) {
+    System.out.println("s = " + s + ", indent = " + indent);
+    logArea.append(getIndentString() + s);
+    int pos = logArea.getDocument().getLength();
+    System.out.println("pos = " + pos);
+    logArea.setCaretPosition(logArea.getDocument().getLength());
   }
   
-  public void printlnToLog(String s) {
+  public void printToLog(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        printToLogAux(s);
+      }
+    });
+  }
+  
+  private void printlnToLogAux(String s) {
     printToLog(s + "\n");
   }
   
-  public void printStart(String s) {
-    //printIndent();
-    printlnToLog(s);
-    indent++;
-    times.addFirst(System.currentTimeMillis());
-    System.out.println("start: s = " + s + ", times.size(0 = " + times.size());
+  public void printlnToLog(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        printlnToLogAux(s);
+      }
+    });
   }
   
-  public void printEnd(String s) {
-    System.out.println("end: s = " + s + ", times.size() = " + times.size());
-    long time = System.currentTimeMillis() - times.removeFirst();
-    indent--;
-    //printIndent();
-    printlnToLog(s + "  (" + time + " ms)");
+  public void printStart(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        printlnToLogAux(s);
+        indent++;
+        times.addFirst(System.currentTimeMillis());
+        System.out.println("start: s = " + s + ", times.size(0 = " + times.size() + ", indent = " + indent);
+      }
+    });
+  }
+  
+  public void printEnd(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        System.out.println("end: s = " + s + ", times.size() = " + times.size());
+        long time = System.currentTimeMillis() - times.removeFirst();
+        indent--;
+        printlnToLogAux(s + "  (" + time + " ms)");
+        System.out.println("printEnd: indent = " + indent);
+      }
+    });
+  }
+  
+  public void setDescFieldText(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        descField.setText(s);
+      }
+    });
   }
   
   public void setPassFieldText(final String s) {
-    //TaskRunner runner = monitorPanel.getRunner();
-    //if (runner != null && !runner.isCancelled()) {
-    //  runner.publishx(new DataChunk(DataType.PASS, s));
-    //}
-    //passField.setText(s);
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         passField.setText(s);
@@ -96,33 +127,31 @@ public class ProgressMonitor {
     });
   }
   
+  public void setPassSizeFieldText(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        System.out.println("pass size, s = " + s);
+        passSizeField.setText(s);
+      }
+    });
+  }
+  
   public void setSizeFieldText(final String s) {
-    //TaskRunner runner = monitorPanel.getRunner();
-    //if (runner != null && !runner.isCancelled()) {
-    //  runner.publishx(new DataChunk(DataType.SIZE, s));
-    //}
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         sizeField.setText(s);
       }
     });
-    //sizeField.setText(s);    
   }
   
   private String getIndentString() {
     final String two = "  ";
     StringBuffer sb = new StringBuffer();
+    System.out.println("indent = " + indent);
     for (int i = 0; i < indent; i++) {
       sb.append(two);
     }
     return sb.toString();
-  }
-  
-  private void printIndent() {
-    final String two = "  ";
-    for (int i = 0; i < indent; i++) {
-      printToLog(two);
-    }
   }
   
 }

@@ -157,7 +157,7 @@ public class TaskRunner<T> extends SwingWorker<T, DataChunk> {
     ops2.add(join);
     final SmallAlgebra lat = new BasicAlgebra("lat", 2, ops2);
     
-    final ProgressMonitor monitor = new ProgressMonitor(output, sizeField, passField);
+    //final ProgressMonitor monitor = new ProgressMonitor(output, sizeField, passField);
     //GeneralAlgebra.setMonitor(monitor);
     //CongruenceLattice.setMonitor(monitor);
     final Task<Integer> task = new Task<Integer>() {
