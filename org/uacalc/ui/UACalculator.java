@@ -664,35 +664,52 @@ public class UACalculator extends JFrame {
 
 
   public static void main(String[] args) {
-    UACalculator frame = new UACalculator();
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int width = (screenSize.width * 9) / 10;
-    int height = (screenSize.height * 9) / 10;
-    frame.setLocation((screenSize.width - width) / 2,
-                      (screenSize.height - height) / 2);
-    frame.setSize(width, height);
-    frame.isDefaultLookAndFeelDecorated();
-    frame.setTitle();
+    String inFile = null;
+    if (args.length > 0) {
+      inFile = args[0];
+      if (args.length > 1 && inFile.equals("-open")) inFile = args[1];
+      File theFile = new File(inFile);
+      try {
+      //board = BoardIO.readBoardFile(theFile);
+      //boardFileArg = theFile;
+      }
+      catch (Exception ex) {}
+    }
 
-    Runnable  runner = new FrameShower(frame);
+    Runnable  runner = new FrameShower(args);
     EventQueue.invokeLater(runner);
   }
 
 
 
   private static class FrameShower implements Runnable {
-    final JFrame frame;
-
-    public FrameShower(JFrame frame) {
-      this.frame = frame;
+    
+    private final String[] args;
+    
+    private FrameShower(String[] arguments) {
+      args = arguments;
     }
 
     public void run() {
+      UACalculator frame = new UACalculator();
+      String inFile = null;
+      if (args.length > 0) {
+        inFile = args[0];
+        if (args.length > 1 && inFile.equals("-open")) inFile = args[1];
+        frame.open(new File(inFile));
+      }
+      
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int width = (screenSize.width * 9) / 10;
+      int height = (screenSize.height * 9) / 10;
+      frame.setLocation((screenSize.width - width) / 2,
+                        (screenSize.height - height) / 2);
+      frame.setSize(width, height);
+      //frame.isDefaultLookAndFeelDecorated();
+      frame.setTitle();
+      
+      
       frame.setVisible(true);
-      //JOptionPane.showMessageDialog(frame,
-      //    "This version of the program is out of date."
-      //    + "\nGet the new version at www.aps3000.com"
-      //    + "\nClick on Software");
     }
   }
 
