@@ -158,10 +158,11 @@ public class ComputationsPanel extends JSplitPane {
         FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
         return freeAlg;
       }
-      public void onCompletion(FreeAlgebra fr, Throwable exception, boolean cancelled) {
+      public void onCompletion(FreeAlgebra fr, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
         System.out.println("got to completion");
         System.out.println("thrown = " + exception);
-        if (exception instanceof OutOfMemoryError) {
+        if (outOfMemory) {
           monitorPanel.getMonitor().reset();
           monitorPanel.getMonitor().printlnToLog("Not enough memory");
           return;

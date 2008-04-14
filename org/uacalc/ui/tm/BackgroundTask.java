@@ -49,8 +49,8 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
           } 
           finally {
             buf = null;
-            System.out.println("thrownbgt is " + thrown);
-            onCompletion(value, thrown, cancelled);
+            final boolean outOfMemory = thrown instanceof OutOfMemoryError;
+            onCompletion(value, thrown, cancelled, outOfMemory);
           }
         };
       });
@@ -70,7 +70,7 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
 
   // Called in the event thread
   protected void onCompletion(V result, Throwable exception,
-                boolean cancelled) {
+                boolean cancelled, boolean outOfMemory) {
   }
 
   protected void onProgress(int current, int max) {
