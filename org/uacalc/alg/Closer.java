@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.logging.*;
 import java.math.BigInteger;
 import org.uacalc.util.*;
-import org.uacalc.ui.tm.CancelledException;
 import org.uacalc.terms.*;
 import org.uacalc.eq.*;
 

@@ -19,8 +19,7 @@ import org.uacalc.io.*;
 import org.uacalc.util.ProgressMonitor;
 import org.uacalc.ui.MonitorPanel;
 import org.uacalc.ui.table.AlgebraTablePanel;
-import org.uacalc.ui.tm.TaskRunner;
-import org.uacalc.ui.tm.Task;
+
 
 
 public class UACalculator extends JFrame {

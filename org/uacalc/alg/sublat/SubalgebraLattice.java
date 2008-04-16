@@ -531,6 +531,7 @@ public class SubalgebraLattice implements Lattice {
   //public boolean leq(BasicSet s1, BasicSet s2) {
   //}
 
+  /*
   public Task getUniverseTask() {
     // if the universe has already been found, there is no task.
     if (universeFound()) return null;
@@ -558,7 +559,7 @@ public class SubalgebraLattice implements Lattice {
         }
       };
   }
-
+*/
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough

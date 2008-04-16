@@ -284,6 +284,7 @@ public class CongruenceLattice implements Lattice {
   
   public int getSizeComputed() { return sizeComputed; }
 
+  /*
   public Task getUniverseTask() {
     // if the universe has already been found, there is no task.
     if (universeFound()) return null;
@@ -311,7 +312,7 @@ public class CongruenceLattice implements Lattice {
         }
       };
   }
-
+*/
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough
