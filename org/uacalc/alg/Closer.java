@@ -3,6 +3,8 @@ package org.uacalc.alg;
 import java.util.*;
 import java.util.logging.*;
 import java.math.BigInteger;
+
+import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.eq.*;
@@ -136,15 +138,15 @@ public class Closer {
   
   public void setElementsToFind(List<IntArray> e) { eltsToFind = e; }
   
-  protected static ProgressMonitor monitor;
+  protected static ProgressReport monitor;
   
   
   public boolean monitoring() {
     return monitor != null;
   }
   
-  public static final void setMonitor(ProgressMonitor m) { monitor = m; }
-  public static final ProgressMonitor getMonitor() { return monitor; }
+  public static final void setMonitor(ProgressReport m) { monitor = m; }
+  public static final ProgressReport getMonitor() { return monitor; }
   
   public List<IntArray> close() {
     // TODO fix this

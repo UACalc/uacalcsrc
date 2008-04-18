@@ -3,20 +3,23 @@ package org.uacalc.ui;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.Insets;
-import javax.swing.JTextField;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import org.uacalc.util.ProgressMonitor;
+import java.util.*;
 import org.uacalc.ui.tm.*;
 
 public class MonitorPanel extends JPanel {
   
   private UACalculator uacalc;
-  private ProgressMonitor monitor;
+  private ProgressReport monitor;
   //private TaskRunner runner;
+  
+  // the one that is currently displayed
   BackgroundTask task;
+  // a list of all
+  List<BackgroundTask> tasks = new ArrayList<BackgroundTask> ();
   
   private final JTextArea logArea;
   private final JTextField passField;
@@ -79,7 +82,7 @@ public class MonitorPanel extends JPanel {
     
     add(botPanel, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    monitor = new ProgressMonitor(this);
+    monitor = new ProgressReport(this);
     //uacalc.setMonitor(monitor);
   }
   
@@ -90,10 +93,31 @@ public class MonitorPanel extends JPanel {
   public JTextArea getLogArea() { return logArea; }
   
   
-  public ProgressMonitor getMonitor() { return monitor; }
-  public void setMonitor(ProgressMonitor m) { monitor = m; }
+  public ProgressReport getProgressModel() { return monitor; }
+  
+  public void setProgressModel(ProgressReport m) {
+    monitor = m;
+    descField.setText(m.getDescription());
+    passField.setText(String.valueOf(m.getPass()));
+    passSizeField.setText(String.valueOf(m.getPassSize()));
+    sizeField.setText(String.valueOf(m.getSize()));
+    logArea.setText(null);
+    for (String s : m.getLogLines()) {
+      logArea.append(s);
+    }
+  }
+  
+  
   public BackgroundTask getTask() { return task; }
   public void setTask(BackgroundTask v) { task = v; }
   
+  public void addTask(BackgroundTask task) {
+    addTask(task, true);
+  }
+  
+  public void addTask(BackgroundTask task, boolean makecurrent) {
+    tasks.add(task);
+    setTask(task);
+  }
   
 }

@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.logging.*;
 import java.math.BigInteger;
 import org.uacalc.util.*;
+import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.terms.*;
 
 import org.uacalc.alg.conlat.*;
@@ -340,8 +341,12 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   public List<IntArray> sgClose(List<IntArray> elems, 
                                 Map<IntArray, Term> termMap, Object elt) {
-    
-    return sgClose(elems, 0, termMap, elt);
+    return sgClose(elems, 0, termMap, elt, null);
+  }
+  
+  public List<IntArray> sgClose(List<IntArray> elems, 
+      Map<IntArray, Term> termMap, Object elt, ProgressReport report) {
+    return sgClose(elems, 0, termMap, elt, report);
   }
 
   /**
@@ -359,7 +364,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                                final Map<IntArray,Term> termMap) {
-    return sgClose(elems, closedMark, termMap, null);
+    return sgClose(elems, closedMark, termMap, null, null);
   }
 
 
@@ -381,7 +386,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    * @return a List of IntArray's.
    */
   public List sgClose_old(List elems, int closedMark, final Map termMap, 
-                                                  final  Object elt) {
+                                final  Object elt, ProgressReport report) {
     final List lst = new ArrayList(elems);
     final HashSet su = new HashSet(lst);
     int currentMark = lst.size();
@@ -552,14 +557,14 @@ System.out.println("so far: " + currentMark);
    * @return a List of IntArray's.
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
-                   final Map<IntArray,Term> termMap, final  Object elt) {
+                   final Map<IntArray,Term> termMap, final  Object elt, ProgressReport report) {
     if (isPower()) {
       SmallAlgebra alg = rootFactors().get(0);
       alg.makeOperationTables();
       List<Operation> ops = alg.operations();
       if (ops.size() > 0 && ops.get(0).getTable() != null) {
         return sgClosePower(alg.cardinality(), ops, elems,
-                                               closedMark, termMap, elt);
+                                               closedMark, termMap, elt, report);
       }
     }
     if (monitoring()) monitor.printStart("subpower closing ...");
@@ -672,10 +677,14 @@ System.out.println("so far: " + currentMark);
    */
   private final List<IntArray> sgClosePower(final int algSize, 
       List<Operation> ops, List<IntArray> elems, int closedMark, 
-      final Map<IntArray,Term> termMap, final  Object elt) {
+      final Map<IntArray,Term> termMap, final  Object elt, ProgressReport report) {
 System.out.println("using power");
 System.out.println("card = " + cardinality());
-    if (monitoring()) monitor.printStart("subpower closing ...");
+System.out.println("report = " + report);
+    //if (monitoring()) monitor.printStart("subpower closing ...");
+    if (report != null) {
+      report.addStartLine("subpower closing ...");
+    }
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -696,10 +705,14 @@ System.out.println("card = " + cardinality());
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      if (monitoring()) {
-        monitor.setPassFieldText("" + pass++);
-        monitor.setPassSizeFieldText("" + lst.size());
+      if (report != null) {
+        report.setPass(pass++);
+        report.setPassSize(lst.size());
       }
+      //if (monitoring()) {
+        //monitor.setPassFieldText("" + pass++);
+        //monitor.setPassSizeFieldText("" + lst.size());
+      //}
       // close the elements in current
       for (int i = 0; i < k; i++) {
         final int arity = arities[i];
@@ -744,15 +757,19 @@ System.out.println("card = " + cardinality());
             }
             final int size = lst.size();
             if (cardinality() > 0 && size == cardinality()) {
-              if (monitoring()) {
-                monitor.printEnd("done closing, size = " + lst.size());
-                monitor.setSizeFieldText("" + lst.size());
+              //if (monitoring()) {
+              //  monitor.printEnd("done closing, size = " + lst.size());
+              //  monitor.setSizeFieldText("" + lst.size());
+              //}
+              if (report != null) {
+                report.setSize(lst.size());
               }
               return lst;
             }
             if (monitoring()) {
               if (Thread.currentThread().isInterrupted()) return null;
-              monitor.setSizeFieldText("" + lst.size());
+              if (report != null) report.setSize(lst.size());
+              //monitor.setSizeFieldText("" + lst.size());
               //if (monitor.isCancelled()) {
               //  throw new CancelledException("cancelled from sgClose");
               //}
@@ -781,10 +798,13 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
-    if (monitoring()) {
-      getMonitor().printEnd("done closing, size = " + lst.size());
-      getMonitor().setSizeFieldText("" + lst.size());
+    if (report != null) {
+      report.addEndingLine("done closing, size = " + lst.size());
     }
+    //if (monitoring()) {
+    //  getMonitor().printEnd("done closing, size = " + lst.size());
+    //  getMonitor().setSizeFieldText("" + lst.size());
+    //}
     return lst;
   }
 

@@ -16,9 +16,9 @@ import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.sublat.*;
 import org.uacalc.io.*;
-import org.uacalc.util.ProgressMonitor;
 import org.uacalc.ui.MonitorPanel;
 import org.uacalc.ui.table.AlgebraTablePanel;
+import org.uacalc.ui.tm.ProgressReport;
 
 
 
@@ -72,7 +72,7 @@ public class UACalculator extends JFrame {
     //  }
     //};
     //monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
-    ProgressMonitor m = monitorPanel.getMonitor();
+    ProgressReport m = monitorPanel.getProgressModel();
     //CongruenceLattice.setMonitor(m);
     //SubalgebraLattice.setMonitor(m);
     //GeneralAlgebra.setMonitor(m);
@@ -330,7 +330,7 @@ public class UACalculator extends JFrame {
   // will change.
   public MonitorPanel getMonitorPanel() { return monitorPanel; }
   
-  public ProgressMonitor getMonitor() { return monitorPanel.getMonitor(); }
+  public ProgressReport getMonitor() { return monitorPanel.getProgressModel(); }
   
   public LatDrawPanel getLatDrawPanel() {
     return tabs.getLatticeDrawer();

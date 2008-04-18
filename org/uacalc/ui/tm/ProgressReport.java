@@ -1,4 +1,4 @@
-package org.uacalc.util;
+package org.uacalc.ui.tm;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -7,9 +7,8 @@ import org.uacalc.ui.MonitorPanel;
 //import org.uacalc.ui.tm.TaskRunner;
 //import org.uacalc.ui.tm.DataChunk;
 //import org.uacalc.ui.tm.DataChunk.DataType;
-import org.uacalc.ui.tm.GuiExecutor;
 
-public class ProgressMonitor {
+public class ProgressReport {
 
   //private boolean cancelled = false;
   private MonitorPanel monitorPanel;
@@ -19,12 +18,17 @@ public class ProgressMonitor {
   private JTextField sizeField;
   private JTextField descField;
   
+  private volatile List<String> logLines = new ArrayList<String>();
+  private volatile int pass;
+  private volatile int passSize;
+  private volatile int size;
+  private volatile String desc = "";
+  
   private int indent = 0;
   //private List<Long> times = new ArrayList<Long>();
   private Deque<Long> times = new ArrayDeque<Long>();
   
-
-  public ProgressMonitor(MonitorPanel panel) {
+  public ProgressReport(MonitorPanel panel) {
     monitorPanel = panel;
     logArea = panel.getLogArea();
     sizeField = panel.getSizeField();
@@ -33,6 +37,98 @@ public class ProgressMonitor {
     descField = panel.getDescriptionField();
   }
   
+  public int getPass() { return pass; }
+  public void setPass(int v) {
+    pass = v;
+    
+    if (monitorPanel.getProgressModel() == this) {
+      setPassFieldText(String.valueOf(v));
+    }
+  }
+  
+  public int getPassSize() { return passSize; }
+  public void setPassSize(int v) {
+    passSize = v;
+    if (monitorPanel.getProgressModel() == this) {
+      setPassSizeFieldText(String.valueOf(v));
+    }
+  }
+  
+  public int getSize() { return size; }
+  
+  public void setSize(int v) {
+    size = v;
+    if (monitorPanel.getProgressModel() == this) {
+      setSizeFieldText(String.valueOf(v));
+    }
+  }
+  
+  public String getDescription() { return desc; }
+
+  public void setDescription(String v) {
+    desc = v;
+    if (monitorPanel.getProgressModel() == this) {
+      setDescFieldText(String.valueOf(v));
+    }
+  }
+  
+  public List<String> getLogLines() { return logLines; }
+  
+  public void setLogLines(List<String> v) {
+    logLines = v;
+  }
+  
+  //public void addLine(String line) {
+  //  logLines.add(line);
+  //}
+  
+  public void addStartLine(final String line) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        final String str = getIndentString() + line;
+        logLines.add(str);
+        indent++;
+        times.addFirst(System.currentTimeMillis());
+        conditionalAppend(str);
+      }
+    });
+  }
+  
+  public void addEndingLine(final String line) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {  
+        long time = System.currentTimeMillis() - times.removeFirst();
+        indent--;
+        final String str = getIndentString() + line + "  (" + time + " ms)";
+        logLines.add(str);
+        conditionalAppend(str);
+      }
+    });
+  }
+  
+  private void conditionalAppend(String str) {
+    System.out.println("str = " + str);
+    System.out.println("monitorPanel.getProgressModel() == ProgressModel.this is " 
+        + (monitorPanel.getProgressModel() == ProgressReport.this));
+    if (monitorPanel.getProgressModel() == ProgressReport.this) {
+      logArea.append(str + "\n");
+    }
+  }
+  
+  
+  
+  //public void clearLines() { 
+  //  logLines = new ArrayList<String>(); 
+  //}
+  
+  //public void clearAll() {
+  //  clearLines();
+  //  desc = "";
+  //  setPass(0);
+  //  setPassSize(0);
+  //  setSize(0);
+  //}
+
   /*
   public ProgressMonitor(JTextArea ta, JTextField sizeField, JTextField passField) {
     this.logArea = ta;
@@ -68,7 +164,8 @@ public class ProgressMonitor {
     logArea.setCaretPosition(logArea.getDocument().getLength());
   }
   
-  public void printToLog(final String s) {
+  // delete most of these
+  private void printToLog(final String s) {
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         printToLogAux(s);

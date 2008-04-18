@@ -10,7 +10,7 @@ import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.alg.sublat.*;
-import org.uacalc.util.ProgressMonitor;
+import org.uacalc.ui.tm.ProgressReport;
 
 /**
  * This class represents general algebras that may or may not be
@@ -33,7 +33,7 @@ public class GeneralAlgebra implements Algebra {
   protected String description;
   protected int size;
   
-  public static ProgressMonitor monitor;// TODO remove static and public
+  public static ProgressReport monitor;// TODO remove static and public
 
   protected GeneralAlgebra(String name) {
     this.name = name;
@@ -57,8 +57,8 @@ public class GeneralAlgebra implements Algebra {
     //}
   }
 
-  public final void setMonitor(ProgressMonitor m) { monitor = m; }
-  public final ProgressMonitor getMonitor() { return monitor; }
+  public final void setMonitor(ProgressReport m) { monitor = m; }
+  public final ProgressReport getMonitor() { return monitor; }
   
   public final boolean monitoring() {
     return monitor != null;

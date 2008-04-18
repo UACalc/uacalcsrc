@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import org.uacalc.alg.*;
 import org.uacalc.ui.tm.*;
 import org.uacalc.ui.table.*;
+import org.uacalc.util.*;
 
 public class ComputationsPanel extends JSplitPane {
 
@@ -151,11 +152,13 @@ public class ComputationsPanel extends JSplitPane {
     final int gens = getFreeGensDialog();
     if (!(gens > 0)) return;
     System.out.println("gens = " + gens);
-    final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>() {
+    final ProgressReport pModel = new ProgressReport(monitorPanel);
+    monitorPanel.setProgressModel(pModel);
+    final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(pModel) {
       public FreeAlgebra compute() {
-        monitorPanel.getMonitor().reset();
-        monitorPanel.getMonitor().setDescFieldText("F(" + gens + ") over " + alg.name());
-        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
+        //monitorPanel.getProgressMonitor().reset();
+        pModel.setDescription("F(" + gens + ") over " + alg.name());
+        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens, pModel);
         return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
@@ -163,8 +166,8 @@ public class ComputationsPanel extends JSplitPane {
         System.out.println("got to completion");
         System.out.println("thrown = " + exception);
         if (outOfMemory) {
-          monitorPanel.getMonitor().reset();
-          monitorPanel.getMonitor().printlnToLog("Not enough memory");
+          //monitorPanel.getProgressMonitor().reset();
+          monitorPanel.getProgressModel().printlnToLog("Not enough memory");
           return;
         }
         if (!cancelled) {
@@ -173,55 +176,13 @@ public class ComputationsPanel extends JSplitPane {
           setTermTablePanel(ttp);
         }
         else {
-          monitorPanel.getMonitor().reset();
-          monitorPanel.getMonitor().printlnToLog("computation cancelled");
+          //monitorPanel.getProgressMonitor().reset();
+          monitorPanel.getProgressModel().printlnToLog("computation cancelled");
         }
       }
     };
     monitorPanel.setTask(freeAlgTask);
     BackgroundExec.getBackgroundExec().execute(freeAlgTask);
-    /*
-    final Task<FreeAlgebra> freeAlgTask = new Task<FreeAlgebra>() {
-      public FreeAlgebra doIt() {
-        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens);
-        return freeAlg;
-      }
-    };
-    final TaskRunner<FreeAlgebra> runner = 
-            new TaskRunner<FreeAlgebra>(freeAlgTask, monitorPanel) {
-        public void done() {
-          System.out.println("got to done");
-          try {
-            if (!isCancelled()) {
-              FreeAlgebra fr = get();
-              System.out.println("fr = " + fr);
-              TermTablePanel ttp = 
-                new TermTablePanel(uacalc, fr.getTerms(), fr.getVariables());
-              setTermTablePanel(ttp);
-            }
-            // the next line *is* reached!!
-            else {
-              System.out.println("done but cancelled");
-              GuiExecutor.instance().execute(new Runnable() {
-                public void run() {
-                  monitorPanel.getMonitor().reset();
-                  monitorPanel.getMonitor().printlnToLog("computation cancelled");
-                }
-              });
-              //monitorPanel.getMonitor().reset();
-              //cancel(false);
-            }
-          }
-          catch (InterruptedException e) { e.printStackTrace(); }
-          catch (ExecutionException e) { e.printStackTrace(); }
-        }
-    };
-    runner.execute();
-    */
-    //runner.done();
-    //FreeAlgebra free = runner.getAnswer();
-    //System.out.println("free alg size = " + free.cardinality());
-    
   }
   
   public int getFreeGensDialog() {

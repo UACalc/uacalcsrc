@@ -5,6 +5,7 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.SimilarityType;
+import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.lat.*;
 
@@ -20,7 +21,7 @@ import java.util.*;
  */ 
 public class SubalgebraLattice implements Lattice {
 
-  public static ProgressMonitor monitor;
+  public static ProgressReport monitor;
   
   private final SmallAlgebra alg;
   private final int algSize;
@@ -82,8 +83,8 @@ public class SubalgebraLattice implements Lattice {
     }
   }
 
-  public void setMonitor(ProgressMonitor m) { monitor = m; }
-  public ProgressMonitor getMonitor() { return monitor; }
+  public void setMonitor(ProgressReport m) { monitor = m; }
+  public ProgressReport getMonitor() { return monitor; }
   
   public final boolean monitoring() {
     return monitor != null;

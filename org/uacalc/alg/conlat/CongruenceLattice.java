@@ -4,6 +4,7 @@ import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.SimilarityType;
+import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.lat.*;
 
@@ -45,7 +46,7 @@ public class CongruenceLattice implements Lattice {
     logger.setLevel(Level.FINER);
   }
   
-  public static ProgressMonitor monitor;// make it static and public for now
+  public static ProgressReport monitor;// make it static and public for now
                                 // change it later. TODO
 
   private SmallAlgebra alg;
@@ -106,8 +107,8 @@ public class CongruenceLattice implements Lattice {
     oneCong = BasicPartition.one(algSize);
   }
   
-  public void setMonitor(ProgressMonitor m) { monitor = m; }
-  public ProgressMonitor getMonitor() { return monitor; }
+  public void setMonitor(ProgressReport m) { monitor = m; }
+  public ProgressReport getMonitor() { return monitor; }
   
   public final boolean monitoring() {
     return monitor != null;

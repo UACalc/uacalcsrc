@@ -3,6 +3,8 @@
 package org.uacalc.alg;
 
 import java.util.*;
+
+import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.alg.conlat.*;
@@ -24,13 +26,13 @@ public class Malcev {
   static {
     logger.setLevel(Level.FINER);
   }
-  static ProgressMonitor monitor;
+  static ProgressReport monitor;
 
   // make sure the class cannot be instantiated.
   private Malcev() {}
 
   //public static Monitor getMonitor() { return monitor; }
-  public static void setMonitor(ProgressMonitor m) { monitor = m; }
+  public static void setMonitor(ProgressReport m) { monitor = m; }
   
   
   /**

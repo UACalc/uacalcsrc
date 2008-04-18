@@ -8,6 +8,7 @@ import org.uacalc.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.eq.*;
 import org.uacalc.io.*;
+import org.uacalc.ui.tm.ProgressReport;
 
 import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
@@ -47,6 +48,15 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     this(alg, numberOfGens, true);
   }
   
+  /**
+   * Consturct a free algebra without giving it a name.
+   */
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport pModel) {
+    this("F(" + numberOfGens + ") over " + alg.name(),
+        alg, numberOfGens, true, false, pModel);
+  }
+  
+  
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, boolean makeUniverse) {
     this(alg, numberOfGens, makeUniverse, false);
   }
@@ -72,6 +82,10 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     
   }
   
+  public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
+      boolean makeUniverse, boolean thinGens) {
+    this(name, alg, numberOfGens, makeUniverse, thinGens, null);
+  }
   /**
    * Consturct the free algebra over <tt>alg</tt> 
    * with <tt>numberOfGens</tt> generators.
@@ -81,13 +95,22 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @param numberOfGens
    * @param makeUniverse  if true, make the universe
    * @param thinGens      if true, try to thin out the number of projections
+   * @param progressReport keeps the state of the progress
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
-                                  boolean makeUniverse, boolean thinGens) {
+                                  boolean makeUniverse, boolean thinGens, 
+                                  ProgressReport progressReport) {
     super(name);
+    System.out.println("progressReport in Free is " + progressReport);
+    String line = "constructing free algebra on " + numberOfGens 
+                   + " generators over " + alg.name();
+    /*
     if (monitoring()) { 
-      monitor.printStart("constructing free algebra on " + numberOfGens 
-                           + " generators over " + alg.name());
+      monitor.printStart(line);
+    }
+    */
+    if (progressReport != null) {
+      progressReport.addStartLine(line + " rsf ");
     }
     final int n = alg.cardinality();
     int s = 1;
@@ -143,14 +166,18 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
         termMap.put(it.next(), var);
       }
     }
-    if (makeUniverse) makeUniverse();
-    if (monitoring()) {
-      monitor.printEnd("done constructing free algebra, size = " + size);
+    if (makeUniverse) makeUniverse(progressReport);
+    line = "done constructing free algebra, size = " + size;
+    if (progressReport != null) {
+      progressReport.addEndingLine(line + " rsf ");
     }
+    //if (monitoring()) {
+    //  monitor.printEnd("done constructing free algebra, size = " + size);
+    //}
   }
   
-  public void makeUniverse() {
-    univ = productAlgebra.sgClose(gens, termMap);
+  private void makeUniverse(ProgressReport report) {
+    univ = productAlgebra.sgClose(gens, termMap, null, report);
 
     // univ = productAlgebra.sgClose(gens);
     size = univ.size();

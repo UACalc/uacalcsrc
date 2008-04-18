@@ -2,6 +2,7 @@ package org.uacalc.ui.tm;
 
 
 import java.util.concurrent.*;
+import org.uacalc.util.*;
 
 /**
  * BackgroundTask
@@ -14,8 +15,14 @@ import java.util.concurrent.*;
 
 public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   
+  ProgressReport progressMonitor;
+  
   private final FutureTask<V> computation = new Computation();
 
+  public BackgroundTask(ProgressReport progressMonitor) {
+    this.progressMonitor = progressMonitor;
+  }
+  
   private class Computation extends FutureTask<V> {
   
     static final int memReserve = 1048576;
@@ -57,6 +64,10 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
     }
   }
 
+  protected void setProgressMonitor(ProgressReport pm) {
+    progressMonitor = pm;
+  }
+  
   protected void setProgress(final int current, final int max) {
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
