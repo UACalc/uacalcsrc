@@ -95,7 +95,7 @@ public class MonitorPanel extends JPanel {
   
   public ProgressReport getProgressModel() { return monitor; }
   
-  public void setProgressModel(ProgressReport m) {
+  public void setProgressReport(ProgressReport m) {
     monitor = m;
     descField.setText(m.getDescription());
     passField.setText(String.valueOf(m.getPass()));
@@ -117,7 +117,9 @@ public class MonitorPanel extends JPanel {
   
   public void addTask(BackgroundTask task, boolean makecurrent) {
     tasks.add(task);
-    setTask(task);
+    if (makecurrent) setTask(task);
   }
+  
+  public List<BackgroundTask> getTasks() { return tasks; }
   
 }

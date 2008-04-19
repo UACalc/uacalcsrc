@@ -152,13 +152,13 @@ public class ComputationsPanel extends JSplitPane {
     final int gens = getFreeGensDialog();
     if (!(gens > 0)) return;
     System.out.println("gens = " + gens);
-    final ProgressReport pModel = new ProgressReport(monitorPanel);
-    monitorPanel.setProgressModel(pModel);
-    final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(pModel) {
+    final ProgressReport report = new ProgressReport(monitorPanel);
+    monitorPanel.setProgressReport(report);
+    final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
       public FreeAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
-        pModel.setDescription("F(" + gens + ") over " + alg.name());
-        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens, pModel);
+        report.setDescription("F(" + gens + ") over " + alg.name());
+        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens, report);
         return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
@@ -167,7 +167,9 @@ public class ComputationsPanel extends JSplitPane {
         System.out.println("thrown = " + exception);
         if (outOfMemory) {
           //monitorPanel.getProgressMonitor().reset();
-          monitorPanel.getProgressModel().printlnToLog("Not enough memory");
+          report.addEndingLine("Out of memory!!!");
+          //monitorPanel.getProgressModel().printlnToLog("Not enough memory");
+          
           return;
         }
         if (!cancelled) {
@@ -177,11 +179,12 @@ public class ComputationsPanel extends JSplitPane {
         }
         else {
           //monitorPanel.getProgressMonitor().reset();
-          monitorPanel.getProgressModel().printlnToLog("computation cancelled");
+          //monitorPanel.getProgressModel().printlnToLog("computation cancelled");
+          report.addEndingLine("Computation cancelled");
         }
       }
     };
-    monitorPanel.setTask(freeAlgTask);
+    monitorPanel.addTask(freeAlgTask);
     BackgroundExec.getBackgroundExec().execute(freeAlgTask);
   }
   

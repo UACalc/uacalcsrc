@@ -51,9 +51,9 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   /**
    * Consturct a free algebra without giving it a name.
    */
-  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport pModel) {
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport report) {
     this("F(" + numberOfGens + ") over " + alg.name(),
-        alg, numberOfGens, true, false, pModel);
+        alg, numberOfGens, true, false, report);
   }
   
   
@@ -95,13 +95,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @param numberOfGens
    * @param makeUniverse  if true, make the universe
    * @param thinGens      if true, try to thin out the number of projections
-   * @param progressReport keeps the state of the progress
+   * @param report keeps the state of the progress
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
                                   boolean makeUniverse, boolean thinGens, 
-                                  ProgressReport progressReport) {
+                                  ProgressReport report) {
     super(name);
-    System.out.println("progressReport in Free is " + progressReport);
+    System.out.println("progressReport in Free is " + report);
     String line = "constructing free algebra on " + numberOfGens 
                    + " generators over " + alg.name();
     /*
@@ -109,8 +109,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       monitor.printStart(line);
     }
     */
-    if (progressReport != null) {
-      progressReport.addStartLine(line + " rsf ");
+    if (report != null) {
+      report.addStartLine(line + " rsf ");
     }
     final int n = alg.cardinality();
     int s = 1;
@@ -166,10 +166,10 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
         termMap.put(it.next(), var);
       }
     }
-    if (makeUniverse) makeUniverse(progressReport);
+    if (makeUniverse) makeUniverse(report);
     line = "done constructing free algebra, size = " + size;
-    if (progressReport != null) {
-      progressReport.addEndingLine(line + " rsf ");
+    if (report != null) {
+      report.addEndingLine(line + " rsf ");
     }
     //if (monitoring()) {
     //  monitor.printEnd("done constructing free algebra, size = " + size);

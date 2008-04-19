@@ -15,12 +15,16 @@ import org.uacalc.util.*;
 
 public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   
-  ProgressReport progressMonitor;
+  public enum Status { RUNNING, OUT_OF_MEMORY, CANCELLED, DONE}
+  
+  protected volatile Status status = Status.RUNNING;
+  
+  ProgressReport report;
   
   private final FutureTask<V> computation = new Computation();
 
-  public BackgroundTask(ProgressReport progressMonitor) {
-    this.progressMonitor = progressMonitor;
+  public BackgroundTask(ProgressReport report) {
+    this.report = report;
   }
   
   private class Computation extends FutureTask<V> {
@@ -65,7 +69,7 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   }
 
   protected void setProgressMonitor(ProgressReport pm) {
-    progressMonitor = pm;
+    report = pm;
   }
   
   protected void setProgress(final int current, final int max) {

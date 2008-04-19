@@ -567,7 +567,8 @@ System.out.println("so far: " + currentMark);
                                                closedMark, termMap, elt, report);
       }
     }
-    if (monitoring()) monitor.printStart("subpower closing ...");
+    //if (monitoring()) monitor.printStart("subpower closing ...");
+    if (report != null) report.addStartLine("subpower closing ...");
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
@@ -578,15 +579,15 @@ System.out.println("so far: " + currentMark);
     int pass = 0;
     while (closedMark < currentMark) {
       if (Thread.currentThread().isInterrupted()) return null;
-      if (monitoring()) {
-        System.out.println("subpow pass = " + pass + " size = " + lst.size());
-        monitor.setPassFieldText("" + pass++);
-        monitor.setPassSizeFieldText("" + lst.size());
-        //if (monitor.isCancelled()) {
-        //  System.out.println("got here xxxx");
-        //  throw new CancelledException("cancelled from sgClose");
-        //}
+      if (report != null) {
+        report.setPass(pass++);
+        report.setPassSize(lst.size());
       }
+      //if (monitoring()) {
+      //  System.out.println("subpow pass = " + pass + " size = " + lst.size());
+      //  monitor.setPassFieldText("" + pass++);
+      //  monitor.setPassSizeFieldText("" + lst.size());
+      //}
 //if (lst.size() > 100000) return lst;
       // close the elements in current
       for (Iterator<Operation> it = operations().iterator(); it.hasNext(); ) {
@@ -629,7 +630,8 @@ System.out.println("so far: " + currentMark);
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
             if (v.equals(elt)) {
-              if (monitoring()) monitor.printEnd("closing done, found " + elt);
+              if (report != null) report.addEndingLine("closing done, found " + elt);
+              //if (monitoring()) monitor.printEnd("closing done, found " + elt);
               return lst;
             }
           }
@@ -654,7 +656,8 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
-    if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
+    if (report != null) report.addEndingLine("closing done, size = " + lst.size());
+    //if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
   }
 
