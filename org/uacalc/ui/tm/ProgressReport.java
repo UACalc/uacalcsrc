@@ -4,13 +4,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.util.*;
 import org.uacalc.ui.MonitorPanel;
-//import org.uacalc.ui.tm.TaskRunner;
-//import org.uacalc.ui.tm.DataChunk;
-//import org.uacalc.ui.tm.DataChunk.DataType;
+
 
 public class ProgressReport {
 
-  //private boolean cancelled = false;
   private MonitorPanel monitorPanel;
   private JTextArea logArea;
   private JTextField passField;
@@ -107,41 +104,10 @@ public class ProgressReport {
   }
   
   private void conditionalAppend(String str) {
-    System.out.println("str = " + str);
-    System.out.println("monitorPanel.getProgressModel() == ProgressModel.this is " 
-        + (monitorPanel.getProgressModel() == ProgressReport.this));
     if (monitorPanel.getProgressModel() == ProgressReport.this) {
-      logArea.append(str + "\n");
+      appendToLogArea(str + "\n");
     }
   }
-  
-  
-  
-  //public void clearLines() { 
-  //  logLines = new ArrayList<String>(); 
-  //}
-  
-  //public void clearAll() {
-  //  clearLines();
-  //  desc = "";
-  //  setPass(0);
-  //  setPassSize(0);
-  //  setSize(0);
-  //}
-
-  /*
-  public ProgressMonitor(JTextArea ta, JTextField sizeField, JTextField passField) {
-    this.logArea = ta;
-    this.sizeField = sizeField;
-    this.passField = passField;
-  }
-  */
-  
-  //public boolean isCancelled() { return cancelled; }
-  
-  //public void setCancelled(boolean v) { cancelled = v; }
-  
-  //public void cancel() { cancelled = true; }
   
   public void reset() {
     GuiExecutor.instance().execute(new Runnable() {
@@ -237,6 +203,14 @@ public class ProgressReport {
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         sizeField.setText(s);
+      }
+    });
+  }
+  
+  public void appendToLogArea(final String s) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        logArea.append(s);
       }
     });
   }

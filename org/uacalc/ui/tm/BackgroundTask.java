@@ -2,7 +2,6 @@ package org.uacalc.ui.tm;
 
 
 import java.util.concurrent.*;
-import org.uacalc.util.*;
 
 /**
  * BackgroundTask
@@ -15,11 +14,12 @@ import org.uacalc.util.*;
 
 public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   
-  public enum Status { RUNNING, OUT_OF_MEMORY, CANCELLED, DONE}
+  //possibly add UNKNOWN_ERROR  
+  public enum Status { RUNNING, OUT_OF_MEMORY, CANCELLED, DONE}  
   
   protected volatile Status status = Status.RUNNING;
   
-  ProgressReport report;
+  protected ProgressReport report;
   
   private final FutureTask<V> computation = new Computation();
 
@@ -61,6 +61,9 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
           finally {
             buf = null;
             final boolean outOfMemory = thrown instanceof OutOfMemoryError;
+            if (outOfMemory) status = Status.OUT_OF_MEMORY;
+            else if (cancelled) status = Status.CANCELLED;
+            else status = Status.DONE;
             onCompletion(value, thrown, cancelled, outOfMemory);
           }
         };
@@ -68,10 +71,13 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
     }
   }
 
-  protected void setProgressMonitor(ProgressReport pm) {
-    report = pm;
+  protected void setProgressReport(ProgressReport pr) {
+    report = pr;
   }
   
+  public ProgressReport getProgressReport() { return report; }
+  
+  /*
   protected void setProgress(final int current, final int max) {
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
@@ -79,6 +85,7 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
       }
     });
   }
+  */
 
   // Called in the background thread
   protected abstract V compute() throws Exception;
@@ -87,6 +94,9 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   protected void onCompletion(V result, Throwable exception,
                 boolean cancelled, boolean outOfMemory) {
   }
+  
+  public Status getStatus() { return status; }
+  public void setStatus(Status v) { status = v; }
 
   protected void onProgress(int current, int max) {
   }
