@@ -4,11 +4,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.Insets;
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.*;
 import org.uacalc.ui.tm.*;
+import org.uacalc.ui.table.*;
 
 public class MonitorPanel extends JPanel {
   
@@ -17,19 +19,22 @@ public class MonitorPanel extends JPanel {
   //private TaskRunner runner;
   
   // the one that is currently displayed
-  BackgroundTask task;
+  //BackgroundTask task;
   // a list of all
-  List<BackgroundTask> tasks = new ArrayList<BackgroundTask> ();
+  //List<BackgroundTask> tasks = new ArrayList<BackgroundTask> ();
   
   private final JTextArea logArea;
   private final JTextField passField;
   private final JTextField sizeField;
   private final JTextField descField;
   private final JTextField passSizeField;
+  private TaskTableModel model = new TaskTableModel(this);
+  private final JTable taskTable = new JTable(model);
 
   public MonitorPanel(UACalculator uacalc) {
     this.uacalc = uacalc;
     setLayout(new BorderLayout());
+    setupTaskTable();
     logArea = new JTextArea(10, 50);
     logArea.setMargin(new Insets(5, 5, 5, 5));
     logArea.setEditable(false);
@@ -63,13 +68,16 @@ public class MonitorPanel extends JPanel {
       });
     
     JPanel topPanel = new JPanel();
-    topPanel.add(descField);
-    topPanel.add(passLabel);
-    topPanel.add(passField);
-    topPanel.add(sizeLabel);
-    topPanel.add(passSizeField);
-    topPanel.add(currentSizeLabel);
-    topPanel.add(sizeField);
+    topPanel.add(new JScrollPane(taskTable, 
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+    //topPanel.add(descField);
+    //topPanel.add(passLabel);
+    //topPanel.add(passField);
+    //topPanel.add(sizeLabel);
+    //topPanel.add(passSizeField);
+    //topPanel.add(currentSizeLabel);
+    //topPanel.add(sizeField);
     add(topPanel, BorderLayout.NORTH);
     add(new JScrollPane(logArea), BorderLayout.CENTER);
     JPanel botPanel = new JPanel();
@@ -84,6 +92,24 @@ public class MonitorPanel extends JPanel {
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     monitor = new ProgressReport(this);
     //uacalc.setMonitor(monitor);
+  }
+  
+  private void setupTaskTable() {
+    taskTable.setRowSelectionAllowed(true);
+    taskTable.setColumnSelectionAllowed(false);
+    taskTable.setAutoResizeMode( JTable.AUTO_RESIZE_OFF);
+    TableColumn column = null;
+    for (int i = 0; i < model.getColumnCount(); i++) {
+      column = taskTable.getColumnModel().getColumn(i);
+      if (i == 0) {
+        column.setPreferredWidth(150);
+        column.setMinWidth(75);
+      }
+      else {
+        column.setPreferredWidth(75);
+        column.setMinWidth(30);
+      }
+    }
   }
   
   public JTextField getDescriptionField() { return descField; }
@@ -108,18 +134,18 @@ public class MonitorPanel extends JPanel {
   }
   
   
-  public BackgroundTask getTask() { return task; }
-  public void setTask(BackgroundTask v) { task = v; }
+  public BackgroundTask<?> getTask() { return model.getCurrentTask(); }
+  public void setTask(BackgroundTask<?> v) { model.setCurrrentTask(v); }
   
-  public void addTask(BackgroundTask task) {
+  public void addTask(BackgroundTask<?> task) {
     addTask(task, true);
   }
   
-  public void addTask(BackgroundTask task, boolean makecurrent) {
-    tasks.add(task);
+  public void addTask(BackgroundTask<?> task, boolean makecurrent) {
+    model.addTask(task);
     if (makecurrent) setTask(task);
   }
   
-  public List<BackgroundTask> getTasks() { return tasks; }
+  public List<BackgroundTask<?>> getTasks() { return model.getTasks(); }
   
 }
