@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 public abstract class BackgroundTask <V> implements Runnable, Future<V> {
   
   //possibly add UNKNOWN_ERROR  
-  public enum Status { RUNNING, OUT_OF_MEMORY, CANCELLED, DONE}  
+  public enum Status { RUNNING, INS_MEMORY, CANCELLED, DONE}  
   
   protected volatile Status status = Status.RUNNING;
   
@@ -61,9 +61,10 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
           finally {
             buf = null;
             final boolean outOfMemory = thrown instanceof OutOfMemoryError;
-            if (outOfMemory) status = Status.OUT_OF_MEMORY;
+            if (outOfMemory) status = Status.INS_MEMORY;
             else if (cancelled) status = Status.CANCELLED;
             else status = Status.DONE;
+            report.getTaskTableModel().fireTableDataChanged();
             onCompletion(value, thrown, cancelled, outOfMemory);
           }
         };

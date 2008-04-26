@@ -165,7 +165,7 @@ public class ComputationsPanel extends JSplitPane {
                                boolean cancelled, boolean outOfMemory) {
         System.out.println("got to completion");
         System.out.println("thrown = " + exception);
-        for (BackgroundTask task : monitorPanel.getTasks()) {
+        for (BackgroundTask task : monitorPanel.getTaskList()) {
           System.out.println("task: " + task.getStatus());
         }
         if (outOfMemory) {

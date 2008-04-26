@@ -346,6 +346,13 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   
   public List<IntArray> sgClose(List<IntArray> elems, 
       Map<IntArray, Term> termMap, Object elt, ProgressReport report) {
+    HashSet<IntArray> elemsHS = new HashSet<IntArray>(elems);
+    for (IntArray ia : getConstants()) {
+      if (!elemsHS.contains(ia)) {
+        elems.add(ia);
+        termMap.put(ia, NonVariableTerm.makeConstantTerm(constantToSymbol.get(ia)));
+      }
+    }
     return sgClose(elems, 0, termMap, elt, report);
   }
 
@@ -708,14 +715,16 @@ System.out.println("report = " + report);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
+      String str = "pass: " + pass + ", size: " + lst.size();
       if (report != null) {
-        report.setPass(pass++);
+        report.setPass(pass);
         report.setPassSize(lst.size());
+        report.addLine(str);
       }
-      //if (monitoring()) {
-        //monitor.setPassFieldText("" + pass++);
-        //monitor.setPassSizeFieldText("" + lst.size());
-      //}
+      else {
+        System.out.println(str);
+      }
+      pass++;
       // close the elements in current
       for (int i = 0; i < k; i++) {
         final int arity = arities[i];

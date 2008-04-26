@@ -23,13 +23,13 @@ public class TaskTableModel extends AbstractTableModel {
   }
 
   public int getRowCount() {
-    return mp.getTasks().size();
+    return mp.getTaskList().size();
   }
 
   public boolean isCellEditable(int row, int col) { return false; }
   
   public Object getValueAt(int rowIndex, int columnIndex) {
-    BackgroundTask<?> task = mp.getTasks().get(rowIndex);
+    BackgroundTask<?> task = mp.getTaskList().get(rowIndex);
     ProgressReport prog = task.getProgressReport();
     if (columnIndex == 0) return prog.getDescription();
     if (columnIndex == 1) return prog.getPass();

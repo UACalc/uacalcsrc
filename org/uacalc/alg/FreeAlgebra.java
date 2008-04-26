@@ -104,13 +104,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     System.out.println("progressReport in Free is " + report);
     String line = "constructing free algebra on " + numberOfGens 
                    + " generators over " + alg.name();
-    /*
-    if (monitoring()) { 
-      monitor.printStart(line);
-    }
-    */
     if (report != null) {
-      report.addStartLine(line + " rsf ");
+      report.addStartLine(line);
     }
     final int n = alg.cardinality();
     int s = 1;
@@ -171,9 +166,6 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (report != null) {
       report.addEndingLine(line + " rsf ");
     }
-    //if (monitoring()) {
-    //  monitor.printEnd("done constructing free algebra, size = " + size);
-    //}
   }
   
   private void makeUniverse(ProgressReport report) {

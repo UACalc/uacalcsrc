@@ -72,7 +72,7 @@ public class UACalculator extends JFrame {
     //  }
     //};
     //monitorPanel.setRunner(new TaskRunner(nullTask, monitorPanel));
-    ProgressReport m = monitorPanel.getProgressModel();
+    ProgressReport m = monitorPanel.getProgressReport();
     //CongruenceLattice.setMonitor(m);
     //SubalgebraLattice.setMonitor(m);
     //GeneralAlgebra.setMonitor(m);
@@ -330,7 +330,7 @@ public class UACalculator extends JFrame {
   // will change.
   public MonitorPanel getMonitorPanel() { return monitorPanel; }
   
-  public ProgressReport getMonitor() { return monitorPanel.getProgressModel(); }
+  public ProgressReport getMonitor() { return monitorPanel.getProgressReport(); }
   
   public LatDrawPanel getLatDrawPanel() {
     return tabs.getLatticeDrawer();

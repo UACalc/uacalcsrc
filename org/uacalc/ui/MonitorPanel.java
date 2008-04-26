@@ -2,6 +2,7 @@ package org.uacalc.ui;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.event.*;
 import java.awt.Insets;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -15,7 +16,7 @@ import org.uacalc.ui.table.*;
 public class MonitorPanel extends JPanel {
   
   private UACalculator uacalc;
-  private ProgressReport monitor;
+  private ProgressReport report;
   //private TaskRunner runner;
   
   // the one that is currently displayed
@@ -68,6 +69,18 @@ public class MonitorPanel extends JPanel {
       });
     
     JPanel topPanel = new JPanel();
+    taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    taskTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent e) {
+        int k = taskTable.getSelectedRow();
+        //int k = e.getFirstIndex();
+        System.out.println("first index = " + k + ", tasks: " + getTaskList().size());
+        if (k < 0 || k >= getTaskList().size()) return;
+        setTask(getTaskList().get(k)); 
+        setProgressReport(getTask().getProgressReport());
+      }
+    });
+
     topPanel.add(new JScrollPane(taskTable, 
         ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
@@ -90,7 +103,7 @@ public class MonitorPanel extends JPanel {
     
     add(botPanel, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    monitor = new ProgressReport(this);
+    report = new ProgressReport(this);
     //uacalc.setMonitor(monitor);
   }
   
@@ -119,18 +132,20 @@ public class MonitorPanel extends JPanel {
   public JTextArea getLogArea() { return logArea; }
   
   
-  public ProgressReport getProgressModel() { return monitor; }
+  public ProgressReport getProgressReport() { return report; }
   
   public void setProgressReport(ProgressReport m) {
-    monitor = m;
+    report = m;
     descField.setText(m.getDescription());
     passField.setText(String.valueOf(m.getPass()));
     passSizeField.setText(String.valueOf(m.getPassSize()));
     sizeField.setText(String.valueOf(m.getSize()));
     logArea.setText(null);
     for (String s : m.getLogLines()) {
-      logArea.append(s);
+      final String nl = "\n";
+      logArea.append(s + nl);
     }
+    repaint();
   }
   
   
@@ -146,6 +161,8 @@ public class MonitorPanel extends JPanel {
     if (makecurrent) setTask(task);
   }
   
-  public List<BackgroundTask<?>> getTasks() { return model.getTasks(); }
+  public List<BackgroundTask<?>> getTaskList() { return model.getTasks(); }
+  
+  public TaskTableModel getTaskTableModel() { return model; }
   
 }

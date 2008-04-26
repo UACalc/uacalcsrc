@@ -31,6 +31,16 @@ public class NonVariableTerm implements Term {
     //this.similarityType = st;
   }
 
+  /**
+   * A static method to make a constant term from an operation symbol.
+   * 
+   * @param sym
+   * @return
+   */
+  public static Term makeConstantTerm(OperationSymbol sym) {
+    return new NonVariableTerm(sym, new ArrayList<Term>());
+  }
+  
   public boolean equals(Object obj) {
     final NonVariableTerm t = (NonVariableTerm)obj;
     return t.leadingOperationSymbol().equals(leadingOperationSymbol) 

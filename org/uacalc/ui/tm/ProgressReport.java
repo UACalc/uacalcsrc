@@ -4,6 +4,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.util.*;
 import org.uacalc.ui.MonitorPanel;
+import org.uacalc.ui.table.TaskTableModel;
 
 
 public class ProgressReport {
@@ -34,20 +35,26 @@ public class ProgressReport {
     descField = panel.getDescriptionField();
   }
   
+  public TaskTableModel getTaskTableModel() {
+    return monitorPanel.getTaskTableModel();
+  }
+  
   public int getPass() { return pass; }
+  
   public void setPass(int v) {
     pass = v;
-    
-    if (monitorPanel.getProgressModel() == this) {
+    if (monitorPanel.getProgressReport() == this) {
       setPassFieldText(String.valueOf(v));
+      getTaskTableModel().fireTableDataChanged();
     }
   }
   
   public int getPassSize() { return passSize; }
   public void setPassSize(int v) {
     passSize = v;
-    if (monitorPanel.getProgressModel() == this) {
+    if (monitorPanel.getProgressReport() == this) {
       setPassSizeFieldText(String.valueOf(v));
+      getTaskTableModel().fireTableDataChanged();
     }
   }
   
@@ -55,8 +62,9 @@ public class ProgressReport {
   
   public void setSize(int v) {
     size = v;
-    if (monitorPanel.getProgressModel() == this) {
+    if (monitorPanel.getProgressReport() == this) {
       setSizeFieldText(String.valueOf(v));
+      getTaskTableModel().fireTableDataChanged();
     }
   }
   
@@ -64,7 +72,7 @@ public class ProgressReport {
 
   public void setDescription(String v) {
     desc = v;
-    if (monitorPanel.getProgressModel() == this) {
+    if (monitorPanel.getProgressReport() == this) {
       setDescFieldText(String.valueOf(v));
     }
   }
@@ -75,9 +83,15 @@ public class ProgressReport {
     logLines = v;
   }
   
-  //public void addLine(String line) {
-  //  logLines.add(line);
-  //}
+  public void addLine(final String line) {
+    GuiExecutor.instance().execute(new Runnable() {
+      public void run() {
+        final String str = getIndentString() + line;
+        logLines.add(str);
+        conditionalAppend(str);
+      }
+    });
+  }
   
   public void addStartLine(final String line) {
     GuiExecutor.instance().execute(new Runnable() {
@@ -104,7 +118,7 @@ public class ProgressReport {
   }
   
   private void conditionalAppend(String str) {
-    if (monitorPanel.getProgressModel() == ProgressReport.this) {
+    if (monitorPanel.getProgressReport() == ProgressReport.this) {
       appendToLogArea(str + "\n");
     }
   }
