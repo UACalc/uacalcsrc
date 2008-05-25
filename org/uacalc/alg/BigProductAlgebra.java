@@ -574,6 +574,7 @@ System.out.println("so far: " + currentMark);
                                                closedMark, termMap, elt, report);
       }
     }
+    // TODO: here
     //if (monitoring()) monitor.printStart("subpower closing ...");
     if (report != null) report.addStartLine("subpower closing ...");
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
@@ -594,16 +595,8 @@ System.out.println("so far: " + currentMark);
       else {
         System.out.println(str);
       }
+      pass++;
       if (Thread.currentThread().isInterrupted()) return null;
-      if (report != null) {
-        report.setPass(pass++);
-        report.setPassSize(lst.size());
-      }
-      //if (monitoring()) {
-      //  System.out.println("subpow pass = " + pass + " size = " + lst.size());
-      //  monitor.setPassFieldText("" + pass++);
-      //  monitor.setPassSizeFieldText("" + lst.size());
-      //}
 //if (lst.size() > 100000) return lst;
       // close the elements in current
       for (Iterator<Operation> it = operations().iterator(); it.hasNext(); ) {
@@ -645,11 +638,19 @@ System.out.println("so far: " + currentMark);
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
-            if (v.equals(elt)) {
-              if (report != null) report.addEndingLine("closing done, found " + elt);
-              //if (monitoring()) monitor.printEnd("closing done, found " + elt);
+            final int size = lst.size();
+            if (cardinality() > 0 && size == cardinality()) {
+              if (report != null) {
+                report.setSize(lst.size());
+              }
               return lst;
             }
+            if (v.equals(elt)) {
+              if (report != null) report.addEndingLine("closing done, found " + elt + ", at " + lst.size());
+              return lst;
+            }
+            if (Thread.currentThread().isInterrupted()) return null;
+            if (report != null) report.setSize(lst.size());
           }
           if (!inc.increment()) break;
         }
@@ -699,7 +700,7 @@ System.out.println("so far: " + currentMark);
       final Map<IntArray,Term> termMap, final  Object elt, ProgressReport report) {
 System.out.println("using power");
 System.out.println("card = " + cardinality());
-System.out.println("report = " + report);
+//System.out.println("report = " + report);
     //if (monitoring()) monitor.printStart("subpower closing ...");
     if (report != null) {
       report.addStartLine("subpower closing ...");
@@ -723,6 +724,7 @@ System.out.println("report = " + report);
     final HashSet<IntArray> su = new HashSet<IntArray>(lst);
     int currentMark = lst.size();
     int pass = 0;
+    // TODO: mark
     while (closedMark < currentMark) {
       String str = "pass: " + pass + ", size: " + lst.size();
       if (report != null) {
@@ -787,14 +789,8 @@ System.out.println("report = " + report);
               }
               return lst;
             }
-            if (monitoring()) {
-              if (Thread.currentThread().isInterrupted()) return null;
-              if (report != null) report.setSize(lst.size());
-              //monitor.setSizeFieldText("" + lst.size());
-              //if (monitor.isCancelled()) {
-              //  throw new CancelledException("cancelled from sgClose");
-              //}
-            }
+            if (Thread.currentThread().isInterrupted()) return null;
+            if (report != null) report.setSize(lst.size());
             if (v.equals(elt)) return lst;
           }
           if (!inc.increment()) break;
