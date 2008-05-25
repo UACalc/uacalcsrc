@@ -123,7 +123,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       report.addStartLine(line);
     }
     else System.out.println(line);
-    setupGensAndProductAlg(alg, numberOfGens, true);
+    decompose = false;
+    setupGensAndProductAlg(alg, numberOfGens, decompose);
     /*
     final int n = alg.cardinality();
     int s = 1;
@@ -262,6 +263,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
             AlgebraWithGeneratingVector b = it.next();
             if (b.isImageOf(a)) it.remove();
           }
+          a.getAlgebra().makeOperationTables();
           ans.add(a);
         }
       }
@@ -363,14 +365,17 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                    org.uacalc.io.BadAlgebraFileException {
     if (args.length == 0) {
       SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.xml");
+      SmallAlgebra m3 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/m3.ua");
       SmallAlgebra n5 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
       SmallAlgebra lyndon = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lyndon.ua");
       SmallAlgebra d16 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/D16.ua");
       //Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
       //System.out.println("eq is\n" + eq);
-      int n = 5; 
-      FreeAlgebra f = new FreeAlgebra(lyndon, n);
-      System.out.println("|F(" + n + ")| = " + f.cardinality());
+      int n = 4; 
+      long t = System.currentTimeMillis();
+      FreeAlgebra f = new FreeAlgebra(m3, n);
+      t = System.currentTimeMillis() - t;
+      System.out.println("|F(" + n + ")| = " + f.cardinality() + ", time " + t);
       return;
     }
     System.out.println("reading " + args[0]);
