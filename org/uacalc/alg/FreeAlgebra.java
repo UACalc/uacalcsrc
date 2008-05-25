@@ -49,7 +49,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   }
   
   /**
-   * Consturct a free algebra without giving it a name.
+   * Construct a free algebra without giving it a name.
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport report) {
     this("F(" + numberOfGens + ") over " + alg.name(),
@@ -86,6 +86,19 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       boolean makeUniverse, boolean thinGens) {
     this(name, alg, numberOfGens, makeUniverse, thinGens, null);
   }
+  
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
+          boolean makeUniverse, boolean thinGens, ProgressReport report) {
+    this("F(" + numberOfGens + ") over " + alg.name(), alg, numberOfGens, 
+         makeUniverse, thinGens, report);
+  }
+  
+  public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
+      boolean makeUniverse, boolean thinGens, 
+      ProgressReport report) {
+    this(name, alg, numberOfGens, makeUniverse, thinGens, false, report);
+  }
+  
   /**
    * Consturct the free algebra over <tt>alg</tt> 
    * with <tt>numberOfGens</tt> generators.
@@ -95,10 +108,12 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @param numberOfGens
    * @param makeUniverse  if true, make the universe
    * @param thinGens      if true, try to thin out the number of projections
+   * @param decompose     if true, reduce to SI algebras
    * @param report keeps the state of the progress
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
                                   boolean makeUniverse, boolean thinGens, 
+                                  boolean decompose, 
                                   ProgressReport report) {
     super(name);
     System.out.println("progressReport in Free is " + report);
@@ -107,6 +122,9 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (report != null) {
       report.addStartLine(line);
     }
+    else System.out.println(line);
+    setupGensAndProductAlg(alg, numberOfGens, true);
+    /*
     final int n = alg.cardinality();
     int s = 1;
     for (int  i = 0; i < numberOfGens; i++) {
@@ -128,11 +146,18 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
       inc.increment();
     }
-
-    if (thinGens) {
+    */
+    if (thinGens && !decompose) {
       long time = System.currentTimeMillis();
+      if (report != null) {
+        report.addLine("thinning coordinate projections ...");
+      }
       List<IntArray> lst = thinGenerators();
       time = System.currentTimeMillis() - time;
+      if (report != null) {
+        report.addLine("thinned " + gens.get(0).size() + " coordinates down to " 
+            + lst.get(0).size() + " (" + time + " ms)");
+      }
       System.out.println("time for thinning = " + time);
       System.out.println("thin size = " + lst.size());
       System.out.println("thin = " + lst);
@@ -166,6 +191,85 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (report != null) {
       report.addEndingLine(line + " rsf ");
     }
+  }
+  
+  private void setupGensAndProductAlg(final SmallAlgebra alg, 
+                     final int numberOfGens, boolean decompose) {
+    if (decompose) {
+      final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
+      final List<IntArray> projs = new ArrayList<IntArray>();
+      for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens)) {
+        algs.add(algV.getAlgebra());
+        projs.add(new IntArray(algV.getVector()));
+      }
+      productAlgebra = new BigProductAlgebra(algs);
+      gens = transpose(projs);
+      System.out.println("projs size = " + projs.size());
+    }
+    else {
+      final int n = alg.cardinality();
+      int s = 1;
+      for (int  i = 0; i < numberOfGens; i++) {
+        s = s * n;
+      }
+      logger.fine("size of the over product is " + s);
+      productAlgebra = new BigProductAlgebra(alg, s);
+      int[] projs = new int[numberOfGens];
+      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(projs, n-1);
+      gens = new ArrayList<IntArray>(numberOfGens);
+      for (int i = 0; i < numberOfGens; i++) {
+        gens.add(new IntArray(s));
+      }
+      
+      for (int k = 0; k < s; k++) {
+        for (int i = 0; i < numberOfGens; i++) {
+          final IntArray ia = gens.get(i);
+          ia.set(k, projs[i]);
+        }
+        inc.increment();
+      }
+    }
+  }
+  
+  private List<AlgebraWithGeneratingVector> setupSIProjections(
+                          final SmallAlgebra alg, final int numberOfGens) {
+    final List<AlgebraWithGeneratingVector> ans = new ArrayList<AlgebraWithGeneratingVector>();
+    final int n = alg.cardinality();
+    final int[] vec = new int[numberOfGens];
+    for (int i = 0 ; i < vec.length; i++) {
+      vec[i] = 0;
+    }
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(vec, n-1);
+    List<AlgebraWithGeneratingVector> decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec);
+    for (AlgebraWithGeneratingVector a : decomp ) {
+      ans.add(a);
+    }
+    while (inc.increment()) {
+      //System.out.println("vec = " + ArrayString.toString(vec));
+      decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec);
+      //System.out.println("decomp size = " + decomp.size());
+      for (AlgebraWithGeneratingVector a : decomp) {
+        boolean dumped = false;
+        for (AlgebraWithGeneratingVector b : ans) {
+          //System.out.println("a = " + a + ", b = " + b);
+          if (a.isImageOf(b)) {  // don' need a so dump it
+            dumped = true;
+            break;
+          }
+        }
+        if (!dumped) {
+          for (ListIterator<AlgebraWithGeneratingVector> it = ans.listIterator(); it.hasNext(); ) {
+            AlgebraWithGeneratingVector b = it.next();
+            if (b.isImageOf(a)) it.remove();
+          }
+          ans.add(a);
+        }
+      }
+    }
+    for (AlgebraWithGeneratingVector A : ans) {
+      System.out.println("A = " + A);
+    }
+    return ans;
   }
   
   private void makeUniverse(ProgressReport report) {
@@ -259,7 +363,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                    org.uacalc.io.BadAlgebraFileException {
     if (args.length == 0) {
       SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.xml");
-      SmallAlgebra alg1 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
+      SmallAlgebra n5 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
       SmallAlgebra lyndon = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lyndon.ua");
       SmallAlgebra d16 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/D16.ua");
       //Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});

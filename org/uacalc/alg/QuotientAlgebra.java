@@ -121,8 +121,18 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return new QuotientElement(this, index);
   }
 
+  /**
+   * Find the index of rep in representatives. This is
+   * the index of the algebra element. 
+   * 
+   * @param rep  a member of the array representatives
+   * @return     the index of rep in representatives
+   */
+  public int representativeIndex(int rep) {
+    return Arrays.binarySearch(representatives, rep);
+  }
 
-  // do something ??
+  // TODO: do something ??
   public List getUniverseList() { return null; }
   public Map getUniverseOrder() { return null; }
 

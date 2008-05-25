@@ -752,6 +752,7 @@ public class CongruenceLattice implements Lattice {
    */
   public List<Partition> irredundantMeetDecomposition() {
     final List<Partition> decomp = new ArrayList<Partition>();
+    if (getAlgebra().cardinality() == 1) return decomp;
     Partition theta = oneCong;
     for (Partition atom : atoms()) {
       Partition mi = findMeetIrred(zeroCong, atom);

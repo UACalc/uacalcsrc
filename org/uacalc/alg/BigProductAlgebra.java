@@ -248,7 +248,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    * Test if this is a power of a single algebra.
    */
   public boolean isPower() {
-    return powers.length == 1;
+    return powers != null && powers.length == 1;
   }
 
   public List<SmallAlgebra> rootFactors() { return rootAlgebras; }
@@ -585,6 +585,15 @@ System.out.println("so far: " + currentMark);
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
+      String str = "pass: " + pass + ", size: " + lst.size();
+      if (report != null) {
+        report.setPass(pass);
+        report.setPassSize(lst.size());
+        report.addLine(str);
+      }
+      else {
+        System.out.println(str);
+      }
       if (Thread.currentThread().isInterrupted()) return null;
       if (report != null) {
         report.setPass(pass++);

@@ -391,7 +391,7 @@ public class SubalgebraLattice implements Lattice {
             Integer v = new Integer(f.intValueAt(arg));
             if (su.add(v)) {
               lst.add(v);
-              if (lst.size() == maxSize) return one();
+              if (lst.size() > maxSize) return one();
             }
             if (!permInc.increment()) break;
           }
@@ -460,6 +460,11 @@ public class SubalgebraLattice implements Lattice {
     }
     if (!addConstantsToMap(homo, A, B)) return null;
     if (homo.size() == 0) return homo;  // do we really want to allow the empty homo?
+    //System.out.println("|A| = " + A.cardinality() + 
+    //    ", A gens = " + ArrayString.toString(gens) +
+    //    ", |B| = " + B.cardinality() +
+    //    ", B gens = " + ArrayString.toString(gensB) +
+    //    ", homo = " + homo);
     return extendToHomomorphism(homo, A, B);
   }
   
