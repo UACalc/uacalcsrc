@@ -66,6 +66,10 @@ public interface Algebra {
    */
   public Set universe();
 
+  /**
+   * 
+   * @return  the cardinality if possible, else a negative int
+   */
   public int cardinality();
 
   public boolean isUnary();
