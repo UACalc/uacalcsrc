@@ -12,7 +12,7 @@ import org.uacalc.util.*;
 import org.uacalc.io.*;
 
 //TODO:
-// make a class for generating the semigroup os some self maps.
+// make a class for generating the semigroup os some self maps. Test.
 
 /**
  * The monoid or semigroup of unary terms.
