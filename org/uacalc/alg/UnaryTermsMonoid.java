@@ -72,6 +72,7 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
     List<Variable> varList = free1.getVariables();
     int[][] table = new int[m][m];
     Map<IntArray,Integer> map = free1.getUniverseOrder();
+System.out.println("map = " + map);
     final int[] tmp = new int[n]; // holds the values of the product map
     int i = 0;
     for (Term term0 : unaryTermList) {
@@ -82,6 +83,11 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
         for (int r = 0; r < n; r++) {
           tmp[r] = termOp0.intValueAt(new int[] {termOp1.intValueAt(new int[] {r})});
         }
+System.out.println("tmp = " + ArrayString.toString(tmp));
+System.out.println("i = " + i + ", j = " + j);
+System.out.println("table[j][i] = " + table[j][i]);
+System.out.println("tmp.length = " + tmp.length );
+
         table[j][i] = map.get(new IntArray(tmp));// some reason we need this backwards
         j++;
       }
@@ -139,10 +145,11 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
-        //"/home/ralph/Java/Algebra/algebras/D16-set.ua"
-        "/home/ralph/Java/Algebra/algebras/Octagon4.ua");
+        //"/home/ralph/Java/Algebra/algebras/D8-set.ua");
+        "/home/ralph/Java/Algebra/algebras/D16-set.ua");
+        //"/home/ralph/Java/Algebra/algebras/Octagon4.ua");
     UnaryTermsMonoid m = new UnaryTermsMonoid(alg);
-    AlgebraIO.writeAlgebraFile(m, "/tmp/D16-2.ua");
+    AlgebraIO.writeAlgebraFile(m, "/tmp/D8-2.ua");
   }
 
 }
