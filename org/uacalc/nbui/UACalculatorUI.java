@@ -642,6 +642,7 @@ private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 
 private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMIActionPerformed
 // TODO add your handling code here:
+  actions.open();
 }//GEN-LAST:event_openMIActionPerformed
 
 private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uaFileMIActionPerformed
