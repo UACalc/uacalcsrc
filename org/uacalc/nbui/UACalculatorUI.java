@@ -6,17 +6,35 @@
 
 package org.uacalc.nbui;
 
+import java.awt.event.*;
+
+
 /**
  *
  * @author  ralph
  */
 public class UACalculatorUI extends javax.swing.JFrame {
 
-    Actions actions = new Actions();
+    Actions actions = new Actions(this);
     
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
         initComponents();
+        
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        //closes from title bar and from menu
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing (WindowEvent e) {
+              if (actions.isDirty()) {
+                if (actions.checkSave()) {
+                  System.exit(0);
+                }
+              }
+              else {
+                System.exit(0);
+              }
+            }
+          });
     }
 
     /** This method is called from within the constructor to
