@@ -61,20 +61,20 @@ public class UACalculatorUI extends javax.swing.JFrame {
     jButton3 = new javax.swing.JButton();
     jButton4 = new javax.swing.JButton();
     jLabel1 = new javax.swing.JLabel();
-    jTextField1 = new javax.swing.JTextField();
+    algNameTextField = new javax.swing.JTextField();
     jLabel2 = new javax.swing.JLabel();
-    jTextField2 = new javax.swing.JTextField();
+    cardTextField = new javax.swing.JTextField();
     jLabel3 = new javax.swing.JLabel();
-    jTextField3 = new javax.swing.JTextField();
+    descTextField = new javax.swing.JTextField();
     jLabel4 = new javax.swing.JLabel();
-    jComboBox1 = new javax.swing.JComboBox();
+    opsComboBox = new javax.swing.JComboBox();
     delOpButton = new javax.swing.JButton();
     addOpButton = new javax.swing.JButton();
     jScrollPane5 = new javax.swing.JScrollPane();
     opTable = new javax.swing.JTable();
     idempotentCB = new javax.swing.JCheckBox();
     jLabel5 = new javax.swing.JLabel();
-    jComboBox2 = new javax.swing.JComboBox();
+    defaultEltComboBox = new javax.swing.JComboBox();
     algebrasPanel = new javax.swing.JPanel();
     currentAlgPanel = new javax.swing.JPanel();
     algebraPanel = new javax.swing.JPanel();
@@ -243,7 +243,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     jLabel4.setText("Operations:");
 
-    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    opsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
     delOpButton.setText("Del");
 
@@ -277,7 +277,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     jLabel5.setText("Default element:");
 
-    jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    defaultEltComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
     javax.swing.GroupLayout editorPanelLayout = new javax.swing.GroupLayout(editorPanel);
     editorPanel.setLayout(editorPanelLayout);
@@ -288,21 +288,21 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(jLabel1)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(algNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel2)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(cardTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jLabel3)
         .addGap(18, 18, 18)
-        .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+        .addComponent(descTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
         .addContainerGap())
       .addGroup(editorPanelLayout.createSequentialGroup()
         .addContainerGap()
         .addComponent(jLabel4)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(opsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(delOpButton)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -316,7 +316,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel5)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(defaultEltComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(35, Short.MAX_VALUE))
     );
@@ -328,23 +328,23 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel1)
           .addComponent(jLabel2)
-          .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(cardTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel3)
-          .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(descTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(algNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel4)
           .addComponent(delOpButton)
           .addComponent(addOpButton)
-          .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(opsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addGap(18, 18, 18)
         .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(idempotentCB)
           .addComponent(jLabel5)
-          .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(defaultEltComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(344, Short.MAX_VALUE))
     );
 
@@ -396,7 +396,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
           .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addContainerGap(142, Short.MAX_VALUE)))
+          .addContainerGap(144, Short.MAX_VALUE)))
     );
 
     javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -462,7 +462,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(resultDescLabel)
           .addComponent(resultTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(173, Short.MAX_VALUE))
+        .addContainerGap(175, Short.MAX_VALUE))
       .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(resultPaneLayout.createSequentialGroup()
           .addGap(33, 33, 33)
@@ -625,7 +625,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     fileMenu.setText("File");
 
     newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-    newMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
+    newMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
     newMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
     newMI.setText("New");
     newMI.addActionListener(new java.awt.event.ActionListener() {
@@ -636,7 +636,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     fileMenu.add(newMI);
 
     openMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-    openMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
+    openMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
     openMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Open16.gif"))); // NOI18N
     openMI.setText("Open");
     openMI.addActionListener(new java.awt.event.ActionListener() {
@@ -647,7 +647,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     fileMenu.add(openMI);
 
     saveMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-    saveMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
+    saveMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
     saveMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
     saveMI.setText("Save");
     fileMenu.add(saveMI);
@@ -655,7 +655,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     saveAsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/SaveAs16.gif"))); // NOI18N
     saveAsMenu.setText("Save As");
 
-    uaFileMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
+    uaFileMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
     uaFileMI.setText("ua file (new format)");
     uaFileMI.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -664,7 +664,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     });
     saveAsMenu.add(uaFileMI);
 
-    algFileMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
+    algFileMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
     algFileMI.setText("alg file (old format)");
     algFileMI.setToolTipText("not yet implemented");
     algFileMI.addActionListener(new java.awt.event.ActionListener() {
@@ -771,16 +771,20 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton addOpButton;
   private javax.swing.JMenuItem algFileMI;
+  private javax.swing.JTextField algNameTextField;
   private javax.swing.JPanel algebraPanel;
   private javax.swing.JPanel algebrasPanel;
   private javax.swing.JButton cancelCompButton;
+  private javax.swing.JTextField cardTextField;
   private javax.swing.JButton clearLogButton;
   private javax.swing.JPanel computationsLogPane;
   private javax.swing.JPanel computationsPanel;
   private javax.swing.JTable computationsTable;
   private javax.swing.JPanel conPanel;
   private javax.swing.JPanel currentAlgPanel;
+  private javax.swing.JComboBox defaultEltComboBox;
   private javax.swing.JButton delOpButton;
+  private javax.swing.JTextField descTextField;
   private javax.swing.JPanel drawingPanel;
   private javax.swing.JMenu editMenu;
   private javax.swing.JPanel editorPanel;
@@ -792,8 +796,6 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
   private javax.swing.JButton jButton4;
   private javax.swing.JButton jButton7;
   private javax.swing.JButton jButton8;
-  private javax.swing.JComboBox jComboBox1;
-  private javax.swing.JComboBox jComboBox2;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
@@ -816,15 +818,13 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
   private javax.swing.JTabbedPane jTabbedPane2;
   private javax.swing.JTable jTable1;
   private javax.swing.JTable jTable2;
-  private javax.swing.JTextField jTextField1;
-  private javax.swing.JTextField jTextField2;
-  private javax.swing.JTextField jTextField3;
   private javax.swing.JToolBar jToolBar1;
   private javax.swing.JToolBar jToolBar2;
   private javax.swing.JTextArea logTextArea;
   private javax.swing.JMenuItem newMI;
   private javax.swing.JTable opTable;
   private javax.swing.JMenuItem openMI;
+  private javax.swing.JComboBox opsComboBox;
   private javax.swing.JMenuItem quitMI;
   private javax.swing.JLabel resultDescLabel;
   private javax.swing.JPanel resultPane;
