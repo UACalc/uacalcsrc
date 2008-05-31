@@ -932,4 +932,8 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     return subPanel;
   }
 
+  public void beep() {
+    java.awt.Toolkit.getDefaultToolkit().beep();
+  }
+  
 }
