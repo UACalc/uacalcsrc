@@ -701,7 +701,7 @@
                           <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                           <Component id="resultDescLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="resultTF" pref="390" max="32767" attributes="0"/>
+                          <Component id="resultTextField" pref="390" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -718,7 +718,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="resultDescLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="resultTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="resultTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="175" max="32767" attributes="0"/>
                       </Group>
@@ -764,7 +764,7 @@
                     <Property name="text" type="java.lang.String" value="Desc:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="resultTF">
+                <Component class="javax.swing.JTextField" name="resultTextField">
                 </Component>
               </SubComponents>
             </Container>

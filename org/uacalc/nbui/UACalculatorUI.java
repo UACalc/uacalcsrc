@@ -15,7 +15,7 @@ import java.awt.event.*;
  */
 public class UACalculatorUI extends javax.swing.JFrame {
 
-    Actions actions = new Actions(this);
+    private Actions actions = new Actions(this);
     
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
@@ -25,8 +25,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
         //closes from title bar and from menu
         addWindowListener(new WindowAdapter() {
             public void windowClosing (WindowEvent e) {
-              if (actions.isDirty()) {
-                if (actions.checkSave()) {
+              if (getActions().isDirty()) {
+                if (getActions().checkSave()) {
                   System.exit(0);
                 }
               }
@@ -85,7 +85,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     jScrollPane4 = new javax.swing.JScrollPane();
     resultTable = new javax.swing.JTable();
     resultDescLabel = new javax.swing.JLabel();
-    resultTF = new javax.swing.JTextField();
+    resultTextField = new javax.swing.JTextField();
     computationsLogPane = new javax.swing.JPanel();
     jScrollPane2 = new javax.swing.JScrollPane();
     computationsTable = new javax.swing.JTable();
@@ -448,7 +448,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGap(43, 43, 43)
         .addComponent(resultDescLabel)
         .addGap(18, 18, 18)
-        .addComponent(resultTF, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+        .addComponent(resultTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
         .addContainerGap())
       .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(resultPaneLayout.createSequentialGroup()
@@ -461,7 +461,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
       .addGroup(resultPaneLayout.createSequentialGroup()
         .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(resultDescLabel)
-          .addComponent(resultTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(175, Short.MAX_VALUE))
       .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(resultPaneLayout.createSequentialGroup()
@@ -712,6 +712,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+    
 private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_cancelCompButtonActionPerformed
@@ -721,7 +722,7 @@ private void clearLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_clearLogButtonActionPerformed
 
 private void quitMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMIActionPerformed
-  actions.quit();
+    getActions().quit();
 }//GEN-LAST:event_quitMIActionPerformed
 
 private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMIActionPerformed
@@ -730,7 +731,7 @@ private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 
 private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMIActionPerformed
 // TODO add your handling code here:
-  actions.open();
+    getActions().open();
 }//GEN-LAST:event_openMIActionPerformed
 
 private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uaFileMIActionPerformed
@@ -757,6 +758,7 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 // TODO add your handling code here:
 }//GEN-LAST:event_idempotentCBActionPerformed
 
+  
     /**
     * @param args the command line arguments
     */
@@ -828,12 +830,106 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
   private javax.swing.JMenuItem quitMI;
   private javax.swing.JLabel resultDescLabel;
   private javax.swing.JPanel resultPane;
-  private javax.swing.JTextField resultTF;
   private javax.swing.JTable resultTable;
+  private javax.swing.JTextField resultTextField;
   private javax.swing.JMenu saveAsMenu;
   private javax.swing.JMenuItem saveMI;
   private javax.swing.JPanel subPanel;
   private javax.swing.JMenuItem uaFileMI;
   // End of variables declaration//GEN-END:variables
+
+  public
+
+  Actions getActions() {
+    return actions;
+  }
+
+  public javax.swing.JTextField getAlgNameTextField() {
+    return algNameTextField;
+  }
+
+  public javax.swing.JPanel getAlgebraPanel() {
+    return algebraPanel;
+  }
+
+  public javax.swing.JPanel getAlgebrasPanel() {
+    return algebrasPanel;
+  }
+
+  public javax.swing.JTextField getCardTextField() {
+    return cardTextField;
+  }
+
+  public javax.swing.JPanel getComputationsLogPane() {
+    return computationsLogPane;
+  }
+
+  public javax.swing.JPanel getComputationsPanel() {
+    return computationsPanel;
+  }
+
+  public javax.swing.JTable getComputationsTable() {
+    return computationsTable;
+  }
+
+  public javax.swing.JPanel getConPanel() {
+    return conPanel;
+  }
+
+  public javax.swing.JPanel getCurrentAlgPanel() {
+    return currentAlgPanel;
+  }
+
+  public javax.swing.JComboBox getDefaultEltComboBox() {
+    return defaultEltComboBox;
+  }
+
+  public javax.swing.JTextField getDescTextField() {
+    return descTextField;
+  }
+
+  public javax.swing.JPanel getDrawingPanel() {
+    return drawingPanel;
+  }
+
+  public javax.swing.JPanel getEditorPanel() {
+    return editorPanel;
+  }
+
+  public javax.swing.JCheckBox getIdempotentCB() {
+    return idempotentCB;
+  }
+
+  public javax.swing.JTextArea getLogTextArea() {
+    return logTextArea;
+  }
+
+  public javax.swing.JMenuItem getNewMI() {
+    return newMI;
+  }
+
+  public javax.swing.JTable getOpTable() {
+    return opTable;
+  }
+
+  public javax.swing.JComboBox getOpsComboBox() {
+    return opsComboBox;
+  }
+
+  public javax.swing.JPanel getResultPane() {
+    return resultPane;
+  }
+
+  public javax.swing.JTextField getResultTextField() {
+    return resultTextField;
+  }
+
+  public javax.swing.JTable getResultTable() {
+    return resultTable;
+  }
+
+  public javax.swing.JPanel getSubPanel() {
+    return subPanel;
+  }
 
 }
