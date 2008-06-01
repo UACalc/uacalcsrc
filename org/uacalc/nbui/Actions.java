@@ -29,12 +29,14 @@ public class Actions {
   private String title = "";  // if currentFile is null this might be "New"
   private String progName = "UACalculator   ";
   private String currentFolder;
+  private AlgebraEditorController algEditorController;
   
-  private Tabs tabs;
+  //private Tabs tabs;
   private final Random random = new Random();
   
   public Actions(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
+    algEditorController = new AlgebraEditorController(uacalcUI);
   }
   
   public File getCurrentFile() { return currentFile; }
@@ -269,11 +271,12 @@ public class Actions {
   //public ProgressReport getMonitor() { return monitorPanel.getProgressReport(); }
   
   public LatDrawPanel getLatDrawPanel() {
-    return tabs.getLatticeDrawer();
+    //return tabs.getLatticeDrawer();
+    return null;
   }
   
-  public AlgebraEditor getAlgebraEditor() {
-    return tabs.getAlgebraEditor();
+  public AlgebraEditorController getAlgebraEditorController() {
+    return algEditorController;
   }
   
   public void resetToolBar() {
@@ -505,7 +508,7 @@ public class Actions {
   public void setCurrentAlgebra(SmallAlgebra alg) {
     if (isDirty()) checkSave();
     updateCurrentAlgebra(alg);
-    getAlgebraEditor().setAlgebra(alg);
+    getAlgebraEditorController().setAlgebra(alg);
   }
   
   public Random getRandom() {
