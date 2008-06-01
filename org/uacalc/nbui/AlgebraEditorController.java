@@ -12,7 +12,7 @@ import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.ui.table.*;
 
-public class AlgebraEditorActions {
+public class AlgebraEditorController {
 
   private final UACalculatorUI uacalc;
   private String desc;
@@ -32,7 +32,7 @@ public class AlgebraEditorActions {
   //private final JComboBox ops_cb = new JComboBox();
   //private OperationInputTable opTablePanel;
   
-  public AlgebraEditorActions(final UACalculatorUI uacalc) {
+  public AlgebraEditorController(final UACalculatorUI uacalc) {
     this.uacalc = uacalc;
 
     
