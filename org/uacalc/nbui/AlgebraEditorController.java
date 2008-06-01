@@ -111,7 +111,7 @@ public class AlgebraEditorController {
     uacalc.repaint();
   }
   
-  public void deleteOp() {
+  public void delOp() {
     int n = JOptionPane.showConfirmDialog(
         uacalc,
         "Delete this operation?",
