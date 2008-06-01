@@ -244,6 +244,11 @@ public class UACalculatorUI extends javax.swing.JFrame {
     jLabel4.setText("Operations:");
 
     opsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    opsComboBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        opsComboBoxActionPerformed(evt);
+      }
+    });
 
     delOpButton.setText("Del");
 
@@ -757,6 +762,10 @@ private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idempotentCBActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_idempotentCBActionPerformed
+
+private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opsComboBoxActionPerformed
+  getActions().setOp();  
+}//GEN-LAST:event_opsComboBoxActionPerformed
 
   
     /**
