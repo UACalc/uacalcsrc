@@ -510,6 +510,10 @@ public class Actions {
     updateCurrentAlgebra(alg);
     getAlgebraEditorController().setAlgebra(alg);
   }
+
+  public void setOp() {
+    
+  }
   
   public Random getRandom() {
     return random;
