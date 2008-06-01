@@ -210,6 +210,7 @@ public class AlgebraEditorController {
     OperationSymbol sym = getCurrentSymbol();
     if (sym == null) return;
     Operation op = getCurrentOperation();
+    System.out.println("opList = " + opList);
     opList.remove(op);
     symbolList.remove(sym);
     opMap.remove(sym);
@@ -323,12 +324,14 @@ public class AlgebraEditorController {
   */
   
   public void setAlgebra(SmallAlgebra alg) {
+    System.out.println("setAlgebra called");
     //this.alg = alg;
     //uacalc.setCurrentAlgebra(alg);
     algSize = alg.cardinality();
     java.util.List<Operation> ops = alg.operations();
     symbolList = new ArrayList<OperationSymbol>();
     opList = new ArrayList<OperationWithDefaultValue>();
+    System.out.println("from set alg, opList = " +opList);
     opMap = new HashMap<OperationSymbol,OperationWithDefaultValue>();
     for (Operation op : ops) {
       symbolList.add(op.symbol());

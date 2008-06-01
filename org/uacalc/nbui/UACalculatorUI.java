@@ -17,8 +17,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     private Actions actions = new Actions(this);
     
-    private AlgebraEditorController algEdController = 
-            new AlgebraEditorController(this);
     
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
@@ -785,7 +783,6 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
    */
   public static void main(String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
-        @Override
         public void run() {
           new UACalculatorUI().setVisible(true);
         }
@@ -866,7 +863,7 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   }
   
   public AlgebraEditorController getAlgebraEditorController() {
-    return algEdController;
+    return getActions().getAlgebraEditorController();
   }
 
   public javax.swing.JTextField getAlgNameTextField() {

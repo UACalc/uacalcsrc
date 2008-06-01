@@ -481,12 +481,8 @@ public class Actions {
       System.err.println("IO error on file " + file);
       e.printStackTrace();
       beep();
-      //setUserMessage("Can't find the file: " + file);
-      //getDimensionsPanel().setInfoDialogTextColor(Color.RED);
     }
     catch (NullPointerException e) {
-      //setUserMessage("Open Failed. Choose a .brd file or type correctly.");
-      //getDimensionsPanel().setInfoDialogTextColor(Color.RED);
       System.err.println("open failed");
       beep();
     }
