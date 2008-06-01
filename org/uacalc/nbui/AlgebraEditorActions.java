@@ -56,7 +56,7 @@ public class AlgebraEditorActions {
           setOperationTable(opTable);
         }
         validate();
-        repaint();
+        uacalc.repaint();
       }
     });
  
@@ -92,6 +92,8 @@ public class AlgebraEditorActions {
     */
   }
   
+  private Actions getActions() { return uacalc.getActions(); }
+  
   public Random getRandom() {
     return random;
   }
@@ -101,10 +103,9 @@ public class AlgebraEditorActions {
   }
   
   
-  // TODO: move this
-  //private void updateDescription() {
-  //  desc = desc_tf.getText();
-  //}
+  private void updateDescription() {
+    desc = uacalc.getDescTextField().getText();
+  }
 
   private boolean validSymbol(OperationSymbol sym) {
     if (symbolList.contains(sym)) {
@@ -128,9 +129,9 @@ public class AlgebraEditorActions {
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
-    uacalc.opsComboBox.addItem(makeOpItem(sym));
-    ops_cb.setSelectedIndex(opList.size() - 1);
-    repaint();
+    uacalc.getOpsComboBox().addItem(makeOpItem(sym));
+    uacalc.getOpsComboBox().setSelectedIndex(opList.size() - 1);
+    uacalc.repaint();
   }
   
   public void addOperation(Operation oper) {
@@ -142,13 +143,13 @@ public class AlgebraEditorActions {
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
-    ops_cb.addItem(makeOpItem(sym));
-    ops_cb.setSelectedIndex(opList.size() - 1);
-    repaint();
+    uacalc.getOpsComboBox().addItem(makeOpItem(sym));
+    uacalc.getOpsComboBox().setSelectedIndex(opList.size() - 1);
+    uacalc.repaint();
   }
   
   public OperationSymbol getCurrentSymbol() {
-    OpSymItem item = (OpSymItem)ops_cb.getSelectedItem();
+    OpSymItem item = (OpSymItem)uacalc.getOpsComboBox().getSelectedItem();
     if (item == null) return null;
     return item.getOperationSymbol();
   }
@@ -158,7 +159,7 @@ public class AlgebraEditorActions {
   }
   
   public void removeCurrentOperation() {
-    ops_cb.remove(ops_cb.getSelectedIndex());
+    uacalc.getOpsComboBox().remove(uacalc.getOpsComboBox().getSelectedIndex());
     OperationSymbol sym = getCurrentSymbol();
     if (sym == null) return;
     Operation op = getCurrentOperation();
@@ -166,43 +167,57 @@ public class AlgebraEditorActions {
     symbolList.remove(sym);
     opMap.remove(sym);
     setOpsCB();
-    if (opList.size() == 0 && opTablePanel != null) main.remove(opTablePanel);
+    // TODO: check this
+    //if (opList.size() == 0 && opTablePanel != null) main.remove(opTablePanel);
     uacalc.repaint();
   }
   
   public void setOperationTable(OperationInputTable table) {
-    if (opTablePanel != null) main.remove(opTablePanel);
-    opTablePanel = table;
-    main.add(table, BorderLayout.CENTER);
+    // TODO: fix this
+    //if (opTablePanel != null) main.remove(opTablePanel);
+    //opTablePanel = table;
+    //main.add(table, BorderLayout.CENTER);
   }
   
   private void resetOpsCB() {
-    ops_cb.removeAllItems();
-    //ops_cb.addItem("New Op");
+    uacalc.getOpsComboBox().removeAllItems();
+    //uacalc.getOpsComboBox().addItem("New Op");
   }
   
+  // to be called when the "New" botton or menu item is hit.
+  public void makeNewAlgebra() {
+    // TODO: fix this
+    //if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
+    //  uacalc.beep();
+    //  return;
+    //}
+    setupNewAlgebra();
+    uacalc.repaint();
+  }
+  
+  // TODO: delete this soon
   private void makeToolBar() {
-    toolBar = new JToolBar();
+    //toolBar = new JToolBar();
     ClassLoader cl = uacalc.getClass().getClassLoader();
     ImageIcon icon = new ImageIcon(cl.getResource(
                           "org/uacalc/ui/images/New16.gif"));
     JButton newAlgBut = new JButton("New", icon);
-    toolBar.add(newAlgBut);
+    //toolBar.add(newAlgBut);
     newAlgBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         // TODO save this alg !!!!!!
-        if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
-          uacalc.beep();
-          return;
-        }
+        //if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
+        //  uacalc.beep();
+        //  return;
+        //}
         //alg = null;
         setupNewAlgebra();
-        repaint();
+        uacalc.repaint();
       }
     });
     JButton syncBut = new JButton("Sync");
     syncBut.setToolTipText("sync your changes with current algebra");
-    toolBar.add(syncBut);
+    //toolBar.add(syncBut);
     syncBut.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         sync();
@@ -211,10 +226,11 @@ public class AlgebraEditorActions {
   }
   
   public boolean sync() {
-    if (!opTablePanel.stopCellEditing()) {
-      uacalc.beep();
-      return false;
-    }
+    // TODO: fix this
+    //if (!opTablePanel.stopCellEditing()) {
+    //  uacalc.beep();
+    //  return false;
+    //}
     SmallAlgebra alg = makeAlgebra();
     if (alg == null) {
       uacalc.beep();
@@ -226,8 +242,8 @@ public class AlgebraEditorActions {
           JOptionPane.WARNING_MESSAGE);
       return false;
     }
-    uacalc.updateCurrentAlgebra(makeAlgebra());
-    repaint();
+    getActions().updateCurrentAlgebra(makeAlgebra());
+    uacalc.repaint();
     return true;
   }
   
@@ -242,16 +258,16 @@ public class AlgebraEditorActions {
       if (op.isTotal()) ops.add(op.makeOrdinaryOperation());
       else return null;
     }
-    SmallAlgebra alg = new BasicAlgebra(name_tf.getText(), algSize, ops);
+    SmallAlgebra alg = new BasicAlgebra(uacalc.getAlgNameTextField().getText(), algSize, ops);
     updateDescription();
     alg.setDescription(desc);
     return alg;
   }
   
-  public JToolBar getToolBar() {
-    if (toolBar == null) makeToolBar();
-    return toolBar; 
-  }
+  //public JToolBar getToolBar() {
+  //  if (toolBar == null) makeToolBar();
+  //  return toolBar; 
+  //}
   
   /*
   public SmallAlgebra getAlgebra() {
@@ -270,14 +286,14 @@ public class AlgebraEditorActions {
     for (Operation op : ops) {
       symbolList.add(op.symbol());
       OperationWithDefaultValue op2 = 
-        new OperationWithDefaultValue(op, uacalc.getRandom());
+        new OperationWithDefaultValue(op, getActions().getRandom());
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
-    name_tf.setText(alg.name());
-    card_tf.setText("" + alg.cardinality());
+    uacalc.getAlgNameTextField().setText(alg.name());
+    uacalc.getCardTextField().setText("" + alg.cardinality());
     System.out.println("desc: " + alg.description());
-    desc_tf.setText(alg.description());
+    uacalc.getDescTextField().setText(alg.description());
     if (alg instanceof BasicAlgebra) setOpsCB();
   }
   
@@ -315,22 +331,22 @@ public class AlgebraEditorActions {
   }
   
   private void setOpsCB() {
-    ops_cb.removeAllItems();
+    uacalc.getOpsComboBox().removeAllItems();
     for (final OperationSymbol opSym : symbolList) {
-      ops_cb.addItem(makeOpItem(opSym));
+      uacalc.getOpsComboBox().addItem(makeOpItem(opSym));
     }
   }
   
   private void setupNewAlgebra() {
-    if (uacalc.isDirty() && !uacalc.checkSave()) return;
+    if (getActions().isDirty() && !getActions().checkSave()) return;
     String name = getAlgNameDialog();
     if (name == null) return;
     int card = getCardDialog();
     if (card > 0) {
-      uacalc.setCurrentAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
+      getActions().setCurrentAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
       setOperationTable(new OperationInputTable());
-      uacalc.setDirty(true);
-      uacalc.setCurrentFile(null);
+      getActions().setDirty(true);
+      getActions().setCurrentFile(null);
     }
   }
   
@@ -339,7 +355,7 @@ public class AlgebraEditorActions {
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
       uacalc.beep();
-      JOptionPane.showMessageDialog(this,
+      JOptionPane.showMessageDialog(uacalc,
           "name required, and no spaces",
           "Name format error",
           JOptionPane.ERROR_MESSAGE);
@@ -360,7 +376,7 @@ public class AlgebraEditorActions {
       arityOk = false;
     }
     if (!arityOk || arity < 0) {
-      JOptionPane.showMessageDialog(this,
+      JOptionPane.showMessageDialog(uacalc,
           "arity must be a nonnegative integer",
           "Number format error",
           JOptionPane.ERROR_MESSAGE);
@@ -373,14 +389,13 @@ public class AlgebraEditorActions {
     String name = JOptionPane.showInputDialog(uacalc, "Short name (with no spaces) for the algebra?");
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
-      JOptionPane.showMessageDialog(this,
+      JOptionPane.showMessageDialog(uacalc,
           "name required, and no spaces",
           "Name format error",
           JOptionPane.ERROR_MESSAGE);
       uacalc.beep();
       name = null; 
     }
-    algName = name;
     return name;
   }
   
@@ -396,13 +411,13 @@ public class AlgebraEditorActions {
       cardOk = false;
     }
     if (!cardOk || card <= 0) {
-      JOptionPane.showMessageDialog(this,
+      JOptionPane.showMessageDialog(uacalc,
           "cardinality must be a positive integer",
           "Number format error",
           JOptionPane.ERROR_MESSAGE);
       return -1;
     }
-    this.card = card;
+    this.algSize = card;
     return card;
     // set the card field and clear all else
   }
