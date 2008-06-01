@@ -523,7 +523,8 @@ public class Actions {
    */
   public void updateCurrentAlgebra(SmallAlgebra alg) {
     currentAalgebra = alg;
-    getLatDrawPanel().setDiagram(null);
+    // TODO: fix this
+    //getLatDrawPanel().setDiagram(null);
   }
 
   public boolean isDirty() { return dirty; }
