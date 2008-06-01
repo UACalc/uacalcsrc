@@ -21,7 +21,8 @@ public class AlgebraEditorController {
   private int algSize;
   private java.util.List<OperationWithDefaultValue> opList;
   private java.util.List<OperationSymbol> symbolList;
-  private java.util.Map<OperationSymbol,OperationWithDefaultValue> opMap;
+  private java.util.Map<OperationSymbol,OperationWithDefaultValue> opMap 
+       = new HashMap<OperationSymbol,OperationWithDefaultValue>();
   private final Random random = RandomGenerator.getRandom();
   
   
@@ -111,7 +112,7 @@ public class AlgebraEditorController {
     uacalc.repaint();
   }
   
-  public void delOp() {
+  public void deleteOp() {
     int n = JOptionPane.showConfirmDialog(
         uacalc,
         "Delete this operation?",
