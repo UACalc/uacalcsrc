@@ -17,6 +17,9 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     private Actions actions = new Actions(this);
     
+    private AlgebraEditorController algEdController = 
+            new AlgebraEditorController(this);
+    
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
         initComponents();
@@ -251,6 +254,11 @@ public class UACalculatorUI extends javax.swing.JFrame {
     });
 
     delOpButton.setText("Del");
+    delOpButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        delOpButtonActionPerformed(evt);
+      }
+    });
 
     addOpButton.setText("Add");
     addOpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -756,7 +764,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton4ActionPerformed
 
 private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOpButtonActionPerformed
-// TODO add your handling code here:
+  getAlgebraEditorController().addOp();
 }//GEN-LAST:event_addOpButtonActionPerformed
 
 private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idempotentCBActionPerformed
@@ -764,20 +772,25 @@ private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_idempotentCBActionPerformed
 
 private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opsComboBoxActionPerformed
-  getActions().setOp();  
+  getAlgebraEditorController().setCurrentOp();  
 }//GEN-LAST:event_opsComboBoxActionPerformed
 
+private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delOpButtonActionPerformed
+  getAlgebraEditorController().deleteOp();
+}//GEN-LAST:event_delOpButtonActionPerformed
+
   
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UACalculatorUI().setVisible(true);
-            }
-        });
-    }
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          new UACalculatorUI().setVisible(true);
+        }
+    });
+  }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton addOpButton;
@@ -847,10 +860,13 @@ private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JMenuItem uaFileMI;
   // End of variables declaration//GEN-END:variables
 
-  public
 
-  Actions getActions() {
+  public Actions getActions() {
     return actions;
+  }
+  
+  public AlgebraEditorController getAlgebraEditorController() {
+    return algEdController;
   }
 
   public javax.swing.JTextField getAlgNameTextField() {

@@ -484,6 +484,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Del"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="delOpButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="addOpButton">
               <Properties>
