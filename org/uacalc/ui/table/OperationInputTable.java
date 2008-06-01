@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.Random;
 import org.uacalc.ui.UACalculator;
 import org.uacalc.ui.table.OperationTableModel;
 import org.uacalc.alg.op.Operation;
@@ -28,7 +27,6 @@ public class OperationInputTable extends JPanel {
   private int arity;
   private int setSize;
   private JComboBox defaultValueComboBox;
-  private Random random;
   
   public OperationInputTable() {
     super();
@@ -38,24 +36,22 @@ public class OperationInputTable extends JPanel {
   //  this(op.arity(), op.getSetSize(), new OperationTableModel(new OperationWithDefaultValue(op)));
   //}
   
-  public OperationInputTable(OperationWithDefaultValue op, UACalculator uacalc) {
-    this(op.arity(), op.getSetSize(), new OperationTableModel(op,uacalc), uacalc);
+  public OperationInputTable(OperationWithDefaultValue op) {
+    this(op.arity(), op.getSetSize(), new OperationTableModel(op));
   }
   
-  public OperationInputTable(int arity, int setSize, UACalculator uacalc) {
-    this(arity, setSize, null, uacalc);
+  public OperationInputTable(int arity, int setSize) {
+    this(arity, setSize, null);
   }
   
   public OperationInputTable(int arity, int setSize, 
-                             OperationTableModel model, final UACalculator uacalc) {
+                             OperationTableModel model) {
     super();
-    this.uacalc = uacalc;
-    this.random = uacalc.getRandom();
     this.arity = arity;
     this.setSize = setSize;
     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setLayout(new BorderLayout());
-    if (model == null) model = new OperationTableModel(arity, setSize, false, -1, uacalc);
+    if (model == null) model = new OperationTableModel(arity, setSize, false, -1);
     tableModel = model;
     table = new JTable(tableModel);
     table.setPreferredScrollableViewportSize(
@@ -249,7 +245,7 @@ public class OperationInputTable extends JPanel {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     //Create and set up the content pane.
-    OperationInputTable newContentPane = new OperationInputTable(3, 4, new UACalculator());
+    OperationInputTable newContentPane = new OperationInputTable(3, 4);
     newContentPane.setOpaque(true); //content panes must be opaque
     frame.setContentPane(newContentPane);
 

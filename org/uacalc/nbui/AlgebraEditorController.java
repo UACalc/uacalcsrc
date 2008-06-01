@@ -11,6 +11,7 @@ import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.ui.table.*;
+import org.uacalc.ui.util.*;
 
 public class AlgebraEditorController {
 
@@ -21,7 +22,7 @@ public class AlgebraEditorController {
   private java.util.List<OperationWithDefaultValue> opList;
   private java.util.List<OperationSymbol> symbolList;
   private java.util.Map<OperationSymbol,OperationWithDefaultValue> opMap;
-  private final Random random = new Random();
+  private final Random random = RandomGenerator.getRandom();
   
   
   //private JPanel main;
@@ -92,6 +93,52 @@ public class AlgebraEditorController {
     */
   }
   
+  public void setCurrentOp() {
+    OpSymItem item = (OpSymItem)uacalc.getOpsComboBox().getSelectedItem();
+    if (item == null) return;
+    OperationSymbol opSym = item.getOperationSymbol();
+    OperationWithDefaultValue op = opMap.get(opSym);
+    // TODO: change this
+    if (op != null) {
+      javax.swing.table.TableModel model = new OperationTableModel(op);
+      uacalc.getOpTable().setModel(model);
+      
+      //OperationInputTable opTable = 
+      //          new OperationInputTable(op);
+      //setOperationTable(opTable);
+    }
+    uacalc.validate();
+    uacalc.repaint();
+  }
+  
+  public void deleteOp() {
+    int n = JOptionPane.showConfirmDialog(
+        uacalc,
+        "Delete this operation?",
+        "Delete this operatin?",
+        JOptionPane.YES_NO_OPTION);
+    if (n == JOptionPane.YES_OPTION) {
+      removeCurrentOperation();
+    }
+  }
+  
+  public void addOp() {
+    // TODO: fix
+    //if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
+    //  uacalc.beep();
+    //  return;
+    //}
+    if (opList == null) {  // algebra 
+      uacalc.beep();
+      return;
+    }
+    String name = getOpNameDialog();
+    if (name == null) return;
+    int arity = getArityDialog();
+    if (arity == -1) return;
+    addOperation(name, arity);
+  }
+  
   private Actions getActions() { return uacalc.getActions(); }
   
   public Random getRandom() {
@@ -125,7 +172,7 @@ public class AlgebraEditorController {
     OperationSymbol sym = new OperationSymbol(name, arity);
     if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
-          new OperationWithDefaultValue(sym, algSize, getRandom());
+          new OperationWithDefaultValue(sym, algSize);
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
@@ -138,8 +185,7 @@ public class AlgebraEditorController {
     OperationSymbol sym = oper.symbol();
     if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
-      new OperationWithDefaultValue(sym, algSize, oper.getTable(), 
-                                             -1, getRandom());
+      new OperationWithDefaultValue(sym, algSize, oper.getTable(), -1);
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
@@ -286,7 +332,7 @@ public class AlgebraEditorController {
     for (Operation op : ops) {
       symbolList.add(op.symbol());
       OperationWithDefaultValue op2 = 
-        new OperationWithDefaultValue(op, getActions().getRandom());
+        new OperationWithDefaultValue(op);
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }

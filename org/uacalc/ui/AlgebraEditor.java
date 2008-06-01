@@ -83,7 +83,7 @@ public class AlgebraEditor extends JPanel {
         OperationWithDefaultValue op = opMap.get(opSym);
         if (op != null) {
           OperationInputTable opTable = 
-                    new OperationInputTable(op, uacalc);
+                    new OperationInputTable(op);
           setOperationTable(opTable);
         }
         validate();
@@ -150,7 +150,7 @@ public class AlgebraEditor extends JPanel {
     OperationSymbol sym = new OperationSymbol(name, arity);
     if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
-          new OperationWithDefaultValue(sym, algSize, uacalc.getRandom());
+          new OperationWithDefaultValue(sym, algSize);
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
@@ -163,8 +163,7 @@ public class AlgebraEditor extends JPanel {
     OperationSymbol sym = oper.symbol();
     if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
-      new OperationWithDefaultValue(sym, algSize, oper.getTable(), 
-                                             -1, uacalc.getRandom());
+      new OperationWithDefaultValue(sym, algSize, oper.getTable(), -1);
     opList.add(op);
     symbolList.add(sym);
     opMap.put(sym, op);
@@ -296,7 +295,7 @@ public class AlgebraEditor extends JPanel {
     for (Operation op : ops) {
       symbolList.add(op.symbol());
       OperationWithDefaultValue op2 = 
-        new OperationWithDefaultValue(op, uacalc.getRandom());
+        new OperationWithDefaultValue(op);
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
