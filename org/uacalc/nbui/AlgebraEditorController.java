@@ -1,6 +1,7 @@
 package org.uacalc.nbui;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
@@ -103,6 +104,19 @@ public class AlgebraEditorController {
     if (op != null) {
       javax.swing.table.TableModel model = new OperationTableModel(op);
       uacalc.getOpTable().setModel(model);
+      TableColumn column = null;
+      JTable table = uacalc.getOpTable();
+      for (int i = 0; i < model.getColumnCount(); i++) {
+        column = table.getColumnModel().getColumn(i);
+        if (i == 0) {
+          column.setPreferredWidth(100);
+          column.setMinWidth(80);
+        }
+        else {
+          column.setPreferredWidth(30);
+          column.setMinWidth(30);
+        }
+      }
       
       //OperationInputTable opTable = 
       //          new OperationInputTable(op);
