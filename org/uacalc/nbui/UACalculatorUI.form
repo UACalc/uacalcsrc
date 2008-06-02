@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
       <Properties>
@@ -367,7 +367,7 @@
                       <Component id="defaultEltComboBox" min="-2" pref="132" max="-2" attributes="0"/>
                       <EmptySpace pref="117" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane5" alignment="1" pref="586" max="32767" attributes="0"/>
+                  <Component id="opTableScrollPane" alignment="1" pref="586" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -391,7 +391,7 @@
                           <Component id="opsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" min="-2" pref="127" max="-2" attributes="0"/>
+                      <Component id="opTableScrollPane" min="-2" pref="127" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="idempotentCB" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -492,10 +492,10 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addOpButtonActionPerformed"/>
               </Events>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane5">
-              <Properties>
-                <Property name="horizontalScrollBarPolicy" type="int" value="32"/>
-              </Properties>
+            <Container class="javax.swing.JScrollPane" name="opTableScrollPane">
+              <BindingProperties>
+                <BindingProperty name="horizontalScrollBarPolicy" source="algebraPanel" target="opTableScrollPane" targetPath="horizontalScrollBarPolicy" updateStrategy="0" immediately="false"/>
+              </BindingProperties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -596,7 +596,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="223" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="225" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -625,12 +625,12 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="435" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="437" max="32767" attributes="0"/>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                               <Component id="jScrollPane6" min="-2" pref="287" max="-2" attributes="0"/>
-                              <EmptySpace pref="144" max="32767" attributes="0"/>
+                              <EmptySpace pref="146" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>

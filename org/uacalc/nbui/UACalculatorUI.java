@@ -46,6 +46,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
+    bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
     jTabbedPane1 = new javax.swing.JTabbedPane();
     jPanel1 = new javax.swing.JPanel();
@@ -71,7 +72,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     opsComboBox = new javax.swing.JComboBox();
     delOpButton = new javax.swing.JButton();
     addOpButton = new javax.swing.JButton();
-    jScrollPane5 = new javax.swing.JScrollPane();
+    opTableScrollPane = new javax.swing.JScrollPane();
     opTable = new javax.swing.JTable();
     idempotentCB = new javax.swing.JCheckBox();
     jLabel5 = new javax.swing.JLabel();
@@ -265,7 +266,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
       }
     });
 
-    jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+    org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, algebraPanel, org.jdesktop.beansbinding.ObjectProperty.create(), opTableScrollPane, org.jdesktop.beansbinding.BeanProperty.create("horizontalScrollBarPolicy"));
+    bindingGroup.addBinding(binding);
 
     opTable.setModel(new javax.swing.table.DefaultTableModel(
       new Object [][] {
@@ -279,7 +281,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
       }
     ));
     opTable.setCellSelectionEnabled(true);
-    jScrollPane5.setViewportView(opTable);
+    opTableScrollPane.setViewportView(opTable);
 
     idempotentCB.setText("Idempotent");
     idempotentCB.addActionListener(new java.awt.event.ActionListener() {
@@ -329,7 +331,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(defaultEltComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap(117, Short.MAX_VALUE))
-      .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+      .addComponent(opTableScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
     );
     editorPanelLayout.setVerticalGroup(
       editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,7 +352,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
           .addComponent(addOpButton)
           .addComponent(opsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addGap(12, 12, 12)
-        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(opTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addGap(18, 18, 18)
         .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(idempotentCB)
@@ -371,7 +373,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     currentAlgPanelLayout.setVerticalGroup(
       currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 223, Short.MAX_VALUE)
+      .addGap(0, 225, Short.MAX_VALUE)
     );
 
     algebraPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
@@ -402,12 +404,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     algebraPanelLayout.setVerticalGroup(
       algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 435, Short.MAX_VALUE)
+      .addGap(0, 437, Short.MAX_VALUE)
       .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
           .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addContainerGap(144, Short.MAX_VALUE)))
+          .addContainerGap(146, Short.MAX_VALUE)))
     );
 
     javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -720,6 +722,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addContainerGap(162, Short.MAX_VALUE))
     );
 
+    bindingGroup.bind();
+
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
@@ -833,7 +837,6 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JScrollPane jScrollPane2;
   private javax.swing.JScrollPane jScrollPane3;
   private javax.swing.JScrollPane jScrollPane4;
-  private javax.swing.JScrollPane jScrollPane5;
   private javax.swing.JScrollPane jScrollPane6;
   private javax.swing.JTabbedPane jTabbedPane1;
   private javax.swing.JTabbedPane jTabbedPane2;
@@ -844,6 +847,7 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JTextArea logTextArea;
   private javax.swing.JMenuItem newMI;
   private javax.swing.JTable opTable;
+  private javax.swing.JScrollPane opTableScrollPane;
   private javax.swing.JMenuItem openMI;
   private javax.swing.JComboBox opsComboBox;
   private javax.swing.JMenuItem quitMI;
@@ -855,6 +859,7 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JMenuItem saveMI;
   private javax.swing.JPanel subPanel;
   private javax.swing.JMenuItem uaFileMI;
+  private org.jdesktop.beansbinding.BindingGroup bindingGroup;
   // End of variables declaration//GEN-END:variables
 
 
@@ -956,6 +961,14 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
   public void beep() {
     java.awt.Toolkit.getDefaultToolkit().beep();
+  }
+
+  public javax.swing.JScrollPane getOpTableScrollPane() {
+    return opTableScrollPane;
+  }
+
+  public void setOpTableScrollPane(javax.swing.JScrollPane opTableScrollPane) {
+    this.opTableScrollPane = opTableScrollPane;
   }
   
 }
