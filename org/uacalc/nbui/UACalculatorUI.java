@@ -60,8 +60,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
     jTabbedPane2 = new javax.swing.JTabbedPane();
     editorPanel = new javax.swing.JPanel();
     jToolBar1 = new javax.swing.JToolBar();
-    jButton3 = new javax.swing.JButton();
-    jButton4 = new javax.swing.JButton();
+    newAlgButton = new javax.swing.JButton();
+    openButton = new javax.swing.JButton();
     jLabel1 = new javax.swing.JLabel();
     algNameTextField = new javax.swing.JTextField();
     jLabel2 = new javax.swing.JLabel();
@@ -215,27 +215,27 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     jToolBar1.setRollover(true);
 
-    jButton3.setText("New");
-    jButton3.setFocusable(false);
-    jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    jButton3.addActionListener(new java.awt.event.ActionListener() {
+    newAlgButton.setText("New");
+    newAlgButton.setFocusable(false);
+    newAlgButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    newAlgButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    newAlgButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButton3ActionPerformed(evt);
+        newAlgButtonActionPerformed(evt);
       }
     });
-    jToolBar1.add(jButton3);
+    jToolBar1.add(newAlgButton);
 
-    jButton4.setText("Open");
-    jButton4.setFocusable(false);
-    jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    jButton4.addActionListener(new java.awt.event.ActionListener() {
+    openButton.setText("Open");
+    openButton.setFocusable(false);
+    openButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    openButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    openButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButton4ActionPerformed(evt);
+        openButtonActionPerformed(evt);
       }
     });
-    jToolBar1.add(jButton4);
+    jToolBar1.add(openButton);
 
     jLabel1.setText("Name:");
 
@@ -409,7 +409,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
           .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addContainerGap(146, Short.MAX_VALUE)))
+          .addContainerGap(148, Short.MAX_VALUE)))
     );
 
     javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -757,13 +757,13 @@ private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 // TODO add your handling code here:
 }//GEN-LAST:event_algFileMIActionPerformed
 
-private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_jButton3ActionPerformed
+private void newAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAlgButtonActionPerformed
+  getAlgebraEditorController().makeNewAlgebra();
+}//GEN-LAST:event_newAlgButtonActionPerformed
 
-private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_jButton4ActionPerformed
+private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+  getActions().open();
+}//GEN-LAST:event_openButtonActionPerformed
 
 private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOpButtonActionPerformed
   getAlgebraEditorController().addOp();
@@ -817,8 +817,6 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JCheckBox idempotentCB;
   private javax.swing.JButton jButton1;
   private javax.swing.JButton jButton2;
-  private javax.swing.JButton jButton3;
-  private javax.swing.JButton jButton4;
   private javax.swing.JButton jButton7;
   private javax.swing.JButton jButton8;
   private javax.swing.JLabel jLabel1;
@@ -845,9 +843,11 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JToolBar jToolBar1;
   private javax.swing.JToolBar jToolBar2;
   private javax.swing.JTextArea logTextArea;
+  private javax.swing.JButton newAlgButton;
   private javax.swing.JMenuItem newMI;
   private javax.swing.JTable opTable;
   private javax.swing.JScrollPane opTableScrollPane;
+  private javax.swing.JButton openButton;
   private javax.swing.JMenuItem openMI;
   private javax.swing.JComboBox opsComboBox;
   private javax.swing.JMenuItem quitMI;
