@@ -737,7 +737,7 @@ private void quitMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_quitMIActionPerformed
 
 private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMIActionPerformed
-// TODO add your handling code here:
+  getAlgebraEditorController().makeNewAlgebra();
 }//GEN-LAST:event_newMIActionPerformed
 
 private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMIActionPerformed
