@@ -46,7 +46,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
     jTabbedPane1 = new javax.swing.JTabbedPane();
     jPanel1 = new javax.swing.JPanel();
@@ -266,9 +265,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
       }
     });
 
-    org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, algebraPanel, org.jdesktop.beansbinding.ObjectProperty.create(), opTableScrollPane, org.jdesktop.beansbinding.BeanProperty.create("horizontalScrollBarPolicy"));
-    bindingGroup.addBinding(binding);
-
     opTable.setModel(new javax.swing.table.DefaultTableModel(
       new Object [][] {
         {null, null, null, null},
@@ -373,7 +369,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     currentAlgPanelLayout.setVerticalGroup(
       currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 225, Short.MAX_VALUE)
+      .addGap(0, 227, Short.MAX_VALUE)
     );
 
     algebraPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
@@ -404,7 +400,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     algebraPanelLayout.setVerticalGroup(
       algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 437, Short.MAX_VALUE)
+      .addGap(0, 439, Short.MAX_VALUE)
       .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
@@ -722,8 +718,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addContainerGap(162, Short.MAX_VALUE))
     );
 
-    bindingGroup.bind();
-
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
@@ -859,7 +853,6 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   private javax.swing.JMenuItem saveMI;
   private javax.swing.JPanel subPanel;
   private javax.swing.JMenuItem uaFileMI;
-  private org.jdesktop.beansbinding.BindingGroup bindingGroup;
   // End of variables declaration//GEN-END:variables
 
 
