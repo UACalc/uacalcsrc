@@ -289,6 +289,11 @@ public class UACalculatorUI extends javax.swing.JFrame {
     jLabel5.setText("Default element:");
 
     defaultEltComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Op Yet" }));
+    defaultEltComboBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        defaultEltComboBoxActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout editorPanelLayout = new javax.swing.GroupLayout(editorPanel);
     editorPanel.setLayout(editorPanelLayout);
@@ -774,6 +779,10 @@ private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delOpButtonActionPerformed
   getAlgebraEditorController().deleteOp();
 }//GEN-LAST:event_delOpButtonActionPerformed
+
+private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultEltComboBoxActionPerformed
+  
+}//GEN-LAST:event_defaultEltComboBoxActionPerformed
 
   
   /**
