@@ -244,7 +244,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     jLabel4.setText("Operations:");
 
-    opsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    opsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Op Yet" }));
     opsComboBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         opsComboBoxActionPerformed(evt);
@@ -273,7 +273,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         {null, null, null, null}
       },
       new String [] {
-        "Title 1", "Title 2", "Title 3", "Title 4"
+        "Op", "Table", "Goes", "Here"
       }
     ));
     opTable.setCellSelectionEnabled(true);
@@ -288,7 +288,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     jLabel5.setText("Default element:");
 
-    defaultEltComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+    defaultEltComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Op Yet" }));
 
     javax.swing.GroupLayout editorPanelLayout = new javax.swing.GroupLayout(editorPanel);
     editorPanel.setLayout(editorPanelLayout);
@@ -369,7 +369,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     currentAlgPanelLayout.setVerticalGroup(
       currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 227, Short.MAX_VALUE)
+      .addGap(0, 229, Short.MAX_VALUE)
     );
 
     algebraPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
@@ -400,12 +400,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     algebraPanelLayout.setVerticalGroup(
       algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 439, Short.MAX_VALUE)
+      .addGap(0, 441, Short.MAX_VALUE)
       .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
           .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addContainerGap(148, Short.MAX_VALUE)))
+          .addContainerGap(150, Short.MAX_VALUE)))
     );
 
     javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -471,7 +471,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(resultDescLabel)
           .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(175, Short.MAX_VALUE))
+        .addContainerGap(173, Short.MAX_VALUE))
       .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(resultPaneLayout.createSequentialGroup()
           .addGap(33, 33, 33)
@@ -543,7 +543,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addComponent(cancelCompButton)
             .addGap(167, 167, 167)
             .addComponent(clearLogButton)))
-        .addContainerGap(463, Short.MAX_VALUE))
+        .addContainerGap(451, Short.MAX_VALUE))
     );
 
     javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
