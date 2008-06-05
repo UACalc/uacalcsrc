@@ -764,7 +764,7 @@ private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_addOpButtonActionPerformed
 
 private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idempotentCBActionPerformed
-// TODO add your handling code here:
+  getAlgebraEditorController().setIdempotent(idempotentCB.isSelected());
 }//GEN-LAST:event_idempotentCBActionPerformed
 
 private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opsComboBoxActionPerformed

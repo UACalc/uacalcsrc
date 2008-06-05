@@ -21,13 +21,13 @@ public class OperationTableModel extends AbstractTableModel {
   
   //int defaultValue = -1;
   int[] valueTable;
-  int[] diagIndices;
+  //int[] diagIndices;
   int[][] leftArgsTable;// all but the last arg
   String[] rowNames;
   int arity;
   int setSize;
-  int diagDiv;
-  boolean idempotent;  // tells if the user has set this
+  //int diagDiv;
+  //boolean idempotent;  // tells if the user has set this
   
 
   static final String x = "x";
@@ -59,14 +59,14 @@ public class OperationTableModel extends AbstractTableModel {
     //op = makeUndefinedOp(sym, setSize, idempotent);
     op = new OperationWithDefaultValue(sym, setSize, defaultValue);
     setRowNames();
-    setDiagDiv();
+    //setDiagDiv();
   }
   
   private void setup() {
     this.opSym = op.symbol();
     this.setSize = op.getSetSize();
     this.arity = op.arity();
-    setDiagDiv();
+    //setDiagDiv();
     valueTable = op.getTable();
     final int n = valueTable.length;
     final int k = arity == 0 ? 1 : n / setSize;
@@ -90,6 +90,7 @@ public class OperationTableModel extends AbstractTableModel {
     setRowNames();
   }
   
+  /*
   private void setDiagDiv() {
     if (arity < 3) diagDiv = 1;
     else {
@@ -102,6 +103,7 @@ public class OperationTableModel extends AbstractTableModel {
       diagDiv = k;
     }
   }
+  */
   
   /**
    * Make an int operation which returns the defaultValue. 
@@ -146,14 +148,14 @@ public class OperationTableModel extends AbstractTableModel {
   */
   
   public boolean isIdempotentSet() {
-    return idempotent;
+    return op.isIdempotentSet();
   }
   
   public void setIdempotent(boolean v) {
-    idempotent = v;
-    if (v) makeIdempotent();
+    op.setIdempotent(v);
   }
   
+  /*
   public void makeIdempotent() {
     if (diagIndices == null) {
       diagIndices = new int[setSize];
@@ -169,12 +171,15 @@ public class OperationTableModel extends AbstractTableModel {
       valueTable[diagIndices[i]] = i;
     }
   }
+  */
   
+  /*
   public boolean isDiagonal(int row, int col) {
     System.out.println("row = " + row + ", col = " + col + ", diagDiv = " + diagDiv); 
     if (row % diagDiv == 0 && col == row / diagDiv) return true;
     return false;
   }
+  */
   
   public int getDefaultValue() {
     return getOperation().getDefaultValue();
@@ -253,7 +258,7 @@ public class OperationTableModel extends AbstractTableModel {
   
   public boolean isCellEditable(int row, int col) {
     if (col == 0) return false;
-    if (idempotent && isDiagonal(row, col - 1)) return false;
+    if (op.isIdempotentSet() && op.isDiagonal(row, col - 1)) return false;
     return true;
   }
   
@@ -268,6 +273,9 @@ public class OperationTableModel extends AbstractTableModel {
     //  return defaultValue;
     //}
     if (val >= setSize) return null;
+    //System.out.println("value at 0 from op = " + op.getTable()[0]);
+    //System.out.println("value at 0 from valueTable = " + valueTable[0]);
+    //System.out.println("value at " + rowIndex + "," + columnIndex + " = " + val);
     return val;
   }
 

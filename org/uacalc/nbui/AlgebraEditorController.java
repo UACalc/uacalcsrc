@@ -116,6 +116,8 @@ public class AlgebraEditorController {
           column.setPreferredWidth(30);
           column.setMinWidth(30);
         }
+        uacalc.getIdempotentCB().setSelected(op.isIdempotentSet());
+        setDefaultEltComboBoxModel(op.getSetSize());
       }
       
       //OperationInputTable opTable = 
@@ -124,6 +126,21 @@ public class AlgebraEditorController {
     }
     uacalc.validate();
     uacalc.repaint();
+  }
+  
+  private void setDefaultEltComboBoxModel(final int setSize) {
+    uacalc.getDefaultEltComboBox().setModel(makeComboBoxModel(setSize));
+  }
+  
+  private ComboBoxModel makeComboBoxModel(final int setSize) {
+    String[] data = new String[setSize + 3];
+    data[0] = "none";
+    data[setSize + 1] = "random";
+    data[setSize + 2] = "new random";
+    for (int i = 0; i < setSize; i++) {
+      data[i+1] = "" + i;
+    }
+    return new DefaultComboBoxModel(data);
   }
   
   public void deleteOp() {
@@ -254,6 +271,14 @@ public class AlgebraEditorController {
     //  return;
     //}
     setupNewAlgebra();
+    uacalc.repaint();
+  }
+  
+  // this is call when the check box is clicked.
+  public void setIdempotent(boolean v) {
+    OperationWithDefaultValue op = getCurrentOperation();
+    if (op == null) return;
+    op.setIdempotent(v);
     uacalc.repaint();
   }
   

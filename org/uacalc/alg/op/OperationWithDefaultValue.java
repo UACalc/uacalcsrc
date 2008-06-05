@@ -16,14 +16,19 @@ public class OperationWithDefaultValue extends AbstractOperation {
   
   private int defaultValue;
   private Operation op;
+  //private int setSize;
+  private boolean idempotentSet;
   private int[] randomValueTable;
   private Random random = RandomGenerator.getRandom();
+  private int[] diagIndices;
+  private int diagDiv;
   
   public OperationWithDefaultValue(Operation op) {
     super(op.symbol(), op.getSetSize());
     this.defaultValue = -1;
     this.op = op;
     this.valueTable = op.getTable();
+    setDiagDiv();
   }
   
   public OperationWithDefaultValue(String name, int arity, int algSize, 
@@ -44,6 +49,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
     this.valueTable = getTable();
     this.defaultValue = -1;
     op = Operations.makeIntOperation(op.symbol(), algSize, valueTable);
+    setDiagDiv();
   }
   
   public OperationWithDefaultValue(OperationSymbol sym, int algSize, 
@@ -53,6 +59,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
     this.valueTable = valueTable;
     this.defaultValue = defaultValue;
     op = Operations.makeIntOperation(sym, algSize, valueTable);
+    setDiagDiv();
   }
   
   public OperationWithDefaultValue(String name, int arity, int algSize, 
@@ -103,6 +110,49 @@ public class OperationWithDefaultValue extends AbstractOperation {
   public int getDefaultValue() { return defaultValue; }
   
   public void setDefaultValue(int v) { defaultValue = v; }
+  
+  public boolean isIdempotentSet() { return idempotentSet; }
+  
+  public void setIdempotent(boolean v) {
+    idempotentSet = v;
+    if (v) makeIdempotent();
+  }
+  
+  public void makeIdempotent() {
+    if (diagIndices == null) {
+      final int arity = op.arity();
+      diagIndices = new int[op.getSetSize()];
+      for (int i = 0; i < op.getSetSize(); i++) {
+        final int[] diag = new int[arity];
+        for (int j = 0; j < arity; j++) {
+          diag[j] = i;
+        }
+        diagIndices[i] = Horner.horner(diag, op.getSetSize());
+      }
+    }
+    for (int i = 0; i < op.getSetSize(); i++) {
+      valueTable[diagIndices[i]] = i;
+    }
+  }
+  
+  public boolean isDiagonal(int row, int col) {
+    if (row % diagDiv == 0 && col == row / diagDiv) return true;
+    return false;
+  }
+  
+  private void setDiagDiv() {
+    final int arity = op.arity();
+    if (arity < 3) diagDiv = 1;
+    else {
+      int k = 1;
+      int pow = op.getSetSize();
+      for (int i = 0; i < arity - 2; i++) {
+        k = k + pow;
+        pow = pow * op.getSetSize();
+      }
+      diagDiv = k;
+    }
+  }
   
   @Override
   public Object valueAt(List args) {
