@@ -221,6 +221,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveMIActionPerformed"/>
+              </Events>
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="saveAsMenu">
               <Properties>
@@ -506,6 +509,7 @@
                         <Column editable="true" title="Here" type="java.lang.Object"/>
                       </Table>
                     </Property>
+                    <Property name="autoResizeMode" type="int" value="0"/>
                     <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                   </Properties>
                 </Component>
@@ -590,7 +594,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="229" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="231" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -619,12 +623,12 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="441" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="443" max="32767" attributes="0"/>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                               <Component id="jScrollPane6" min="-2" pref="287" max="-2" attributes="0"/>
-                              <EmptySpace pref="150" max="32767" attributes="0"/>
+                              <EmptySpace pref="152" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -719,7 +723,7 @@
                               <Component id="resultDescLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="resultTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="173" max="32767" attributes="0"/>
+                          <EmptySpace pref="175" max="32767" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">

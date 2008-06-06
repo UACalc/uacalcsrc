@@ -276,6 +276,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         "Op", "Table", "Goes", "Here"
       }
     ));
+    opTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     opTable.setCellSelectionEnabled(true);
     opTableScrollPane.setViewportView(opTable);
 
@@ -374,7 +375,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     currentAlgPanelLayout.setVerticalGroup(
       currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 229, Short.MAX_VALUE)
+      .addGap(0, 231, Short.MAX_VALUE)
     );
 
     algebraPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
@@ -405,12 +406,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
     );
     algebraPanelLayout.setVerticalGroup(
       algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 441, Short.MAX_VALUE)
+      .addGap(0, 443, Short.MAX_VALUE)
       .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(algebraPanelLayout.createSequentialGroup()
           .addGap(2, 2, 2)
           .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addContainerGap(150, Short.MAX_VALUE)))
+          .addContainerGap(152, Short.MAX_VALUE)))
     );
 
     javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -476,7 +477,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(resultDescLabel)
           .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(173, Short.MAX_VALUE))
+        .addContainerGap(175, Short.MAX_VALUE))
       .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(resultPaneLayout.createSequentialGroup()
           .addGap(33, 33, 33)
@@ -661,9 +662,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
     fileMenu.add(openMI);
 
     saveMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-    saveMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12));
+    saveMI.setFont(new java.awt.Font("DejaVu LGC Sans", 0, 12)); // NOI18N
     saveMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
     saveMI.setText("Save");
+    saveMI.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        saveMIActionPerformed(evt);
+      }
+    });
     fileMenu.add(saveMI);
 
     saveAsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/SaveAs16.gif"))); // NOI18N
@@ -783,6 +789,10 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultEltComboBoxActionPerformed
   getAlgebraEditorController().defaultEltChangeHandler();
 }//GEN-LAST:event_defaultEltComboBoxActionPerformed
+
+private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_saveMIActionPerformed
 
   
   /**
