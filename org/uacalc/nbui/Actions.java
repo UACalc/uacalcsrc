@@ -386,6 +386,7 @@ public class Actions {
   }
 
   public boolean saveAs(String ext) throws IOException {
+    System.out.println("ext = " + ext);
     if (getCurrentAlgebra() == null) return true;
     //if (!getAlgebraEditor().sync()) return false;
     boolean newFormat = true;

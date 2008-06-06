@@ -781,7 +781,7 @@ private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_delOpButtonActionPerformed
 
 private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultEltComboBoxActionPerformed
-  
+  getAlgebraEditorController().defaultEltChangeHandler();
 }//GEN-LAST:event_defaultEltComboBoxActionPerformed
 
   

@@ -103,9 +103,10 @@ public class AlgebraEditorController {
     // TODO: change this
     if (op != null) {
       javax.swing.table.TableModel model = new OperationTableModel(op);
-      uacalc.getOpTable().setModel(model);
-      TableColumn column = null;
       JTable table = uacalc.getOpTable();
+      table.setModel(model);
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      TableColumn column = null;
       for (int i = 0; i < model.getColumnCount(); i++) {
         column = table.getColumnModel().getColumn(i);
         if (i == 0) {
@@ -129,10 +130,6 @@ public class AlgebraEditorController {
   }
   
   private void setDefaultEltComboBoxModel(final int setSize) {
-    uacalc.getDefaultEltComboBox().setModel(makeComboBoxModel(setSize));
-  }
-  
-  private ComboBoxModel makeComboBoxModel(final int setSize) {
     String[] data = new String[setSize + 3];
     data[0] = "none";
     data[setSize + 1] = "random";
@@ -140,7 +137,37 @@ public class AlgebraEditorController {
     for (int i = 0; i < setSize; i++) {
       data[i+1] = "" + i;
     }
-    return new DefaultComboBoxModel(data);
+    uacalc.getDefaultEltComboBox().setModel(new DefaultComboBoxModel(data));
+  }
+  
+  public void defaultEltChangeHandler() {
+    OperationWithDefaultValue op = getCurrentOperation();
+    if (op == null) return;
+    final int setSize = op.getSetSize();
+    JComboBox box = uacalc.getDefaultEltComboBox();
+    int index = box.getSelectedIndex();
+    if (index == setSize + 2) {
+      op.updateRandomValueTable();
+      op.setDefaultValue(-2);
+      box.setSelectedIndex(setSize + 1);
+      uacalc.getActions().setDirty(true);
+      uacalc.repaint();
+    }
+    if (index == setSize + 1) {
+      op.setDefaultValue(-2);
+      uacalc.getActions().setDirty(true);
+      uacalc.repaint();
+    }
+    if (index > 0 && index <= setSize) { 
+      op.setDefaultValue(index - 1);
+      uacalc.getActions().setDirty(true);
+      uacalc.repaint();
+    }
+    if (index == 0) {
+      op.setDefaultValue(-1);
+      uacalc.getActions().setDirty(true);
+      uacalc.repaint();
+    }
   }
   
   public void deleteOp() {
@@ -227,7 +254,9 @@ public class AlgebraEditorController {
   }
   
   public OperationSymbol getCurrentSymbol() {
-    OpSymItem item = (OpSymItem)uacalc.getOpsComboBox().getSelectedItem();
+    Object foo = uacalc.getOpsComboBox().getSelectedItem();
+    if (!(foo instanceof OpSymItem)) return null;
+    OpSymItem item = (OpSymItem)foo;
     if (item == null) return null;
     return item.getOperationSymbol();
   }
