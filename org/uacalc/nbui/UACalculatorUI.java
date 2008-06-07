@@ -758,9 +758,9 @@ private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 // TODO add your handling code here:
 }//GEN-LAST:event_uaFileMIActionPerformed
 
-private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algFileMIActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_algFileMIActionPerformed
+private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algFileMIActionPerfor
+  getActions().saveAs(org.uacalc.io.ExtFileFilter.ALG_EXT);
+}//GEN-LAST:event_algFileMIActionPerform
 
 private void newAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAlgButtonActionPerformed
   getAlgebraEditorController().makeNewAlgebra();

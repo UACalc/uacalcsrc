@@ -385,7 +385,7 @@ public class Actions {
     return true;
   }
 
-  public boolean saveAs(String ext) throws IOException {
+  public boolean saveAs(String ext) {
     System.out.println("ext = " + ext);
     if (getCurrentAlgebra() == null) return true;
     //if (!getAlgebraEditor().sync()) return false;
@@ -425,6 +425,7 @@ public class Actions {
           saveAs(ext);
         }
       }
+      try {
       String extension = ExtFileFilter.getExtension(f);
       if (extension == null || !extension.equals(ext)) {
         f = new File(f.getCanonicalPath() + "." + ext);
@@ -434,6 +435,11 @@ public class Actions {
       setCurrentFile(f);
       setDirty(false);
       return true;
+      }
+      catch(IOException e) {
+        beep();
+        return false;
+      }
     }
     return false;
   }
