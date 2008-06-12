@@ -192,6 +192,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (report != null) {
       report.addEndingLine(line + " rsf ");
     }
+    else System.out.println(line);
   }
   
   private void setupGensAndProductAlg(final SmallAlgebra alg, 
@@ -371,9 +372,17 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       SmallAlgebra d16 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/D16.ua");
       //Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
       //System.out.println("eq is\n" + eq);
-      int n = 4; 
+      int n = 6; 
       long t = System.currentTimeMillis();
-      FreeAlgebra f = new FreeAlgebra(m3, n);
+      FreeAlgebra f = null;
+      try {
+        f = new FreeAlgebra(lyndon, n);
+      }
+      catch (OutOfMemoryError e) {
+        e.printStackTrace();
+        t = System.currentTimeMillis() - t;
+        System.out.println("time " + t);
+      }
       t = System.currentTimeMillis() - t;
       System.out.println("|F(" + n + ")| = " + f.cardinality() + ", time " + t);
       return;

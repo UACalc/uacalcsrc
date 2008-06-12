@@ -651,6 +651,11 @@ System.out.println("so far: " + currentMark);
             }
             if (Thread.currentThread().isInterrupted()) return null;
             if (report != null) report.setSize(lst.size());
+            else {  // TODO: delete this
+              final int s = lst.size();
+              if (s % 100 == 0)
+                  System.out.println("" + s + ", pass " + pass);
+            }
           }
           if (!inc.increment()) break;
         }

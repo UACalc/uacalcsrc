@@ -241,6 +241,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     List sub;
 // for testing
     sub = f2cubed.sgClose(gens, termMap);
+//System.out.println("sub = " + sub);
     //if (alvinVariant) sub = f2cubed.sgClose(gens, termMap, pixley);
     //else sub = f2cubed.sgClose(gens, termMap, zero);
     logger.info("sub alg of f2 cubed size is " + sub.size());
