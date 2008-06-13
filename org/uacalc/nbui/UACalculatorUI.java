@@ -396,10 +396,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 550, Short.MAX_VALUE)
             .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(algebraPanelLayout.createSequentialGroup()
-                    .addGap(7, 7, 7)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(87, Short.MAX_VALUE)))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         algebraPanelLayout.setVerticalGroup(
             algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
