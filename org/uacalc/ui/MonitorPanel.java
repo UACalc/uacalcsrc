@@ -80,10 +80,14 @@ public class MonitorPanel extends JPanel {
         setProgressReport(getTask().getProgressReport());
       }
     });
-
+    JScrollPane taskPane = new JScrollPane(taskTable,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    taskPane.setPreferredSize(new Dimension(300,75));
+    topPanel.setLayout(new BorderLayout());
     topPanel.add(new JScrollPane(taskTable, 
         ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
     //topPanel.add(descField);
     //topPanel.add(passLabel);
     //topPanel.add(passField);
@@ -92,7 +96,7 @@ public class MonitorPanel extends JPanel {
     //topPanel.add(currentSizeLabel);
     //topPanel.add(sizeField);
     add(topPanel, BorderLayout.NORTH);
-    add(new JScrollPane(logArea), BorderLayout.CENTER);
+    topPanel.add(new JScrollPane(logArea), BorderLayout.NORTH);
     JPanel botPanel = new JPanel();
     botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
     botPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -100,8 +104,9 @@ public class MonitorPanel extends JPanel {
     botPanel.add(cancelButton);
     botPanel.add(Box.createRigidArea(new Dimension(10, 0)));
     botPanel.add(clearButton);
+    topPanel.add(botPanel, BorderLayout.SOUTH);
     
-    add(botPanel, BorderLayout.SOUTH);
+    //add(botPanel, BorderLayout.SOUTH);
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     report = new ProgressReport(this);
     //uacalc.setMonitor(monitor);
@@ -111,6 +116,7 @@ public class MonitorPanel extends JPanel {
     taskTable.setRowSelectionAllowed(true);
     taskTable.setColumnSelectionAllowed(false);
     taskTable.setAutoResizeMode( JTable.AUTO_RESIZE_OFF);
+    taskTable.setPreferredSize(new Dimension(300, 75));
     TableColumn column = null;
     for (int i = 0; i < model.getColumnCount(); i++) {
       column = taskTable.getColumnModel().getColumn(i);

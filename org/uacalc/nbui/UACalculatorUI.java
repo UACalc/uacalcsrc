@@ -755,7 +755,7 @@ private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_openMIActionPerformed
 
 private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uaFileMIActionPerformed
-// TODO add your handling code here:
+  getActions().saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
 }//GEN-LAST:event_uaFileMIActionPerformed
 
 private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algFileMIActionPerfor
@@ -791,7 +791,7 @@ private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 }//GEN-LAST:event_defaultEltComboBoxActionPerformed
 
 private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMIActionPerformed
-// TODO add your handling code here:
+  getActions().save();
 }//GEN-LAST:event_saveMIActionPerformed
 
   

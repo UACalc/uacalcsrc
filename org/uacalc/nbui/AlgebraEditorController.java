@@ -371,6 +371,7 @@ public class AlgebraEditorController {
   public SmallAlgebra makeAlgebra() {
     java.util.List<Operation> ops = new ArrayList<Operation>(opList.size());
     for (OperationWithDefaultValue op : opList) {
+      System.out.println("op: " + op + " is total: " + op.isTotal()); // delete me TODO
       if (op.isTotal()) ops.add(op.makeOrdinaryOperation());
       else return null;
     }
@@ -408,6 +409,7 @@ public class AlgebraEditorController {
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
+    System.out.println("now from set alg, opList = " +opList);
     uacalc.getAlgNameTextField().setText(alg.name());
     uacalc.getCardTextField().setText("" + alg.cardinality());
     System.out.println("desc: " + alg.description());

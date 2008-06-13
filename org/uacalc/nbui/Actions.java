@@ -62,15 +62,7 @@ public class Actions {
                                          options,
                                          options[0]);
     if (n == JOptionPane.YES_OPTION) {
-         try {
-           return save();
-         }
-         catch (IOException ex) {
-           System.err.println("IO error in saving: " + ex.getMessage());
-           //setUserWarning("Error 187. File Not Saved. There is "
-           //               + "something wrong with your file.");
-         }
-         return false;
+      return save();
     }
     else if (n == JOptionPane.NO_OPTION) {
       return true;
@@ -372,23 +364,30 @@ public class Actions {
     uacalcUI.repaint();
   }
   
-  public boolean save() throws IOException {
+  public boolean save() {
+    System.out.println("current alg = " + getCurrentAlgebra());
     if (getCurrentAlgebra() == null) return true;
-    //if (!getAlgebraEditor().sync()) return false;
+    if (!getAlgebraEditorController().sync()) return false;
     File f = getCurrentFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
     String ext = ExtFileFilter.getExtension(f);
     boolean newFormat = true;
     if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
+    try {
     AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
     setDirty(false);
     return true;
+    }
+    catch (IOException e) {
+      uacalcUI.beep();
+      e.printStackTrace();
+      return false;
+    }
   }
 
   public boolean saveAs(String ext) {
-    System.out.println("ext = " + ext);
     if (getCurrentAlgebra() == null) return true;
-    //if (!getAlgebraEditor().sync()) return false;
+    if (!getAlgebraEditorController().sync()) return false;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);
@@ -406,37 +405,34 @@ public class Actions {
          new ExtFileFilter("Alg Files Old Format (*.alg)", 
                             ExtFileFilter.ALG_EXT));
     int option = fileChooser.showSaveDialog(uacalcUI);
-    if (option==JFileChooser.APPROVE_OPTION) {
+    if (option == JFileChooser.APPROVE_OPTION) {
       // save original user selection
       File selectedFile = fileChooser.getSelectedFile();
       File f = selectedFile;
       // if it doesn't end in .brd, add ".brd" even if there already is a "."
       if (f.exists()) {
-        Object[] options = {"Yes", "No"};
+        Object[] options = { "Yes", "No" };
         int n = JOptionPane.showOptionDialog(uacalcUI,
-                                "The file already exists. Overwrite?",
-                                "Algebra Exists",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE,
-                                null,
-                                options,
-                                options[0]);
+            "The file already exists. Overwrite?", "Algebra Exists",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+            options, options[0]);
         if (n == JOptionPane.NO_OPTION) {
-          saveAs(ext);
+          return saveAs(ext);
         }
       }
       try {
-      String extension = ExtFileFilter.getExtension(f);
-      if (extension == null || !extension.equals(ext)) {
-        f = new File(f.getCanonicalPath() + "." + ext);
+        String extension = ExtFileFilter.getExtension(f);
+        if (extension == null || !extension.equals(ext)) {
+          f = new File(f.getCanonicalPath() + "." + ext);
+        }
+        AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
+        getPrefs().put("algebraDir", f.getParent());
+        // setModified(false);
+        setCurrentFile(f);
+        setDirty(false);
+        return true;
       }
-      AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
-      // setModified(false);
-      setCurrentFile(f);
-      setDirty(false);
-      return true;
-      }
-      catch(IOException e) {
+      catch (IOException e) {
         beep();
         return false;
       }
@@ -445,15 +441,11 @@ public class Actions {
   }
 
 
-
-
-
-
   public void open() {
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
     File theFile = null;
-    //pwd = currentFolder;
+    // pwd = currentFolder;
     JFileChooser fileChooser;
     if (pwd != null) fileChooser = new JFileChooser(pwd);
     else fileChooser = new JFileChooser();
@@ -467,7 +459,7 @@ public class Actions {
     if (option==JFileChooser.APPROVE_OPTION) {
       theFile = fileChooser.getSelectedFile();
       currentFolder = theFile.getParent();
-      getPrefs().put("algebraDir", theFile.getParent());
+      //getPrefs().put("algebraDir", theFile.getParent()); // done below
       open(theFile);
     }
   }

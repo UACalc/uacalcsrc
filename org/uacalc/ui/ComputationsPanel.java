@@ -152,13 +152,15 @@ public class ComputationsPanel extends JSplitPane {
     final int gens = getFreeGensDialog();
     if (!(gens > 0)) return;
     System.out.println("gens = " + gens);
+    final boolean thin = getThinGens();
     final ProgressReport report = new ProgressReport(monitorPanel);
     monitorPanel.setProgressReport(report);
     final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
       public FreeAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.setDescription("F(" + gens + ") over " + alg.name());
-        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), gens, report);
+        FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), 
+            gens, true, thin, report);
         return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
@@ -216,5 +218,14 @@ public class ComputationsPanel extends JSplitPane {
     return gens;
   }
   
+  private boolean getThinGens() {
+    int thin =  JOptionPane.showConfirmDialog(uacalc, 
+        "Eliminate some redundant projections", 
+        "Coordinate thinning", 
+        JOptionPane.YES_NO_OPTION, 
+        JOptionPane.QUESTION_MESSAGE);
+    if (thin == JOptionPane.YES_OPTION || thin == JOptionPane.OK_OPTION) return true;
+    return false;
+  }
   
 }
