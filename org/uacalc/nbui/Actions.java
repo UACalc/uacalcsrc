@@ -16,6 +16,7 @@ import org.uacalc.alg.sublat.*;
 import org.uacalc.io.*;
 import org.uacalc.ui.*;
 import org.uacalc.ui.table.*;
+import org.uacalc.ui.util.*;
 import org.uacalc.ui.tm.ProgressReport;
 
 
@@ -24,7 +25,10 @@ public class Actions {
   private boolean dirty = false;
   private UACalculatorUI uacalcUI;
   private SmallAlgebra currentAalgebra;  // Small ??
-  private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
+  //private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
+  private AlgebraTableModel algebraTableModel = new  AlgebraTableModel();
+  private final GUIAlgebraList algebraList = algebraTableModel.getAlgebraList();
+  private final java.util.List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
   private File currentFile;
   private String title = "";  // if currentFile is null this might be "New"
   private String progName = "UACalculator   ";
@@ -37,6 +41,9 @@ public class Actions {
   public Actions(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
     algEditorController = new AlgebraEditorController(uacalcUI);
+    System.out.println("algebraTableModel = " + algebraTableModel);
+    System.out.println("uacalcUI.getAlgListTable : " + uacalcUI.getAlgListTable());
+    uacalcUI.getAlgListTable().setModel(algebraTableModel);
   }
   
   public File getCurrentFile() { return currentFile; }
@@ -251,8 +258,11 @@ public class Actions {
    * We may want to change that.
    */
   public void addAlgebra(SmallAlgebra alg, File file) {
+    getAlgebraList().add(alg, file);
+    scrollToBottom(uacalcUI.getAlgListTable());
+    System.out.println("rows = " + uacalcUI.getAlgListTable().getRowCount());
+    System.out.println("rows from mod = " + uacalcUI.getAlgListTable().getModel().getRowCount());
     // TODO:
-    //bottomPanel.getAlgebraTableModel().addAlgebra(alg, file);
     //bottomPanel.scrollToBottom();
   }
   
@@ -558,10 +568,18 @@ public class Actions {
   }
 
 
+  public GUIAlgebraList getAlgebraList() {
+    return algebraList;
+  }
+  
   // prefs stuff
-
   public Preferences getPrefs() {
     return Preferences.userNodeForPackage(uacalcUI.getClass());
+  }
+  
+  public static void scrollToBottom(JTable table) {
+    int ht = table.getHeight();
+    table.scrollRectToVisible(new Rectangle(0, ht, 0, ht));
   }
 
 

@@ -1,6 +1,7 @@
 package org.uacalc.ui.util;
 
 import java.util.*;
+import java.io.*;
 import org.uacalc.alg.*;
 
 /**
@@ -26,12 +27,20 @@ public class GUIAlgebraList {
     add(gAlg, true);
   }
   
-  public void add(SmallAlgebra alg, boolean makeCurrentAlg) {
-    add(new GUIAlgebra(alg), makeCurrentAlg);
+  public void add(SmallAlgebra alg, File file, boolean makeCurrentAlg) {
+    add(new GUIAlgebra(alg, file), makeCurrentAlg);
+  }
+  
+  public void add(SmallAlgebra alg, boolean makeCurrent) {
+    add(alg, null, makeCurrent);
+  }
+  
+  public void add(SmallAlgebra alg, File file) {
+    add(alg, file, true);
   }
   
   public void add(SmallAlgebra alg) {
-    add(alg, true);
+    add(alg, null, true);
   }
   
   public GUIAlgebra getCurrentAlgebra() {
@@ -41,9 +50,29 @@ public class GUIAlgebraList {
     return null;
   }
   
+  public void removeAlgebra(GUIAlgebra alg) {
+    int index = findIndex(alg);
+    if (index != -1) algList.remove(index);
+  }
+  
+  private int findIndex(GUIAlgebra alg) {
+    int index = 0;
+    for (GUIAlgebra alg2 : algList) {
+      if (alg2.equals(alg)) return index;
+      index++;
+    }
+    return -1;
+  }
+  
   public int getCurrentAlgIndex() { return currentAlgIndex; }
   
   public void setCurrentAlgIndex(int v) { currentAlgIndex = v; }
+  
+  public int size() { return algList.size(); }
+  
+  public GUIAlgebra get(int index) {
+    return algList.get(index);
+  }
   
   
   

@@ -15,12 +15,13 @@ import java.awt.event.*;
  */
 public class UACalculatorUI extends javax.swing.JFrame {
 
-    private Actions actions = new Actions(this);
+    private final Actions actions;
     
     
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
         initComponents();
+        actions = new Actions(this);
         
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //closes from title bar and from menu

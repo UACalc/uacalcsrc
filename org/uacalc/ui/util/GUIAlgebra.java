@@ -25,6 +25,13 @@ public class GUIAlgebra {
 
   private List<GUIAlgebra> parents = new ArrayList<GUIAlgebra>(); // may be empty or a singleton
   
+  /**
+   * Only edited and new algebras will get this mark. 
+   * Things like quotient algebras won't even though they 
+   * can be saved.
+   */
+  private boolean needsSave = false;
+  
   public GUIAlgebra(SmallAlgebra alg) {
     synchronized(this) {
       serial = count++;
@@ -84,4 +91,13 @@ public class GUIAlgebra {
   public int hashCode() {
     return serial;
   }
+
+  private void setNeedsSave(boolean needsSave) {
+    this.needsSave = needsSave;
+  }
+
+  private boolean needsSave() {
+    return needsSave;
+  }
+  
 }

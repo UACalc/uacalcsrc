@@ -5,40 +5,30 @@ import java.util.*;
 import java.io.*;
 import org.uacalc.alg.SmallAlgebra;
 
-import org.uacalc.ui.util.GUIAlgebra;
+import org.uacalc.ui.util.*;;
 
 public class AlgebraTableModel extends AbstractTableModel {
   
-  private final List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
+  //private final List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
+  private final GUIAlgebraList algebraList = new GUIAlgebraList();
   
   private static final String[] columnNames = new String[] {
     "Internal", "Name", "Type", "Description", "File"};
   
   public void addAlgebra(SmallAlgebra alg) {
-    addAlgebra(alg, null);
+    getAlgebraList().add(alg);
   }
 
   public void addAlgebra(SmallAlgebra alg, File file) {
-    addAlgebra(new GUIAlgebra(alg, file));
+    getAlgebraList().add(alg, file);
   }
   
   public void addAlgebra(GUIAlgebra alg) {
-    algs.add(alg);
-    fireTableDataChanged();
+    getAlgebraList().add(alg);
   }
   
   public void removeAlgebra(GUIAlgebra alg) {
-    int index = findIndex(alg);
-    if (index != -1) algs.remove(index);
-  }
-  
-  private int findIndex(GUIAlgebra alg) {
-    int index = 0;
-    for (GUIAlgebra alg2 : algs) {
-      if (alg2.equals(alg)) return index;
-      index++;
-    }
-    return -1;
+    getAlgebraList().removeAlgebra(alg);
   }
   
   public int getColumnCount() {
@@ -46,12 +36,13 @@ public class AlgebraTableModel extends AbstractTableModel {
   }
 
   public int getRowCount() {
-    return algs.size();
+    return getAlgebraList().size();
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
+    System.out.println("getValueAt called, row " + rowIndex);
     // TODO Auto-generated method stub
-    GUIAlgebra gAlg = algs.get(rowIndex);
+    GUIAlgebra gAlg = getAlgebraList().get(rowIndex);
     if (columnIndex == 0) return "A" + gAlg.getSerial();
     if (columnIndex == 1) return gAlg.getAlgebra().name();
     if (columnIndex == 2) return gAlg.getAlgebra().algebraType();
@@ -66,5 +57,9 @@ public class AlgebraTableModel extends AbstractTableModel {
   }
   
   public boolean isCellEditable(int row, int col) { return false; }
+
+  public GUIAlgebraList getAlgebraList() {
+    return algebraList;
+  }
   
 }
