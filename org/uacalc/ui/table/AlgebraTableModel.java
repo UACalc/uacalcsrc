@@ -40,8 +40,8 @@ public class AlgebraTableModel extends AbstractTableModel {
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
-    System.out.println("getValueAt called, row " + rowIndex);
-    // TODO Auto-generated method stub
+    //System.out.println("getValueAt called, row " + rowIndex);
+    //if (rowIndex >= getAlgebraList().size()) return null;
     GUIAlgebra gAlg = getAlgebraList().get(rowIndex);
     if (columnIndex == 0) return "A" + gAlg.getSerial();
     if (columnIndex == 1) return gAlg.getAlgebra().name();

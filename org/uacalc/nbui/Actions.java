@@ -1,6 +1,8 @@
 package org.uacalc.nbui;
 
 import javax.swing.*;
+import javax.swing.table.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -24,11 +26,11 @@ public class Actions {
 
   private boolean dirty = false;
   private UACalculatorUI uacalcUI;
-  private SmallAlgebra currentAalgebra;  // Small ??
+  private GUIAlgebra currentAalgebra;  // Small ??
   //private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
   private AlgebraTableModel algebraTableModel = new  AlgebraTableModel();
   private final GUIAlgebraList algebraList = algebraTableModel.getAlgebraList();
-  private final java.util.List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
+  //private final java.util.List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
   private File currentFile;
   private String title = "";  // if currentFile is null this might be "New"
   private String progName = "UACalculator   ";
@@ -41,9 +43,35 @@ public class Actions {
   public Actions(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
     algEditorController = new AlgebraEditorController(uacalcUI);
-    System.out.println("algebraTableModel = " + algebraTableModel);
-    System.out.println("uacalcUI.getAlgListTable : " + uacalcUI.getAlgListTable());
-    uacalcUI.getAlgListTable().setModel(algebraTableModel);
+    setupAlgTable();
+  }
+  
+  private void setupAlgTable() {
+    final JTable algTable = uacalcUI.getAlgListTable();
+    algTable.setModel(algebraTableModel);
+    TableColumn col = algTable.getColumnModel().getColumn(0);
+    col.setPreferredWidth(60);
+    col.setMinWidth(60);
+    col = algTable.getColumnModel().getColumn(1);
+    col.setPreferredWidth(120);
+    col.setMinWidth(120);
+    col = algTable.getColumnModel().getColumn(2);
+    col.setPreferredWidth(120);
+    col.setMinWidth(120);
+    col = algTable.getColumnModel().getColumn(3);
+    col.setPreferredWidth(480);
+    col.setMinWidth(480);
+    col = algTable.getColumnModel().getColumn(4);
+    col.setPreferredWidth(120);
+    col.setMinWidth(120);
+    algTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent e) {
+        int index = algTable.getSelectedRow();
+        GUIAlgebra gAlg = algebraList.get(index);
+        setCurrentAlgebra(gAlg);
+      }
+    });
+
   }
   
   public File getCurrentFile() { return currentFile; }
@@ -249,21 +277,24 @@ public class Actions {
 */
   
 
-  public void addAlgebra(SmallAlgebra alg) {
-    addAlgebra(alg, null);
+  public GUIAlgebra addAlgebra(SmallAlgebra alg) {
+    return addAlgebra(alg, null);
   }
   
   /**
    * right now the list of algebras is maintained the algebraTableModel.
    * We may want to change that.
    */
-  public void addAlgebra(SmallAlgebra alg, File file) {
-    getAlgebraList().add(alg, file);
+  public GUIAlgebra addAlgebra(SmallAlgebra alg, File file) {
+    final int index = getAlgebraList().size();
+    GUIAlgebra guiAlg = new GUIAlgebra(alg, file);
+    getAlgebraList().add(guiAlg);
     scrollToBottom(uacalcUI.getAlgListTable());
-    System.out.println("rows = " + uacalcUI.getAlgListTable().getRowCount());
-    System.out.println("rows from mod = " + uacalcUI.getAlgListTable().getModel().getRowCount());
-    // TODO:
-    //bottomPanel.scrollToBottom();
+    // Note: the revalidate, repaint is the key
+    uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
+    uacalcUI.getAlgListTable().revalidate();
+    uacalcUI.getAlgListTable().repaint();
+    return guiAlg;
   }
   
   // TODO: soon each algebra will have a separate monitorPanel and these
@@ -377,14 +408,17 @@ public class Actions {
   public boolean save() {
     System.out.println("current alg = " + getCurrentAlgebra());
     if (getCurrentAlgebra() == null) return true;
-    if (!getAlgebraEditorController().sync()) return false;
+    SmallAlgebra alg = getAlgebraEditorController().makeAlgebra();
+    //if (!getAlgebraEditorController().sync()) return false;
+    if (alg == null) return false;
     File f = getCurrentFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
     String ext = ExtFileFilter.getExtension(f);
     boolean newFormat = true;
     if (ext.equals(ExtFileFilter.ALG_EXT)) newFormat = false;
     try {
-    AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
+    //AlgebraIO.writeAlgebraFile(getCurrentAlgebra().getAlgebra(), f, !newFormat);
+      AlgebraIO.writeAlgebraFile(alg, f, !newFormat);
     setDirty(false);
     return true;
     }
@@ -397,7 +431,9 @@ public class Actions {
 
   public boolean saveAs(String ext) {
     if (getCurrentAlgebra() == null) return true;
-    if (!getAlgebraEditorController().sync()) return false;
+    SmallAlgebra alg = getAlgebraEditorController().makeAlgebra();
+    if (alg == null) return false;
+    //if (!getAlgebraEditorController().sync()) return false;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
     String pwd = getPrefs().get("algebraDir", null);
@@ -419,25 +455,23 @@ public class Actions {
       // save original user selection
       File selectedFile = fileChooser.getSelectedFile();
       File f = selectedFile;
-      // if it doesn't end in .brd, add ".brd" even if there already is a "."
-      if (f.exists()) {
-        Object[] options = { "Yes", "No" };
-        int n = JOptionPane.showOptionDialog(uacalcUI,
-            "The file already exists. Overwrite?", "Algebra Exists",
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-            options, options[0]);
-        if (n == JOptionPane.NO_OPTION) {
-          return saveAs(ext);
-        }
-      }
       try {
         String extension = ExtFileFilter.getExtension(f);
         if (extension == null || !extension.equals(ext)) {
           f = new File(f.getCanonicalPath() + "." + ext);
         }
-        AlgebraIO.writeAlgebraFile(getCurrentAlgebra(), f, !newFormat);
+        if (f.exists()) {
+          Object[] options = { "Yes", "No" };
+          int n = JOptionPane.showOptionDialog(uacalcUI,
+              "The file already exists. Overwrite?", "Algebra Exists",
+              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+              options, options[0]);
+          if (n == JOptionPane.NO_OPTION) {
+            return saveAs(ext);
+          }
+        }
+        AlgebraIO.writeAlgebraFile(alg, f, !newFormat);
         getPrefs().put("algebraDir", f.getParent());
-        // setModified(false);
         setCurrentFile(f);
         setDirty(false);
         return true;
@@ -501,19 +535,22 @@ public class Actions {
       setCurrentFile(file);
       setTitle();
       //setModified(false);
-      setCurrentAlgebra(a);
-      addAlgebra(a, file);
+      setCurrentAlgebra(addAlgebra(a, file));
       setDirty(false);
       uacalcUI.repaint();
     }
   }
 
-  public SmallAlgebra getCurrentAlgebra() { return currentAalgebra; }
+  public GUIAlgebra getCurrentAlgebra() { return currentAalgebra; }
   
   public void setCurrentAlgebra(SmallAlgebra alg) {
+    setCurrentAlgebra(new GUIAlgebra(alg));
+  }
+  
+  public void setCurrentAlgebra(GUIAlgebra alg) {
     if (isDirty()) checkSave();
     updateCurrentAlgebra(alg);
-    getAlgebraEditorController().setAlgebra(alg);
+    getAlgebraEditorController().setAlgebra(alg.getAlgebra());
   }
 
   public void setOp() {
@@ -533,7 +570,7 @@ public class Actions {
    * 
    * @param alg
    */
-  public void updateCurrentAlgebra(SmallAlgebra alg) {
+  public void updateCurrentAlgebra(GUIAlgebra alg) {
     currentAalgebra = alg;
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
@@ -580,8 +617,10 @@ public class Actions {
   public static void scrollToBottom(JTable table) {
     int ht = table.getHeight();
     table.scrollRectToVisible(new Rectangle(0, ht, 0, ht));
+    //table.revalidate();
+    //table.repaint();
+    //table.doLayout();
   }
-
 
   /*
   public static void main(String[] args) {

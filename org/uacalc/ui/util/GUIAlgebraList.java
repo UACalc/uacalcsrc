@@ -14,13 +14,13 @@ import org.uacalc.alg.*;
 public class GUIAlgebraList {
 
   private List<GUIAlgebra> algList = new ArrayList<GUIAlgebra>();
-  private int currentAlgIndex = -1;
+  //private int currentAlgIndex = -1;
   
   public void add(GUIAlgebra gAlg, boolean makeCurrentAlg) {
     algList.add(gAlg);
-    if (makeCurrentAlg) {
-      currentAlgIndex = algList.size() - 1;
-    }
+    //if (makeCurrentAlg) {
+    //  currentAlgIndex = algList.size() - 1;
+    //}
   }
   
   public void add(GUIAlgebra gAlg) {
@@ -43,12 +43,12 @@ public class GUIAlgebraList {
     add(alg, null, true);
   }
   
-  public GUIAlgebra getCurrentAlgebra() {
-    if (currentAlgIndex >= 0 && currentAlgIndex < algList.size()) {
-      return algList.get(currentAlgIndex);
-    }
-    return null;
-  }
+  //public GUIAlgebra getCurrentAlgebra() {
+  //  if (currentAlgIndex >= 0 && currentAlgIndex < algList.size()) {
+  //    return algList.get(currentAlgIndex);
+  //  }
+  //  return null;
+  //}
   
   public void removeAlgebra(GUIAlgebra alg) {
     int index = findIndex(alg);
@@ -64,9 +64,9 @@ public class GUIAlgebraList {
     return -1;
   }
   
-  public int getCurrentAlgIndex() { return currentAlgIndex; }
+  //public int getCurrentAlgIndex() { return currentAlgIndex; }
   
-  public void setCurrentAlgIndex(int v) { currentAlgIndex = v; }
+  //public void setCurrentAlgIndex(int v) { currentAlgIndex = v; }
   
   public int size() { return algList.size(); }
   

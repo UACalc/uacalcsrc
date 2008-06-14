@@ -209,8 +209,9 @@ public class AlgebraEditorController {
   }
   
   
-  private void updateDescription() {
+  private String updateDescription() {
     desc = uacalc.getDescTextField().getText();
+    return desc;
   }
 
   private boolean validSymbol(OperationSymbol sym) {
@@ -341,6 +342,7 @@ public class AlgebraEditorController {
     });
   }
   
+  //delete this too
   public boolean sync() {
     // TODO: fix this
     //if (!opTablePanel.stopCellEditing()) {
@@ -358,7 +360,8 @@ public class AlgebraEditorController {
           JOptionPane.WARNING_MESSAGE);
       return false;
     }
-    getActions().updateCurrentAlgebra(makeAlgebra());
+    //alg.setDescription(updateDescription());
+    //getActions().updateCurrentAlgebra(makeAlgebra());
     uacalc.repaint();
     return true;
   }
@@ -369,15 +372,26 @@ public class AlgebraEditorController {
    * @return
    */
   public SmallAlgebra makeAlgebra() {
+    System.out.println("opList size = " + opList.size());
     java.util.List<Operation> ops = new ArrayList<Operation>(opList.size());
     for (OperationWithDefaultValue op : opList) {
       System.out.println("op: " + op + " is total: " + op.isTotal()); // delete me TODO
       if (op.isTotal()) ops.add(op.makeOrdinaryOperation());
-      else return null;
+      else {
+        getActions().beep();
+        JOptionPane.showMessageDialog(uacalc,
+            "<html><center>Not all operations are total.<br>" 
+            + "Fill in the tables<br>"
+            + "or set a default value.</center></html>",
+            "Incomplete operation(s)",
+            JOptionPane.WARNING_MESSAGE);
+        return null;
+      }
     }
+    System.out.println("ops size = " + ops.size());
     SmallAlgebra alg = new BasicAlgebra(uacalc.getAlgNameTextField().getText(), algSize, ops);
-    updateDescription();
-    alg.setDescription(desc);
+    //updateDescription();
+    alg.setDescription(updateDescription());
     return alg;
   }
   
@@ -392,15 +406,13 @@ public class AlgebraEditorController {
   }
   */
   
-  public void setAlgebra(SmallAlgebra alg) {
-    System.out.println("setAlgebra called");
+  public void setAlgebra(Algebra alg) {
     //this.alg = alg;
     //uacalc.setCurrentAlgebra(alg);
     algSize = alg.cardinality();
     java.util.List<Operation> ops = alg.operations();
     symbolList = new ArrayList<OperationSymbol>();
     opList = new ArrayList<OperationWithDefaultValue>();
-    System.out.println("from set alg, opList = " +opList);
     opMap = new HashMap<OperationSymbol,OperationWithDefaultValue>();
     for (Operation op : ops) {
       symbolList.add(op.symbol());
@@ -409,10 +421,8 @@ public class AlgebraEditorController {
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
-    System.out.println("now from set alg, opList = " +opList);
     uacalc.getAlgNameTextField().setText(alg.name());
     uacalc.getCardTextField().setText("" + alg.cardinality());
-    System.out.println("desc: " + alg.description());
     uacalc.getDescTextField().setText(alg.description());
     if (alg instanceof BasicAlgebra) setOpsCB();
   }
@@ -463,7 +473,9 @@ public class AlgebraEditorController {
     if (name == null) return;
     int card = getCardDialog();
     if (card > 0) {
-      getActions().setCurrentAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
+      GUIAlgebra gAlg 
+        = getActions().addAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
+      getActions().setCurrentAlgebra(gAlg);
       setOperationTable(new OperationInputTable());
       getActions().setDirty(true);
       getActions().setCurrentFile(null);
