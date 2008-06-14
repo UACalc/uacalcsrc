@@ -388,6 +388,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             }
         ));
         algListTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        algListTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane6.setViewportView(algListTable);
 
         javax.swing.GroupLayout algebraPanelLayout = new javax.swing.GroupLayout(algebraPanel);
