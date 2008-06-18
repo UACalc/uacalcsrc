@@ -359,7 +359,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addComponent(idempotentCB)
                     .addComponent(jLabel5)
                     .addComponent(defaultEltComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(382, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Editor", editorPanel);
@@ -489,6 +489,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        computationsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane2.setViewportView(computationsTable);
 
         cancelCompButton.setText("Cancel");
@@ -516,30 +517,30 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addGroup(computationsLogPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelCompButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, computationsLogPaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
-                        .addGap(16, 16, 16)
-                        .addComponent(clearLogButton)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cancelCompButton)
+                    .addComponent(clearLogButton))
                 .addContainerGap())
         );
         computationsLogPaneLayout.setVerticalGroup(
             computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(computationsLogPaneLayout.createSequentialGroup()
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(47, 47, 47)
+                        .addComponent(cancelCompButton)))
+                .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(cancelCompButton)
-                        .addGap(167, 167, 167)
-                        .addComponent(clearLogButton)))
-                .addContainerGap(451, Short.MAX_VALUE))
+                        .addGap(82, 82, 82)
+                        .addComponent(clearLogButton, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(computationsLogPaneLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(484, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -568,7 +569,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
         conPanelLayout.setVerticalGroup(
             conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 629, Short.MAX_VALUE)
+            .addGap(0, 659, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Con", conPanel);
@@ -581,7 +582,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
         subPanelLayout.setVerticalGroup(
             subPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 629, Short.MAX_VALUE)
+            .addGap(0, 659, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Sub", subPanel);
@@ -622,7 +623,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(drawingPanelLayout.createSequentialGroup()
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(604, Short.MAX_VALUE))
+                .addContainerGap(634, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Drawing", drawingPanel);
@@ -703,15 +704,15 @@ public class UACalculatorUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
 
         pack();
