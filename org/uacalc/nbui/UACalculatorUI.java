@@ -113,6 +113,13 @@ public class UACalculatorUI extends javax.swing.JFrame {
         algFileMI = new javax.swing.JMenuItem();
         quitMI = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
+        tasksMenu = new javax.swing.JMenu();
+        freeAlgMI = new javax.swing.JMenuItem();
+        membershipTestMI = new javax.swing.JMenuItem();
+        maltsevMenu = new javax.swing.JMenu();
+        distributivityMI = new javax.swing.JMenuItem();
+        modularityMI = new javax.swing.JMenuItem();
+        nPermMI = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -480,13 +487,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         computationsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6"
             }
         ));
         computationsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -517,9 +521,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addGroup(computationsLogPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
-                .addGap(28, 28, 28)
+                    .addGroup(computationsLogPaneLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                        .addGap(28, 28, 28))
+                    .addGroup(computationsLogPaneLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelCompButton)
                     .addComponent(clearLogButton))
@@ -528,11 +535,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         computationsLogPaneLayout.setVerticalGroup(
             computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(cancelCompButton)))
+                        .addComponent(cancelCompButton)
+                        .addGap(45, 45, 45))
+                    .addGroup(computationsLogPaneLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
                         .addGap(82, 82, 82)
@@ -696,6 +706,54 @@ public class UACalculatorUI extends javax.swing.JFrame {
         editMenu.setText("Edit");
         jMenuBar1.add(editMenu);
 
+        tasksMenu.setText("Tasks");
+
+        freeAlgMI.setText("Free Algebra");
+        freeAlgMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                freeAlgMIActionPerformed(evt);
+            }
+        });
+        tasksMenu.add(freeAlgMI);
+
+        membershipTestMI.setText("B in V(A) ?");
+        membershipTestMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                membershipTestMIActionPerformed(evt);
+            }
+        });
+        tasksMenu.add(membershipTestMI);
+
+        jMenuBar1.add(tasksMenu);
+
+        maltsevMenu.setText("Maltsev");
+
+        distributivityMI.setText("Distributivity");
+        distributivityMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                distributivityMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(distributivityMI);
+
+        modularityMI.setText("Modularity");
+        modularityMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modularityMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(modularityMI);
+
+        nPermMI.setText("n-Permutability");
+        nPermMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nPermMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(nPermMI);
+
+        jMenuBar1.add(maltsevMenu);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -780,6 +838,26 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
   getActions().save();
 }//GEN-LAST:event_saveMIActionPerformed
 
+private void freeAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freeAlgMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_freeAlgMIActionPerformed
+
+private void membershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_membershipTestMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_membershipTestMIActionPerformed
+
+private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_distributivityMIActionPerformed
+
+private void modularityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modularityMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_modularityMIActionPerformed
+
+private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nPermMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_nPermMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -810,10 +888,12 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JComboBox defaultEltComboBox;
     private javax.swing.JButton delOpButton;
     private javax.swing.JTextField descTextField;
+    private javax.swing.JMenuItem distributivityMI;
     private javax.swing.JPanel drawingPanel;
     private javax.swing.JMenu editMenu;
     private javax.swing.JPanel editorPanel;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem freeAlgMI;
     private javax.swing.JCheckBox idempotentCB;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -842,6 +922,10 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JTextArea logTextArea;
+    private javax.swing.JMenu maltsevMenu;
+    private javax.swing.JMenuItem membershipTestMI;
+    private javax.swing.JMenuItem modularityMI;
+    private javax.swing.JMenuItem nPermMI;
     private javax.swing.JButton newAlgButton;
     private javax.swing.JMenuItem newMI;
     private javax.swing.JTable opTable;
@@ -857,6 +941,7 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JMenu saveAsMenu;
     private javax.swing.JMenuItem saveMI;
     private javax.swing.JPanel subPanel;
+    private javax.swing.JMenu tasksMenu;
     private javax.swing.JMenuItem uaFileMI;
     // End of variables declaration//GEN-END:variables
 
@@ -975,6 +1060,30 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
     public javax.swing.JTable getAlgListTable() {
         return algListTable;
+    }
+
+    public javax.swing.JMenuItem getDistributivityMI() {
+        return distributivityMI;
+    }
+
+    public void setDistributivityMI(javax.swing.JMenuItem distributivityMI) {
+        this.distributivityMI = distributivityMI;
+    }
+
+    public javax.swing.JMenuItem getModularityMI() {
+        return modularityMI;
+    }
+
+    public void setModularityMI(javax.swing.JMenuItem modularityMI) {
+        this.modularityMI = modularityMI;
+    }
+
+    public javax.swing.JMenuItem getNPermMI() {
+        return nPermMI;
+    }
+
+    public void setNPermMI(javax.swing.JMenuItem nPermMI) {
+        this.nPermMI = nPermMI;
     }
   
 }
