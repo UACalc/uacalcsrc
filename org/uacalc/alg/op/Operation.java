@@ -52,10 +52,10 @@ public interface Operation {
   /**
    * This will make a table and so make the operation faster but
    * require more space. So if A is in HSP(B) then for ints x and y,
-   * x * y would be evaluated by finding the finding the representative
+   * x * y would be evaluated by finding the representative
    * of x and y of the congruence; then these representatives would be
    * expanded into array representing the corresponding elements in the 
-   * direct product. These would be multipled and then the whole process
+   * direct product. These would be multiplied and then the whole process
    * would be reversed. If A is reasonable small it may make sense to
    * make a table for the multiplication.
    */

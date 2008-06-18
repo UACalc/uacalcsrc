@@ -161,6 +161,10 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
       };
   }
   
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
+  }
+  
   public AlgebraType algebraType() {
     return AlgebraType.QUOTIENT;
   }

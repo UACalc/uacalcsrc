@@ -92,11 +92,11 @@ public class GUIAlgebra {
     return serial;
   }
 
-  private void setNeedsSave(boolean needsSave) {
+  public void setNeedsSave(boolean needsSave) {
     this.needsSave = needsSave;
   }
 
-  private boolean needsSave() {
+  public boolean needsSave() {
     return needsSave;
   }
   

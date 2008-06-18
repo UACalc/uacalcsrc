@@ -44,12 +44,13 @@ public class AlgebraTableModel extends AbstractTableModel {
     //if (rowIndex >= getAlgebraList().size()) return null;
     GUIAlgebra gAlg = getAlgebraList().get(rowIndex);
     if (columnIndex == 0) return "A" + gAlg.getSerial();
-    if (columnIndex == 1) return gAlg.getAlgebra().name();
+    if (columnIndex == 1) return gAlg.getAlgebra().getName();
     if (columnIndex == 2) return gAlg.getAlgebra().algebraType();
-    if (columnIndex == 3) return gAlg.getAlgebra().description();
+    if (columnIndex == 3) return gAlg.getAlgebra().getDescription();
     //System.out.println("file: " + gAlg.getFile());
-    if (gAlg.getFile() != null) return  gAlg.getFile().getName();
-    return null;
+    final String dirtyString = gAlg.needsSave() ? "** " : "";
+    if (gAlg.getFile() != null) return  dirtyString + gAlg.getFile().getName();
+    else return dirtyString;
   }
 
   public String getColumnName(int col) {

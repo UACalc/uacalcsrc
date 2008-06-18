@@ -316,6 +316,10 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return kern;
   }
   
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
+  }
+  
   public AlgebraType algebraType() {
     return AlgebraType.SUBPRODUCT;
   }

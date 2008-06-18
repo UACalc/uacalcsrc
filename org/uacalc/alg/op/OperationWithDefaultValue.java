@@ -1,6 +1,7 @@
 package org.uacalc.alg.op;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import org.uacalc.util.Horner;
 import org.uacalc.util.ArrayString;
@@ -169,6 +170,16 @@ public class OperationWithDefaultValue extends AbstractOperation {
   }
   
   /**
+   * Note this effectively kills the default value part
+   * of this.
+   */
+  public void makeTable() {
+    Operation opx = makeOrdinaryOperation();
+    if (opx != null) op = opx;
+    // TODO: throw an exception if opx is null
+  }
+  
+  /**
    * Make an operation with the default value filled in.
    * 
    * @return an operation or null if the defaultValue is -1 and there is a -1 in the table
@@ -185,6 +196,17 @@ public class OperationWithDefaultValue extends AbstractOperation {
       else vt[i] = valueTable[i];
     }
     return Operations.makeIntOperation(symbol(), algSize, vt);
+  }
+  
+  public static List<Operation> makeOrdinary(List<Operation> ops) {
+    List<Operation> ans = new ArrayList<Operation>(ops.size());
+    for (Operation op : ops) {
+      if (op instanceof OperationWithDefaultValue) {
+        ans.add(((OperationWithDefaultValue)op).makeOrdinaryOperation());
+      }
+      ans.add(op);
+    }
+    return ans;
   }
   
 }

@@ -92,12 +92,12 @@ public class Lattices {
   }
 
   public static BasicLattice dual(final BasicLattice lat) {
-    Lattice latx = new BasicLattice(lat.name() + "Dual", lat) {
+    Lattice latx = new BasicLattice(lat.getName() + "Dual", lat) {
       public List joinIrreducibles() { return lat.meetIrreducibles(); }      
       public Object meet(Object a, Object b) { return lat.join(a,b); }
       public boolean leq(Object a, Object b) { return lat.leq(b,a); }
     };
-    return new BasicLattice(lat.name() + "Dual", latx);
+    return new BasicLattice(lat.getName() + "Dual", latx);
   }
 
 

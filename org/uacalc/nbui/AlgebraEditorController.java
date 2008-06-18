@@ -2,6 +2,7 @@ package org.uacalc.nbui;
 
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
@@ -20,20 +21,13 @@ public class AlgebraEditorController {
   private String desc;
   //private SmallAlgebra alg;
   private int algSize;
-  private java.util.List<OperationWithDefaultValue> opList;
+  //private java.util.List<OperationWithDefaultValue> opList;
+  private java.util.List<Operation> opList;
   private java.util.List<OperationSymbol> symbolList;
-  private java.util.Map<OperationSymbol,OperationWithDefaultValue> opMap 
-       = new HashMap<OperationSymbol,OperationWithDefaultValue>();
+  private java.util.Map<OperationSymbol,Operation> opMap 
+       = new HashMap<OperationSymbol,Operation>();
   private final Random random = RandomGenerator.getRandom();
   
-  
-  //private JPanel main;
-  //private JToolBar toolBar;
-  //private final JTextField name_tf = new JTextField(8);
-  //private final JTextField card_tf = new JTextField(4);
-  //private final JTextField desc_tf = new JTextField(18);
-  //private final JComboBox ops_cb = new JComboBox();
-  //private OperationInputTable opTablePanel;
   
   public AlgebraEditorController(final UACalculatorUI uacalc) {
     this.uacalc = uacalc;
@@ -99,10 +93,16 @@ public class AlgebraEditorController {
     OpSymItem item = (OpSymItem)uacalc.getOpsComboBox().getSelectedItem();
     if (item == null) return;
     OperationSymbol opSym = item.getOperationSymbol();
-    OperationWithDefaultValue op = opMap.get(opSym);
+    OperationWithDefaultValue op = (OperationWithDefaultValue)opMap.get(opSym);
     // TODO: change this
     if (op != null) {
       javax.swing.table.TableModel model = new OperationTableModel(op);
+      model.addTableModelListener(new TableModelListener() {
+        public void tableChanged(TableModelEvent evt) {
+          getActions().getCurrentAlgebra().setNeedsSave(true);
+          getActions().setTitle();
+        }
+      });
       JTable table = uacalc.getOpTable();
       table.setModel(model);
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -118,7 +118,7 @@ public class AlgebraEditorController {
           column.setMinWidth(30);
         }
         uacalc.getIdempotentCB().setSelected(op.isIdempotentSet());
-        setDefaultEltComboBoxModel(op.getSetSize());
+        setDefaultEltComboBoxModel(op.getSetSize(), op.getDefaultValue());
       }
       
       //OperationInputTable opTable = 
@@ -129,7 +129,7 @@ public class AlgebraEditorController {
     uacalc.repaint();
   }
   
-  private void setDefaultEltComboBoxModel(final int setSize) {
+  private void setDefaultEltComboBoxModel(final int setSize, int defaultValue) {
     String[] data = new String[setSize + 3];
     data[0] = "none";
     data[setSize + 1] = "random";
@@ -138,6 +138,12 @@ public class AlgebraEditorController {
       data[i+1] = "" + i;
     }
     uacalc.getDefaultEltComboBox().setModel(new DefaultComboBoxModel(data));
+    if (defaultValue == -2) {
+      uacalc.getDefaultEltComboBox().setSelectedIndex(setSize + 1);
+    }
+    else {
+      uacalc.getDefaultEltComboBox().setSelectedIndex(defaultValue + 1);
+    }
   }
   
   public void defaultEltChangeHandler() {
@@ -150,24 +156,21 @@ public class AlgebraEditorController {
       op.updateRandomValueTable();
       op.setDefaultValue(-2);
       box.setSelectedIndex(setSize + 1);
-      uacalc.getActions().setDirty(true);
-      uacalc.repaint();
     }
     if (index == setSize + 1) {
       op.setDefaultValue(-2);
-      uacalc.getActions().setDirty(true);
-      uacalc.repaint();
     }
     if (index > 0 && index <= setSize) { 
       op.setDefaultValue(index - 1);
-      uacalc.getActions().setDirty(true);
-      uacalc.repaint();
     }
     if (index == 0) {
       op.setDefaultValue(-1);
-      uacalc.getActions().setDirty(true);
-      uacalc.repaint();
     }
+    if (!op.isTotal()) {
+      uacalc.getActions().getCurrentAlgebra().setNeedsSave(true);
+      //uacalc.getActions().setDirty(true);
+    }
+    uacalc.repaint();
   }
   
   public void deleteOp() {
@@ -178,6 +181,7 @@ public class AlgebraEditorController {
         JOptionPane.YES_NO_OPTION);
     if (n == JOptionPane.YES_OPTION) {
       removeCurrentOperation();
+      uacalc.getActions().getCurrentAlgebra().setNeedsSave(true);
     }
   }
   
@@ -209,7 +213,7 @@ public class AlgebraEditorController {
   }
   
   
-  private String updateDescription() {
+  public String updateDescription() {
     desc = uacalc.getDescTextField().getText();
     return desc;
   }
@@ -229,6 +233,7 @@ public class AlgebraEditorController {
   }
   
   private void addOperation(String name, int arity) {
+    System.out.println("adding op " + name + ", arity " + arity);
     OperationSymbol sym = new OperationSymbol(name, arity);
     if (!validSymbol(sym)) return;
     OperationWithDefaultValue op = 
@@ -241,6 +246,7 @@ public class AlgebraEditorController {
     uacalc.repaint();
   }
   
+  /*
   public void addOperation(Operation oper) {
     OperationSymbol sym = oper.symbol();
     if (!validSymbol(sym)) return;
@@ -253,6 +259,7 @@ public class AlgebraEditorController {
     uacalc.getOpsComboBox().setSelectedIndex(opList.size() - 1);
     uacalc.repaint();
   }
+  */
   
   public OperationSymbol getCurrentSymbol() {
     Object foo = uacalc.getOpsComboBox().getSelectedItem();
@@ -263,7 +270,7 @@ public class AlgebraEditorController {
   }
   
   public OperationWithDefaultValue getCurrentOperation() {
-    return opMap.get(getCurrentSymbol());
+    return (OperationWithDefaultValue)opMap.get(getCurrentSymbol());
   }
   
   public void removeCurrentOperation() {
@@ -313,6 +320,7 @@ public class AlgebraEditorController {
   }
   
   // TODO: delete this soon
+  /*
   private void makeToolBar() {
     //toolBar = new JToolBar();
     ClassLoader cl = uacalc.getClass().getClassLoader();
@@ -341,8 +349,10 @@ public class AlgebraEditorController {
       }
     });
   }
+  */
   
   //delete this too
+  /*
   public boolean sync() {
     // TODO: fix this
     //if (!opTablePanel.stopCellEditing()) {
@@ -365,14 +375,16 @@ public class AlgebraEditorController {
     uacalc.repaint();
     return true;
   }
+  */
   
   /**
    * Make an algebra from the operations.
    * 
    * @return
    */
+  /*
   public SmallAlgebra makeAlgebra() {
-    System.out.println("opList size = " + opList.size());
+    System.out.println("makeAlgebra: opList size = " + opList.size());
     java.util.List<Operation> ops = new ArrayList<Operation>(opList.size());
     for (OperationWithDefaultValue op : opList) {
       System.out.println("op: " + op + " is total: " + op.isTotal()); // delete me TODO
@@ -394,6 +406,7 @@ public class AlgebraEditorController {
     alg.setDescription(updateDescription());
     return alg;
   }
+  */
   
   //public JToolBar getToolBar() {
   //  if (toolBar == null) makeToolBar();
@@ -406,25 +419,33 @@ public class AlgebraEditorController {
   }
   */
   
-  public void setAlgebra(Algebra alg) {
-    //this.alg = alg;
-    //uacalc.setCurrentAlgebra(alg);
-    algSize = alg.cardinality();
-    java.util.List<Operation> ops = alg.operations();
+  public void setAlgebra(GUIAlgebra gAlg) {
+    SmallAlgebra alg = gAlg.getAlgebra();
     symbolList = new ArrayList<OperationSymbol>();
-    opList = new ArrayList<OperationWithDefaultValue>();
-    opMap = new HashMap<OperationSymbol,OperationWithDefaultValue>();
-    for (Operation op : ops) {
-      symbolList.add(op.symbol());
-      OperationWithDefaultValue op2 = 
-        new OperationWithDefaultValue(op);
-      opList.add(op2);
-      opMap.put(op.symbol(), op2);
-    }
-    uacalc.getAlgNameTextField().setText(alg.name());
+    opMap = new HashMap<OperationSymbol,Operation>();
+    algSize = alg.cardinality();
+    uacalc.getAlgNameTextField().setText(alg.getName());
     uacalc.getCardTextField().setText("" + alg.cardinality());
-    uacalc.getDescTextField().setText(alg.description());
-    if (alg instanceof BasicAlgebra) setOpsCB();
+    uacalc.getDescTextField().setText(alg.getDescription());
+    final JTable table = uacalc.getOpTable();
+    if (alg.algebraType() != SmallAlgebra.AlgebraType.BASIC) {
+      // TODO: handle all other cases
+      table.setVisible(false);
+      return;
+    }
+    table.setVisible(true);
+    opList = alg.operations();
+    //java.util.List<Operation> ops = alg.operations();
+    //symbolList = new ArrayList<OperationSymbol>();
+    //opMap = new HashMap<OperationSymbol,Operation>();
+    for (Operation op : opList) {
+      symbolList.add(op.symbol());
+      //OperationWithDefaultValue op2 = 
+      //  new OperationWithDefaultValue(op);
+      //opList.add(op2);
+      opMap.put(op.symbol(), op);
+    }
+    setOpsCB();
   }
   
   /*
@@ -477,7 +498,8 @@ public class AlgebraEditorController {
         = getActions().addAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
       getActions().setCurrentAlgebra(gAlg);
       setOperationTable(new OperationInputTable());
-      getActions().setDirty(true);
+      gAlg.setNeedsSave(true);
+      //getActions().setDirty(true);
       getActions().setCurrentFile(null);
     }
   }

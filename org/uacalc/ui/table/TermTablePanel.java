@@ -88,7 +88,7 @@ public class TermTablePanel extends JPanel {
             Term term = (Term) table.getValueAt(rows[i], 1);
             ops.add(new TermOperationImp(term, variables, oldAlg));
           }
-          SmallAlgebra alg = new BasicAlgebra(oldAlg.name() + "-reduct", oldAlg.cardinality(), ops);
+          SmallAlgebra alg = new BasicAlgebra(oldAlg.getName() + "-reduct", oldAlg.cardinality(), ops);
           uacalc.setCurrentAlgebra(alg);
         }
         else showNoSelectionDialog();

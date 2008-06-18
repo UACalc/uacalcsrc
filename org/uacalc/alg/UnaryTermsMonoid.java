@@ -37,7 +37,7 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
   }
   
   public UnaryTermsMonoid(SmallAlgebra alg, boolean includeId) {
-    super("UnaryTerms(" + alg.name() + ")");
+    super("UnaryTerms(" + alg.getName() + ")");
     generatingAlgebra = alg;
     free1 = new FreeAlgebra(alg, 1);
     Term[] unaryTerms = free1.getTerms();
@@ -137,6 +137,10 @@ System.out.println("tmp.length = " + tmp.length );
   public void makeOperationTables() {
     // TODO Auto-generated method stub
 
+  }
+  
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
   }
   
   public AlgebraType algebraType() {

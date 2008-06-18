@@ -118,7 +118,7 @@ public class CongruenceLattice implements Lattice {
 
   public boolean isUnary() { return false; }
 
-  public String description() {
+  public String getDescription() {
     if (description != null) return description;
     return "Congruence Lattice of " + alg;
   }
@@ -154,8 +154,12 @@ public class CongruenceLattice implements Lattice {
 
   public Iterator iterator() { return universe().iterator(); }
 
-  public String name() {
-    return "Con(" + getAlgebra().name() + ")";
+  public String getName() {
+    return "Con(" + getAlgebra().getName() + ")";
+  }
+  
+  public void setName(String v) {
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -246,7 +250,7 @@ public class CongruenceLattice implements Lattice {
 
   public void makePrincipals() {
     if (monitoring()) monitor.printStart("finding principal congruences of " 
-                                                        + getAlgebra().name());
+                                                        + getAlgebra().getName());
     HashMap<Partition,Partition> pcIdMap = new HashMap<Partition,Partition>();  // to keep equal congruences identical
     principalCongruences = new ArrayList<Partition>();
     //congruencesHash = new HashSet();
@@ -272,7 +276,7 @@ public class CongruenceLattice implements Lattice {
     }
     sortByRank(principalCongruences);
     if (monitoring()) monitor.printEnd("principal congruences of " 
-               + getAlgebra().name() + ": size = " + principalCongruences.size());
+               + getAlgebra().getName() + ": size = " + principalCongruences.size());
   }
 
   public boolean universeFound() { return universe != null; }
@@ -321,7 +325,7 @@ public class CongruenceLattice implements Lattice {
    */
   public void makeUniverse() {
     if (monitoring()) monitor.printStart("finding the universe of Con(" 
-                                                     + getAlgebra().name() + ")");
+                                                     + getAlgebra().getName() + ")");
     List<Partition> univ = new ArrayList<Partition>(joinIrreducibles());
     HashSet<Partition> hash = new HashSet<Partition>(joinIrreducibles());
     sizeComputed = univ.size();
@@ -380,7 +384,7 @@ public class CongruenceLattice implements Lattice {
     if (monitoring()) monitor.setSizeFieldText("" + univ.size());
     universe = new LinkedHashSet<Partition>(univ);
     congruencesHash = hash;
-    if (monitoring()) monitor.printEnd("|Con(" + getAlgebra().name() + ")| = " + univ.size());
+    if (monitoring()) monitor.printEnd("|Con(" + getAlgebra().getName() + ")| = " + univ.size());
   }
 
   /**
@@ -413,7 +417,7 @@ public class CongruenceLattice implements Lattice {
 //      the conlat.
 // since principalCongruences is sorted by rank, this will be too.
   public void makeJoinIrreducibles() {
-    if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().name());
+    if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().getName());
     joinIrreducibles = new ArrayList<Partition>();
     lowerCoverOfJIs = new HashMap<Partition,Partition>();
     for (Iterator it = principals().iterator(); it.hasNext(); ) {
@@ -432,7 +436,7 @@ public class CongruenceLattice implements Lattice {
       }
     }
     if (monitoring()) monitor.printEnd("join irreducible congruences of " 
-        + getAlgebra().name() + ": size = " + joinIrreducibles.size());
+        + getAlgebra().getName() + ": size = " + joinIrreducibles.size());
   }
   
   /**

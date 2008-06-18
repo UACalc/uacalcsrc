@@ -327,7 +327,7 @@ public final class AlgebraWriter {
   }
 
   private void writeAlgName() {
-    String name = algebra.name();
+    String name = algebra.getName();
     if (name != null && name.length() > 0) {
       writeBeginEndTag(ALG_NAME_TAG, ALG_NAME_END_TAG, name);
     }
@@ -338,7 +338,7 @@ public final class AlgebraWriter {
   //}
 
   private void writeDesc() {
-    writeDesc(algebra.description());
+    writeDesc(algebra.getDescription());
   }
 
   private void writeDesc(String desc) {

@@ -29,7 +29,7 @@ public class GeneralAlgebra implements Algebra {
   //private final int[] similarityType;
   protected CongruenceLattice con;
   protected SubalgebraLattice sub;
-  protected final String name;
+  protected String name;
   protected String description;
   protected int size;
   
@@ -119,11 +119,15 @@ public class GeneralAlgebra implements Algebra {
     return similarityType;
   }
 
-  public String name() {
+  public String getName() {
     return name;
   }
+  
+  public void setName(String v) {
+    name = v;
+  }
 
-  public String description() {
+  public String getDescription() {
     return description;
   }
 

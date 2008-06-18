@@ -90,9 +90,11 @@ public interface Algebra {
 
   //public CongruenceLattice con();  // only for SmallAlgebra's
 
-  public String name();
+  public String getName();
+  
+  public void setName(String v);
 
-  public String description();
+  public String getDescription();
   
   public void setDescription(String desc);
 

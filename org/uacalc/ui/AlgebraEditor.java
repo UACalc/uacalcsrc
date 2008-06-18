@@ -299,10 +299,10 @@ public class AlgebraEditor extends JPanel {
       opList.add(op2);
       opMap.put(op.symbol(), op2);
     }
-    name_tf.setText(alg.name());
+    name_tf.setText(alg.getName());
     card_tf.setText("" + alg.cardinality());
-    System.out.println("desc: " + alg.description());
-    desc_tf.setText(alg.description());
+    System.out.println("desc: " + alg.getDescription());
+    desc_tf.setText(alg.getDescription());
     if (alg instanceof BasicAlgebra) setOpsCB();
   }
   

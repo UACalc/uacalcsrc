@@ -158,7 +158,7 @@ public class ComputationsPanel extends JSplitPane {
     final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
       public FreeAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
-        report.setDescription("F(" + gens + ") over " + alg.name());
+        report.setDescription("F(" + gens + ") over " + alg.getName());
         FreeAlgebra freeAlg = new FreeAlgebra(uacalc.getCurrentAlgebra(), 
             gens, true, thin, report);
         return freeAlg;

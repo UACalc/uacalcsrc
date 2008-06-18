@@ -82,6 +82,11 @@ public interface SmallAlgebra extends Algebra {
    */
   public List<SmallAlgebra> parents();
 
+  /**
+   * This is used in the UI. Only valid for BASIC algebras.
+   */
+  public void convertToDefaultValueOps();
+  
 }
 
 

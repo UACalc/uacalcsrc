@@ -310,6 +310,10 @@ public class  BasicLattice extends GeneralAlgebra
     return meet;
   }
   
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
+  }
+  
   public AlgebraType algebraType() {
     return AlgebraType.BASIC_LATTICE;
   }

@@ -7,6 +7,7 @@ import java.util.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
@@ -33,34 +34,44 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * If a universe is not given, use Integers.
    */
   public BasicAlgebra(String name, final int s, List operations) {
-    super(name, 
-          new AbstractSet() {
-                public boolean contains(Object obj) {
-                  try {
-                    int k = ((Integer)obj).intValue();
-                    if (0 <= k && k < s) return true;
-                  }
-                  catch (ClassCastException ex) { }
-                  return false;
-                }
-                public int size() { return s; }
-                public Iterator iterator() {
-                  return new Iterator() {
-                    int current = 0;
-                    public boolean hasNext() { return current < s; }
-                    public Object next() { return new Integer(current++); }
-                    public void remove() {
-                      throw new UnsupportedOperationException();
-                    }
-                  };
-                }
-              },
-          operations);
+    super(name, new AbstractSet() {
+      public boolean contains(Object obj) {
+        try {
+          int k = ((Integer) obj).intValue();
+          if (0 <= k && k < s) return true;
+        }
+        catch (ClassCastException ex) {
+        }
+        return false;
+      }
+
+      public int size() {
+        return s;
+      }
+
+      public Iterator iterator() {
+        return new Iterator() {
+          int current = 0;
+
+          public boolean hasNext() {
+            return current < s;
+          }
+
+          public Object next() {
+            return new Integer(current++);
+          }
+
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    }, operations);
   }
 
   /**
-   * This constructs a SmallAlgebra from a ordered list of elements.
-   * The operations need to have intValueAt(int[]) implemented.
+   * This constructs a SmallAlgebra from a ordered list of elements. The
+   * operations need to have intValueAt(int[]) implemented.
    */
   public BasicAlgebra(String name, List univ, List operations) {
 // not tested yet
@@ -130,6 +141,19 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
     if (sub == null) sub = new SubalgebraLattice(this);
     return sub;
   }
+  
+  public void convertToDefaultValueOps() {
+    List<Operation> ops = operations();
+    List<Operation> opsDV = new ArrayList<Operation>(ops.size());
+    for (Operation op : ops) {
+      if (!(op instanceof OperationWithDefaultValue)) {
+        opsDV.add(new OperationWithDefaultValue(op));
+      }
+      else opsDV.add(op);
+    }
+    operations = opsDV;
+  }
+  
   
   public AlgebraType algebraType() {
     return AlgebraType.BASIC;

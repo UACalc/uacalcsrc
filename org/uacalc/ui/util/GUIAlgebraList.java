@@ -11,10 +11,14 @@ import org.uacalc.alg.*;
  * @author ralph
  *
  */
-public class GUIAlgebraList {
+public class GUIAlgebraList implements Iterable<GUIAlgebra> {
 
   private List<GUIAlgebra> algList = new ArrayList<GUIAlgebra>();
   //private int currentAlgIndex = -1;
+  
+  public Iterator<GUIAlgebra> iterator() {
+    return algList.iterator();
+  }
   
   public void add(GUIAlgebra gAlg, boolean makeCurrentAlg) {
     algList.add(gAlg);

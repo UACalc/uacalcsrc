@@ -158,8 +158,11 @@ public final class SequenceGenerator {
   }
 
   public static void main(String[] args) {
-    int[] a = new int[] {0,0,0,0,0};
-    ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
+    //int[] a = new int[] {0,0,0,0,0};
+    //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
+    //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
+    int[] a = new int[] {0,0,0};
+    ArrayIncrementor inc = sequenceIncrementor(a, 3, 2);
     while (inc.increment()) {
       System.out.println(ArrayString.toString(a));
     }

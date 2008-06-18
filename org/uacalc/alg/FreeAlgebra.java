@@ -52,7 +52,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * Construct a free algebra without giving it a name.
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport report) {
-    this("F(" + numberOfGens + ") over " + alg.name(),
+    this("F(" + numberOfGens + ") over " + alg.getName(),
         alg, numberOfGens, true, false, report);
   }
   
@@ -63,7 +63,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
                               boolean makeUniverse, boolean thinGenerators) {
-    this("Free(" + numberOfGens + ", " + alg.name() + ")", 
+    this("Free(" + numberOfGens + ", " + alg.getName() + ")", 
         alg, numberOfGens, makeUniverse, thinGenerators);
   }
 
@@ -89,7 +89,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
           boolean makeUniverse, boolean thinGens, ProgressReport report) {
-    this("F(" + numberOfGens + ") over " + alg.name(), alg, numberOfGens, 
+    this("F(" + numberOfGens + ") over " + alg.getName(), alg, numberOfGens, 
          makeUniverse, thinGens, report);
   }
   
@@ -118,7 +118,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     super(name);
     System.out.println("progressReport in Free is " + report);
     String line = "constructing free algebra on " + numberOfGens 
-                   + " generators over " + alg.name();
+                   + " generators over " + alg.getName();
     if (report != null) {
       report.addStartLine(line);
     }

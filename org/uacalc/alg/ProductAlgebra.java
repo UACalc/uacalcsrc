@@ -252,6 +252,10 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     List ans = new ArrayList();
     return ans;
   }
+  
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
+  }
 
   public AlgebraType algebraType() {
     return AlgebraType.PRODUCT;

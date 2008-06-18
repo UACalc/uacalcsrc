@@ -113,6 +113,10 @@ public class ReductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     algs.add(alg);
     return new Subalgebra(name, new ProductAlgebra(algs), univArr);
   }
+  
+  public void convertToDefaultValueOps() {
+    throw new UnsupportedOperationException("Only for basic algebras"); 
+  }
 
   public AlgebraType algebraType() {
     return AlgebraType.REDUCT;

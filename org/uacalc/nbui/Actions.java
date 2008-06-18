@@ -11,6 +11,7 @@ import java.util.prefs.*;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
@@ -26,7 +27,7 @@ public class Actions {
 
   private boolean dirty = false;
   private UACalculatorUI uacalcUI;
-  private GUIAlgebra currentAalgebra;  // Small ??
+  private GUIAlgebra currentAlgebra;  // Small ??
   //private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
   private AlgebraTableModel algebraTableModel = new  AlgebraTableModel();
   private final GUIAlgebraList algebraList = algebraTableModel.getAlgebraList();
@@ -68,43 +69,52 @@ public class Actions {
       public void valueChanged(ListSelectionEvent e) {
         int index = algTable.getSelectedRow();
         GUIAlgebra gAlg = algebraList.get(index);
-        setCurrentAlgebra(gAlg);
+        //System.out.println("curr alg = " + getCurrentAlgebra());
+        //System.out.println("gAlg = " + gAlg);
+        //System.out.println("curr alg equals gAlg is " + gAlg.equals(getCurrentAlgebra()));
+        //System.out.println(" number of ops = " +
+        //    gAlg.getAlgebra().operations().size());
+        if (!gAlg.equals(getCurrentAlgebra())) {
+          setCurrentAlgebra(gAlg);
+        }
       }
     });
-
-  }
+  }  
   
   public File getCurrentFile() { return currentFile; }
   public void setCurrentFile(File f) { currentFile = f; }
   
   
   public void quit() {
-    if (isDirty()) {
+    boolean dirty = false;
+    for (GUIAlgebra gAlg : algebraList) {
+      if (gAlg.needsSave()) {
+        dirty = true;
+        break;
+      }
+    }
+    if (dirty) {
       if (checkSave()) System.exit(0);
+      else return;
     }
     else System.exit(0);
   }
   
   
   public boolean checkSave() {
-    Object[] options = {"Save", "Discard", "Cancel"};
+    Object[] options = { "Yes", "No" };
     int n = JOptionPane.showOptionDialog(uacalcUI,
-                                         "Do you want to save your algebra?",
-                                         "Save Your Algebra?",
-                                         JOptionPane.YES_NO_CANCEL_OPTION,
-                                         JOptionPane.QUESTION_MESSAGE,
-                                         null,
-                                         options,
-                                         options[0]);
+        "Some algebra have not been saved. Exit anyway?", 
+        "Unsaved Algebras",
+        JOptionPane.YES_NO_OPTION, 
+        JOptionPane.QUESTION_MESSAGE, 
+        null,
+        options, 
+        options[0]);
     if (n == JOptionPane.YES_OPTION) {
-      return save();
-    }
-    else if (n == JOptionPane.NO_OPTION) {
       return true;
     }
-    else {
-      return false;
-    }
+    return false;
  }
 
 
@@ -282,7 +292,9 @@ public class Actions {
   }
   
   /**
-   * right now the list of algebras is maintained the algebraTableModel.
+   * Make alg into a GUIAlgebra, add it to the list and to the table
+   * with the list and scroll to the bottom.
+   * Right now the list of algebras is maintained the algebraTableModel.
    * We may want to change that.
    */
   public GUIAlgebra addAlgebra(SmallAlgebra alg, File file) {
@@ -408,10 +420,24 @@ public class Actions {
   public boolean save() {
     System.out.println("current alg = " + getCurrentAlgebra());
     if (getCurrentAlgebra() == null) return true;
-    SmallAlgebra alg = getAlgebraEditorController().makeAlgebra();
-    //if (!getAlgebraEditorController().sync()) return false;
+    SmallAlgebra alg = getCurrentAlgebra().getAlgebra();
     if (alg == null) return false;
-    File f = getCurrentFile();
+    for (Operation op : alg.operations()) {
+      if (!((OperationWithDefaultValue)op).isTotal()) {
+        uacalcUI.beep();
+        JOptionPane.showMessageDialog(uacalcUI,
+            "<html><center>Not all operations are total.<br>" 
+            + "Fill in the tables<br>"
+            + "or set a default value.</center></html>",
+            "Incomplete operation(s)",
+            JOptionPane.WARNING_MESSAGE);
+        return false;
+      }
+    }
+    alg.setName(uacalcUI.getAlgNameTextField().getText());
+    alg.setDescription(getAlgebraEditorController().updateDescription());
+
+    File f = getCurrentAlgebra().getFile();
     if (f == null) return saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
     String ext = ExtFileFilter.getExtension(f);
     boolean newFormat = true;
@@ -419,8 +445,11 @@ public class Actions {
     try {
     //AlgebraIO.writeAlgebraFile(getCurrentAlgebra().getAlgebra(), f, !newFormat);
       AlgebraIO.writeAlgebraFile(alg, f, !newFormat);
-    setDirty(false);
-    return true;
+      //setDirty(false);
+      getCurrentAlgebra().setNeedsSave(false);
+      setTitle();
+      uacalcUI.repaint();
+      return true;
     }
     catch (IOException e) {
       uacalcUI.beep();
@@ -431,8 +460,32 @@ public class Actions {
 
   public boolean saveAs(String ext) {
     if (getCurrentAlgebra() == null) return true;
-    SmallAlgebra alg = getAlgebraEditorController().makeAlgebra();
-    if (alg == null) return false;
+    SmallAlgebra alg = getCurrentAlgebra().getAlgebra();
+    if (alg == null) return false;  
+    for (Operation op : alg.operations()) {
+      if (!((OperationWithDefaultValue)op).isTotal()) {
+        uacalcUI.beep();
+        JOptionPane.showMessageDialog(uacalcUI,
+            "<html><center>Not all operations are total.<br>" 
+            + "Fill in the tables<br>"
+            + "or set a default value.</center></html>",
+            "Incomplete operation(s)",
+            JOptionPane.WARNING_MESSAGE);
+        return false;
+      }
+    }
+    alg.setName(uacalcUI.getAlgNameTextField().getText());
+    alg.setDescription(getAlgebraEditorController().updateDescription());
+    
+    //if (getCurrentAlgebra().getAlgebra().algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+    //  alg = getAlgebraEditorController().makeAlgebra();
+    //}
+    //else {
+    //  alg = getCurrentAlgebra().getAlgebra();
+    //  alg.setName(uacalcUI.getAlgNameTextField().getText());
+    //  alg.setDescription(getAlgebraEditorController().updateDescription());
+    //}
+
     //if (!getAlgebraEditorController().sync()) return false;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
@@ -473,7 +526,11 @@ public class Actions {
         AlgebraIO.writeAlgebraFile(alg, f, !newFormat);
         getPrefs().put("algebraDir", f.getParent());
         setCurrentFile(f);
-        setDirty(false);
+        //setDirty(false);
+        getCurrentAlgebra().setFile(f);
+        getCurrentAlgebra().setNeedsSave(false);
+        setTitle();
+        uacalcUI.repaint();
         return true;
       }
       catch (IOException e) {
@@ -532,29 +589,36 @@ public class Actions {
     if (a != null) {
       //this is to get rid of the left over error messages below
       //setUserMessage("");
-      setCurrentFile(file);
-      setTitle();
+      //setCurrentFile(file);
+      //setTitle();
       //setModified(false);
+      if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+        a.convertToDefaultValueOps();
+      }
       setCurrentAlgebra(addAlgebra(a, file));
-      setDirty(false);
+      //setDirty(false);
       uacalcUI.repaint();
     }
   }
+  
+  public void switchAlgebra(GUIAlgebra gAlg) {
+    setCurrentFile(gAlg.getFile());
+    setTitle();
+  }
 
-  public GUIAlgebra getCurrentAlgebra() { return currentAalgebra; }
+  public GUIAlgebra getCurrentAlgebra() { return currentAlgebra; }
   
   public void setCurrentAlgebra(SmallAlgebra alg) {
     setCurrentAlgebra(new GUIAlgebra(alg));
   }
   
   public void setCurrentAlgebra(GUIAlgebra alg) {
-    if (isDirty()) checkSave();
-    updateCurrentAlgebra(alg);
-    getAlgebraEditorController().setAlgebra(alg.getAlgebra());
-  }
-
-  public void setOp() {
-    
+    //if (isDirty()) checkSave();
+    currentAlgebra = alg;
+    setTitle();
+    // TODO: fix this
+    //getLatDrawPanel().setDiagram(null);
+    getAlgebraEditorController().setAlgebra(alg);
   }
   
   public Random getRandom() {
@@ -563,17 +627,6 @@ public class Actions {
   
   public void setRandomSeed(long seed) {
     random.setSeed(seed);
-  }
-  
-  /**
-   * Called from the edit window after the user sync's it.
-   * 
-   * @param alg
-   */
-  public void updateCurrentAlgebra(GUIAlgebra alg) {
-    currentAalgebra = alg;
-    // TODO: fix this
-    //getLatDrawPanel().setDiagram(null);
   }
 
   public boolean isDirty() { return dirty; }
@@ -592,10 +645,16 @@ public class Actions {
   }
 
   public void setTitle() {
-    if (currentFile == null) {
+    GUIAlgebra gAlg = getCurrentAlgebra();
+    if (gAlg == null) {
       uacalcUI.setTitle(progName + title);
     }
-    else uacalcUI.setTitle(progName + currentFile.getName() + (dirty ? " **" : ""));
+    else {
+      final boolean dirty = getCurrentAlgebra().needsSave();
+      final File file = gAlg.getFile();
+      final String name = file != null ? file.getName() : "";
+      uacalcUI.setTitle(progName + name + (dirty ? " **" : ""));
+    }
   }
   
   public void setNew() {

@@ -97,7 +97,7 @@ public class SubalgebraLattice implements Lattice {
 
   public boolean isUnary() { return false; }
 
-  public String description() {
+  public String getDescription() {
     if (description != null) return description;
     return "Subalgebra Lattice of " + alg;
   }
@@ -125,8 +125,12 @@ public class SubalgebraLattice implements Lattice {
 
   public Iterator iterator() { return universe().iterator(); }
 
-  public String name() {
+  public String getName() {
     return "Sub(" + getAlgebra() + ")";
+  }
+  
+  public void setName(String v) {
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -162,7 +166,7 @@ public class SubalgebraLattice implements Lattice {
 
   private void makeOneGeneratedSubalgebras() {
     if (monitoring()) monitor.printStart("finding 1 generated subalgebras of " 
-        + getAlgebra().name());
+        + getAlgebra().getName());
     oneGeneratedSubalgebras = new ArrayList<BasicSet>();
     oneGeneratedSubalgGenerator = new HashMap<BasicSet,Integer>();
     oneGeneratedSubalgLookup = new HashMap<Integer,BasicSet>();
@@ -182,7 +186,7 @@ public class SubalgebraLattice implements Lattice {
     Collections.sort(oneGeneratedSubalgebras);
     System.out.println("oneGenerated size = " + oneGeneratedSubalgebras.size());
     if (monitoring()) monitor.printEnd("one generated subalgebras of " 
-        + getAlgebra().name() + ": size = " + oneGeneratedSubalgebras.size());
+        + getAlgebra().getName() + ": size = " + oneGeneratedSubalgebras.size());
   }
 
   /**
@@ -580,7 +584,7 @@ public class SubalgebraLattice implements Lattice {
    */
   public void makeUniverse() {
     if (monitoring()) monitor.printStart("finding the universe of Sub(" 
-        + getAlgebra().name() + ")");
+        + getAlgebra().getName() + ")");
     universe = joinClosure(joinIrreducibles());
     /*
     universe = new HashSet(joinIrreducibles());
@@ -598,7 +602,7 @@ public class SubalgebraLattice implements Lattice {
     }
     */
     universe.add(zeroSubalg);
-    if (monitoring()) monitor.printEnd("|Sub(" + getAlgebra().name() + ")| = " + universe.size());
+    if (monitoring()) monitor.printEnd("|Sub(" + getAlgebra().getName() + ")| = " + universe.size());
   }
 
   /**
