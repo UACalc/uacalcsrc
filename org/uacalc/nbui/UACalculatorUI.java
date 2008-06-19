@@ -1085,5 +1085,9 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     public void setNPermMI(javax.swing.JMenuItem nPermMI) {
         this.nPermMI = nPermMI;
     }
+
+    public javax.swing.JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
   
 }
