@@ -57,7 +57,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
+        tabbedPane = new javax.swing.JTabbedPane();
         editorPanel = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         newAlgButton = new javax.swing.JButton();
@@ -369,7 +369,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap(382, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Editor", editorPanel);
+        tabbedPane.addTab("Editor", editorPanel);
 
         currentAlgPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Current Algebra Properties"));
 
@@ -433,7 +433,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Algebras", algebrasPanel);
+        tabbedPane.addTab("Algebras", algebrasPanel);
 
         resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
 
@@ -569,7 +569,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Computations", computationsPanel);
+        tabbedPane.addTab("Computations", computationsPanel);
 
         javax.swing.GroupLayout conPanelLayout = new javax.swing.GroupLayout(conPanel);
         conPanel.setLayout(conPanelLayout);
@@ -582,7 +582,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addGap(0, 659, Short.MAX_VALUE)
         );
 
-        jTabbedPane2.addTab("Con", conPanel);
+        tabbedPane.addTab("Con", conPanel);
 
         javax.swing.GroupLayout subPanelLayout = new javax.swing.GroupLayout(subPanel);
         subPanel.setLayout(subPanelLayout);
@@ -595,7 +595,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addGap(0, 659, Short.MAX_VALUE)
         );
 
-        jTabbedPane2.addTab("Sub", subPanel);
+        tabbedPane.addTab("Sub", subPanel);
 
         jToolBar2.setRollover(true);
 
@@ -636,7 +636,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap(634, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Drawing", drawingPanel);
+        tabbedPane.addTab("Drawing", drawingPanel);
 
         fileMenu.setText("File");
 
@@ -762,14 +762,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(132, Short.MAX_VALUE))
         );
 
@@ -917,7 +917,6 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
@@ -941,6 +940,7 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JMenu saveAsMenu;
     private javax.swing.JMenuItem saveMI;
     private javax.swing.JPanel subPanel;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JMenu tasksMenu;
     private javax.swing.JMenuItem uaFileMI;
     // End of variables declaration//GEN-END:variables
