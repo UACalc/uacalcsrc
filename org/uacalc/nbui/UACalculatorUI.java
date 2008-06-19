@@ -1089,5 +1089,9 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     public javax.swing.JTabbedPane getTabbedPane() {
         return tabbedPane;
     }
+
+    public void setResultTable(javax.swing.JTable resultTable) {
+        this.resultTable = resultTable;
+    }
   
 }
