@@ -449,6 +449,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        resultTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane4.setViewportView(resultTable);
 
         resultDescLabel.setText("Desc:");
