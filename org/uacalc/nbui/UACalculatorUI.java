@@ -779,7 +779,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     
 private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
-// TODO add your handling code here:
+  getComputationsController().cancelCurrentTask();
 }//GEN-LAST:event_cancelCompButtonActionPerformed
 
 private void clearLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearLogButtonActionPerformed
@@ -840,7 +840,7 @@ private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_saveMIActionPerformed
 
 private void freeAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freeAlgMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupFreeAlgebraTask();
 }//GEN-LAST:event_freeAlgMIActionPerformed
 
 private void membershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_membershipTestMIActionPerformed
@@ -953,6 +953,10 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
   
   public AlgebraEditorController getAlgebraEditorController() {
     return getActions().getAlgebraEditorController();
+  }
+  
+  public ComputationsController getComputationsController() {
+    return getActions().getComputationsController();
   }
 
   public javax.swing.JTextField getAlgNameTextField() {

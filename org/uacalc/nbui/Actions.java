@@ -37,6 +37,7 @@ public class Actions {
   private String progName = "UACalculator   ";
   private String currentFolder;
   private AlgebraEditorController algEditorController;
+  private ComputationsController computationsController;
   
   //private Tabs tabs;
   private final Random random = new Random();
@@ -44,6 +45,7 @@ public class Actions {
   public Actions(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
     algEditorController = new AlgebraEditorController(uacalcUI);
+    computationsController = new ComputationsController(uacalcUI);
     setupAlgTable();
   }
   
@@ -322,6 +324,10 @@ public class Actions {
   
   public AlgebraEditorController getAlgebraEditorController() {
     return algEditorController;
+  }
+  
+  public ComputationsController getComputationsController() {
+    return computationsController;
   }
   
   public void resetToolBar() {

@@ -165,11 +165,11 @@ public class ComputationsPanel extends JSplitPane {
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
-        System.out.println("got to completion");
-        System.out.println("thrown = " + exception);
-        for (BackgroundTask task : monitorPanel.getTaskList()) {
-          System.out.println("task: " + task.getStatus());
-        }
+        //System.out.println("got to completion");
+        //System.out.println("thrown = " + exception);
+        //for (BackgroundTask task : monitorPanel.getTaskList()) {
+        //  System.out.println("task: " + task.getStatus());
+        //}
         if (outOfMemory) {
           //monitorPanel.getProgressMonitor().reset();
           report.addEndingLine("Out of memory!!!");

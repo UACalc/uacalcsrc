@@ -16,6 +16,8 @@ public class ProgressReport {
   private JTextField sizeField;
   private JTextField descField;
   
+  private TaskTableModel taskTableModel;
+  
   private volatile List<String> logLines = new ArrayList<String>();
   private volatile int pass;
   private volatile int passSize;
@@ -26,6 +28,13 @@ public class ProgressReport {
   //private List<Long> times = new ArrayList<Long>();
   private Deque<Long> times = new ArrayDeque<Long>();
   
+  // the new version
+  public ProgressReport(TaskTableModel taskTableModel, JTextArea logArea) {
+    this.taskTableModel = taskTableModel;
+    this.logArea = logArea;
+  }
+  
+  // the old version depending on a MonitorPanel
   public ProgressReport(MonitorPanel panel) {
     monitorPanel = panel;
     logArea = panel.getLogArea();
@@ -33,48 +42,55 @@ public class ProgressReport {
     passField = panel.getPassField();
     passSizeField = panel.getPassSizeField();
     descField = panel.getDescriptionField();
+    taskTableModel = monitorPanel.getTaskTableModel();
   }
   
+  
+  
   public TaskTableModel getTaskTableModel() {
-    return monitorPanel.getTaskTableModel();
+    return taskTableModel;
   }
   
   public int getPass() { return pass; }
   
   public void setPass(int v) {
     pass = v;
-    if (monitorPanel.getProgressReport() == this) {
-      setPassFieldText(String.valueOf(v));
-      getTaskTableModel().fireTableDataChanged();
-    }
+    //if (monitorPanel.getProgressReport() == this) {
+    //  setPassFieldText(String.valueOf(v));
+    //  getTaskTableModel().fireTableDataChanged();
+    //}
+    getTaskTableModel().fireTableDataChanged();
   }
   
   public int getPassSize() { return passSize; }
   public void setPassSize(int v) {
     passSize = v;
-    if (monitorPanel.getProgressReport() == this) {
-      setPassSizeFieldText(String.valueOf(v));
-      getTaskTableModel().fireTableDataChanged();
-    }
+    //if (monitorPanel.getProgressReport() == this) {
+    //  setPassSizeFieldText(String.valueOf(v));
+    //  getTaskTableModel().fireTableDataChanged();
+    //}
+    getTaskTableModel().fireTableDataChanged();
   }
   
   public int getSize() { return size; }
   
   public void setSize(int v) {
     size = v;
-    if (monitorPanel.getProgressReport() == this) {
-      setSizeFieldText(String.valueOf(v));
-      getTaskTableModel().fireTableDataChanged();
-    }
+    //if (monitorPanel.getProgressReport() == this) {
+    //  setSizeFieldText(String.valueOf(v));
+    //  getTaskTableModel().fireTableDataChanged();
+    //}
+    getTaskTableModel().fireTableDataChanged(); 
   }
   
   public String getDescription() { return desc; }
 
   public void setDescription(String v) {
     desc = v;
-    if (monitorPanel.getProgressReport() == this) {
-      setDescFieldText(String.valueOf(v));
-    }
+    //if (monitorPanel.getProgressReport() == this) {
+    //  setDescFieldText(String.valueOf(v));
+    //}
+    getTaskTableModel().fireTableDataChanged();
   }
   
   public List<String> getLogLines() { return logLines; }
@@ -118,7 +134,7 @@ public class ProgressReport {
   }
   
   private void conditionalAppend(String str) {
-    if (monitorPanel.getProgressReport() == ProgressReport.this) {
+    if (taskTableModel.getCurrentTask().getProgressReport() == ProgressReport.this) {
       appendToLogArea(str + "\n");
     }
   }
@@ -137,10 +153,10 @@ public class ProgressReport {
   }
   
   private void printToLogAux(final String s) {
-    System.out.println("s = " + s + ", indent = " + indent);
+    //System.out.println("s = " + s + ", indent = " + indent);
     logArea.append(getIndentString() + s);
     int pos = logArea.getDocument().getLength();
-    System.out.println("pos = " + pos);
+    //System.out.println("pos = " + pos);
     logArea.setCaretPosition(logArea.getDocument().getLength());
   }
   

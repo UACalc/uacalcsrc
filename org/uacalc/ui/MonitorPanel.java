@@ -156,7 +156,7 @@ public class MonitorPanel extends JPanel {
   
   
   public BackgroundTask<?> getTask() { return model.getCurrentTask(); }
-  public void setTask(BackgroundTask<?> v) { model.setCurrrentTask(v); }
+  public void setTask(BackgroundTask<?> v) { model.setCurrentTask(v); }
   
   public void addTask(BackgroundTask<?> task) {
     addTask(task, true);

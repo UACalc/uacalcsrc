@@ -7,15 +7,27 @@ import org.uacalc.ui.*;
 
 public class TaskTableModel extends AbstractTableModel {
 
-  MonitorPanel mp;
+  //MonitorPanel mp;
   private List<BackgroundTask<?>> tasks = new ArrayList<BackgroundTask<?>> ();
   private BackgroundTask<?> currentTask;
   
-  private String[] colNames = new String[] {"Description", "Pass", 
-      "Pass Size", "Size", "Status"};
+  private String[] colNames = new String[] {" ", "Description", "Pass", 
+      "Pass Size", "Size", "Time Left For Pass", "Status"};
   
+  public TaskTableModel() {}
+  
+  /**
+   * This constructor is for the old UI.
+   * 
+   * @param mp
+   */
   public TaskTableModel(MonitorPanel mp) {
-    this.mp = mp;
+    tasks = mp.getTaskList();
+    //this.mp = mp;
+  }
+  
+  public void setCurrentTask(int index) {
+    currentTask = tasks.get(index);
   }
   
   public int getColumnCount() {
@@ -23,19 +35,21 @@ public class TaskTableModel extends AbstractTableModel {
   }
 
   public int getRowCount() {
-    return mp.getTaskList().size();
+    return getTasks().size();
   }
 
   public boolean isCellEditable(int row, int col) { return false; }
   
   public Object getValueAt(int rowIndex, int columnIndex) {
-    BackgroundTask<?> task = mp.getTaskList().get(rowIndex);
+    BackgroundTask<?> task = getTasks().get(rowIndex);
     ProgressReport prog = task.getProgressReport();
-    if (columnIndex == 0) return prog.getDescription();
-    if (columnIndex == 1) return prog.getPass();
-    if (columnIndex == 2) return prog.getPassSize();
-    if (columnIndex == 3) return prog.getSize();
-    if (columnIndex == 4) return task.getStatus();
+    if (columnIndex == 0) return currentTask == task ? "  ->" : "";
+    if (columnIndex == 1) return prog.getDescription();
+    if (columnIndex == 2) return prog.getPass();
+    if (columnIndex == 3) return prog.getPassSize();
+    if (columnIndex == 4) return prog.getSize();
+    if (columnIndex == 5) return null; //TODO put a number or progress bar
+    if (columnIndex == 6) return task.getStatus();
     return null;
   }
 
@@ -45,18 +59,20 @@ public class TaskTableModel extends AbstractTableModel {
   
   public BackgroundTask<?> getCurrentTask() { return currentTask; }
   
-  public void setCurrrentTask(BackgroundTask<?> v) { 
+  public void setCurrentTask(BackgroundTask<?> v) { 
     currentTask = v; //highlight its row
   }
   
   public void addTask(BackgroundTask<?> task) {
     addTask(task, true);
     fireTableDataChanged();
+    
   }
   
   public void addTask(BackgroundTask<?> task, boolean makecurrent) {
     tasks.add(task);
-    if (makecurrent) setCurrrentTask(task);
+    if (makecurrent) setCurrentTask(task);
+    fireTableDataChanged();
   }
   
   public List<BackgroundTask<?>> getTasks() { return tasks; }
