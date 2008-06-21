@@ -65,6 +65,7 @@ public class ComputationsController {
             uacalcUI.getLogTextArea().append(s + nl);
           }
           uacalcUI.getResultTable().setModel(termTableModels.get(index));
+          setResultTableColWidths();
           uacalcUI.getResultTextField().setText(termTableModels.get(index).getDescription());
           uacalcUI.repaint();
         }
@@ -88,6 +89,20 @@ public class ComputationsController {
     //    // TODO: do something
     //  }
     //});
+  }
+  
+  /**
+   * This should be called after the TermTableModel has been set.
+   */
+  private void setResultTableColWidths() {
+    final JTable resultTable = uacalcUI.getResultTable();
+    final int cols = resultTable.getColumnCount();
+    for (int i = 0; i < cols; i++) {
+      TableColumn col = resultTable.getColumnModel().getColumn(i);
+      if (i == 0) col.setPreferredWidth(60);
+      else if (i == 1) col.setPreferredWidth(900);
+      else col.setPreferredWidth(40);
+    }
   }
   
   // no sure I need this
@@ -154,6 +169,7 @@ public class ComputationsController {
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
+    setResultTableColWidths();
     final String desc = "F(" + gens + ") over " + alg.getName();
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
@@ -166,33 +182,21 @@ public class ComputationsController {
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
-        //System.out.println("got to completion");
-        //System.out.println("thrown = " + exception);
-        //for (BackgroundTask task : monitorPanel.getTaskList()) {
-        //  System.out.println("task: " + task.getStatus());
-        //}
         if (outOfMemory) {
-          //monitorPanel.getProgressMonitor().reset();
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
-          //monitorPanel.getProgressModel().printlnToLog("Not enough memory");
-          
           return;
         }
         if (!cancelled) {
-          // TODO: put this back!!!!!
-          //TermTablePanel ttp = 
-          //  new TermTablePanel(uacalcUI, fr.getTerms(), fr.getVariables());
-          //setTermTablePanel(ttp);
           ttm.setTerms(fr.getTerms());
           ttm.setVariables(fr.getVariables());
-          System.out.println("Free Alg size = " + fr.cardinality());
+          if (getCurrentTask() == this) setResultTableColWidths();
         }
         else {
-          //monitorPanel.getProgressMonitor().reset();
-          //monitorPanel.getProgressModel().printlnToLog("computation cancelled");
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
         }
       }
     };
