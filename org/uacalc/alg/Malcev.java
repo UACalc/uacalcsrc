@@ -34,12 +34,20 @@ public class Malcev {
   //public static Monitor getMonitor() { return monitor; }
   public static void setMonitor(ProgressReport m) { monitor = m; }
   
-  
   /**
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
   public static Term findNUF(SmallAlgebra alg, int arity) {
+    return findNUF(alg, arity, null);
+  }
+  
+  
+  /**
+   * This will find a near unanimity term of the given arity
+   * if one exits; otherwise it return <tt>null</tt>.
+   */
+  public static Term findNUF(SmallAlgebra alg, int arity, ProgressReport report) {
     if (alg.cardinality() == 1) return new VariableImp("x0");
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     f2.makeOperationTables();
@@ -903,11 +911,11 @@ System.out.println("got to idempotent");
     IntArray g0 = new IntArray(new int[] {0,0});
     IntArray g1 = new IntArray(new int[] {0,1});
     IntArray g2 = new IntArray(new int[] {1,1});
-    List gens = new ArrayList(3);
+    List<IntArray> gens = new ArrayList<IntArray>(3);
     gens.add(g0);
     gens.add(g1);
     gens.add(g2);
-    final HashMap termMap = new HashMap(3);
+    final HashMap<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
     termMap.put(g0, Variable.x);
     termMap.put(g1, Variable.y);
     termMap.put(g2, Variable.z);

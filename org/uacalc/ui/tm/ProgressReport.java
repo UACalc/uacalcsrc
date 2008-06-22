@@ -187,7 +187,6 @@ public class ProgressReport {
         printlnToLogAux(s);
         indent++;
         times.addFirst(System.currentTimeMillis());
-        System.out.println("start: s = " + s + ", times.size(0 = " + times.size() + ", indent = " + indent);
       }
     });
   }
@@ -199,7 +198,6 @@ public class ProgressReport {
         long time = System.currentTimeMillis() - times.removeFirst();
         indent--;
         printlnToLogAux(s + "  (" + time + " ms)");
-        System.out.println("printEnd: indent = " + indent);
       }
     });
   }
@@ -248,7 +246,6 @@ public class ProgressReport {
   private String getIndentString() {
     final String two = "  ";
     StringBuffer sb = new StringBuffer();
-    System.out.println("indent = " + indent);
     for (int i = 0; i < indent; i++) {
       sb.append(two);
     }

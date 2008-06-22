@@ -404,5 +404,68 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(hmTermTask);
   }
   
+  public void setupNUTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int arity = getFreeGensDialog();
+    if (!(arity > 2)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Near unanimity term over " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  nuTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding an NU term of arity " + arity);
+        report.setDescription(desc);
+        Term nu = Malcev.findNUF(alg, arity, report);
+        return nu;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no NU term of arity " + arity);
+            ttm.setDescription(desc + ": there is none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found an NU term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(nuTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(nuTask);
+  }
   
 }
