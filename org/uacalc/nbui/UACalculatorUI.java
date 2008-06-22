@@ -120,6 +120,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         distributivityMI = new javax.swing.JMenuItem();
         modularityMI = new javax.swing.JMenuItem();
         nPermMI = new javax.swing.JMenuItem();
+        nuMI = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -753,6 +754,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         maltsevMenu.add(nPermMI);
 
+        nuMI.setText("Item");
+        nuMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(nuMI);
+
         jMenuBar1.add(maltsevMenu);
 
         setJMenuBar(jMenuBar1);
@@ -859,6 +868,10 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
   getComputationsController().setupHagemannMitschkeTermsTask();
 }//GEN-LAST:event_nPermMIActionPerformed
 
+private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_nuMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -928,6 +941,7 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private javax.swing.JMenuItem nPermMI;
     private javax.swing.JButton newAlgButton;
     private javax.swing.JMenuItem newMI;
+    private javax.swing.JMenuItem nuMI;
     private javax.swing.JTable opTable;
     private javax.swing.JScrollPane opTableScrollPane;
     private javax.swing.JButton openButton;
