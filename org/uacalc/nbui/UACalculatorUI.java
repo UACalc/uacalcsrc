@@ -848,15 +848,15 @@ private void membershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//
 }//GEN-LAST:event_membershipTestMIActionPerformed
 
 private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupJonssonTermsTask();
 }//GEN-LAST:event_distributivityMIActionPerformed
 
 private void modularityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modularityMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupGummTermsTask();
 }//GEN-LAST:event_modularityMIActionPerformed
 
 private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nPermMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupHagemannMitschkeTermsTask();
 }//GEN-LAST:event_nPermMIActionPerformed
 
   

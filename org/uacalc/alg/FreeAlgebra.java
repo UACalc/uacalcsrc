@@ -116,7 +116,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                   boolean decompose, 
                                   ProgressReport report) {
     super(name);
-    System.out.println("progressReport in Free is " + report);
+    //System.out.println("progressReport in Free is " + report);
     String line = "constructing free algebra on " + numberOfGens 
                    + " generators over " + alg.getName();
     if (report != null) {
@@ -124,7 +124,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     else System.out.println(line);
     decompose = true;
-    setupGensAndProductAlg(alg, numberOfGens, decompose);
+    setupGensAndProductAlg(alg, numberOfGens, decompose, report);
     /*
     final int n = alg.cardinality();
     int s = 1;
@@ -196,8 +196,11 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   }
   
   private void setupGensAndProductAlg(final SmallAlgebra alg, 
-                     final int numberOfGens, boolean decompose) {
+                                      final int numberOfGens, 
+                                      final boolean decompose,
+                                      final ProgressReport report) {
     if (decompose) {
+      if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
       final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
       final List<IntArray> projs = new ArrayList<IntArray>();
       for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens)) {
@@ -206,6 +209,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
       productAlgebra = new BigProductAlgebra(algs);
       gens = transpose(projs);
+      if (report != null) report.addEndingLine("number of projections: " + projs.size());
       System.out.println("projs size = " + projs.size());
     }
     else {

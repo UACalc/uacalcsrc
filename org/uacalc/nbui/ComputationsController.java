@@ -126,31 +126,6 @@ public class ComputationsController {
     }
   }
   
-  /**
-   * This makes a new TermTableModel, add it to the list and displays it.
-   * 
-   * @param terms
-   * @param vars
-   * @return
-   */
-  private TermTableModel makeTermTableModel(java.util.List<Term> terms, 
-                                            java.util.List<Variable> vars, int pos) {
-    final int n = terms.size();
-    Term[] tArr = new Term[n];
-    for (int i = 0; i < n; i++) {
-      tArr[i] = terms.get(i);
-    }
-    final int m = vars.size();
-    Variable[] vArr = new Variable[m];
-    for (int i = 0; i < m; i++) {
-      vArr[i] = vars.get(i);
-    }
-    TermTableModel ttm = new TermTableModel(tArr, vArr);
-    uacalcUI.getResultTable().setModel(ttm);
-    uacalcUI.repaint();
-    return ttm;
-  }
-  
   public void setupFreeAlgebraTask() {
     final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
     if (gAlg == null) {
@@ -176,6 +151,7 @@ public class ComputationsController {
     final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
       public FreeAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Computing the free algebra");
         report.setDescription(desc);
         FreeAlgebra freeAlg = new FreeAlgebra(alg, gens, true, thin, report);
         return freeAlg;
@@ -188,6 +164,7 @@ public class ComputationsController {
           return;
         }
         if (!cancelled) {
+          report.addEndingLine("Done computing the free algebra");
           ttm.setTerms(fr.getTerms());
           ttm.setVariables(fr.getVariables());
           if (getCurrentTask() == this) setResultTableColWidths();
@@ -240,5 +217,192 @@ public class ComputationsController {
     if (thin == JOptionPane.YES_OPTION || thin == JOptionPane.OK_OPTION) return true;
     return false;
   }
+  
+  public void setupJonssonTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding Jonsson terms for " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<java.util.List<Term>>  jonssonTermTask 
+                                   = new BackgroundTask<java.util.List<Term>>(report) {
+      public java.util.List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding Jonsson terms.");
+        report.setDescription(desc);
+        java.util.List<Term> terms = Malcev.jonssonTerms(alg, false, report);
+        return terms;
+      }
+      public void onCompletion(java.util.List<Term> terms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (terms == null) {
+            report.addEndingLine("The variety is not congruence distributive.");
+            ttm.setDescription(desc + ": there are none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Done finding Jonsson terms.");
+            ttm.setTerms(terms);
+          }
+          //ttm.setVariables(fr.getVariables());
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(jonssonTermTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(jonssonTermTask);
+  }
+  
+  public void setupGummTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding Gumm terms for " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<java.util.List<Term>>  gummTermTask 
+                                   = new BackgroundTask<java.util.List<Term>>(report) {
+      public java.util.List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding Gumm modularity terms.");
+        report.setDescription(desc);
+        java.util.List<Term> terms = Malcev.gummTerms(alg, report);
+        return terms;
+      }
+      public void onCompletion(java.util.List<Term> terms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (terms == null) {
+            report.addEndingLine("The variety is not congruence modular.");
+            ttm.setDescription(desc + ": there are none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Done finding Gumm terms.");
+            ttm.setTerms(terms);
+          }
+          //ttm.setVariables(fr.getVariables());
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(gummTermTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(gummTermTask);
+  }
+  
+  public void setupHagemannMitschkeTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding Hagemann-Mitschke terms for " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<java.util.List<Term>>  hmTermTask 
+                                   = new BackgroundTask<java.util.List<Term>>(report) {
+      public java.util.List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding Hagemann-Mitschke terms for k-permutability.");
+        report.setDescription(desc);
+        java.util.List<Term> terms = Malcev.hagemannMitschkeTerms(alg, report);
+        return terms;
+      }
+      public void onCompletion(java.util.List<Term> terms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (terms == null) {
+            report.addEndingLine("The variety is not k-permutable.");
+            ttm.setDescription(desc + ": there are none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found Hagemann-Mitschke terms.");
+            ttm.setTerms(terms);
+          }
+          //ttm.setVariables(fr.getVariables());
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(hmTermTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(hmTermTask);
+  }
+  
   
 }
