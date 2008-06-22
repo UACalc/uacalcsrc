@@ -310,7 +310,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="nuMI">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Item"/>
+                <Property name="text" type="java.lang.String" value="near unanimity term"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuMIActionPerformed"/>

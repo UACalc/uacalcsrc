@@ -754,7 +754,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         maltsevMenu.add(nPermMI);
 
-        nuMI.setText("Item");
+        nuMI.setText("near unanimity term");
         nuMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nuMIActionPerformed(evt);
