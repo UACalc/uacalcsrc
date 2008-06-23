@@ -183,7 +183,32 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(freeAlgTask);
   }
   
+  public int getNumberDialog(int min, String message, String title) {
+    String numStr = JOptionPane.showInputDialog(uacalcUI, 
+                    message, title, JOptionPane.QUESTION_MESSAGE);
+    if (numStr == null) return -1;
+    int num = -1;
+    boolean gensOk = true;
+    try {
+      num = Integer.parseInt(numStr);
+    }
+    catch (NumberFormatException e) {
+      gensOk = false;
+    }
+    if (!gensOk || num < min) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>The number must be at least " + min + "<br>"
+          + "Try again.</html>",
+          "Number format error",
+          JOptionPane.ERROR_MESSAGE);
+      return -1;
+    }
+    return num;
+  }
+  
   public int getFreeGensDialog() {
+    return getNumberDialog(1, "Number of generators?",  "Free Algebra");
+    /*
     String numGensStr = JOptionPane.showInputDialog(uacalcUI, 
                                             "Number of generators?", 
                                             "Free Algebra", 
@@ -206,6 +231,7 @@ public class ComputationsController {
       return -1;
     }
     return gens;
+    */
   }
   
   private boolean getThinGens() {
@@ -415,19 +441,19 @@ public class ComputationsController {
       return;
     }
     final SmallAlgebra alg = gAlg.getAlgebra();
-    final int arity = getFreeGensDialog();
+    final int arity = getNumberDialog(3, "What arity (at least 3)?", "Arity");
     if (!(arity > 2)) return;
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Near unanimity term over " + alg.getName();
+    final String desc = "Near unanimity term of arity " + arity +  " over " + alg.getName();
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Term>  nuTask = new BackgroundTask<Term>(report) {
       public Term compute() {
         //monitorPanel.getProgressMonitor().reset();
-        report.addStartLine("Finding an NU term of arity " + arity);
+        report.addStartLine(desc);
         report.setDescription(desc);
         Term nu = Malcev.findNUF(alg, arity, report);
         return nu;

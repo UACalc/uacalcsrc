@@ -869,7 +869,7 @@ private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_nPermMIActionPerformed
 
 private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupNUTermTask();
 }//GEN-LAST:event_nuMIActionPerformed
 
   
