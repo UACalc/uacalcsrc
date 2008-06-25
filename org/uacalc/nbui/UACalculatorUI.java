@@ -900,15 +900,15 @@ private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_nuMIActionPerformed
 
 private void maltsevMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maltsevMIActionPerformed
-  //getComputationsController().setupMalcevTermTask();
+  getComputationsController().setupMalcevTermTask();
 }//GEN-LAST:event_maltsevMIActionPerformed
 
 private void majorityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_majorityMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupMajorityTermTask();
 }//GEN-LAST:event_majorityMIActionPerformed
 
 private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pixleyMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupPixleyTermTask();
 }//GEN-LAST:event_pixleyMIActionPerformed
 
   

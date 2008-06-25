@@ -430,6 +430,192 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(hmTermTask);
   }
   
+  public void setupMajorityTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A majority term over " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  majTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term nu = Malcev.majorityTerm(alg, report);
+        return nu;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no majority term");
+            ttm.setDescription(desc + ": there is none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a majority term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(majTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(majTask);
+  }
+  
+  public void setupPixleyTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A Pixley term over " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  pixleyTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term nu = Malcev.pixleyTerm(alg, report);
+        return nu;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no Pixley term");
+            ttm.setDescription(desc + ": there is none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a Pixley term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(pixleyTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(pixleyTask);
+  }
+  
+  public void setupMalcevTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A Maltsev term over " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  majTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term nu = Malcev.malcevTerm(alg, report);
+        return nu;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no Maltsev term");
+            ttm.setDescription(desc + ": there is none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a Maltsev term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(majTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(majTask);
+  }
+  
   public void setupNUTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
     if (gAlg == null) {
