@@ -120,6 +120,9 @@ public class UACalculatorUI extends javax.swing.JFrame {
         distributivityMI = new javax.swing.JMenuItem();
         modularityMI = new javax.swing.JMenuItem();
         nPermMI = new javax.swing.JMenuItem();
+        maltsevMI = new javax.swing.JMenuItem();
+        majorityMI = new javax.swing.JMenuItem();
+        pixleyMI = new javax.swing.JMenuItem();
         nuMI = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -754,6 +757,30 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         maltsevMenu.add(nPermMI);
 
+        maltsevMI.setText("Maltsev term");
+        maltsevMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maltsevMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(maltsevMI);
+
+        majorityMI.setText("Majority term");
+        majorityMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                majorityMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(majorityMI);
+
+        pixleyMI.setText("Pixley term");
+        pixleyMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pixleyMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(pixleyMI);
+
         nuMI.setText("near unanimity term");
         nuMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -872,6 +899,18 @@ private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
   getComputationsController().setupNUTermTask();
 }//GEN-LAST:event_nuMIActionPerformed
 
+private void maltsevMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maltsevMIActionPerformed
+  //getComputationsController().setupMalcevTermTask();
+}//GEN-LAST:event_maltsevMIActionPerformed
+
+private void majorityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_majorityMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_majorityMIActionPerformed
+
+private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pixleyMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_pixleyMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -935,6 +974,8 @@ private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JTextArea logTextArea;
+    private javax.swing.JMenuItem majorityMI;
+    private javax.swing.JMenuItem maltsevMI;
     private javax.swing.JMenu maltsevMenu;
     private javax.swing.JMenuItem membershipTestMI;
     private javax.swing.JMenuItem modularityMI;
@@ -947,6 +988,7 @@ private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
     private javax.swing.JButton openButton;
     private javax.swing.JMenuItem openMI;
     private javax.swing.JComboBox opsComboBox;
+    private javax.swing.JMenuItem pixleyMI;
     private javax.swing.JMenuItem quitMI;
     private javax.swing.JLabel resultDescLabel;
     private javax.swing.JPanel resultPane;
