@@ -830,27 +830,27 @@ public class SubalgebraLattice implements Lattice {
   }
   
   public BasicSet findMinimalSizedGeneratingSet() {
-    return null;
+    if (algSize == 1) return BasicSet.EMPTY_SET;
+    oneGeneratedSubalgebras();
+    Integer g = oneGeneratedSubalgGenerator.get(one());
+    if (g != null) return new BasicSet(new int[] { g });
+    for (int i = 2; i <= algSize; i++) {
+      final int[] arr = new int[i];
+      for (int j = 0; j < i; j++) {
+        arr[j] = j;
+      }
+      ArrayIncrementor inc = SequenceGenerator.increasingSequenceIncrementor(arr, algSize - 1);
+      while (true) {
+        BasicSet sub = sg(arr);
+        //System.out.println("arr = " + ArrayString.toString(arr) + ", sub = " + sub);
+        //if (one().leq(sub)) return new BasicSet(arr);
+        if (sub.size() == algSize) return new BasicSet(arr);
+        if (!inc.increment()) break;
+      }
+    }
+    return null;  // this should not happen
   }
   
-  /*
-  public BasicSet findMinimalSizedGeneratingSet() {
-    oneGeneratedSubalgebras();
-    Integer g = oneGeneratedSubalgGenerator.get(oneSubalg);
-    if (g != null) return new BasicSet(new int[] { g });
-    Map<BasicSet,BasicSet> current = new HashMap<BasicSet,BasicSet>();
-    for (BasicSet s : oneGeneratedSubalgebras()) {
-      current.put(s, new BasicSet(new int[] {oneGeneratedSubalgGenerator.get(s)}));
-    }
-    List<BasicSet> next = new ArrayList<BasicSet>();
-    //for (BasicSet s : currentList) {
-    //  for (BasicSet g : oneGeneratedSubalgebras()) {
-        
-    //  }
-    //}
-    return null;
-  }
-  */
 
   public final BasicSet zero() { return zeroSubalg; }
   public final BasicSet one() { return oneSubalg; }
@@ -865,13 +865,14 @@ public class SubalgebraLattice implements Lattice {
     if (args.length == 0) {
       try {
         alg = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(
-                "/home/ralph/Java/Algebra/algebras/m3.ua");
+                "/home/ralph/Java/Algebra/algebras/lyndon.ua");
         alg2 = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(
                 "/home/ralph/Java/Algebra/algebras/m3.ua");
       }
       catch (Exception e) {}
-      System.out.println("map: " + SubalgebraLattice.extendToHomomorphism(
-          new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg, alg2));
+      //System.out.println("map: " + SubalgebraLattice.extendToHomomorphism(
+      //    new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg, alg2));
+      System.out.println("gen set is " + alg.sub().findMinimalSizedGeneratingSet());
       return;
     }
     System.out.println("reading " + args[0]);
