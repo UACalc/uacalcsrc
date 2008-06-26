@@ -159,7 +159,7 @@ public class SubalgebraLattice implements Lattice {
    * 
    * @return
    */
-  public List oneGeneratedSubalgebras() {
+  public List<BasicSet> oneGeneratedSubalgebras() {
     if (oneGeneratedSubalgebras == null) makeOneGeneratedSubalgebras();
     return oneGeneratedSubalgebras;
   }
@@ -828,6 +828,29 @@ public class SubalgebraLattice implements Lattice {
     }
 */
   }
+  
+  public BasicSet findMinimalSizedGeneratingSet() {
+    return null;
+  }
+  
+  /*
+  public BasicSet findMinimalSizedGeneratingSet() {
+    oneGeneratedSubalgebras();
+    Integer g = oneGeneratedSubalgGenerator.get(oneSubalg);
+    if (g != null) return new BasicSet(new int[] { g });
+    Map<BasicSet,BasicSet> current = new HashMap<BasicSet,BasicSet>();
+    for (BasicSet s : oneGeneratedSubalgebras()) {
+      current.put(s, new BasicSet(new int[] {oneGeneratedSubalgGenerator.get(s)}));
+    }
+    List<BasicSet> next = new ArrayList<BasicSet>();
+    //for (BasicSet s : currentList) {
+    //  for (BasicSet g : oneGeneratedSubalgebras()) {
+        
+    //  }
+    //}
+    return null;
+  }
+  */
 
   public final BasicSet zero() { return zeroSubalg; }
   public final BasicSet one() { return oneSubalg; }

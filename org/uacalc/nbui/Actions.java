@@ -38,6 +38,7 @@ public class Actions {
   private String currentFolder;
   private AlgebraEditorController algEditorController;
   private ComputationsController computationsController;
+  private JComboBox algListComboBox = new JComboBox();
   
   //private Tabs tabs;
   private final Random random = new Random();

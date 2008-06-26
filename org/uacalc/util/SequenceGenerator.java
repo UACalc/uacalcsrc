@@ -42,10 +42,10 @@ public final class SequenceGenerator {
 
   /**
    * Generate the next nondecreasing sequence 
-   * on <tt>0</tt> to <tt>max - 1</tt> subject to the restrction that
-   * last coordiate is at least <tt>lastMin</tt>.
+   * on <tt>0</tt> to <tt>max - 1</tt> subject to the restriction that
+   * last coordinate is at least <tt>lastMin</tt>.
    */
-  public static void incrementNondecreasingSequence(int[] arg, 
+  private static void incrementNondecreasingSequence(int[] arg, 
                                                     int max, int lastMin) {
     final int len = arg.length;
     for (int i = len - 1; i >= 0; i--) {
@@ -60,6 +60,30 @@ public final class SequenceGenerator {
     }
   }
 
+  /**
+   * his increments an array in place through all strictly increasing sequences
+   * whose entries lie between 0 and <tt>max</tt>, inclusive.
+   * 
+   * @param a
+   * @param max
+   * @return
+   */
+  public static ArrayIncrementor increasingSequenceIncrementor(final int[] a, final int max) {
+    final int len = a.length;
+    final int[] a2 = new int[len];
+    final ArrayIncrementor nondecInc = nondecreasingSequenceIncrementor(a2, max + 1 - len);
+    return new ArrayIncrementor() {
+        public boolean increment() {
+          boolean v = nondecInc.increment();
+          if (!v) return false;
+          for (int i = 0; i <  len; i++) {
+            a[i] = a2[i] + i;
+          }
+          return true;
+        }
+    };
+  }
+  
   /**
    * This just increments the array through all possible tuples
    * with entries between 0 and max. This increments from the right:
@@ -147,7 +171,7 @@ public final class SequenceGenerator {
    * Generate the next sequence 
    * on <tt>0</tt> to <tt>max - 1</tt>.
    */
-  public static void incrementSequence(int[] arg, final int max) {
+  private static void incrementSequence(int[] arg, final int max) {
     final int len = arg.length;
     for (int i = len - 1; i >= 0; i--) {
       if (arg[i] < max) {
@@ -161,8 +185,13 @@ public final class SequenceGenerator {
     //int[] a = new int[] {0,0,0,0,0};
     //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
     //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
-    int[] a = new int[] {0,0,0};
-    ArrayIncrementor inc = sequenceIncrementor(a, 3, 2);
+    //int[] a = new int[] {0,0,0};
+    //ArrayIncrementor inc = sequenceIncrementor(a, 3, 2);
+    //while (inc.increment()) {
+    //  System.out.println(ArrayString.toString(a));
+    //}
+    int[] a = new int[] {0,1,2};
+    ArrayIncrementor inc = increasingSequenceIncrementor(a, 4);
     while (inc.increment()) {
       System.out.println(ArrayString.toString(a));
     }
