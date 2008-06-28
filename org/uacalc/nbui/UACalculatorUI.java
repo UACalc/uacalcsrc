@@ -880,7 +880,7 @@ private void freeAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_freeAlgMIActionPerformed
 
 private void membershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_membershipTestMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().setupBinVATask();
 }//GEN-LAST:event_membershipTestMIActionPerformed
 
 private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed

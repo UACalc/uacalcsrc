@@ -675,6 +675,13 @@ public class Actions {
     return algebraList;
   }
   
+  public void setAlgListComboBox() {
+    algListComboBox.removeAllItems();
+    for (GUIAlgebra gAlg : getAlgebraList()) {
+      algListComboBox.addItem(gAlg);
+    }
+  }
+  
   // prefs stuff
   public Preferences getPrefs() {
     return Preferences.userNodeForPackage(uacalcUI.getClass());

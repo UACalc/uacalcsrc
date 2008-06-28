@@ -100,4 +100,11 @@ public class GUIAlgebra {
     return needsSave;
   }
   
+  public String toString() {
+    String extra = "";
+    String name = getAlgebra().getName();
+    if (name != null && name.length() > 0) extra = " (" + name + ")"; 
+    return "A" + serial + extra;
+  }
+  
 }

@@ -9,6 +9,7 @@ import java.util.*;
 import java.io.*;
 
 import org.uacalc.alg.*;
+import org.uacalc.eq.*;
 import org.uacalc.terms.*;
 import org.uacalc.ui.table.*;
 import org.uacalc.ui.tm.*;
@@ -19,6 +20,8 @@ public class ComputationsController {
   private final UACalculatorUI uacalcUI;
   private TaskTableModel taskTableModel = new TaskTableModel();
   private java.util.List<TermTableModel> termTableModels = new ArrayList<TermTableModel>();
+  private static final String[] thinningOptions
+      = new String[] {"use all coords", "thin coords", "decompose and thin"};
   
   public ComputationsController(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
@@ -140,7 +143,13 @@ public class ComputationsController {
     final int gens = getFreeGensDialog();
     if (!(gens > 0)) return;
     System.out.println("gens = " + gens);
-    final boolean thin = getThinGens();
+    final String thinOpt = getThinGens();
+    if (thinOpt == null) return;
+    int optIndex = 0;
+    if (thinOpt == thinningOptions[1]) optIndex = 1;
+    if (thinOpt == thinningOptions[2]) optIndex = 2;
+    final boolean decompose = optIndex == 2 ? true : false;
+    final boolean thin = decompose || optIndex == 1;
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
@@ -153,7 +162,8 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine("Computing the free algebra");
         report.setDescription(desc);
-        FreeAlgebra freeAlg = new FreeAlgebra(alg, gens, true, thin, report);
+        FreeAlgebra freeAlg = new FreeAlgebra("F(" + gens + ") over " + alg.getName(),
+                                              alg, gens, true, thin, decompose, report);
         return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
@@ -234,14 +244,13 @@ public class ComputationsController {
     */
   }
   
-  private boolean getThinGens() {
-    int thin =  JOptionPane.showConfirmDialog(uacalcUI, 
-        "Eliminate some redundant projections", 
-        "Coordinate thinning", 
-        JOptionPane.YES_NO_OPTION, 
-        JOptionPane.QUESTION_MESSAGE);
-    if (thin == JOptionPane.YES_OPTION || thin == JOptionPane.OK_OPTION) return true;
-    return false;
+  private String getThinGens() {
+    String opt = (String)JOptionPane.showInputDialog(uacalcUI,
+        "Choose one",
+        "Thinning Options",
+        JOptionPane.QUESTION_MESSAGE, null,
+        thinningOptions, thinningOptions[2]);    
+    return opt;
   }
   
   public void setupJonssonTermsTask() {
@@ -678,6 +687,97 @@ public class ComputationsController {
     Actions.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(nuTask);
+  }
+  
+  public void setupBinVATask() {
+    final GUIAlgebra gAlg2 = uacalcUI.getActions().getCurrentAlgebra();
+    if (gAlg2 == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    GUIAlgebra[] algs = new GUIAlgebra[getActions().getAlgebraList().size()];
+    int i = 0;
+    for (GUIAlgebra a : getActions().getAlgebraList()) {
+      algs[i++] = a;
+    }
+    GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+                                   "<html><center>B in V(A)?<br>Choose A</center></html>", 
+                                   "B in V(A)",
+                                   JOptionPane.QUESTION_MESSAGE, null,
+                                   algs, algs[0]);
+    System.out.println("gA = " + gA);
+    if (gA == null) return;
+    GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+        "<html><center>B in V(A)?<br>Choose B</center></html>", 
+        "B in V(A)",
+        JOptionPane.QUESTION_MESSAGE, null,
+        algs, algs[0]);
+    if (gB == null) return;
+    SmallAlgebra A = gA.getAlgebra();
+    SmallAlgebra B = gB.getAlgebra();
+    int[] BGenerators = B.sub().findMinimalSizedGeneratingSet().getArray();
+    Equation eq = FreeAlgebra.findEquationOfAnotB(A, B, BGenerators);
+    System.out.println("eq is\n" + eq);
+    
+    return;
+    /*
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int arity = getNumberDialog(3, "What arity (at least 3)?", "Arity");
+    if (!(arity > 2)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Near unanimity term of arity " + arity +  " over " + alg.getName();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  nuTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term nu = Malcev.findNUF(alg, arity, report);
+        return nu;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no NU term of arity " + arity);
+            ttm.setDescription(desc + ": there is none.");
+            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found an NU term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(nuTask);
+    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(nuTask);
+    */
   }
   
 }

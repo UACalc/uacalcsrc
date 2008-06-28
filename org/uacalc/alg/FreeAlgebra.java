@@ -123,7 +123,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       report.addStartLine(line);
     }
     else System.out.println(line);
-    decompose = true;
+    //decompose = true;
     setupGensAndProductAlg(alg, numberOfGens, decompose, report);
     /*
     final int n = alg.cardinality();
@@ -190,7 +190,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     if (makeUniverse) makeUniverse(report);
     line = "done constructing free algebra, size = " + size;
     if (report != null) {
-      report.addEndingLine(line + " rsf ");
+      report.addEndingLine(line);
     }
     else System.out.println(line);
   }
