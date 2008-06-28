@@ -53,7 +53,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport report) {
     this("F(" + numberOfGens + ") over " + alg.getName(),
-        alg, numberOfGens, true, false, report);
+        alg, numberOfGens, true, true, true, report);
   }
   
   
@@ -97,6 +97,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       boolean makeUniverse, boolean thinGens, 
       ProgressReport report) {
     this(name, alg, numberOfGens, makeUniverse, thinGens, false, report);
+  }
+  
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
+                     boolean makeUniverse, boolean thinGens, 
+                     boolean decompose, ProgressReport report) {
+    this("F(" + numberOfGens + ") over " + alg.getName(), alg, numberOfGens,
+         makeUniverse, thinGens, decompose, report);
   }
   
   /**
@@ -297,6 +304,11 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     makeOperations();
   }
   
+  public static Equation findEquationOfAnotB(SmallAlgebra A, 
+                                             SmallAlgebra B, int[] bGens) {
+     return findEquationOfAnotB(A, B, bGens, null);
+  }
+  
   /**
    * Find an equation holding in A and failing in B under the substitution, or
    * return null if there is no such failure. If there is no such failure and
@@ -308,8 +320,10 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @return a list of two terms witnessing the failure, or null
    */
   public static Equation findEquationOfAnotB(SmallAlgebra A, SmallAlgebra B, 
-                                               int[] bGens) {
-    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
+                                               int[] bGens, ProgressReport report) {
+    //FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
+    // TODO: fix this, fix this fix this !!! make the decomp = true !!!!!!!!!
+    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, false, report);
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setImageAlgebra(B);
     closer.setHomomorphism(bGens);
