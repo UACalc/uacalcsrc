@@ -14,6 +14,7 @@ import org.uacalc.terms.*;
 import org.uacalc.ui.table.*;
 import org.uacalc.ui.tm.*;
 import org.uacalc.ui.util.*;
+import org.uacalc.util.*;
 
 public class ComputationsController {
   
@@ -108,6 +109,20 @@ public class ComputationsController {
     }
   }
   
+  /**
+   * This is called at the end of a task to update the resultTextField
+   * if this is still the current task.
+   * 
+   * @param task
+   * @param ttm
+   */
+  private void updateResultTextField(BackgroundTask<?> task, TermTableModel ttm) {
+    if (getCurrentTask() == task) {
+      uacalcUI.getResultTextField().setText(ttm.getDescription());
+    }
+  }
+  
+  
   // no sure I need this
   public BackgroundTask<?> getCurrentTask() {
     return taskTableModel.getCurrentTask();
@@ -171,6 +186,7 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
@@ -182,7 +198,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -218,30 +234,6 @@ public class ComputationsController {
   
   public int getFreeGensDialog() {
     return getNumberDialog(1, "Number of generators?",  "Free Algebra");
-    /*
-    String numGensStr = JOptionPane.showInputDialog(uacalcUI, 
-                                            "Number of generators?", 
-                                            "Free Algebra", 
-                                            JOptionPane.QUESTION_MESSAGE);
-    if (numGensStr == null) return -1;
-    int gens = -1;
-    boolean gensOk = true;
-    try {
-      gens = Integer.parseInt(numGensStr);
-    }
-    catch (NumberFormatException e) {
-      gensOk = false;
-    }
-    if (!gensOk || gens <= 0) {
-      JOptionPane.showMessageDialog(uacalcUI,
-          "<html>The number of generators must be positive.<br>"
-          + "Try again.</html>",
-          "Number format error",
-          JOptionPane.ERROR_MESSAGE);
-      return -1;
-    }
-    return gens;
-    */
   }
   
   private String getThinGens() {
@@ -285,13 +277,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (terms == null) {
             report.addEndingLine("The variety is not congruence distributive.");
             ttm.setDescription(desc + ": there are none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -304,7 +297,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -347,13 +340,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (terms == null) {
             report.addEndingLine("The variety is not congruence modular.");
             ttm.setDescription(desc + ": there are none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -366,7 +360,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -409,13 +403,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (terms == null) {
             report.addEndingLine("The variety is not k-permutable.");
             ttm.setDescription(desc + ": there are none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -428,7 +423,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -470,13 +465,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (nu == null) {
             report.addEndingLine("The variety has no majority term");
             ttm.setDescription(desc + ": there is none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -490,7 +486,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -532,13 +528,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (nu == null) {
             report.addEndingLine("The variety has no Pixley term");
             ttm.setDescription(desc + ": there is none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -552,7 +549,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -586,27 +583,28 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Term nu = Malcev.malcevTerm(alg, report);
-        return nu;
+        Term maltsev = Malcev.malcevTerm(alg, report);
+        return maltsev;
       }
-      public void onCompletion(Term nu, Throwable exception, 
+      public void onCompletion(Term mal, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
-          if (nu == null) {
+          if (mal == null) {
             report.addEndingLine("The variety has no Maltsev term");
             ttm.setDescription(desc + ": there is none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
             report.addEndingLine("Found a Maltsev term.");
             java.util.List<Term> terms = new ArrayList<Term>(1);
-            terms.add(nu);
+            terms.add(mal);
             ttm.setTerms(terms);
           }
           if (getCurrentTask() == this) setResultTableColWidths();
@@ -658,13 +656,14 @@ public class ComputationsController {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
           if (nu == null) {
             report.addEndingLine("The variety has no NU term of arity " + arity);
             ttm.setDescription(desc + ": there is none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
@@ -678,7 +677,7 @@ public class ComputationsController {
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -709,7 +708,7 @@ public class ComputationsController {
                                    "B in V(A)",
                                    JOptionPane.QUESTION_MESSAGE, null,
                                    algs, algs[0]);
-    System.out.println("gA = " + gA);
+    //System.out.println("gA = " + gA);
     if (gA == null) return;
     GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
         "<html><center>B in V(A)?<br>Choose B</center></html>", 
@@ -717,58 +716,67 @@ public class ComputationsController {
         JOptionPane.QUESTION_MESSAGE, null,
         algs, algs[0]);
     if (gB == null) return;
-    SmallAlgebra A = gA.getAlgebra();
-    SmallAlgebra B = gB.getAlgebra();
-    int[] BGenerators = B.sub().findMinimalSizedGeneratingSet().getArray();
-    Equation eq = FreeAlgebra.findEquationOfAnotB(A, B, BGenerators);
-    System.out.println("eq is\n" + eq);
+    final SmallAlgebra A = gA.getAlgebra();
+    final SmallAlgebra B = gB.getAlgebra();
+    if (!A.isSimilarTo(B)) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>Ths algebras must have the same similarity type.<br>",
+          "Algebras Not Similar",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final int[] BGenerators = B.sub().findMinimalSizedGeneratingSet().getArray();
     
-    return;
-    /*
-    final SmallAlgebra alg = gAlg.getAlgebra();
-    final int arity = getNumberDialog(3, "What arity (at least 3)?", "Arity");
-    if (!(arity > 2)) return;
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Near unanimity term of arity " + arity +  " over " + alg.getName();
+    final String nameA = A.getName() != null ? A.getName() : gA.toString();
+    final String nameB = B.getName() != null ? B.getName() : gB.toString();
+    final String desc = "Test if " + nameB + " in V(" + nameA + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Term>  nuTask = new BackgroundTask<Term>(report) {
-      public Term compute() {
+    final BackgroundTask<Equation>  nuTask = new BackgroundTask<Equation>(report) {
+      public Equation compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Term nu = Malcev.findNUF(alg, arity, report);
-        return nu;
+        Equation eq = FreeAlgebra.findEquationOfAnotB(A, B, BGenerators, report);
+        return eq;
       }
-      public void onCompletion(Term nu, Throwable exception, 
+      public void onCompletion(Equation eq, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
           return;
         }
         if (!cancelled) {
-          if (nu == null) {
-            report.addEndingLine("The variety has no NU term of arity " + arity);
-            ttm.setDescription(desc + ": there is none.");
-            uacalcUI.getResultTextField().setText(ttm.getDescription());
+          if (eq == null) {
+            report.addEndingLine(nameB + "is in V(" + nameA + ")");
+            ttm.setDescription(desc + ": it is!");
+            updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine("Found an NU term.");
-            java.util.List<Term> terms = new ArrayList<Term>(1);
-            terms.add(nu);
+            report.addEndingLine(nameB + "is not in V(" + nameA + ")");
+            ttm.setDescription("An equation of " + nameA + " that fails in " + nameB 
+                + " by substituting " + ArrayString.toString(BGenerators) 
+                + " for the variables");
+            updateResultTextField(this, ttm);
+            java.util.List<Term> terms = new ArrayList<Term>(2);
+            terms.add(eq.leftSide());
+            terms.add(eq.rightSide());
             ttm.setTerms(terms);
+            uacalcUI.repaint();
           }
           if (getCurrentTask() == this) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
           ttm.setDescription(desc + " (cancelled)");
-          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          updateResultTextField(this, ttm);
           uacalcUI.repaint();
         }
       }
@@ -777,7 +785,6 @@ public class ComputationsController {
     Actions.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(nuTask);
-    */
   }
   
 }

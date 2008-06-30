@@ -163,6 +163,11 @@ public class Closer {
     return ans;
   }
   
+  public List<IntArray> sgClose() {
+    //System.out.println("gens = " + generators);
+    //System.out.println("termMap = " + termMap);
+    return sgClose(generators, 0, termMap, null);
+  }
   
   /**
    * Closure of <tt>elems</tt> under the operations. (Worry about
@@ -194,6 +199,7 @@ public class Closer {
       }
     }
     //if (monitoring()) monitor.printStart("subpower closing ...");
+    if (report != null) report.addStartLine("subpower closing ...");
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
@@ -203,12 +209,20 @@ public class Closer {
     int currentMark = lst.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      if (Thread.currentThread().isInterrupted()) return null;
-      //if (monitoring()) {
-      //  System.out.println("subpow pass = " + pass + " size = " + lst.size());
-      //  monitor.setPassFieldText("" + pass++);
-      //  monitor.setSizeFieldText("" + lst.size());
-      //}
+      String str = "pass: " + pass + ", size: " + lst.size();
+      if (report != null) {
+        report.setPass(pass);
+        report.setPassSize(lst.size());
+        report.addLine(str);
+      }
+      else {
+        System.out.println(str);
+      }
+      pass++;
+      if (Thread.currentThread().isInterrupted()) {
+        report.addEndingLine("cancelled ...");
+        return null;
+      }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
       for (Iterator<Operation> it = algebra.operations().iterator(); it.hasNext(); ) {
@@ -227,7 +241,8 @@ public class Closer {
         final int[][] arg = new int[arity][];
         while (true) {
           if (Thread.currentThread().isInterrupted()) {
-            //if (monitoring()) monitor.setSizeFieldText("" + lst.size());
+            report.addEndingLine("cancelled ...");
+            report.setSize(lst.size());
             return null;
           }
           for (int i = 0; i < arity; i++) {
@@ -247,8 +262,19 @@ public class Closer {
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
+            // cannot do this exit if we are searching  for an equation !!!!!
+            if (getImageAlgebra() == null 
+                    && algebra.cardinality() > 0 
+                    && lst.size() == algebra.cardinality()) {
+              if (report != null) {
+                report.addEndingLine("found all " + lst.size() + " elements");
+                report.setSize(lst.size());
+              }
+              return lst;
+            }
             if (v.equals(elt)) {
-              //if (monitoring()) monitor.printEnd("closing done, found " + elt);
+              if (report != null) report.addEndingLine("closing done, found "
+                                               + elt + ", at " + lst.size());
               return lst;
             }
           }
@@ -270,21 +296,15 @@ if (false) {
       closedMark = currentMark;
       currentMark = lst.size();
       if (algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
-System.out.println("so far: " + currentMark);
-//if (currentMark > 7) return lst;
     }
-    //if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
+    if (report != null) report.addEndingLine("closing done, size = " + lst.size());
     return lst;
   }
-
-  public List<IntArray> sgClosePower() {
-    return sgClosePower(null);
-  }
   
-  public List<IntArray> sgClosePower(ProgressReport report) {
+  public List<IntArray> sgClosePower() {
     //System.out.println("gens = " + generators);
     //System.out.println("termMap = " + termMap);
-    return sgClosePower(generators, 0, termMap, report);
+    return sgClosePower(generators, 0, termMap);
   }
   
   /**
@@ -306,7 +326,7 @@ System.out.println("so far: " + currentMark);
    */
   private final List<IntArray> sgClosePower(
       List<IntArray> elems, int closedMark, 
-      final Map<IntArray,Term> termMap, ProgressReport report) {
+      final Map<IntArray,Term> termMap) {
     
     if (report != null) report.addStartLine("subpower closing ...");
     final int algSize = algebra.factors().get(0).cardinality();

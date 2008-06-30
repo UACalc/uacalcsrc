@@ -199,7 +199,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
     }
     if (makeUniverse) makeUniverse(report);
-    line = "done constructing free algebra, size = " + size;
+    if (size == 0) line = "made the free algebra, but haven't found the elements.";
+    else line = "done constructing free algebra, size = " + size;
     if (report != null) {
       report.addEndingLine(line);
     }
@@ -329,6 +330,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     // TODO: fix this, fix this fix this !!! make the decomp = true !!!!!!!!!
     FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, false, report);
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
+    closer.setProgressReport(report);
     closer.setImageAlgebra(B);
     closer.setHomomorphism(bGens);
     closer.sgClosePower();

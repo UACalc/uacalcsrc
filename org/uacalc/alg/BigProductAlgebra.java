@@ -565,7 +565,13 @@ System.out.println("so far: " + currentMark);
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                    final Map<IntArray,Term> termMap, final  Object elt, ProgressReport report) {
+    Closer closer = new Closer(this, elems, termMap);
+    closer.setProgressReport(report);
     if (isPower()) {
+      System.out.println("using Closer");
+      return closer.sgClosePower();
+      
+      /*
       SmallAlgebra alg = rootFactors().get(0);
       alg.makeOperationTables();
       List<Operation> ops = alg.operations();
@@ -573,7 +579,11 @@ System.out.println("so far: " + currentMark);
         return sgClosePower(alg.cardinality(), ops, elems,
                                                closedMark, termMap, elt, report);
       }
+      */
     }
+    return closer.sgClose();
+    
+    /*
     // TODO: here
     //if (monitoring()) monitor.printStart("subpower closing ...");
     if (report != null) report.addStartLine("subpower closing ...");
@@ -659,18 +669,6 @@ System.out.println("so far: " + currentMark);
           }
           if (!inc.increment()) break;
         }
-if (false) {
-/*
-  List middleZero = new ArrayList();
-    for (Iterator it2 = lst.iterator(); it2.hasNext(); ) {
-      IntArray ia = (IntArray)it2.next();
-      if (ia.get(1) == 0) middleZero.add(ia);
-    }
-  System.out.println("jonsson level so far: "
-     + Algebras.jonssonLevelAux(middleZero, 
-                             (IntArray)lst.get(0),  (IntArray)lst.get(2)));
-*/
-}
       }
       closedMark = currentMark;
       currentMark = lst.size();
@@ -681,6 +679,7 @@ System.out.println("so far: " + currentMark);
     if (report != null) report.addEndingLine("closing done, size = " + lst.size());
     //if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
+    */
   }
 
   /**
