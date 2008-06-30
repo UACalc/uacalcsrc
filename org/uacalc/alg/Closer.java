@@ -274,11 +274,15 @@ System.out.println("so far: " + currentMark);
     if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
   }
-
+  
   public List<IntArray> sgClosePower() {
+    return sgClosePower(null);
+  }
+  
+  public List<IntArray> sgClosePower(ProgressReport report) {
     //System.out.println("gens = " + generators);
     //System.out.println("termMap = " + termMap);
-    return sgClosePower(generators, 0, termMap);
+    return sgClosePower(generators, 0, termMap, report);
   }
   
   /**
@@ -300,11 +304,9 @@ System.out.println("so far: " + currentMark);
    */
   private final List<IntArray> sgClosePower(
       List<IntArray> elems, int closedMark, 
-      final Map<IntArray,Term> termMap) {
-System.out.println("using power");
-System.out.println("card = " + algebra.cardinality());
-    if (monitoring()) monitor.printStart("subpower closing ...");
+      final Map<IntArray,Term> termMap, ProgressReport report) {
     
+    if (report != null) report.addStartLine("subpower closing ...");
     final int algSize = algebra.factors().get(0).cardinality();
     final List<Operation> ops = algebra.factors().get(0).operations();
     
@@ -338,10 +340,16 @@ System.out.println("card = " + algebra.cardinality());
     int currentMark = ans.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      if (monitoring()) {
-        monitor.setPassFieldText("" + pass++);
-        monitor.setSizeFieldText("" + ans.size());
+      String str = "pass: " + pass + ", size: " + ans.size();
+      if (report != null) {
+        report.setPass(pass);
+        report.setPassSize(ans.size());
+        report.addLine(str);
       }
+      else {
+        System.out.println(str);
+      }
+      pass++;
       // close the elements in current
       for (int i = 0; i < k; i++) {
         final int arity = arities[i];
@@ -399,10 +407,11 @@ System.out.println("card = " + algebra.cardinality());
             }
             final int size = ans.size();
             if (algebra.cardinality() > 0 && size == algebra.cardinality()) {
-              if (monitoring()) {
-                monitor.printEnd("done closing, size = " + ans.size());
-                monitor.setSizeFieldText("" + ans.size());
-              } 
+              
+              if (report != null) {
+                report.addEndingLine("done closing, size = " + ans.size());
+                report.setSize(ans.size());
+              }
               return ans;
             }
             if (imgOps != null) {
@@ -414,17 +423,12 @@ System.out.println("card = " + algebra.cardinality());
               homomorphism.put(v, imgOps[i].intValueAt(args));
             }
             if (Thread.currentThread().isInterrupted()) {
-              if (monitoring()) {
-                monitor.setSizeFieldText("" + ans.size());
+              if (report != null) {
+                report.setSizeFieldText("" + ans.size());
+                report.addEndingLine("cancelled ...");
               }
               return null;
             }
-            //if (monitoring()) {
-            //  monitor.setSizeFieldText("" + ans.size());
-            //  if (monitor.isCancelled()) {
-            //    throw new CancelledException("cancelled from sgClose");
-            //  }
-            //}
             if (v.equals(eltToFind)) return ans;
           }
           else {
@@ -442,8 +446,15 @@ System.out.println("card = " + algebra.cardinality());
                 }
                 failingEquation = new Equation(termMap.get(v),
                     new NonVariableTerm(symbols[i], children));
-                System.out.println("failing equation:\n" + failingEquation);
-                System.out.println("size so far: " + ans.size());
+                final String line = "failing equation:\n" + failingEquation;
+                if (report != null) {
+                  report.setSize(ans.size());
+                  report.addEndingLine(line);
+                }
+                else {
+                  System.out.println("failing equation:\n" + failingEquation);
+                  System.out.println("size so far: " + ans.size());
+                }
                 return ans;
               }
             }
@@ -470,10 +481,12 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return ans;
     }
-    if (monitoring()) {
-      getMonitor().printEnd("done closing, size = " + ans.size());
-      getMonitor().setSizeFieldText("" + ans.size());
+    final String str = "done closing, size = " + ans.size();
+    if (report != null) {
+      report.setSize(ans.size());
+      report.addEndingLine(str);
     }
+    else System.out.println(str);
     completed = true;
     return ans;
   }

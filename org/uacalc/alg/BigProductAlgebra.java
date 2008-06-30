@@ -614,13 +614,13 @@ System.out.println("so far: " + currentMark);
 
         final int[][] arg = new int[arity][];
         while (true) {
-          if (Thread.currentThread().isInterrupted()) return null;
-          //if (monitoring()) {
-          //  if (monitor.isCancelled()) {
-          //    monitor.setSizeFieldText("" + lst.size());
-          //    throw new CancelledException("from sgClose");
-          //  }
-          //}
+          if (Thread.currentThread().isInterrupted()) {
+            if (report != null) {
+              report.setSize(lst.size());
+              report.addEndingLine("cancelled ... ");
+            }
+            return null;
+          }
           for (int i = 0; i < arity; i++) {
             arg[i] = rawList.get(argIndeces[i]);
           }

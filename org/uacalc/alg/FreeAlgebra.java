@@ -156,21 +156,25 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     */
     if (thinGens && !decompose) {
-      long time = System.currentTimeMillis();
+      //long time = System.currentTimeMillis();
       if (report != null) {
-        report.addLine("thinning coordinate projections ...");
+        report.addStartLine("thinning coordinate projections ...");
       }
       List<IntArray> lst = thinGenerators();
-      time = System.currentTimeMillis() - time;
+      //time = System.currentTimeMillis() - time;
       if (report != null) {
-        report.addLine("thinned " + gens.get(0).size() + " coordinates down to " 
-            + lst.get(0).size() + " (" + time + " ms)");
+        report.addEndingLine("thinned " + gens.get(0).size() + " coordinates down to " 
+            + lst.get(0).size()
+            // + " (" + time + " ms)"
+            );
       }
-      System.out.println("time for thinning = " + time);
-      System.out.println("thin size = " + lst.size());
-      System.out.println("thin = " + lst);
-      System.out.println("thin coord length = " + lst.get(0).size());
-      System.out.println("gens coord length = " + gens.get(0).size());
+      else {
+        //System.out.println("time for thinning = " + time);
+        System.out.println("thin size = " + lst.size());
+        System.out.println("thin = " + lst);
+        System.out.println("thin coord length = " + lst.get(0).size());
+        System.out.println("gens coord length = " + gens.get(0).size());
+      }
 
       gens = lst;
       productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
