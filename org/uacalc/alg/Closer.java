@@ -41,6 +41,7 @@ public class Closer {
   // an operation on the set of the root algebra; to test if it is in the clone. 
   Operation operation;
   Term termForOperation;
+  ProgressReport report;
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
     this.algebra = alg;
@@ -138,15 +139,20 @@ public class Closer {
   
   public void setElementsToFind(List<IntArray> e) { eltsToFind = e; }
   
-  protected static ProgressReport monitor;
+  //protected static ProgressReport monitor;
   
-  
+  /*
   public boolean monitoring() {
     return monitor != null;
   }
   
   public static final void setMonitor(ProgressReport m) { monitor = m; }
   public static final ProgressReport getMonitor() { return monitor; }
+  */
+  
+  public void setProgressReport(ProgressReport report) {
+    this.report = report;
+  }
   
   public List<IntArray> close() {
     // TODO fix this
@@ -187,7 +193,7 @@ public class Closer {
         return null;
       }
     }
-    if (monitoring()) monitor.printStart("subpower closing ...");
+    //if (monitoring()) monitor.printStart("subpower closing ...");
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
@@ -198,15 +204,11 @@ public class Closer {
     int pass = 0;
     while (closedMark < currentMark) {
       if (Thread.currentThread().isInterrupted()) return null;
-      if (monitoring()) {
-        System.out.println("subpow pass = " + pass + " size = " + lst.size());
-        monitor.setPassFieldText("" + pass++);
-        monitor.setSizeFieldText("" + lst.size());
-        //if (monitor.isCancelled()) {
-        //  System.out.println("got here xxxx");
-        //  throw new CancelledException("cancelled from sgClose");
-        //}
-      }
+      //if (monitoring()) {
+      //  System.out.println("subpow pass = " + pass + " size = " + lst.size());
+      //  monitor.setPassFieldText("" + pass++);
+      //  monitor.setSizeFieldText("" + lst.size());
+      //}
 //if (lst.size() > 100000) return lst;
       // close the elements in current
       for (Iterator<Operation> it = algebra.operations().iterator(); it.hasNext(); ) {
@@ -225,7 +227,7 @@ public class Closer {
         final int[][] arg = new int[arity][];
         while (true) {
           if (Thread.currentThread().isInterrupted()) {
-            if (monitoring()) monitor.setSizeFieldText("" + lst.size());
+            //if (monitoring()) monitor.setSizeFieldText("" + lst.size());
             return null;
           }
           for (int i = 0; i < arity; i++) {
@@ -246,7 +248,7 @@ public class Closer {
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
             }
             if (v.equals(elt)) {
-              if (monitoring()) monitor.printEnd("closing done, found " + elt);
+              //if (monitoring()) monitor.printEnd("closing done, found " + elt);
               return lst;
             }
           }
@@ -271,10 +273,10 @@ if (false) {
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return lst;
     }
-    if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
+    //if (monitoring()) monitor.printEnd("closing done, size = " + lst.size());
     return lst;
   }
-  
+
   public List<IntArray> sgClosePower() {
     return sgClosePower(null);
   }
