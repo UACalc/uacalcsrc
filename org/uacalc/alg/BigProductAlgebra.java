@@ -340,12 +340,12 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    * @return a List of IntArray's.
    */
   public List<IntArray> sgClose(List<IntArray> elems, 
-                                Map<IntArray, Term> termMap, Object elt) {
+                                Map<IntArray, Term> termMap, IntArray elt) {
     return sgClose(elems, 0, termMap, elt, null);
   }
   
   public List<IntArray> sgClose(List<IntArray> elems, 
-      Map<IntArray, Term> termMap, Object elt, ProgressReport report) {
+      Map<IntArray, Term> termMap, IntArray elt, ProgressReport report) {
     HashSet<IntArray> elemsHS = new HashSet<IntArray>(elems);
     for (IntArray ia : getConstants()) {
       if (!elemsHS.contains(ia)) {
@@ -564,23 +564,25 @@ System.out.println("so far: " + currentMark);
    * @return a List of IntArray's.
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
-                   final Map<IntArray,Term> termMap, final  Object elt, ProgressReport report) {
+                   final Map<IntArray,Term> termMap, final  IntArray elt, ProgressReport report) {
     Closer closer = new Closer(this, elems, termMap);
     closer.setProgressReport(report);
-    if (isPower()) {
-      System.out.println("using Closer");
-      return closer.sgClosePower();
-      
-      /*
-      SmallAlgebra alg = rootFactors().get(0);
-      alg.makeOperationTables();
-      List<Operation> ops = alg.operations();
-      if (ops.size() > 0 && ops.get(0).getTable() != null) {
-        return sgClosePower(alg.cardinality(), ops, elems,
-                                               closedMark, termMap, elt, report);
-      }
-      */
-    }
+    closer.setElementToFind(elt);
+    
+    //if (isPower()) {
+    //  System.out.println("using Closer");
+    //  return closer.sgClosePower();
+    //  
+    //  /*
+    //  SmallAlgebra alg = rootFactors().get(0);
+    //  alg.makeOperationTables();
+    //  List<Operation> ops = alg.operations();
+    //  if (ops.size() > 0 && ops.get(0).getTable() != null) {
+    //    return sgClosePower(alg.cardinality(), ops, elems,
+    //                                           closedMark, termMap, elt, report);
+    //  }
+    //  */
+    //}
     return closer.sgClose();
     
     /*

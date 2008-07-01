@@ -285,9 +285,9 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
         }
       }
     }
-    for (AlgebraWithGeneratingVector A : ans) {
-      System.out.println("A = " + A);
-    }
+    //for (AlgebraWithGeneratingVector A : ans) {
+    //  System.out.println("A = " + A);
+    //}
     return ans;
   }
   

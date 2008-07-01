@@ -166,7 +166,7 @@ public class Closer {
   public List<IntArray> sgClose() {
     //System.out.println("gens = " + generators);
     //System.out.println("termMap = " + termMap);
-    return sgClose(generators, 0, termMap, null);
+    return sgClose(generators, 0, termMap);
   }
   
   /**
@@ -180,26 +180,35 @@ public class Closer {
    *                already in the Map. In other words the termMap
    *                should have the same number of entries as elems.
    *
-   * @param elt an element to search for; if found return the closure
-                found so far.
-   *
    * @return a List of IntArray's.
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
-                   final Map<IntArray,Term> termMap, final  Object elt) {
+                                     final Map<IntArray,Term> termMap) {
     if (algebra.isPower()) {
       SmallAlgebra alg = algebra.rootFactors().get(0);
       alg.makeOperationTables();
-      List<Operation> ops = alg.operations();
-      if (ops.size() > 0 && ops.get(0).getTable() != null) {
+      return sgClosePower(elems, closedMark, termMap);
+      //List<Operation> ops = alg.operations();
+      //if (ops.size() > 0 && ops.get(0).getTable() != null) {
         //return sgClosePower(alg.cardinality(), ops, elems,
         //                                       closedMark, termMap, elt);
         // TODO restore above
-        return null;
+      //  return null;
+      //}
+    }
+    //yyy;
+    if (report != null) report.addStartLine("subpower closing ...");
+
+    final int numOfOps = algebra.operations().size();
+    
+    List<Operation> imgOps = null;
+    if (homomorphism != null) {
+      imgOps = new ArrayList<Operation>(numOfOps);
+      for (Operation op : algebra.operations()) {
+        imgOps.add(imageAlgebra.getOperation(op.symbol()));
       }
     }
-    //if (monitoring()) monitor.printStart("subpower closing ...");
-    if (report != null) report.addStartLine("subpower closing ...");
+
     final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
@@ -225,13 +234,15 @@ public class Closer {
       }
 //if (lst.size() > 100000) return lst;
       // close the elements in current
-      for (Iterator<Operation> it = algebra.operations().iterator(); it.hasNext(); ) {
-        Operation f = it.next();
+      for (int i = 0; i < numOfOps; i++) {
+      //for (Iterator<Operation> it = algebra.operations().iterator(); it.hasNext(); ) {
+        //Operation f = it.next();
+        Operation f = algebra.operations().get(i);
         final int arity = f.arity();
         if (arity == 0) continue;  // worry about constansts later
         int[] argIndeces = new int[arity];
-        for (int i = 0; i < arity - 1; i++) {
-          argIndeces[i] = 0;
+        for (int j = 0; j < arity - 1; j++) {
+          argIndeces[j] = 0;
         }
         argIndeces[arity - 1] = closedMark;
         ArrayIncrementor inc =
@@ -245,8 +256,8 @@ public class Closer {
             report.setSize(lst.size());
             return null;
           }
-          for (int i = 0; i < arity; i++) {
-            arg[i] = rawList.get(argIndeces[i]);
+          for (int j = 0; j < arity; j++) {
+            arg[j] = rawList.get(argIndeces[j]);
           }
           int[] vRaw = f.valueAt(arg);
           IntArray v = new IntArray(vRaw);
@@ -255,27 +266,76 @@ public class Closer {
             rawList.add(vRaw);
             if (termMap != null) {
               List<Term> children = new ArrayList<Term>(arity);
-              for (int i = 0; i < arity; i++) {
+              for (int j = 0; j < arity; j++) {
                 //children.set(i, termMap.get(arg.get(i)));
-                children.add(termMap.get(lst.get(argIndeces[i])));
+                children.add(termMap.get(lst.get(argIndeces[j])));
               }
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
+              if (operation != null) {
+                Term term = termMap.get(v);
+                // why are recreating vars each time ???
+                List<Variable> vars = new ArrayList<Variable>(generators.size());
+                for (IntArray ia : generators) {
+                  vars.add((Variable)termMap.get(ia));
+                }
+                Operation termOp = term.interpretation(rootAlgebra, vars, true);
+                if (Operations.equalValues(termOp, operation)) {
+                  termForOperation = term;
+                  return ans;
+                }
+              }
             }
             // cannot do this exit if we are searching  for an equation !!!!!
-            if (getImageAlgebra() == null 
-                    && algebra.cardinality() > 0 
-                    && lst.size() == algebra.cardinality()) {
-              if (report != null) {
-                report.addEndingLine("found all " + lst.size() + " elements");
-                report.setSize(lst.size());
+            if (getImageAlgebra() == null) {
+              if (algebra.cardinality() > 0 && lst.size() == algebra.cardinality()) {
+                if (report != null) {
+                  report.addEndingLine("found all " + lst.size() + " elements");
+                  report.setSize(lst.size());
+                }
+                return lst;
               }
+            }
+            else {
+              final int[] args = new int[arity];
+              for (int t = 0; t < arity; t++) {
+                args[t] = homomorphism.get(ans.get(argIndeces[t]));
+              }
+              homomorphism.put(v, imgOps.get(i).intValueAt(args));
+            }
+            
+            if (v.equals(eltToFind)) {
+              if (report != null) report.addEndingLine("closing done, found "
+                                               + eltToFind + ", at " + lst.size());
               return lst;
             }
-            if (v.equals(elt)) {
-              if (report != null) report.addEndingLine("closing done, found "
-                                               + elt + ", at " + lst.size());
-              return lst;
+          }
+          else {
+            if (imgOps != null) {
+              // here
+              final int[] args = new int[arity];
+              for (int t = 0; t < arity; t++) {
+                args[t] = homomorphism.get(ans.get(argIndeces[t]));
+              }
+              if (homomorphism.get(v).intValue() != imgOps.get(i).intValueAt(args)) {
+                List<Term> children = new ArrayList<Term>(arity);
+                for (int r = 0; r < arity; r++) {
+                  //children.set(i, termMap.get(arg.get(i)));
+                  children.add(termMap.get(ans.get(argIndeces[r])));
+                }
+                failingEquation = new Equation(termMap.get(v),
+                    new NonVariableTerm(imgOps.get(i).symbol(), children));
+                final String line = "failing equation:\n" + failingEquation;
+                if (report != null) {
+                  report.setSize(ans.size());
+                  report.addEndingLine(line);
+                }
+                else {
+                  System.out.println("failing equation:\n" + failingEquation);
+                  System.out.println("size so far: " + ans.size());
+                }
+                return ans;
+              }
             }
           }
           if (!inc.increment()) break;
@@ -319,19 +379,15 @@ if (false) {
    *                already in the Map. In other words the termMap
    *                should have the same number of entries as elems.
    *
-   * @param elt an element to search for; if found return the closure
-                found so far.
-   *
    * @return a List of IntArray's.
    */
   private final List<IntArray> sgClosePower(
-      List<IntArray> elems, int closedMark, 
-      final Map<IntArray,Term> termMap) {
+                     List<IntArray> elems, int closedMark, 
+                     final Map<IntArray,Term> termMap) {
     
     if (report != null) report.addStartLine("subpower closing ...");
     final int algSize = algebra.factors().get(0).cardinality();
     final List<Operation> ops = algebra.factors().get(0).operations();
-    
     final int k = ops.size();
     final int[][] opTables = new int[k][];
     final int[] arities = new int[k];
@@ -427,17 +483,18 @@ if (false) {
                 }
               }
             }
-            final int size = ans.size();
-            if (algebra.cardinality() > 0 && size == algebra.cardinality()) {
-              
-              if (report != null) {
-                report.addEndingLine("done closing, size = " + ans.size());
-                report.setSize(ans.size());
+            // can't quit early if we are looking for a homomorphism
+            if (imgOps == null) {
+              final int size = ans.size();
+              if (algebra.cardinality() > 0 && size == algebra.cardinality()) {  
+                if (report != null) {
+                  report.addEndingLine("found all " + size + " elements");
+                  report.setSize(ans.size());
+                }
+                return ans;
               }
-              return ans;
             }
-            if (imgOps != null) {
-              // here
+            else {
               final int[] args = new int[arity];
               for (int t = 0; t < arity; t++) {
                 args[t] = homomorphism.get(ans.get(argIndeces[t]));
