@@ -1154,5 +1154,9 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public void setResultTable(javax.swing.JTable resultTable) {
         this.resultTable = resultTable;
     }
+
+    public javax.swing.JButton getCancelCompButton() {
+        return cancelCompButton;
+    }
   
 }
