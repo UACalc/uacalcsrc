@@ -75,6 +75,11 @@ public class TaskTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
   
+  public void removeTask(BackgroundTask<?> task) {
+    tasks.remove(task);
+    fireTableDataChanged();
+  }
+  
   public List<BackgroundTask<?>> getTasks() { return tasks; }
   
   

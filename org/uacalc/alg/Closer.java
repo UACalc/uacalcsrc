@@ -199,8 +199,7 @@ public class Closer {
     //yyy;
     if (report != null) report.addStartLine("subpower closing ...");
 
-    final int numOfOps = algebra.operations().size();
-    
+    final int numOfOps = algebra.operations().size();  
     List<Operation> imgOps = null;
     if (homomorphism != null) {
       imgOps = new ArrayList<Operation>(numOfOps);
@@ -209,19 +208,19 @@ public class Closer {
       }
     }
 
-    final List<IntArray> lst = new ArrayList<IntArray>(elems);// IntArrays
+    ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
     for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
       rawList.add(it.next().getArray());
     }
-    final HashSet<IntArray> su = new HashSet<IntArray>(lst);
-    int currentMark = lst.size();
+    final HashSet<IntArray> su = new HashSet<IntArray>(ans);
+    int currentMark = ans.size();
     int pass = 0;
     while (closedMark < currentMark) {
-      String str = "pass: " + pass + ", size: " + lst.size();
+      String str = "pass: " + pass + ", size: " + ans.size();
       if (report != null) {
         report.setPass(pass);
-        report.setPassSize(lst.size());
+        report.setPassSize(ans.size());
         report.addLine(str);
       }
       else {
@@ -229,7 +228,7 @@ public class Closer {
       }
       pass++;
       if (Thread.currentThread().isInterrupted()) {
-        report.addEndingLine("cancelled ...");
+        if (report != null) report.addEndingLine("cancelled ...");
         return null;
       }
 //if (lst.size() > 100000) return lst;
@@ -252,8 +251,10 @@ public class Closer {
         final int[][] arg = new int[arity][];
         while (true) {
           if (Thread.currentThread().isInterrupted()) {
-            report.addEndingLine("cancelled ...");
-            report.setSize(lst.size());
+            if (report != null) {
+              report.addEndingLine("cancelled ...");
+              report.setSize(ans.size());
+            }
             return null;
           }
           for (int j = 0; j < arity; j++) {
@@ -262,13 +263,15 @@ public class Closer {
           int[] vRaw = f.valueAt(arg);
           IntArray v = new IntArray(vRaw);
           if (su.add(v)) {
-            lst.add(v);
+            ans.add(v);
             rawList.add(vRaw);
+            if (report != null) report.setSize(ans.size());
+            if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {
               List<Term> children = new ArrayList<Term>(arity);
               for (int j = 0; j < arity; j++) {
                 //children.set(i, termMap.get(arg.get(i)));
-                children.add(termMap.get(lst.get(argIndeces[j])));
+                children.add(termMap.get(ans.get(argIndeces[j])));
               }
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
@@ -288,12 +291,12 @@ public class Closer {
             }
             // cannot do this exit if we are searching  for an equation !!!!!
             if (getImageAlgebra() == null) {
-              if (algebra.cardinality() > 0 && lst.size() == algebra.cardinality()) {
+              if (algebra.cardinality() > 0 && ans.size() == algebra.cardinality()) {
                 if (report != null) {
-                  report.addEndingLine("found all " + lst.size() + " elements");
-                  report.setSize(lst.size());
+                  report.addEndingLine("found all " + ans.size() + " elements");
+                  report.setSize(ans.size());
                 }
-                return lst;
+                return ans;
               }
             }
             else {
@@ -306,18 +309,23 @@ public class Closer {
             
             if (v.equals(eltToFind)) {
               if (report != null) report.addEndingLine("closing done, found "
-                                               + eltToFind + ", at " + lst.size());
-              return lst;
+                                               + eltToFind + ", at " + ans.size());
+              return ans;
             }
           }
           else {
             if (imgOps != null) {
-              // here
+              System.out.println("got to xxx");
               final int[] args = new int[arity];
+              System.out.println("got to xxx2");
+              System.out.println("homomorphism = " + homomorphism);
               for (int t = 0; t < arity; t++) {
+                
                 args[t] = homomorphism.get(ans.get(argIndeces[t]));
               }
+              System.out.println("got to xxx3");
               if (homomorphism.get(v).intValue() != imgOps.get(i).intValueAt(args)) {
+                System.out.println("got to yyyy");
                 List<Term> children = new ArrayList<Term>(arity);
                 for (int r = 0; r < arity; r++) {
                   //children.set(i, termMap.get(arg.get(i)));
@@ -336,9 +344,14 @@ public class Closer {
                 }
                 return ans;
               }
+              System.out.println("got to uuu");
             }
           }
-          if (!inc.increment()) break;
+          System.out.println("got to zzz");
+          if (!inc.increment()) {
+            System.out.println("breaking");
+            break;
+          }
         }
 if (false) {
 /*
@@ -354,11 +367,11 @@ if (false) {
 }
       }
       closedMark = currentMark;
-      currentMark = lst.size();
+      currentMark = ans.size();
       if (algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
     }
-    if (report != null) report.addEndingLine("closing done, size = " + lst.size());
-    return lst;
+    if (report != null) report.addEndingLine("closing done, size = " + ans.size());
+    return ans;
   }
   
   public List<IntArray> sgClosePower() {
@@ -461,6 +474,8 @@ if (false) {
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
+            if (report != null) report.setSize(ans.size());
+            if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {
               List<Term> children = new ArrayList<Term>(arity);
               for (int r = 0; r < arity; r++) {

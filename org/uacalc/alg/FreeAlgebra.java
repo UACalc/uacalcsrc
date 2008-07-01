@@ -328,12 +328,14 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                                int[] bGens, ProgressReport report) {
     //FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
     // TODO: fix this, fix this fix this !!! make the decomp = true !!!!!!!!!
-    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, false, report);
+    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, true, report);
+    System.out.println("gens v length = " + F.generators().get(0).size());
+    report.addLine("gens v length = " + F.generators().get(0).size());
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setProgressReport(report);
     closer.setImageAlgebra(B);
     closer.setHomomorphism(bGens);
-    closer.sgClosePower();
+    closer.sgClose();
     return closer.getFailingEquation();
   }
   

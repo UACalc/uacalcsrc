@@ -58,6 +58,8 @@ public class ComputationsController {
     col.setMinWidth(100);
     tasksTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
+        final String cancel = "Cancel";
+        final String del = "Delete";
         int index = tasksTable.getSelectedRow();
         if (index >= 0) {
           taskTableModel.setCurrentTask(index);
@@ -71,6 +73,10 @@ public class ComputationsController {
           uacalcUI.getResultTable().setModel(termTableModels.get(index));
           setResultTableColWidths();
           uacalcUI.getResultTextField().setText(termTableModels.get(index).getDescription());
+          if (taskTableModel.getCurrentTask().getStatus() == BackgroundTask.Status.RUNNING) {
+            uacalcUI.getCancelCompButton().setText(cancel);
+          }
+          else uacalcUI.getCancelCompButton().setText(del);
           uacalcUI.repaint();
         }
         // TODO: do something
@@ -130,7 +136,13 @@ public class ComputationsController {
   
   public void cancelCurrentTask() {
     BackgroundTask<?> task = getCurrentTask();
-    if (task != null) task.cancel(true);
+    if (task == null) return;  // is this necessary ??
+    if (task.getStatus() == BackgroundTask.Status.RUNNING) {
+      task.cancel(true);
+    }
+    else {
+      taskTableModel.removeTask(task); 
+    }
   }
   
   private void addTask(BackgroundTask<?> task) {
@@ -746,6 +758,10 @@ public class ComputationsController {
       }
       public void onCompletion(Equation eq, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");
