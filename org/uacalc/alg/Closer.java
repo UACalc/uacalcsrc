@@ -196,7 +196,7 @@ public class Closer {
       //  return null;
       //}
     }
-    //yyy;
+    
     if (report != null) report.addStartLine("subpower closing ...");
 
     final int numOfOps = algebra.operations().size();  
@@ -207,6 +207,12 @@ public class Closer {
         imgOps.add(imageAlgebra.getOperation(op.symbol()));
       }
     }
+    
+    // these final boolean are meant to help the jit compiler.
+    final boolean reportNotNull = report == null ? false : true;
+    final boolean imgAlgNull = imgOps == null ? true : false;
+    final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean operationNotNull = operation == null ? false : true;
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
@@ -218,7 +224,7 @@ public class Closer {
     int pass = 0;
     while (closedMark < currentMark) {
       String str = "pass: " + pass + ", size: " + ans.size();
-      if (report != null) {
+      if (reportNotNull) {
         report.setPass(pass);
         report.setPassSize(ans.size());
         report.addLine(str);
@@ -228,7 +234,7 @@ public class Closer {
       }
       pass++;
       if (Thread.currentThread().isInterrupted()) {
-        if (report != null) report.addEndingLine("cancelled ...");
+        if (reportNotNull) report.addEndingLine("cancelled ...");
         return null;
       }
 //if (lst.size() > 100000) return lst;
@@ -251,7 +257,7 @@ public class Closer {
         final int[][] arg = new int[arity][];
         while (true) {
           if (Thread.currentThread().isInterrupted()) {
-            if (report != null) {
+            if (reportNotNull) {
               report.addEndingLine("cancelled ...");
               report.setSize(ans.size());
             }
@@ -265,7 +271,7 @@ public class Closer {
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
-            if (report != null) report.setSize(ans.size());
+            if (reportNotNull) report.setSize(ans.size());
             if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {
               List<Term> children = new ArrayList<Term>(arity);
@@ -275,7 +281,7 @@ public class Closer {
               }
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
-              if (operation != null) {
+              if (operationNotNull) {
                 Term term = termMap.get(v);
                 // why are recreating vars each time ???
                 List<Variable> vars = new ArrayList<Variable>(generators.size());
@@ -290,9 +296,9 @@ public class Closer {
               }
             }
             // cannot do this exit if we are searching  for an equation !!!!!
-            if (getImageAlgebra() == null) {
+            if (imgAlgNull) {
               if (algebra.cardinality() > 0 && ans.size() == algebra.cardinality()) {
-                if (report != null) {
+                if (reportNotNull) {
                   report.addEndingLine("found all " + ans.size() + " elements");
                   report.setSize(ans.size());
                 }
@@ -307,25 +313,19 @@ public class Closer {
               homomorphism.put(v, imgOps.get(i).intValueAt(args));
             }
             
-            if (v.equals(eltToFind)) {
-              if (report != null) report.addEndingLine("closing done, found "
+            if (eltToFindNotNull && v.equals(eltToFind)) {
+              if (reportNotNull) report.addEndingLine("closing done, found "
                                                + eltToFind + ", at " + ans.size());
               return ans;
             }
           }
           else {
             if (imgOps != null) {
-              System.out.println("got to xxx");
               final int[] args = new int[arity];
-              System.out.println("got to xxx2");
-              System.out.println("homomorphism = " + homomorphism);
               for (int t = 0; t < arity; t++) {
-                
                 args[t] = homomorphism.get(ans.get(argIndeces[t]));
               }
-              System.out.println("got to xxx3");
               if (homomorphism.get(v).intValue() != imgOps.get(i).intValueAt(args)) {
-                System.out.println("got to yyyy");
                 List<Term> children = new ArrayList<Term>(arity);
                 for (int r = 0; r < arity; r++) {
                   //children.set(i, termMap.get(arg.get(i)));
@@ -334,7 +334,7 @@ public class Closer {
                 failingEquation = new Equation(termMap.get(v),
                     new NonVariableTerm(imgOps.get(i).symbol(), children));
                 final String line = "failing equation:\n" + failingEquation;
-                if (report != null) {
+                if (reportNotNull) {
                   report.setSize(ans.size());
                   report.addEndingLine(line);
                 }
@@ -344,14 +344,9 @@ public class Closer {
                 }
                 return ans;
               }
-              System.out.println("got to uuu");
             }
           }
-          System.out.println("got to zzz");
-          if (!inc.increment()) {
-            System.out.println("breaking");
-            break;
-          }
+          if (!inc.increment()) break;
         }
 if (false) {
 /*
@@ -368,9 +363,10 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = ans.size();
-      if (algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
+      if (imgAlgNull && algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
     }
-    if (report != null) report.addEndingLine("closing done, size = " + ans.size());
+    if (reportNotNull) report.addEndingLine("closing done, size = " + ans.size());
+    completed = true;
     return ans;
   }
   
@@ -421,6 +417,13 @@ if (false) {
  //     imgOps = new ArrayList<Operation>(imageAlgebra.operations().size());
       
   //  }
+    
+    // these final boolean are meant to help the jit compiler.
+    final boolean reportNotNull = report == null ? false : true;
+    final boolean imgAlgNull = imgOps == null ? true : false;
+    final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean operationNotNull = operation == null ? false : true;
+    
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
@@ -432,7 +435,7 @@ if (false) {
     int pass = 0;
     while (closedMark < currentMark) {
       String str = "pass: " + pass + ", size: " + ans.size();
-      if (report != null) {
+      if (reportNotNull) {
         report.setPass(pass);
         report.setPassSize(ans.size());
         report.addLine(str);
@@ -474,7 +477,7 @@ if (false) {
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
-            if (report != null) report.setSize(ans.size());
+            if (reportNotNull) report.setSize(ans.size());
             if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {
               List<Term> children = new ArrayList<Term>(arity);
@@ -484,7 +487,7 @@ if (false) {
               }
               termMap.put(v, new NonVariableTerm(symbols[i], children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
-              if (operation != null) {
+              if (operationNotNull) {
                 Term term = termMap.get(v);
                 // why are recreating vars each time ???
                 List<Variable> vars = new ArrayList<Variable>(generators.size());
@@ -494,6 +497,7 @@ if (false) {
                 Operation termOp = term.interpretation(rootAlgebra, vars, true);
                 if (Operations.equalValues(termOp, operation)) {
                   termForOperation = term;
+                  if (reportNotNull) report.addEndingLine("found operation, term = " + term);
                   return ans;
                 }
               }
@@ -501,8 +505,8 @@ if (false) {
             // can't quit early if we are looking for a homomorphism
             if (imgOps == null) {
               final int size = ans.size();
-              if (algebra.cardinality() > 0 && size == algebra.cardinality()) {  
-                if (report != null) {
+              if (imgAlgNull && algebra.cardinality() > 0 && size == algebra.cardinality()) {  
+                if (reportNotNull) {
                   report.addEndingLine("found all " + size + " elements");
                   report.setSize(ans.size());
                 }
@@ -517,16 +521,22 @@ if (false) {
               homomorphism.put(v, imgOps[i].intValueAt(args));
             }
             if (Thread.currentThread().isInterrupted()) {
-              if (report != null) {
+              if (reportNotNull) {
                 report.setSizeFieldText("" + ans.size());
                 report.addEndingLine("cancelled ...");
               }
               return null;
             }
-            if (v.equals(eltToFind)) return ans;
+            if (eltToFindNotNull && v.equals(eltToFind)) {
+              if (reportNotNull) {
+                report.setSizeFieldText("" + ans.size());
+                report.addEndingLine("found " + eltToFind);
+              }
+              return ans;
+            }
           }
           else {
-            if (imgOps != null) {
+            if (!imgAlgNull) {
               // here
               final int[] args = new int[arity];
               for (int t = 0; t < arity; t++) {
@@ -541,7 +551,7 @@ if (false) {
                 failingEquation = new Equation(termMap.get(v),
                     new NonVariableTerm(symbols[i], children));
                 final String line = "failing equation:\n" + failingEquation;
-                if (report != null) {
+                if (reportNotNull) {
                   report.setSize(ans.size());
                   report.addEndingLine(line);
                 }
@@ -571,12 +581,12 @@ if (false) {
       }
       closedMark = currentMark;
       currentMark = ans.size();
-      if (algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
+      if (imgAlgNull && algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
 System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return ans;
     }
     final String str = "done closing, size = " + ans.size();
-    if (report != null) {
+    if (reportNotNull) {
       report.setSize(ans.size());
       report.addEndingLine(str);
     }
