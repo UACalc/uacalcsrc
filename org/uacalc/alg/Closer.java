@@ -523,15 +523,16 @@ if (false) {
             }
             if (Thread.currentThread().isInterrupted()) {
               if (reportNotNull) {
-                report.setSizeFieldText("" + ans.size());
+                report.setSize(ans.size());
                 report.addEndingLine("cancelled ...");
               }
               return null;
             }
             if (eltToFindNotNull && v.equals(eltToFind)) {
               if (reportNotNull) {
-                report.setSizeFieldText("" + ans.size());
-                report.addEndingLine("found " + eltToFind);
+                report.setSize(ans.size());
+                report.addEndingLine("closing done, found "
+                    + eltToFind + ", at " + ans.size());
               }
               return ans;
             }
@@ -596,5 +597,16 @@ System.out.println("so far: " + currentMark);
     return ans;
   }
 
-
+  public long countFuncApplications(int size0, int size1, int projs) {
+    BigInteger ans = BigInteger.ZERO;
+    final BigInteger s0 = BigInteger.valueOf(size0);
+    final BigInteger s1 = BigInteger.valueOf(size1);
+    for (Operation op : algebra.operations()) {
+      final int r = op.arity();
+      ans = ans.add(s1.pow(r).subtract(s0.pow(r)));
+    }
+    if (ans.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) return -1;
+    return ans.longValue();
+  }
+  
 }
