@@ -411,6 +411,7 @@ if (false) {
       symbols[i] = op.symbol();
       if (imgOps != null) imgOps[i] = imageAlgebra.getOperation(op.symbol());
     }
+    System.out.println("opTable[0] = " + opTables[0]);
  //   List<Operation> imgOps = null;
 //    Operation[] imgOps;
  //   if (homomorphism != null && imageAlgebra != null) {

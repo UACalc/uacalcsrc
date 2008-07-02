@@ -292,6 +292,10 @@ public class ComputationsController {
           updateResultTextField(this, ttm);
           return;
         }
+        if (exception != null) {
+          System.out.println("exception: " + exception);
+          exception.printStackTrace();
+        }
         if (!cancelled) {
           if (terms == null) {
             report.addEndingLine("The variety is not congruence distributive.");
@@ -716,14 +720,15 @@ public class ComputationsController {
       algs[i++] = a;
     }
     GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
-                                   "<html><center>B in V(A)?<br>Choose A</center></html>", 
-                                   "B in V(A)",
-                                   JOptionPane.QUESTION_MESSAGE, null,
-                                   algs, algs[0]);
+                     "<html><center>B in V(<font color=\"red\">A</font>)?<br>" 
+                         + "Choose <font color=\"red\">A</font></center></html>", 
+                     "B in V(A)",
+                     JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
     //System.out.println("gA = " + gA);
     if (gA == null) return;
     GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
-        "<html><center>B in V(A)?<br>Choose B</center></html>", 
+        "<html><center><font color=\"red\">B</font> in V(A)?" 
+            + "<br>Choose <font color=\"red\">B</font></center></html>", 
         "B in V(A)",
         JOptionPane.QUESTION_MESSAGE, null,
         algs, algs[0]);

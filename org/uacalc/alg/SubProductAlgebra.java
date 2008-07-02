@@ -188,6 +188,10 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
             }
             tableOp = Operations.makeIntOperation(symbol(), size, values);
           }
+          public int[] getTable() {
+            if (tableOp == null) makeTable();
+            return tableOp.getTable();
+          }
           public int intValueAt(final int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);
             final List lst = new ArrayList(arity);
