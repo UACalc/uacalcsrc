@@ -222,7 +222,16 @@ public class Closer {
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
     int pass = 0;
+    CloserTimingData timing = new CloserTimingData(algebra, report);
+    //int currPassSize = 0; // for time left
+    //int lastPassSize = 0; // for time left
+    //final int numberProjs = algebra.getNumberOfFactors(); // for time left
     while (closedMark < currentMark) {
+      timing.updatePass(ans.size());
+      //lastPassSize = currPassSize;
+      //currPassSize = ans.size();
+      //long funcAppsNeeded = countFuncApplications(lastPassSize, currPassSize);
+      //long appsSoFar = 0;
       String str = "pass: " + pass + ", size: " + ans.size();
       if (reportNotNull) {
         report.setPass(pass);
@@ -268,9 +277,12 @@ public class Closer {
           }
           int[] vRaw = f.valueAt(arg);
           IntArray v = new IntArray(vRaw);
+          timing.incrementApps();
+          //appsSoFar = appsSoFar + numberProjs;
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
+            timing.incrementNextPassSize();
             if (reportNotNull) report.setSize(ans.size());
             if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {
@@ -597,7 +609,7 @@ System.out.println("so far: " + currentMark);
     return ans;
   }
 
-  public long countFuncApplications(int size0, int size1, int projs) {
+  public long countFuncApplications(int size0, int size1) {
     BigInteger ans = BigInteger.ZERO;
     final BigInteger s0 = BigInteger.valueOf(size0);
     final BigInteger s1 = BigInteger.valueOf(size1);
@@ -606,7 +618,7 @@ System.out.println("so far: " + currentMark);
       ans = ans.add(s1.pow(r).subtract(s0.pow(r)));
     }
     if (ans.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) return -1;
-    return ans.longValue();
+    return ans.longValue() * algebra.getNumberOfFactors();
   }
   
 }
