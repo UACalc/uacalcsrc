@@ -23,7 +23,7 @@ import org.uacalc.ui.util.*;
 import org.uacalc.ui.tm.ProgressReport;
 
 
-public class Actions {
+public class MainController {
 
   private boolean dirty = false;
   private UACalculatorUI uacalcUI;
@@ -43,7 +43,7 @@ public class Actions {
   //private Tabs tabs;
   private final Random random = new Random();
   
-  public Actions(UACalculatorUI uacalcUI) {
+  public MainController(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
     algEditorController = new AlgebraEditorController(uacalcUI);
     computationsController = new ComputationsController(uacalcUI);

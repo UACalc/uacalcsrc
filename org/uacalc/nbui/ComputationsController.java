@@ -30,7 +30,7 @@ public class ComputationsController {
     setupResultTable();
   }
 
-  private Actions getActions() { return uacalcUI.getActions(); }
+  private MainController getActions() { return uacalcUI.getActions(); }
   
   private void setupTasksTable() {
     final JTable tasksTable = uacalcUI.getComputationsTable();
@@ -216,7 +216,7 @@ public class ComputationsController {
       }
     };
     addTask(freeAlgTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(freeAlgTask);
   }
@@ -319,7 +319,7 @@ public class ComputationsController {
       }
     };
     addTask(jonssonTermTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(jonssonTermTask);
   }
@@ -382,7 +382,7 @@ public class ComputationsController {
       }
     };
     addTask(gummTermTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(gummTermTask);
   }
@@ -445,7 +445,7 @@ public class ComputationsController {
       }
     };
     addTask(hmTermTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(hmTermTask);
   }
@@ -508,7 +508,7 @@ public class ComputationsController {
       }
     };
     addTask(majTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
@@ -571,7 +571,7 @@ public class ComputationsController {
       }
     };
     addTask(pixleyTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(pixleyTask);
   }
@@ -634,7 +634,7 @@ public class ComputationsController {
       }
     };
     addTask(majTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
@@ -699,7 +699,7 @@ public class ComputationsController {
       }
     };
     addTask(nuTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(nuTask);
   }
@@ -803,7 +803,7 @@ public class ComputationsController {
       }
     };
     addTask(nuTask);
-    Actions.scrollToBottom(uacalcUI.getComputationsTable());
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(nuTask);
   }

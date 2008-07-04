@@ -15,13 +15,13 @@ import java.awt.event.*;
  */
 public class UACalculatorUI extends javax.swing.JFrame {
 
-    private final Actions actions;
+    private final MainController actions;
     
     
     /** Creates new form UACalculatorUI */
     public UACalculatorUI() {
         initComponents();
-        actions = new Actions(this);
+        actions = new MainController(this);
         
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //closes from title bar and from menu
@@ -1003,7 +1003,7 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // End of variables declaration//GEN-END:variables
 
 
-  public Actions getActions() {
+  public MainController getActions() {
     return actions;
   }
   

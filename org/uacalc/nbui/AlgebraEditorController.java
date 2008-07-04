@@ -202,7 +202,7 @@ public class AlgebraEditorController {
     addOperation(name, arity);
   }
   
-  private Actions getActions() { return uacalc.getActions(); }
+  private MainController getActions() { return uacalc.getActions(); }
   
   public Random getRandom() {
     return random;
