@@ -19,6 +19,8 @@ import org.uacalc.util.*;
 public class ComputationsController {
   
   private final UACalculatorUI uacalcUI;
+  // these next should be glued together better. Maybe put the later as
+  // a field in the former so there is only one list.
   private TaskTableModel taskTableModel = new TaskTableModel();
   private java.util.List<TermTableModel> termTableModels = new ArrayList<TermTableModel>();
   private static final String[] thinningOptions
@@ -134,14 +136,24 @@ public class ComputationsController {
     return taskTableModel.getCurrentTask();
   }
   
-  public void cancelCurrentTask() {
+  public void cancelOrRemoveCurrentTask() {
     BackgroundTask<?> task = getCurrentTask();
     if (task == null) return;  // is this necessary ??
     if (task.getStatus() == BackgroundTask.Status.RUNNING) {
       task.cancel(true);
     }
     else {
-      taskTableModel.removeTask(task); 
+      int index = taskTableModel.index(task);
+      termTableModels.remove(index);
+      taskTableModel.removeTask(task);
+      int size = termTableModels.size();
+      if (size > 0) {
+        TermTableModel ttm = termTableModels.get(size - 1);
+        uacalcUI.getResultTable().setModel(ttm);
+        ttm.fireTableDataChanged(); // this may be unnecessary
+        setupResultTable();
+      }
+      uacalcUI.repaint();
     }
   }
   

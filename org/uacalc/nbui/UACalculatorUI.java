@@ -815,7 +815,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
     
 private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
-  getComputationsController().cancelCurrentTask();
+  getComputationsController().cancelOrRemoveCurrentTask();
 }//GEN-LAST:event_cancelCompButtonActionPerformed
 
 private void clearLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearLogButtonActionPerformed

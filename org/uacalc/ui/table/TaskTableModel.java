@@ -77,10 +77,17 @@ public class TaskTableModel extends AbstractTableModel {
   
   public void removeTask(BackgroundTask<?> task) {
     tasks.remove(task);
+    if (tasks.size() > 0) setCurrentTask(tasks.get(tasks.size() - 1));
     fireTableDataChanged();
   }
   
   public List<BackgroundTask<?>> getTasks() { return tasks; }
   
+  public int index(BackgroundTask<?> task) {
+    for (int i = 0; i < tasks.size(); i++ ) {
+      if (task == tasks.get(i)) return i;
+    }
+    return -1;
+  }
   
 }
