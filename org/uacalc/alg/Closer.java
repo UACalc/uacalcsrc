@@ -222,7 +222,7 @@ public class Closer {
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
     int pass = 0;
-    CloserTimingData timing = new CloserTimingData(algebra, report);
+    CloserTiming timing = new CloserTiming(algebra, report);
     //int currPassSize = 0; // for time left
     //int lastPassSize = 0; // for time left
     //final int numberProjs = algebra.getNumberOfFactors(); // for time left

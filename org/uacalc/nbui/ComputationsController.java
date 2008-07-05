@@ -53,9 +53,12 @@ public class ComputationsController {
     col.setPreferredWidth(100);
     col.setMinWidth(80);
     col = tasksTable.getColumnModel().getColumn(5);
-    col.setPreferredWidth(120);
+    col.setPreferredWidth(100);
     col.setMinWidth(120);
     col = tasksTable.getColumnModel().getColumn(6);
+    col.setPreferredWidth(100);
+    col.setMinWidth(120);
+    col = tasksTable.getColumnModel().getColumn(7);
     col.setPreferredWidth(120);
     col.setMinWidth(100);
     tasksTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -215,6 +218,7 @@ public class ComputationsController {
         }
         if (!cancelled) {
           report.addEndingLine("Done computing the free algebra");
+          report.setTimeLeft("");
           ttm.setTerms(fr.getTerms());
           ttm.setVariables(fr.getVariables());
           if (getCurrentTask() == this) setResultTableColWidths();

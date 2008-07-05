@@ -12,7 +12,7 @@ public class TaskTableModel extends AbstractTableModel {
   private BackgroundTask<?> currentTask;
   
   private String[] colNames = new String[] {" ", "Description", "Pass", 
-      "Pass Size", "Size", "Time Left For Pass", "Status"};
+      "Pass Size", "Size", "Time Left Pass", "Time Next Pass", "Status"};
   
   public TaskTableModel() {}
   
@@ -48,8 +48,9 @@ public class TaskTableModel extends AbstractTableModel {
     if (columnIndex == 2) return prog.getPass();
     if (columnIndex == 3) return prog.getPassSize();
     if (columnIndex == 4) return prog.getSize();
-    if (columnIndex == 5) return null; //TODO put a number or progress bar
-    if (columnIndex == 6) return task.getStatus();
+    if (columnIndex == 5) return prog.getTimeLeft(); //TODO put a number or progress bar
+    if (columnIndex == 6) return prog.getTimeNext(); //TODO put a number or progress bar
+    if (columnIndex == 7) return task.getStatus();
     return null;
   }
 

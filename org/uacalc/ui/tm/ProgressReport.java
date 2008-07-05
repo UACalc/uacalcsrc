@@ -23,6 +23,8 @@ public class ProgressReport {
   private volatile int passSize;
   private volatile int size;
   private volatile String desc = "";
+  private volatile String timeLeft = "";
+  private volatile String timeNext = "";
   
   private int indent = 0;
   //private List<Long> times = new ArrayList<Long>();
@@ -49,6 +51,18 @@ public class ProgressReport {
   
   public TaskTableModel getTaskTableModel() {
     return taskTableModel;
+  }
+  
+  public String getTimeLeft() { return timeLeft; }
+  public void setTimeLeft(String time) {
+    timeLeft = time;
+    getTaskTableModel().fireTableDataChanged();
+  }
+  
+  public String getTimeNext() { return timeNext; }
+  public void setTimeNext(String time) {
+    timeNext = time;
+    getTaskTableModel().fireTableDataChanged();
   }
   
   public int getPass() { return pass; }
