@@ -37,7 +37,7 @@ public class CloserTiming {
   
   private static final long initCount = 20000000;  // should be less than 2 seconds to do this many.
   private static final long secondCount = 60000000;
-  private static final long thirdCount = 150000000;
+  private static final long thirdCount = 60000000;
   private long realInitCount;
   
   public CloserTiming(BigProductAlgebra algebra, ProgressReport report) {
