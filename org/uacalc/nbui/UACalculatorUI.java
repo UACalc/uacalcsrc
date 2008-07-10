@@ -79,9 +79,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
         defaultEltComboBox = new javax.swing.JComboBox();
         algebrasPanel = new javax.swing.JPanel();
         currentAlgPanel = new javax.swing.JPanel();
-        algebraPanel = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        algListTableOld = new javax.swing.JTable();
         computationsPanel = new javax.swing.JPanel();
         resultPane = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -387,39 +384,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
         currentAlgPanelLayout.setVerticalGroup(
             currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
-        );
-
-        algebraPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
-
-        algListTableOld.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        algListTableOld.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        algListTableOld.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane6.setViewportView(algListTableOld);
-
-        javax.swing.GroupLayout algebraPanelLayout = new javax.swing.GroupLayout(algebraPanel);
-        algebraPanel.setLayout(algebraPanelLayout);
-        algebraPanelLayout.setHorizontalGroup(
-            algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 606, Short.MAX_VALUE)
-            .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
-        );
-        algebraPanelLayout.setVerticalGroup(
-            algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
-            .addGroup(algebraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(algebraPanelLayout.createSequentialGroup()
-                    .addGap(2, 2, 2)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(154, Short.MAX_VALUE)))
+            .addGap(0, 620, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -427,16 +392,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
         algebrasPanelLayout.setHorizontalGroup(
             algebrasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(currentAlgPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(algebraPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         algebrasPanelLayout.setVerticalGroup(
             algebrasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(algebrasPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(currentAlgPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(algebraPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(currentAlgPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Algebras", algebrasPanel);
@@ -645,6 +606,9 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         tabbedPane.addTab("Drawing", drawingPanel);
 
+        jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
+
+        algListTable.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         algListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -948,9 +912,7 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton addOpButton;
     private javax.swing.JMenuItem algFileMI;
     private javax.swing.JTable algListTable;
-    private javax.swing.JTable algListTableOld;
     private javax.swing.JTextField algNameTextField;
-    private javax.swing.JPanel algebraPanel;
     private javax.swing.JPanel algebrasPanel;
     private javax.swing.JButton cancelCompButton;
     private javax.swing.JTextField cardTextField;
@@ -991,7 +953,6 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
@@ -1040,10 +1001,6 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
   public javax.swing.JTextField getAlgNameTextField() {
     return algNameTextField;
-  }
-
-  public javax.swing.JPanel getAlgebraPanel() {
-    return algebraPanel;
   }
 
   public javax.swing.JPanel getAlgebrasPanel() {
