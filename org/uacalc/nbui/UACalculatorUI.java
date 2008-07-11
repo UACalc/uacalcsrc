@@ -1201,5 +1201,13 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public javax.swing.JButton getCancelCompButton() {
         return cancelCompButton;
     }
+
+    public javax.swing.JPanel getConMainPanel() {
+        return conMainPanel;
+    }
+
+    public void setConMainPanel(javax.swing.JPanel conMainPanel) {
+        this.conMainPanel = conMainPanel;
+    }
   
 }
