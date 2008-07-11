@@ -39,6 +39,7 @@ public class  BasicLattice extends GeneralAlgebra
   private List joinIrreducibles;
   private List meetIrreducibles;
   private HashMap tctTypeMap; // from edges to the strings "1" ... "5".
+  private org.latdraw.diagram.Diagram diagram;
 
   /**
    * Make a BasicLattice from a poset.
@@ -142,12 +143,12 @@ public class  BasicLattice extends GeneralAlgebra
 
   public org.latdraw.diagram.Diagram getDiagram() 
                       throws org.latdraw.orderedset.NonOrderedSetException {
-    org.latdraw.diagram.Diagram diag
-                          = new org.latdraw.diagram.Diagram(getPoset());
-    if (tctTypeMap != null) diag.setEdgeColors(tctTypeMap);
-    diag.setPaintLabels(true);
-    diag.showLabels();
-    return diag;
+    if (diagram != null) return diagram;
+    diagram = new org.latdraw.diagram.Diagram(getPoset());
+    if (tctTypeMap != null) diagram.setEdgeColors(tctTypeMap);
+    diagram.setPaintLabels(true);
+    diagram.showLabels();
+    return diagram;
   }
 
   public int cardinality() { return univList.size(); }

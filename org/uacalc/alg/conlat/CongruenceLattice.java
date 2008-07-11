@@ -61,6 +61,11 @@ public class CongruenceLattice implements Lattice {
   
   private String description;
 
+  /**
+   * Hold a BasicLattice view of this, if it is small enough, which
+   * in turn holds the diagram.
+   */
+  private BasicLattice basicLat;
 
   /** 
    * A map from pairs [i,j] to the array representing Cg(i, j).
@@ -130,16 +135,30 @@ public class CongruenceLattice implements Lattice {
     this.description = desc;
   }
   
+  public boolean isSmallerThan(int size) {
+    if (universe != null) return cardinality() < size;
+    if (joinIrreducibles().size() >= size) return false;
+    makeUniverse(size);
+    if (universe == null) return false;
+    return true;
+  }
+  
   public boolean isDrawable() {
     if (nonDrawable) return false;
-    if (universe != null) return cardinality() < MAX_DRAWABLE_SIZE;
-    if (joinIrreducibles().size() > MAX_DRAWABLE_SIZE) return false;
-    makeUniverse(true);
-    if (universe == null) {
-      nonDrawable = true;
-      return false;
+    nonDrawable = !isSmallerThan(MAX_DRAWABLE_SIZE + 1);
+    return !nonDrawable;
+  }
+  
+  public org.latdraw.diagram.Diagram getDiagram() {
+    if (!isDrawable()) return null;
+    if (basicLat == null) basicLat = new BasicLattice("", this, true); // maybe a name
+    try {
+      return basicLat.getDiagram();
     }
-    return true;
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   public List<Partition> principals() {
@@ -335,7 +354,7 @@ public class CongruenceLattice implements Lattice {
 */
   
   public void makeUniverse() {
-    makeUniverse(false);
+    makeUniverse(-1);
   }
   
   /**
@@ -343,7 +362,8 @@ public class CongruenceLattice implements Lattice {
    * calculation starts over. We might change that if there is enough
    * demand.
    */
-  public void makeUniverse(boolean stopIfBig) {
+  public void makeUniverse(int maxSize) {
+    final boolean stopIfBig = maxSize > 0 ? true : false;
     if (monitoring()) monitor.printStart("finding the universe of Con(" 
                                                      + getAlgebra().getName() + ")");
     List<Partition> univ = new ArrayList<Partition>(joinIrreducibles());
@@ -389,7 +409,7 @@ public class CongruenceLattice implements Lattice {
 	  //    "\n [ Number of congruences is already " + s);
 	  //}
           int s = univ.size();
-          if (stopIfBig && s > MAX_DRAWABLE_SIZE) return;
+          if (stopIfBig && s >= maxSize) return;
           if ( s % 10000 == 0) {
             System.out.println("size is " + s);
             //if (monitor != null) monitor.printlnToLog("size is " + s);

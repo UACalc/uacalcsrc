@@ -29,13 +29,7 @@ public class ConController {
       uacalcUI.getMainController().setUserWarning("Too many elements. More than " + maxSize + ".", false);
       return;
     }
-    BasicLattice lat = new BasicLattice("", alg.con(), true);
-    try {
-      getConLatDrawer().setDiagram(lat.getDiagram());
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-    }
+    getConLatDrawer().setDiagram(alg.con().getDiagram());
     getConLatDrawer().repaint();
   }
   
