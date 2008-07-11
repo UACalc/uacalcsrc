@@ -93,6 +93,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         logTextArea = new javax.swing.JTextArea();
         conPanel = new javax.swing.JPanel();
+        conLeftPanel = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox();
+        conMainPanel = new javax.swing.JPanel();
+        conEltsPanel = new javax.swing.JPanel();
         subPanel = new javax.swing.JPanel();
         drawingPanel = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
@@ -539,15 +543,70 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         tabbedPane.addTab("Computations", computationsPanel);
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout conLeftPanelLayout = new javax.swing.GroupLayout(conLeftPanel);
+        conLeftPanel.setLayout(conLeftPanelLayout);
+        conLeftPanelLayout.setHorizontalGroup(
+            conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(conLeftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, 0, 168, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        conLeftPanelLayout.setVerticalGroup(
+            conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(conLeftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(497, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout conMainPanelLayout = new javax.swing.GroupLayout(conMainPanel);
+        conMainPanel.setLayout(conMainPanelLayout);
+        conMainPanelLayout.setHorizontalGroup(
+            conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 384, Short.MAX_VALUE)
+        );
+        conMainPanelLayout.setVerticalGroup(
+            conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 534, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout conEltsPanelLayout = new javax.swing.GroupLayout(conEltsPanel);
+        conEltsPanel.setLayout(conEltsPanelLayout);
+        conEltsPanelLayout.setHorizontalGroup(
+            conEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 594, Short.MAX_VALUE)
+        );
+        conEltsPanelLayout.setVerticalGroup(
+            conEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 95, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout conPanelLayout = new javax.swing.GroupLayout(conPanel);
         conPanel.setLayout(conPanelLayout);
         conPanelLayout.setHorizontalGroup(
             conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 618, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, conPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(conEltsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(conPanelLayout.createSequentialGroup()
+                        .addComponent(conLeftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(conMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         conPanelLayout.setVerticalGroup(
             conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 659, Short.MAX_VALUE)
+            .addGroup(conPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(conMainPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(conLeftPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(conEltsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Con", conPanel);
@@ -920,6 +979,9 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JPanel computationsLogPane;
     private javax.swing.JPanel computationsPanel;
     private javax.swing.JTable computationsTable;
+    private javax.swing.JPanel conEltsPanel;
+    private javax.swing.JPanel conLeftPanel;
+    private javax.swing.JPanel conMainPanel;
     private javax.swing.JPanel conPanel;
     private javax.swing.JPanel currentAlgPanel;
     private javax.swing.JComboBox defaultEltComboBox;
@@ -936,6 +998,7 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
