@@ -52,6 +52,9 @@ public class CongruenceLattice implements Lattice {
   private SmallAlgebra alg;
   private int algSize;
   private int numOps;
+  
+  public static final int MAX_DRAWABLE_SIZE = 100;
+  private boolean nonDrawable = false;
 
   private Partition zeroCong;
   private Partition oneCong;
@@ -125,6 +128,18 @@ public class CongruenceLattice implements Lattice {
   
   public void setDescription(String desc) {
     this.description = desc;
+  }
+  
+  public boolean isDrawable() {
+    if (nonDrawable) return false;
+    if (universe != null) return cardinality() < MAX_DRAWABLE_SIZE;
+    if (joinIrreducibles().size() > MAX_DRAWABLE_SIZE) return false;
+    makeUniverse(true);
+    if (universe == null) {
+      nonDrawable = true;
+      return false;
+    }
+    return true;
   }
 
   public List<Partition> principals() {
@@ -318,12 +333,17 @@ public class CongruenceLattice implements Lattice {
       };
   }
 */
+  
+  public void makeUniverse() {
+    makeUniverse(false);
+  }
+  
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough
    * demand.
    */
-  public void makeUniverse() {
+  public void makeUniverse(boolean stopIfBig) {
     if (monitoring()) monitor.printStart("finding the universe of Con(" 
                                                      + getAlgebra().getName() + ")");
     List<Partition> univ = new ArrayList<Partition>(joinIrreducibles());
@@ -331,7 +351,7 @@ public class CongruenceLattice implements Lattice {
     sizeComputed = univ.size();
     makeUniverseK = 0;
     stopMakeUniverse = false;
-    Iterator it = joinIrreducibles().iterator();
+    Iterator<Partition> it = joinIrreducibles().iterator();
     final int size = joinIrreducibles().size();
     int k = 0;
     while (it.hasNext()) {
@@ -352,7 +372,7 @@ public class CongruenceLattice implements Lattice {
       makeUniverseK++;
 //System.out.println("makeUniverseK = " + makeUniverseK);
 //System.out.println("sizeComputed = " + sizeComputed);
-      Partition elem = (Partition)it.next();
+      Partition elem = it.next();
       int n = univ.size();
       for (int i = makeUniverseK; i < n; i++) {
         Partition join = elem.join((Partition)univ.get(i));
@@ -369,6 +389,7 @@ public class CongruenceLattice implements Lattice {
 	  //    "\n [ Number of congruences is already " + s);
 	  //}
           int s = univ.size();
+          if (stopIfBig && s > MAX_DRAWABLE_SIZE) return;
           if ( s % 10000 == 0) {
             System.out.println("size is " + s);
             //if (monitor != null) monitor.printlnToLog("size is " + s);

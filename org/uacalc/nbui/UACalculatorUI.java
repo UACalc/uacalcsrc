@@ -27,8 +27,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
         //closes from title bar and from menu
         addWindowListener(new WindowAdapter() {
             public void windowClosing (WindowEvent e) {
-              if (getActions().isDirty()) {
-                if (getActions().checkSave()) {
+              if (getMainController().isDirty()) {
+                if (getMainController().checkSave()) {
                   System.exit(0);
                 }
               }
@@ -881,7 +881,7 @@ private void clearLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_clearLogButtonActionPerformed
 
 private void quitMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMIActionPerformed
-    getActions().quit();
+    getMainController().quit();
 }//GEN-LAST:event_quitMIActionPerformed
 
 private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMIActionPerformed
@@ -890,15 +890,15 @@ private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 
 private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMIActionPerformed
 // TODO add your handling code here:
-    getActions().open();
+    getMainController().open();
 }//GEN-LAST:event_openMIActionPerformed
 
 private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uaFileMIActionPerformed
-  getActions().saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
+  getMainController().saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
 }//GEN-LAST:event_uaFileMIActionPerformed
 
 private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {                                       
-  getActions().saveAs(org.uacalc.io.ExtFileFilter.ALG_EXT);
+  getMainController().saveAs(org.uacalc.io.ExtFileFilter.ALG_EXT);
 }                                       
 
 private void newAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAlgButtonActionPerformed
@@ -906,7 +906,7 @@ private void newAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_newAlgButtonActionPerformed
 
 private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-  getActions().open();
+  getMainController().open();
 }//GEN-LAST:event_openButtonActionPerformed
 
 private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOpButtonActionPerformed
@@ -930,7 +930,7 @@ private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 }//GEN-LAST:event_defaultEltComboBoxActionPerformed
 
 private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMIActionPerformed
-  getActions().save();
+  getMainController().save();
 }//GEN-LAST:event_saveMIActionPerformed
 
 private void freeAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freeAlgMIActionPerformed
@@ -1066,16 +1066,16 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // End of variables declaration//GEN-END:variables
 
 
-  public MainController getActions() {
+  public MainController getMainController() {
     return actions;
   }
   
   public AlgebraEditorController getAlgebraEditorController() {
-    return getActions().getAlgebraEditorController();
+    return getMainController().getAlgebraEditorController();
   }
   
   public ComputationsController getComputationsController() {
-    return getActions().getComputationsController();
+    return getMainController().getComputationsController();
   }
 
   public javax.swing.JTextField getAlgNameTextField() {

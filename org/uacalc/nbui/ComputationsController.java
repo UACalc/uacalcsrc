@@ -32,7 +32,7 @@ public class ComputationsController {
     setupResultTable();
   }
 
-  private MainController getActions() { return uacalcUI.getActions(); }
+  private MainController getActions() { return uacalcUI.getMainController(); }
   
   private void setupTasksTable() {
     final JTable tasksTable = uacalcUI.getComputationsTable();
@@ -172,7 +172,7 @@ public class ComputationsController {
   }
   
   public void setupFreeAlgebraTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -274,7 +274,7 @@ public class ComputationsController {
   }
   
   public void setupJonssonTermsTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -341,7 +341,7 @@ public class ComputationsController {
   }
   
   public void setupGummTermsTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -404,7 +404,7 @@ public class ComputationsController {
   }
   
   public void setupHagemannMitschkeTermsTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -467,7 +467,7 @@ public class ComputationsController {
   }
   
   public void setupMajorityTermTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -530,7 +530,7 @@ public class ComputationsController {
   }
   
   public void setupPixleyTermTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -593,7 +593,7 @@ public class ComputationsController {
   }
   
   public void setupMalcevTermTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -656,7 +656,7 @@ public class ComputationsController {
   }
   
   public void setupNUTermTask() {
-    final GUIAlgebra gAlg = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"
@@ -721,7 +721,7 @@ public class ComputationsController {
   }
   
   public void setupBinVATask() {
-    final GUIAlgebra gAlg2 = uacalcUI.getActions().getCurrentAlgebra();
+    final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg2 == null) {
       JOptionPane.showMessageDialog(uacalcUI,
           "<html>You must have an algebra loaded.<br>"

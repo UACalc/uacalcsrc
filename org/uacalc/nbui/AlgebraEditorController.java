@@ -167,7 +167,7 @@ public class AlgebraEditorController {
       op.setDefaultValue(-1);
     }
     if (!op.isTotal()) {
-      uacalc.getActions().getCurrentAlgebra().setNeedsSave(true);
+      uacalc.getMainController().getCurrentAlgebra().setNeedsSave(true);
       //uacalc.getActions().setDirty(true);
     }
     uacalc.repaint();
@@ -181,7 +181,7 @@ public class AlgebraEditorController {
         JOptionPane.YES_NO_OPTION);
     if (n == JOptionPane.YES_OPTION) {
       removeCurrentOperation();
-      uacalc.getActions().getCurrentAlgebra().setNeedsSave(true);
+      uacalc.getMainController().getCurrentAlgebra().setNeedsSave(true);
     }
   }
   
@@ -202,7 +202,7 @@ public class AlgebraEditorController {
     addOperation(name, arity);
   }
   
-  private MainController getActions() { return uacalc.getActions(); }
+  private MainController getActions() { return uacalc.getMainController(); }
   
   public Random getRandom() {
     return random;

@@ -38,6 +38,7 @@ public class MainController {
   private String currentFolder;
   private AlgebraEditorController algEditorController;
   private ComputationsController computationsController;
+  private ConController conController;
   private JComboBox algListComboBox = new JComboBox();
   
   //private Tabs tabs;
@@ -47,6 +48,7 @@ public class MainController {
     this.uacalcUI = uacalcUI;
     algEditorController = new AlgebraEditorController(uacalcUI);
     computationsController = new ComputationsController(uacalcUI);
+    conController = new ConController(uacalcUI);
     setupAlgTable();
   }
   
@@ -329,6 +331,10 @@ public class MainController {
   
   public ComputationsController getComputationsController() {
     return computationsController;
+  }
+  
+  public ConController getConController() {
+    return conController;
   }
   
   public void resetToolBar() {
@@ -626,6 +632,7 @@ public class MainController {
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
     getAlgebraEditorController().setAlgebra(alg);
+    getConController().drawCon(alg.getAlgebra());
   }
   
   public Random getRandom() {
@@ -681,6 +688,73 @@ public class MainController {
       algListComboBox.addItem(gAlg);
     }
   }
+  
+  /**
+   * Give the user a message, set in the dimension panal info area.
+   */
+  public void setUserMessage(String msg) {
+    setUserMessage(msg, false);
+  }
+
+  /**
+   * Give the user a message, set in the dimension panal info area 
+   * and possibly a popup.
+   */
+  public void setUserMessage(String msg, boolean popup) {
+    uacalcUI.getMsgTextField().setText(msg);
+    if (popup) {
+      JOptionPane.showMessageDialog(uacalcUI, msg, "Information",
+          JOptionPane.INFORMATION_MESSAGE);
+    }
+  }
+  
+  /**
+   * Clear the user message.
+   */
+  public void clearUserMessage() {
+    uacalcUI.getMsgTextField().setText("");
+  }
+
+  /**
+   * Give the user a warning, set in the dimension panal info area.
+   */
+  public void setUserWarning(String msg) {
+    setUserWarning(msg, true);
+  }
+
+  /**
+   * Give the user a warning, set in the dimension panal info area
+   * and pop up a info dialog.
+   */
+  public void setUserWarning(String msg, boolean popup) {
+    setUserMessage(msg);
+    uacalcUI.getMsgTextField().setForeground(Color.RED);
+    beep();
+    if (popup) {
+      beep();
+      JOptionPane.showMessageDialog(uacalcUI, msg, "Warning",
+        JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
+  /**
+   * Give the user a message and erase it after a few seconds.
+   */
+  public void setTimedMessage(String msg) {
+    setUserMessage(msg);
+    final int delay = 8000;
+    final ActionListener eraser = new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        setUserMessage("");
+      }
+    };
+    final javax.swing.Timer delayer = new javax.swing.Timer(delay, eraser);
+    delayer.setRepeats(false);
+    delayer.start();
+  }
+
+
+
   
   // prefs stuff
   public Preferences getPrefs() {
