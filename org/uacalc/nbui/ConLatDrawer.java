@@ -359,6 +359,65 @@ public class ConLatDrawer extends JPanel {
         }
       });
     toolBar.add(improveButton);
+    
+    toolBar.addSeparator();
+    toolBar.add(new JLabel("Drag"));
+    ButtonGroup dragGroup = new ButtonGroup();
+    JRadioButton noDrag = new JRadioButton("No");
+    JRadioButton horizDrag = new JRadioButton("Horiz");
+    JRadioButton allDrag = new JRadioButton("All", true);
+    toolBar.add(noDrag);
+    toolBar.add(horizDrag);
+    toolBar.add(allDrag);
+    dragGroup.add(noDrag);
+    dragGroup.add(horizDrag);
+    dragGroup.add(allDrag);
+    noDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(false);
+      }
+    });
+    horizDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(true);
+        drawPanel.setDraggingHorizontal(true);
+      }
+    });
+    allDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(true);
+        drawPanel.setDraggingHorizontal(false);
+      }
+    });
+
+    toolBar.addSeparator();
+    toolBar.add(new JLabel("Label"));
+    ButtonGroup labelGroup = new ButtonGroup();
+    JRadioButton noLabel = new JRadioButton("No");
+    JRadioButton yesLabel = new JRadioButton("Yes", true);
+    JRadioButton numsLabel = new JRadioButton("Nums");
+    toolBar.add(noLabel);
+    toolBar.add(yesLabel);
+    toolBar.add(numsLabel);
+    labelGroup.add(noLabel);
+    labelGroup.add(yesLabel);
+    labelGroup.add(numsLabel);
+    noLabel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.getDiagram().setPaintLabels(false);
+        repaint();
+      }
+    });
+    yesLabel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.getDiagram().setPaintLabels(true);
+        repaint();
+      }
+    });
+
+    
+    
+    
     return toolBar;
   }
 

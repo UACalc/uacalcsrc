@@ -23,7 +23,7 @@ public class ConController {
   
   
   public void drawCon(SmallAlgebra alg) {
-    final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE - 1;
+    final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
     if (!alg.con().isDrawable()) {
       uacalcUI.getMainController().beep();
       uacalcUI.getMainController().setUserWarning("Too many elements. More than " + maxSize + ".", false);
