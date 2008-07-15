@@ -98,12 +98,13 @@ public class UACalculatorUI extends javax.swing.JFrame {
         conMainPanel = new javax.swing.JPanel();
         conEltsPanel = new javax.swing.JPanel();
         subPanel = new javax.swing.JPanel();
+        subLeftPanel = new javax.swing.JPanel();
+        subMainPanel = new javax.swing.JPanel();
+        subEltsPanel = new javax.swing.JPanel();
         drawingPanel = new javax.swing.JPanel();
-        jToolBar2 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        drawingLeftPanel = new javax.swing.JPanel();
+        drawingMainPanel = new javax.swing.JPanel();
+        drawingEltsPanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         algListTable = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
@@ -315,12 +316,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
         editorPanel.setLayout(editorPanelLayout);
         editorPanelLayout.setHorizontalGroup(
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
             .addGroup(editorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(algNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                .addComponent(algNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -328,7 +329,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
-                .addComponent(descTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addComponent(descTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(editorPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -339,16 +340,16 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addComponent(delOpButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addOpButton)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addContainerGap(328, Short.MAX_VALUE))
             .addGroup(editorPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(idempotentCB)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(defaultEltComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(136, Short.MAX_VALUE))
-            .addComponent(opTableScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
+                .addContainerGap(150, Short.MAX_VALUE))
+            .addComponent(opTableScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
         );
         editorPanelLayout.setVerticalGroup(
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,7 +387,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         currentAlgPanel.setLayout(currentAlgPanelLayout);
         currentAlgPanelLayout.setHorizontalGroup(
             currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 606, Short.MAX_VALUE)
+            .addGap(0, 634, Short.MAX_VALUE)
         );
         currentAlgPanelLayout.setVerticalGroup(
             currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -432,7 +433,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         resultPaneLayout.setHorizontalGroup(
             resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(resultPaneLayout.createSequentialGroup()
-                .addGap(150, 150, 150)
+                .addGap(178, 178, 178)
                 .addComponent(resultDescLabel)
                 .addGap(18, 18, 18)
                 .addComponent(resultTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
@@ -440,7 +441,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
             .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPaneLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         resultPaneLayout.setVerticalGroup(
@@ -496,10 +497,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
                         .addGap(28, 28, 28))
                     .addGroup(computationsLogPaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(computationsLogPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelCompButton)
@@ -568,7 +569,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         conMainPanel.setLayout(conMainPanelLayout);
         conMainPanelLayout.setHorizontalGroup(
             conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 384, Short.MAX_VALUE)
+            .addGap(0, 412, Short.MAX_VALUE)
         );
         conMainPanelLayout.setVerticalGroup(
             conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -579,7 +580,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         conEltsPanel.setLayout(conEltsPanelLayout);
         conEltsPanelLayout.setHorizontalGroup(
             conEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 594, Short.MAX_VALUE)
+            .addGap(0, 622, Short.MAX_VALUE)
         );
         conEltsPanelLayout.setVerticalGroup(
             conEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -613,56 +614,125 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         tabbedPane.addTab("Con", conPanel);
 
+        javax.swing.GroupLayout subLeftPanelLayout = new javax.swing.GroupLayout(subLeftPanel);
+        subLeftPanel.setLayout(subLeftPanelLayout);
+        subLeftPanelLayout.setHorizontalGroup(
+            subLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 191, Short.MAX_VALUE)
+        );
+        subLeftPanelLayout.setVerticalGroup(
+            subLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 535, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout subMainPanelLayout = new javax.swing.GroupLayout(subMainPanel);
+        subMainPanel.setLayout(subMainPanelLayout);
+        subMainPanelLayout.setHorizontalGroup(
+            subMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 419, Short.MAX_VALUE)
+        );
+        subMainPanelLayout.setVerticalGroup(
+            subMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 523, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout subEltsPanelLayout = new javax.swing.GroupLayout(subEltsPanel);
+        subEltsPanel.setLayout(subEltsPanelLayout);
+        subEltsPanelLayout.setHorizontalGroup(
+            subEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 622, Short.MAX_VALUE)
+        );
+        subEltsPanelLayout.setVerticalGroup(
+            subEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 94, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout subPanelLayout = new javax.swing.GroupLayout(subPanel);
         subPanel.setLayout(subPanelLayout);
         subPanelLayout.setHorizontalGroup(
             subPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 618, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, subPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(subPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(subEltsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(subPanelLayout.createSequentialGroup()
+                        .addComponent(subLeftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(subMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         subPanelLayout.setVerticalGroup(
             subPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 659, Short.MAX_VALUE)
+            .addGroup(subPanelLayout.createSequentialGroup()
+                .addGroup(subPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(subPanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(subMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(subLeftPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(subEltsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
         );
 
         tabbedPane.addTab("Sub", subPanel);
 
-        jToolBar2.setRollover(true);
+        javax.swing.GroupLayout drawingLeftPanelLayout = new javax.swing.GroupLayout(drawingLeftPanel);
+        drawingLeftPanel.setLayout(drawingLeftPanelLayout);
+        drawingLeftPanelLayout.setHorizontalGroup(
+            drawingLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 194, Short.MAX_VALUE)
+        );
+        drawingLeftPanelLayout.setVerticalGroup(
+            drawingLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 534, Short.MAX_VALUE)
+        );
 
-        jButton1.setText("jButton1");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(jButton1);
+        javax.swing.GroupLayout drawingMainPanelLayout = new javax.swing.GroupLayout(drawingMainPanel);
+        drawingMainPanel.setLayout(drawingMainPanelLayout);
+        drawingMainPanelLayout.setHorizontalGroup(
+            drawingMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 410, Short.MAX_VALUE)
+        );
+        drawingMainPanelLayout.setVerticalGroup(
+            drawingMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 534, Short.MAX_VALUE)
+        );
 
-        jButton2.setText("jButton2");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(jButton2);
-
-        jButton7.setText("jButton7");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(jButton7);
-
-        jButton8.setText("jButton8");
-        jButton8.setFocusable(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(jButton8);
+        javax.swing.GroupLayout drawingEltsPanelLayout = new javax.swing.GroupLayout(drawingEltsPanel);
+        drawingEltsPanel.setLayout(drawingEltsPanelLayout);
+        drawingEltsPanelLayout.setHorizontalGroup(
+            drawingEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 622, Short.MAX_VALUE)
+        );
+        drawingEltsPanelLayout.setVerticalGroup(
+            drawingEltsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 89, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout drawingPanelLayout = new javax.swing.GroupLayout(drawingPanel);
         drawingPanel.setLayout(drawingPanelLayout);
         drawingPanelLayout.setHorizontalGroup(
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, drawingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(drawingEltsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(drawingPanelLayout.createSequentialGroup()
+                        .addComponent(drawingLeftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(drawingMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         drawingPanelLayout.setVerticalGroup(
             drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(drawingPanelLayout.createSequentialGroup()
-                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(634, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(drawingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(drawingMainPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(drawingLeftPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(drawingEltsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabbedPane.addTab("Drawing", drawingPanel);
@@ -843,15 +913,15 @@ public class UACalculatorUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(msgTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)))
+                        .addComponent(msgTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -860,12 +930,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(msgTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46))
+                    .addComponent(msgTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -1002,16 +1072,15 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton delOpButton;
     private javax.swing.JTextField descTextField;
     private javax.swing.JMenuItem distributivityMI;
+    private javax.swing.JPanel drawingEltsPanel;
+    private javax.swing.JPanel drawingLeftPanel;
+    private javax.swing.JPanel drawingMainPanel;
     private javax.swing.JPanel drawingPanel;
     private javax.swing.JMenu editMenu;
     private javax.swing.JPanel editorPanel;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem freeAlgMI;
     private javax.swing.JCheckBox idempotentCB;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -1034,7 +1103,6 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JToolBar jToolBar2;
     private javax.swing.JTextArea logTextArea;
     private javax.swing.JMenuItem majorityMI;
     private javax.swing.JMenuItem maltsevMI;
@@ -1059,6 +1127,9 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JTextField resultTextField;
     private javax.swing.JMenu saveAsMenu;
     private javax.swing.JMenuItem saveMI;
+    private javax.swing.JPanel subEltsPanel;
+    private javax.swing.JPanel subLeftPanel;
+    private javax.swing.JPanel subMainPanel;
     private javax.swing.JPanel subPanel;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JMenu tasksMenu;
@@ -1228,6 +1299,18 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     public javax.swing.JTextField getMsgTextField() {
         return msgTextField;
+    }
+
+    public javax.swing.JPanel getSubEltsPanel() {
+        return subEltsPanel;
+    }
+
+    public javax.swing.JPanel getSubLeftPanel() {
+        return subLeftPanel;
+    }
+
+    public javax.swing.JPanel getSubMainPanel() {
+        return subMainPanel;
     }
   
 }
