@@ -573,12 +573,7 @@ public class LatDrawer extends JFrame {
   }
 
   public static void drawLattice(BasicLattice lat) {
-    try {
-      drawLattice(lat.getDiagram());
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-    }
+    drawLattice(lat.getDiagram());
   }
 
   public static void drawLattice(Diagram diagram) {

@@ -29,7 +29,8 @@ public class ConController {
       uacalcUI.getMainController().setUserWarning("Too many elements. More than " + maxSize + ".", false);
       return;
     }
-    getConLatDrawer().setDiagram(alg.con().getDiagram());
+    getConLatDrawer().setBasicLattice(alg.con().getBasicLattice());
+    //getConLatDrawer().setDiagram(alg.con().getDiagram());
     getConLatDrawer().repaint();
   }
   

@@ -149,16 +149,20 @@ public class CongruenceLattice implements Lattice {
     return !nonDrawable;
   }
   
+  /**
+   * Get the BasicLattice used primarily for drawing.
+   * 
+   * @return a BasicLattice view
+   */
+  public BasicLattice getBasicLattice() {
+    if (basicLat == null) basicLat = new BasicLattice("", this, true); // maybe a name
+    return basicLat;
+  }
+  
   public org.latdraw.diagram.Diagram getDiagram() {
     if (!isDrawable()) return null;
     if (basicLat == null) basicLat = new BasicLattice("", this, true); // maybe a name
-    try {
-      return basicLat.getDiagram();
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-      return null;
-    }
+    return basicLat.getDiagram();
   }
 
   public List<Partition> principals() {

@@ -5,6 +5,7 @@ package org.uacalc.lat;
 import java.util.*;
 import java.io.*;
 
+import org.uacalc.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.ui.*;
 import org.uacalc.io.*;
@@ -31,14 +32,14 @@ public class  BasicLattice extends GeneralAlgebra
 
   private org.latdraw.orderedset.OrderedSet poset;
   private List<POElem> univList;
-  private HashSet univHS;
+  private HashSet<POElem> univHS;
   private int[] joinMeetTable;
   final private List<Operation> operations = new ArrayList<Operation>();
   private Operation join;
   private Operation meet;
-  private List joinIrreducibles;
-  private List meetIrreducibles;
-  private HashMap tctTypeMap; // from edges to the strings "1" ... "5".
+  private List<POElem> joinIrreducibles;
+  private List<POElem> meetIrreducibles;
+  private HashMap<org.latdraw.orderedset.Edge,String> tctTypeMap; // from edges to the strings "1" ... "5".
   private org.latdraw.diagram.Diagram diagram;
 
   /**
@@ -85,13 +86,12 @@ public class  BasicLattice extends GeneralAlgebra
   private void makeTctTypeMap(org.latdraw.orderedset.OrderedSet poset, 
                                                     CongruenceLattice lat) {
     final String[] types = new String[] {"1", "2", "3", "4", "5"};
-    tctTypeMap = new HashMap();
-    for (Iterator it = lat.universe().iterator(); it.hasNext(); ) {
-      BasicPartition elt = (BasicPartition)it.next();
+    tctTypeMap = new HashMap<org.latdraw.orderedset.Edge,String>();
+    for (Partition elt : lat.universe()) {
       POElem pelt = poset.getElement(elt);
       for (Iterator it2 = pelt.upperCovers().iterator(); it2.hasNext(); ) {
         POElem pelt2 = (POElem)it2.next();
-        BasicPartition elt2 = (BasicPartition)pelt2.getUnderlyingObject();
+        Partition elt2 = (BasicPartition)pelt2.getUnderlyingObject();
         int typ = lat.type(elt2, elt);
         org.latdraw.orderedset.Edge e = 
              new org.latdraw.orderedset.Edge(elt.toString(), elt2.toString());
@@ -141,14 +141,19 @@ public class  BasicLattice extends GeneralAlgebra
     return poset;
   }
 
-  public org.latdraw.diagram.Diagram getDiagram() 
-                      throws org.latdraw.orderedset.NonOrderedSetException {
+  public org.latdraw.diagram.Diagram getDiagram() {
     if (diagram != null) return diagram;
-    diagram = new org.latdraw.diagram.Diagram(getPoset());
-    if (tctTypeMap != null) diagram.setEdgeColors(tctTypeMap);
-    diagram.setPaintLabels(true);
-    diagram.showLabels();
-    return diagram;
+    try {
+      diagram = new org.latdraw.diagram.Diagram(getPoset());
+      if (tctTypeMap != null) diagram.setEdgeColors(tctTypeMap);
+      diagram.setPaintLabels(true);
+      diagram.showLabels();
+      return diagram;
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException ex) {
+      ex.printStackTrace();
+      return null;
+    }
   }
 
   public int cardinality() { return univList.size(); }
@@ -204,32 +209,172 @@ public class  BasicLattice extends GeneralAlgebra
     return one().lowerCovers();
   }
   
-  public List joinIrreducibles() {
+  public List<POElem> joinIrreducibles() {
     if (joinIrreducibles == null) {
-      joinIrreducibles = new ArrayList();
-      for (Iterator it = univList.iterator(); it.hasNext(); ) {
-        final POElem elem = (POElem)it.next();
-        if (elem.lowerCovers().size() == 1) joinIrreducibles.add(elem);
+      joinIrreducibles = new ArrayList<POElem>();
+      for (POElem elem : univList) {
+        if (elem.isJoinIrreducible()) joinIrreducibles.add(elem);
       }
     }
     return joinIrreducibles;
   }
 
-  public List meetIrreducibles() {
+  public List<POElem> meetIrreducibles() {
     if (meetIrreducibles == null) {
-      meetIrreducibles = new ArrayList();
-      for (Iterator it = univList.iterator(); it.hasNext(); ) {
-        final POElem elem = (POElem)it.next();
-        if (elem.upperCovers().size() == 1) meetIrreducibles.add(elem);
+      meetIrreducibles = new ArrayList<POElem>();
+      for (POElem elem : univList) {
+        if (elem.isMeetIrreducible()) meetIrreducibles.add(elem);
       }
     }
     return meetIrreducibles;
   }
-
-  public boolean leq(Object obj1, Object obj2) {
-    return false;
+  
+  public List<POElem> joinIrredsBelow(POElem v) {
+    List<POElem> ans = new ArrayList<POElem>();
+    for (POElem elt : joinIrreducibles()) {
+      if (leq(elt,v)) ans.add(elt);
+    }
+    return ans;
+  }
+  
+  public List<POElem> meetIrredsAbove(POElem v) {
+    List<POElem> ans = new ArrayList<POElem>();
+    for (POElem elt : meetIrreducibles()) {
+      if (leq(v, elt)) ans.add(elt);
+    }
+    return ans;
+  }
+  
+  public List<POElem> lowerCovers(POElem v) {
+    return (List<POElem>)v.lowerCovers();
+  }
+  
+  public List<POElem> upperCovers(POElem v) {
+    return (List<POElem>)v.upperCovers();
+  }
+  
+  public List<POElem> irredundantMeetDecomposition(POElem v) {
+    final List<POElem> decomp = new ArrayList<POElem>();
+    List<POElem> uc = upperCovers(v);
+    if (uc.size() == 0) return decomp;
+    POElem meetSoFar = one();
+    for (POElem cov : uc) {
+      POElem mi = findMeetIrred(v, cov);
+      if (!leq(meetSoFar, mi)) {
+        meetSoFar = (POElem)meet(meetSoFar, mi);
+        decomp.add(mi);
+        if (leq(meetSoFar, v)) break;
+      }
+    }
+    return makeIrredundantMeet(decomp);
+  }
+  
+  /**
+   * This finds a meet irreducible element which is maximal with
+   * respect to being above <code>a</code> and not above <code>b</code>.
+   * Note if <code>a</code> is covered by <code>b</code> then
+   * <code>[a,b]</code> transposes up to <code>[m,m*]</code>.
+   */
+  public POElem findMeetIrred (POElem a, POElem b) {
+    if (leq(b, a)) return null;
+    for (POElem e : joinIrreducibles()) {
+      if (!leq(e,a)) {
+        POElem test = (POElem)join(a,e);
+        if (!leq(b, test)) a = test;
+      }
+    }
+    return a;
+  }
+  
+  public List<POElem> makeIrredundantMeet(List<POElem> list) {
+    SimpleList lst = new SimpleList(list);
+    final POElem bot = (POElem)meet(lst);
+    List<POElem> ans = new ArrayList<POElem>();
+    POElem ansMeet = one();
+    while (!lst.isEmpty()) {
+      POElem a = (POElem)lst.first();
+      lst = lst.rest();
+      POElem b = (POElem)meet(ansMeet, meet(lst));
+      if (!b.equals(bot)){
+        ans.add(a);
+        ansMeet = (POElem)meet(ansMeet, a);
+      }
+    }
+    return ans;
+  }
+  
+  public List<POElem> irredundantJoinDecomposition(POElem v) {
+    final List<POElem> decomp = new ArrayList<POElem>();
+    List<POElem> lc = lowerCovers(v);
+    if (lc.size() == 0) return decomp;
+    POElem joinSoFar = zero();
+    for (POElem lcov : lc) {
+      POElem ji = findJoinIrred(v, lcov);
+      if (!leq(ji, joinSoFar)) {
+        joinSoFar = (POElem)join(joinSoFar, ji);
+        decomp.add(ji);
+        if (leq(v, joinSoFar)) break;
+      }
+    }
+    return makeIrredundantJoin(decomp);
   }
 
+  /**
+   * This finds a join irreducible element which is minimal with
+   * respect to being below <code>a</code> and not below <code>b</code>.
+   * Note if <code>a</code> covers <code>b</code> then
+   * <code>[b,a]</code> transposes down to <code>[j_*,j]</code>.
+   */
+  public POElem findJoinIrred (POElem a, POElem b) {
+    if (leq(a, b)) return null;
+    for (POElem e : meetIrreducibles()) {
+      if (!leq(a, e)) {
+        POElem test = (POElem)meet(a,e);
+        if (!leq(test, b)) a = test;
+      }
+    }
+    return a;
+  }
+  
+  public List<POElem> makeIrredundantJoin(List<POElem> list) {
+    SimpleList lst = new SimpleList(list);
+    final POElem top = (POElem)join(lst);
+    List<POElem> ans = new ArrayList<POElem>();
+    POElem ansJoin = zero();
+    while (!lst.isEmpty()) {
+      POElem a = (POElem)lst.first();
+      lst = lst.rest();
+      POElem b = (POElem)join(ansJoin, join(lst));
+      if (!b.equals(top)){
+        ans.add(a);
+        ansJoin = (POElem)join(ansJoin, a);
+      }
+    }
+    return ans;
+  }
+  
+  public boolean leq(Object obj1, Object obj2) {
+    POElem e1 = (POElem)obj1;
+    POElem e2 = (POElem)obj2;
+    return poset.leq(e1, e2);
+  }
+
+  public List<POElem> ideal(POElem v) {
+    return (List<POElem>)v.ideal();
+  }
+  
+  public List<POElem> filter(POElem v) {
+    return (List<POElem>)v.filter();
+  }
+  
+  public List<org.latdraw.diagram.Vertex> getVertices(List<POElem> lst) {
+    List<org.latdraw.diagram.Vertex> ans = new ArrayList<org.latdraw.diagram.Vertex>();
+    for (POElem elt : lst) {
+      ans.add(getDiagram().vertexForPOElem(elt));
+    }
+    return ans;
+  }
+  
   /**
    * Form the dual of the lattice.
    */

@@ -5,6 +5,8 @@ import org.latdraw.orderedset.*;
 import org.latdraw.diagram.*;
 import org.latdraw.beans.*;
 
+import org.uacalc.lat.*;
+
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.*;
@@ -14,10 +16,22 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-public class ConLatDrawer extends JPanel {
 
-  public static final Color OBJ_COLOR = new Color(204, 255, 204); //light green
-  public static final Color ATT_COLOR = new Color(204, 204, 255); //light blue
+public class ConLatDrawer extends JPanel {
+  
+  public static enum RadioButtonType {
+    OFF, JI, MI, UC, LC, ID, FIL, JDECOMP, MDECOMP
+  }
+  
+  private RadioButtonType aboveType = RadioButtonType.OFF;
+  private RadioButtonType belowType= RadioButtonType.OFF;
+
+  //public static final Color BELOW_COLOR = new Color(204, 255, 204); //light green
+  //public static final Color ABOVE_COLOR = new Color(204, 204, 255); //light blue
+ 
+  public static final Color BELOW_COLOR = Color.PINK;
+  public static final Color ABOVE_COLOR = Color.CYAN;
+  public static final Color BOTH_COLOR = Color.WHITE;
 
   private org.latdraw.beans.DrawPanel drawPanel;
 
@@ -26,6 +40,10 @@ public class ConLatDrawer extends JPanel {
   private JToolBar toolBar;
 
   private UACalculatorUI uacalc;
+  
+  private BasicLattice lattice;
+  
+  private Vertex selectedElem;
 
   private static final Dimension scrollDim = new Dimension(200, 250);
 
@@ -35,28 +53,42 @@ public class ConLatDrawer extends JPanel {
     drawPanel = new org.latdraw.beans.DrawPanel();
     PropertyChangeListener changeListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
+          Diagram diag = drawPanel.getDiagram();
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
-            Diagram diag = drawPanel.getDiagram();
-            diag.resetVertices();
-            diag.hideLabels();
+            //diag.resetVertices();
+            //diag.hideLabels();
             Vertex v = (Vertex)e.getNewValue();
+            setSelectedElem(v);
+            //resetVertexColors();
+            /*
             boolean vIsAtt = false;
             boolean vIsObj = false;
 
-            v.setHighlighted(true);
+            //v.setHighlighted(true);
             if (vIsAtt) {
               v.setFilled(true);
               if (vIsObj) v.setColor(Color.WHITE);
-              else v.setColor(ATT_COLOR);
+              else v.setColor(ABOVE_COLOR);
             }
             else {
               if (vIsObj) {
-                v.setColor(OBJ_COLOR);
+                v.setColor(BELOW_COLOR);
                 v.setFilled(true);
               }
               else v.setColor(null);
             }
-            repaint();
+            //repaint();
+             */
+            return;
+          }
+          if (e.getPropertyName().equals(ChangeSupport.NOTHING_PRESSED)) {
+            setSelectedElem(null);
+            
+            //diag.resetVertices();
+            //setSelectedElem(null);
+            //resetVertexColors();
+            //repaint();
+            return;
           }
         }
     };
@@ -99,13 +131,79 @@ public class ConLatDrawer extends JPanel {
 
 
     setLayout(new BorderLayout());
+    ButtonGroup labelGroup = new ButtonGroup();
+    JRadioButtonMenuItem noLabel = new JRadioButtonMenuItem("No");
+    JRadioButtonMenuItem yesLabel = new JRadioButtonMenuItem("Yes", true);
+    JRadioButtonMenuItem numsLabel = new JRadioButtonMenuItem("Nums");
+    JMenuBar mb = new JMenuBar();
+    JMenu labelsMenu = mb.add(new JMenu("Labels"));
+    labelsMenu.add(noLabel);
+    labelsMenu.add(yesLabel);
+    labelsMenu.add(numsLabel);
+    labelGroup.add(noLabel);
+    labelGroup.add(yesLabel);
+    labelGroup.add(numsLabel);
+    noLabel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (drawPanel.getDiagram() != null) {
+          drawPanel.getDiagram().setPaintLabels(false);
+          repaint();
+        }
+      }
+    });
+    yesLabel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (drawPanel.getDiagram() != null) {
+          drawPanel.getDiagram().setPaintLabels(true);
+          repaint();
+        }
+      }
+    });
+    
+    ButtonGroup dragGroup = new ButtonGroup();
+    JRadioButtonMenuItem noDrag = new JRadioButtonMenuItem("No");
+    JRadioButtonMenuItem horizDrag = new JRadioButtonMenuItem("Horiz");
+    JRadioButtonMenuItem allDrag = new JRadioButtonMenuItem("All", true);
+    JMenu dragMenu = mb.add(new JMenu("Dragging"));
+    dragMenu.add(noDrag);
+    dragMenu.add(horizDrag);
+    dragMenu.add(allDrag);
+    dragGroup.add(noDrag);
+    dragGroup.add(horizDrag);
+    dragGroup.add(allDrag);
+    noDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(false);
+      }
+    });
+    horizDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(true);
+        drawPanel.setDraggingHorizontal(true);
+      }
+    });
+    allDrag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setDraggingAllowed(true);
+        drawPanel.setDraggingHorizontal(false);
+      }
+    });
+
+    
     toolBar = makeToolBar();
     appPanel = new JPanel();
     appPanel.setLayout(new BorderLayout());
     mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
     mainPanel.add(drawPanel, BorderLayout.CENTER);
-    add(toolBar, BorderLayout.NORTH);
+    //mb.add(new JMenu("FOO"));
+    JPanel top = new JPanel();
+    top.setLayout(new BorderLayout());
+    top.add(mb, BorderLayout.NORTH);
+    top.add(toolBar, BorderLayout.CENTER);
+    add(top, BorderLayout.NORTH);
+    //add(mb, BorderLayout.NORTH);
+    //add(toolBar, BorderLayout.NORTH);
     add(mainPanel, BorderLayout.CENTER);
     validate();
     repaint();
@@ -123,10 +221,18 @@ public class ConLatDrawer extends JPanel {
     }
   }
 
+  public BasicLattice getBasicLattice() { return lattice; }
+  
+  public void setBasicLattice(BasicLattice lat) {
+    lattice = lat;
+    setDiagram(lat.getDiagram());
+  }
+  
   public org.latdraw.beans.DrawPanel getDrawPanel() { return drawPanel; }
 
   public JToolBar getToolBar() { return toolBar; }
 
+  
 /*
   public void paint(java.awt.Graphics g) {
     if (drawPanel.getDiagram() != null) super.paint(g);
@@ -273,6 +379,164 @@ public class ConLatDrawer extends JPanel {
   }
 */
 
+  public void setSelectedElem(Vertex selectedElem) {
+    this.selectedElem = selectedElem;
+    resetVertexColors();
+  }
+
+  public Vertex getSelectedElem() {
+    return selectedElem;
+  }
+  
+  public void resetVertexColors() {
+    getDiagram().resetVertices();
+    getDiagram().hideLabels();
+    if (selectedElem != null) selectedElem.setHighlighted(true);
+    boolean selectedFilledAbove = false;
+    boolean selectedFilledBelow = false;
+    switch (getAboveType()) {
+      case UC:
+        showUpperCovers();
+        break;
+      case MI:
+        if (selectedElem != null)  selectedFilledAbove = selectedElem.isMeetIrreducible();
+        showMIsAbove();
+        break;
+      case FIL:
+        if (selectedElem != null)  selectedFilledAbove = true;
+        showFilter();
+        break;
+      case MDECOMP:
+        if (selectedElem != null)  selectedFilledAbove = selectedElem.isMeetIrreducible();
+        showMeetIrredundantDecomp();
+        break;
+    }
+    switch (getBelowType()) {
+      case LC:
+        showLowerCovers();
+        break;
+      case JI:
+        if (selectedElem != null)  selectedFilledBelow = selectedElem.isJoinIrreducible();
+        showJIsBelow();
+        break;
+      case ID:
+        if (selectedElem != null)  selectedFilledBelow = true;
+        showIdeal();
+        break;
+      case JDECOMP:
+        if (selectedElem != null)  selectedFilledBelow = selectedElem.isJoinIrreducible();
+        showJoinIrredundantDecomp();
+        break;
+    }
+    if (selectedElem != null && selectedFilledAbove && selectedFilledBelow) {
+      //selectedElem.setFilled(true);
+      selectedElem.setColor(BOTH_COLOR);
+      selectedElem.setFilled(true);
+    }
+    repaint();
+  }
+
+  public void setBelowType(RadioButtonType belowType) {
+    this.belowType = belowType;
+  }
+
+  public RadioButtonType getBelowType() {
+    return belowType;
+  }
+
+  public void setAboveType(RadioButtonType aboveType) {
+    this.aboveType = aboveType;
+  }
+
+  public RadioButtonType getAboveType() {
+    return aboveType;
+  }
+
+  public List<Vertex> joinIrredsBelow(Vertex v) {
+    List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    final Vertex[] verts = diag.getVertices();
+    for (int i = 0; i < verts.length; i++) {
+      Vertex u = verts[i];
+      if (u.isJoinIrreducible() && diag.leq(u, v)) {
+        ans.add(u);
+      }
+    }
+    return ans;
+  }
+  
+  public List<Vertex> meetIrredsAbove(Vertex v) {
+    List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    final Vertex[] verts = diag.getVertices();
+    for (int i = 0; i < verts.length; i++) {
+      Vertex u = verts[i];
+      if (u.isMeetIrreducible() && diag.leq(v, u)) {
+        ans.add(u);
+      }
+    }
+    return ans;
+  }
+  
+  public List<Vertex> ideal(Vertex v) {
+    List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    final Vertex[] verts = diag.getVertices();
+    for (int i = 0; i < verts.length; i++) {
+      Vertex u = verts[i];
+      if (diag.leq(u, v)) {
+        ans.add(u);
+      }
+    }
+    return ans;
+  }
+  
+  public List<Vertex> filter(Vertex v) {
+    List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    final Vertex[] verts = diag.getVertices();
+    for (int i = 0; i < verts.length; i++) {
+      Vertex u = verts[i];
+      if (diag.leq(v, u)) {
+        ans.add(u);
+      }
+    }
+    return ans;
+  }
+  
+  public List<Vertex> lowerCovers(Vertex v) {
+    final List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    List<POElem> lc = (List<POElem>)v.getUnderlyingElem().lowerCovers();
+    for (POElem elt : lc) {
+      ans.add(diag.vertexForPOElem(elt));
+    }
+    return ans;
+  }
+  
+  public List<Vertex> upperCovers(Vertex v) {
+    final List<Vertex> ans = new ArrayList<Vertex>();
+    final Diagram diag = getDiagram();
+    List<POElem> lc = (List<POElem>)v.getUnderlyingElem().upperCovers();
+    for (POElem elt : lc) {
+      ans.add(diag.vertexForPOElem(elt));
+    }
+    return ans;
+  }
+  
+  // change all the ones above to use the method in BasicLattice.
+  
+  public List<Vertex> irredundantMeetDecomposition(Vertex v) {
+    if (lattice == null || getDiagram() == null) return null;
+    POElem e = v.getUnderlyingElem();
+    return lattice.getVertices(lattice.irredundantMeetDecomposition(e));
+  }
+  
+  public List<Vertex> irredundantJoinDecomposition(Vertex v) {
+    if (lattice == null || getDiagram() == null) return null;
+    POElem e = v.getUnderlyingElem();
+    return lattice.getVertices(lattice.irredundantJoinDecomposition(e));
+  }
 
   public void setLabels(Diagram d) {
   }
@@ -361,66 +625,199 @@ public class ConLatDrawer extends JPanel {
     toolBar.add(improveButton);
     
     toolBar.addSeparator();
-    toolBar.add(new JLabel("Drag"));
-    ButtonGroup dragGroup = new ButtonGroup();
-    JRadioButton noDrag = new JRadioButton("No");
-    JRadioButton horizDrag = new JRadioButton("Horiz");
-    JRadioButton allDrag = new JRadioButton("All", true);
-    toolBar.add(noDrag);
-    toolBar.add(horizDrag);
-    toolBar.add(allDrag);
-    dragGroup.add(noDrag);
-    dragGroup.add(horizDrag);
-    dragGroup.add(allDrag);
-    noDrag.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        drawPanel.setDraggingAllowed(false);
-      }
-    });
-    horizDrag.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        drawPanel.setDraggingAllowed(true);
-        drawPanel.setDraggingHorizontal(true);
-      }
-    });
-    allDrag.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        drawPanel.setDraggingAllowed(true);
-        drawPanel.setDraggingHorizontal(false);
-      }
-    });
-
+    ButtonGroup lowerBG = new ButtonGroup();
+    JRadioButton jis = (JRadioButton)toolBar.add(new JRadioButton("JI"));
+    JRadioButton lcovs = (JRadioButton)toolBar.add(new JRadioButton("L C"));
+    JRadioButton ideals = (JRadioButton)toolBar.add(new JRadioButton("Id"));
+    JRadioButton jdecomp = (JRadioButton)toolBar.add(new JRadioButton("J D"));
+    JRadioButton lnone = (JRadioButton)toolBar.add(new JRadioButton("Off", true));
+    lowerBG.add(jis);
+    lowerBG.add(lcovs);
+    lowerBG.add(ideals);
+    lowerBG.add(jdecomp);
+    lowerBG.add(lnone);
+    jis.setToolTipText("join irreds below highlighted elem or 1");
+    lcovs.setToolTipText("lower covers of highlighted elem or 1");
+    ideals.setToolTipText("ideal of highlighted elem");
+    jdecomp.setToolTipText("an irredundant join decomposition of highlighted elem or 1");
+    
+    
     toolBar.addSeparator();
-    toolBar.add(new JLabel("Label"));
-    ButtonGroup labelGroup = new ButtonGroup();
-    JRadioButton noLabel = new JRadioButton("No");
-    JRadioButton yesLabel = new JRadioButton("Yes", true);
-    JRadioButton numsLabel = new JRadioButton("Nums");
-    toolBar.add(noLabel);
-    toolBar.add(yesLabel);
-    toolBar.add(numsLabel);
-    labelGroup.add(noLabel);
-    labelGroup.add(yesLabel);
-    labelGroup.add(numsLabel);
-    noLabel.addActionListener(new ActionListener() {
+    ButtonGroup upperBG = new ButtonGroup();
+    JRadioButton mis = (JRadioButton)toolBar.add(new JRadioButton("MI"));
+    JRadioButton ucovs = (JRadioButton)toolBar.add(new JRadioButton("U C"));
+    JRadioButton filters = (JRadioButton)toolBar.add(new JRadioButton("Fil"));
+    JRadioButton mdecomp = (JRadioButton)toolBar.add(new JRadioButton("M D"));
+    JRadioButton unone = (JRadioButton)toolBar.add(new JRadioButton("Off", true));
+    upperBG.add(mis);
+    upperBG.add(ucovs);
+    upperBG.add(filters);
+    upperBG.add(mdecomp);
+    upperBG.add(unone);
+    mis.setToolTipText("meet irreds above highlighted elem or 0");
+    ucovs.setToolTipText("upper covers of highlighted elem or 0");
+    filters.setToolTipText("filters of highlighted elem");
+    mdecomp.setToolTipText("an irredundant meet decomposition of highlighted elem or 0");
+    
+    jis.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        drawPanel.getDiagram().setPaintLabels(false);
-        repaint();
+        setBelowType(RadioButtonType.JI);
+        resetVertexColors();
       }
     });
-    yesLabel.addActionListener(new ActionListener() {
+    
+    lcovs.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        drawPanel.getDiagram().setPaintLabels(true);
-        repaint();
+        setBelowType(RadioButtonType.LC);
+        resetVertexColors();
+      }
+    });
+    
+    ideals.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setBelowType(RadioButtonType.ID);
+        resetVertexColors();
+      }
+    });
+    
+    jdecomp.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setBelowType(RadioButtonType.JDECOMP);
+        resetVertexColors();
+      }
+    });
+    
+    lnone.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setBelowType(RadioButtonType.OFF);
+        resetVertexColors();
+      }
+    });
+    
+    mis.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setAboveType(RadioButtonType.MI);
+        resetVertexColors();
+      }
+    });
+    
+    ucovs.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        //showUpperCovers();
+        setAboveType(RadioButtonType.UC);
+        resetVertexColors();
+      }
+    });
+    
+    filters.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setAboveType(RadioButtonType.FIL);
+        resetVertexColors();
+      }
+    });
+    
+    mdecomp.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setAboveType(RadioButtonType.MDECOMP);
+        resetVertexColors();
+      }
+    });
+    
+    unone.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setAboveType(RadioButtonType.OFF);
+        resetVertexColors();
       }
     });
 
-    
-    
-    
     return toolBar;
   }
+  
+  public Vertex zero() {
+    return getDiagram().vertexForPOElem(getBasicLattice().zero());
+  }
+  
+  public Vertex one() {
+    return getDiagram().vertexForPOElem(getBasicLattice().one());
+  }
 
+  private void showUpperCovers() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().zero());
+    for (Vertex u : upperCovers(v)) {
+      u.setColor(ABOVE_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  private void showLowerCovers() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().one());
+    for (Vertex u : lowerCovers(v)) {
+      u.setColor(BELOW_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  private void showMIsAbove() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().zero());
+    for (Vertex u : filter(v)) {
+      if (u.isMeetIrreducible()) {
+        u.setColor(ABOVE_COLOR);
+        u.setFilled(true);
+      }
+    }
+  }
+  
+  private void showJIsBelow() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().one());
+    for (Vertex u : ideal(v)) {
+      if (u.isJoinIrreducible()) {
+        u.setColor(BELOW_COLOR);
+        u.setFilled(true);
+      }
+    }
+  }
+  
+  private void showFilter() {
+    Vertex v = getSelectedElem();
+    if (v == null) return;
+    for (Vertex u : filter(v)) {
+      u.setColor(ABOVE_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  private void showIdeal() {
+    Vertex v = getSelectedElem();
+    if (v == null) return;
+    for (Vertex u : ideal(v)) {
+      u.setColor(BELOW_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  private void showMeetIrredundantDecomp() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().zero());
+    for (Vertex u : irredundantMeetDecomposition(v)) {
+      u.setColor(ABOVE_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  private void showJoinIrredundantDecomp() {
+    Vertex v = getSelectedElem();
+    if (v == null) v = getDiagram().vertexForPOElem(getBasicLattice().one());
+    for (Vertex u : irredundantJoinDecomposition(v)) {
+      u.setColor(BELOW_COLOR);
+      u.setFilled(true);
+    }
+  }
+  
+  
   /**
    * Make a sample lattice.
    */

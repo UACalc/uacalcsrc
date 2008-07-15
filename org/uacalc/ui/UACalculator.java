@@ -360,12 +360,7 @@ public class UACalculator extends JFrame {
       return;
     }
     BasicLattice lat = new BasicLattice("", alg.sub());
-    try {
-      getLatDrawPanel().setDiagram(lat.getDiagram());
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-    }
+    getLatDrawPanel().setDiagram(lat.getDiagram());
     repaint();
   }
 
@@ -383,12 +378,7 @@ public class UACalculator extends JFrame {
       return;
     }
     BasicLattice lat = new BasicLattice("", alg.con(), true);
-    try {
-      getLatDrawPanel().setDiagram(lat.getDiagram());
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-    }
+    getLatDrawPanel().setDiagram(lat.getDiagram());
     repaint();
   }
 
@@ -423,12 +413,7 @@ public class UACalculator extends JFrame {
     java.util.List univ = new ArrayList(alg.universe());
     BasicLattice lat = Lattices.latticeFromMeet("", univ, op);
     //LatDrawer.drawLattice(lat);
-    try {
-      getLatDrawPanel().setDiagram(lat.getDiagram());
-    }
-    catch (org.latdraw.orderedset.NonOrderedSetException e) {
-      e.printStackTrace();
-    }
+    getLatDrawPanel().setDiagram(lat.getDiagram());
     repaint();
   }
   
