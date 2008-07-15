@@ -9,16 +9,16 @@ import org.uacalc.alg.conlat.*;
 public class ConController {
 
   private final UACalculatorUI uacalcUI;
-  private ConLatDrawer conLatDrawer;
+  private LatDrawer conLatDrawer;
   
   public ConController(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
-    conLatDrawer = new ConLatDrawer(uacalcUI);
+    conLatDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getConMainPanel().setLayout(new BorderLayout());
     uacalcUI.getConMainPanel().add(conLatDrawer, BorderLayout.CENTER);
   }
   
-  public ConLatDrawer getConLatDrawer() { return conLatDrawer; }
+  public LatDrawer getConLatDrawer() { return conLatDrawer; }
   
   
   

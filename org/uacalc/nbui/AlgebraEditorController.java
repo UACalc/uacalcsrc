@@ -174,6 +174,14 @@ public class AlgebraEditorController {
   }
   
   public void deleteOp() {
+    if (opList == null) {
+      JOptionPane.showMessageDialog(uacalc, "There is no algebra.");
+      return;
+    }
+    if (opList.size() == 0) {
+      JOptionPane.showMessageDialog(uacalc, "There is no operation to delete.");
+      return;
+    }
     int n = JOptionPane.showConfirmDialog(
         uacalc,
         "Delete this operation?",

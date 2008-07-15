@@ -17,7 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 
-public class ConLatDrawer extends JPanel {
+public class LatDrawer extends JPanel {
   
   public static enum RadioButtonType {
     OFF, JI, MI, UC, LC, ID, FIL, JDECOMP, MDECOMP
@@ -45,15 +45,15 @@ public class ConLatDrawer extends JPanel {
   
   private Vertex selectedElem;
 
-  private static final Dimension scrollDim = new Dimension(200, 250);
+  //private static final Dimension scrollDim = new Dimension(200, 250);
 
 // was ConceptLattice, leave it in case we need it as an example.
-  public ConLatDrawer(UACalculatorUI uacalc) {
+  public LatDrawer(UACalculatorUI uacalc) {
     this.uacalc = uacalc;
     drawPanel = new org.latdraw.beans.DrawPanel();
     PropertyChangeListener changeListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          Diagram diag = drawPanel.getDiagram();
+          //Diagram diag = drawPanel.getDiagram();
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
             //diag.resetVertices();
             //diag.hideLabels();
@@ -153,8 +153,18 @@ public class ConLatDrawer extends JPanel {
     });
     yesLabel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (drawPanel.getDiagram() != null) {
-          drawPanel.getDiagram().setPaintLabels(true);
+        if (getDiagram() != null) {
+          setLabels(false);
+          getDiagram().setPaintLabels(true);
+          repaint();
+        }
+      }
+    });
+    numsLabel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (getDiagram() != null) {
+          setLabels(true);
+          getDiagram().setPaintLabels(true);
           repaint();
         }
       }
@@ -189,6 +199,34 @@ public class ConLatDrawer extends JPanel {
       }
     });
 
+    ButtonGroup speedGroup = new ButtonGroup();
+    JRadioButtonMenuItem fast = new JRadioButtonMenuItem("Fast");
+    JRadioButtonMenuItem medium = new JRadioButtonMenuItem("Medium");
+    JRadioButtonMenuItem slow = new JRadioButtonMenuItem("Slow", true);
+    JMenu speedMenu = mb.add(new JMenu("Improve Speed"));
+    speedMenu.add(fast);
+    speedMenu.add(medium);
+    speedMenu.add(slow);
+    speedGroup.add(fast);
+    speedGroup.add(medium);
+    speedGroup.add(slow);
+    fast.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setUseImproveDelay(false);
+      }
+    });
+    medium.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setUseImproveDelay(true);
+        drawPanel.setImproveDelay(50);
+      }
+    });
+    slow.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        drawPanel.setUseImproveDelay(true);
+        drawPanel.setImproveDelay(50);
+      }
+    });
     
     toolBar = makeToolBar();
     appPanel = new JPanel();
@@ -538,7 +576,14 @@ public class ConLatDrawer extends JPanel {
     return lattice.getVertices(lattice.irredundantJoinDecomposition(e));
   }
 
-  public void setLabels(Diagram d) {
+  public void setLabels(boolean numbers) {
+    Vertex[] verts = getDiagram().getVertices();
+    final int n = verts.length;
+    for (int i = 0; i < n; i++) {
+      verts[i].setUseOrderForLabel(numbers);      
+      //if (numbers) verts[i].setLabel(Integer.toString(i));
+      //else verts[i].setLabel(null);
+    }
   }
 
   // move the tool bar stuff into DrawPanel
