@@ -54,7 +54,8 @@ public class DrawingController {
     }
     List univ = new ArrayList(alg.universe());
     BasicLattice lat = Lattices.latticeFromMeet("", univ, semilatOps.get(0));
-    
+    // need to save these lat's, associated with the algebra and the op, 
+    // probably in this class.
     getLatDrawer().setBasicLattice(lat);
     getLatDrawer().repaint();
   }
