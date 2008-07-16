@@ -31,6 +31,11 @@ public class SubalgebraLattice implements Lattice {
   private final BasicSet oneSubalg;
   
   private String description;
+  
+  public static final int MAX_DRAWABLE_SIZE = 100;
+  private boolean nonDrawable = false;
+  
+  private BasicLattice basicLat;
 
 
   /** 
@@ -108,6 +113,35 @@ public class SubalgebraLattice implements Lattice {
 
   public int cardinality() {
     return universe().size();
+  }
+  
+  public boolean isSmallerThan(int size) {
+    if (universe != null) return cardinality() < size;
+    if (joinIrreducibles().size() >= size) return false;
+    makeUniverse(size);
+    if (universe == null) return false;
+    return true;
+  }
+  
+  public boolean isDrawable() {
+    if (nonDrawable) return false;
+    nonDrawable = !isSmallerThan(MAX_DRAWABLE_SIZE + 1);
+    return !nonDrawable;
+  }
+  
+  /**
+   * Get the BasicLattice used primarily for drawing.
+   * 
+   * @return a BasicLattice view
+   */
+  public BasicLattice getBasicLattice() {
+    if (basicLat == null) basicLat = new BasicLattice("", this); // maybe a name
+    return basicLat;
+  }
+  
+  public org.latdraw.diagram.Diagram getDiagram() {
+    if (!isDrawable()) return null;
+    return getBasicLattice().getDiagram();
   }
 
   public Set universe() {
@@ -570,6 +604,11 @@ public class SubalgebraLattice implements Lattice {
       };
   }
 */
+  
+  public void makeUniverse() {
+    makeUniverse(-1);
+  }
+  
   /**
    * Construct the universe. If this method is interupted, the whole
    * calculation starts over. We might change that if there is enough
@@ -582,10 +621,10 @@ public class SubalgebraLattice implements Lattice {
    * in computing the closure. **Clear this up.***
    *
    */
-  public void makeUniverse() {
+  public void makeUniverse(int maxSize) {
     if (monitoring()) monitor.printStart("finding the universe of Sub(" 
         + getAlgebra().getName() + ")");
-    universe = joinClosure(joinIrreducibles());
+    universe = joinClosure(joinIrreducibles(), maxSize);
     /*
     universe = new HashSet(joinIrreducibles());
     List univ = new ArrayList(joinIrreducibles());
@@ -601,8 +640,16 @@ public class SubalgebraLattice implements Lattice {
       }
     }
     */
-    universe.add(zeroSubalg);
-    if (monitoring()) monitor.printEnd("|Sub(" + getAlgebra().getName() + ")| = " + universe.size());
+    if (universe != null) {
+      universe.add(zeroSubalg);
+      if (monitoring()) {
+        monitor.printEnd("|Sub(" + getAlgebra().getName() + ")| = " + universe.size());
+      }
+    }
+  }
+  
+  public Set joinClosure(Collection gens) {
+    return joinClosure(gens, -1);
   }
 
   /**
@@ -610,7 +657,8 @@ public class SubalgebraLattice implements Lattice {
    * <tt>gens</tt>, so it is necessary to add a least element if you
    * want to include it.
    */
-  public Set joinClosure(Collection gens) {
+  public Set joinClosure(Collection gens, int maxSize) {
+    final boolean stopIfBig = maxSize > 0 ? true : false;
     Set ans = new HashSet(gens);
     List ansList = new ArrayList(gens);
     int k = 0;
@@ -640,6 +688,7 @@ public class SubalgebraLattice implements Lattice {
         if (!ans.contains(join)) {
           ans.add(join);
           ansList.add(join);
+          if (stopIfBig && ansList.size() >= maxSize) return null;
         }
       }
       k++;

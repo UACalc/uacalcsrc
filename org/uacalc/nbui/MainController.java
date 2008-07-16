@@ -39,6 +39,9 @@ public class MainController {
   private AlgebraEditorController algEditorController;
   private ComputationsController computationsController;
   private ConController conController;
+  private SubController subController;
+  private DrawingController drawingController;
+  
   private JComboBox algListComboBox = new JComboBox();
   
   //private Tabs tabs;
@@ -49,6 +52,8 @@ public class MainController {
     algEditorController = new AlgebraEditorController(uacalcUI);
     computationsController = new ComputationsController(uacalcUI);
     conController = new ConController(uacalcUI);
+    subController = new SubController(uacalcUI);
+    drawingController = new DrawingController(uacalcUI);
     setupAlgTable();
   }
   
@@ -337,6 +342,14 @@ public class MainController {
     return conController;
   }
   
+  public SubController getSubController() {
+    return subController;
+  }
+  
+  public DrawingController getDrawingController() {
+    return drawingController;
+  }
+  
   public void resetToolBar() {
     // TODO: fix these
     //mainPanel.remove(toolBar);
@@ -618,6 +631,8 @@ public class MainController {
     //getLatDrawPanel().setDiagram(null);
     getAlgebraEditorController().setAlgebra(alg);
     getConController().drawCon(alg.getAlgebra());
+    getSubController().drawSub(alg.getAlgebra());
+    getDrawingController().drawAlg(alg.getAlgebra());
   }
   
   public Random getRandom() {

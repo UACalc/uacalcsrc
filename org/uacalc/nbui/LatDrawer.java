@@ -252,7 +252,7 @@ public class LatDrawer extends JPanel {
   public Diagram getDiagram() { return drawPanel.getDiagram(); }
 
   public void setDiagram(Diagram d) { 
-    if (d != null) { // fix this !!!!!!!!!!!
+    if (true || d != null) { // fix this !!!!!!!!!!!
       drawPanel.setDiagram(d);
       //drawPanel = new DrawPanel(d);
       repaint();
@@ -263,7 +263,8 @@ public class LatDrawer extends JPanel {
   
   public void setBasicLattice(BasicLattice lat) {
     lattice = lat;
-    setDiagram(lat.getDiagram());
+    if (lat != null) setDiagram(lat.getDiagram());
+    else setDiagram(null);
   }
   
   public org.latdraw.beans.DrawPanel getDrawPanel() { return drawPanel; }

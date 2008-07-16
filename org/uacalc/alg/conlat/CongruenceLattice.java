@@ -161,8 +161,7 @@ public class CongruenceLattice implements Lattice {
   
   public org.latdraw.diagram.Diagram getDiagram() {
     if (!isDrawable()) return null;
-    if (basicLat == null) basicLat = new BasicLattice("", this, true); // maybe a name
-    return basicLat.getDiagram();
+    return getBasicLattice().getDiagram();
   }
 
   public List<Partition> principals() {

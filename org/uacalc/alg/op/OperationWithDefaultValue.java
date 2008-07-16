@@ -1,5 +1,6 @@
 package org.uacalc.alg.op;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -157,7 +158,12 @@ public class OperationWithDefaultValue extends AbstractOperation {
   
   @Override
   public Object valueAt(List args) {
-    throw new UnsupportedOperationException();
+    int[] argsx = new int[args.size()];
+    for (int i = 0; i < args.size(); i++) {
+      argsx[i] = ((Integer)args.get(i)).intValue();
+    }
+    return new Integer(intValueAt(argsx));
+    //throw new UnsupportedOperationException();
   }
   
   public int intValueAt(int[] args) {
