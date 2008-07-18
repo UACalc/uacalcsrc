@@ -54,11 +54,23 @@ public class LatDrawer extends JPanel {
     PropertyChangeListener changeListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           //Diagram diag = drawPanel.getDiagram();
-          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
+          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)
+              || e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
             //diag.resetVertices();
             //diag.hideLabels();
             Vertex v = (Vertex)e.getNewValue();
             setSelectedElem(v);
+            if (e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
+              Diagram diag = drawPanel.getDiagram();
+              Set<Vertex> idealFil = new HashSet<Vertex>();
+              List filter = v.getUnderlyingElem().filter();
+              for (Iterator it = filter.iterator(); it.hasNext(); ) {
+                //idealFil.add(e)//
+              }
+            }
+            else {
+              drawPanel.setAllowedVertices(null);
+            }
             //resetVertexColors();
             /*
             boolean vIsAtt = false;
