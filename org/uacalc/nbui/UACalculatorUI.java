@@ -130,6 +130,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
         majorityMI = new javax.swing.JMenuItem();
         pixleyMI = new javax.swing.JMenuItem();
         nuMI = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        drawConMI = new javax.swing.JMenuItem();
+        drawSubMI = new javax.swing.JMenuItem();
+        drawAlgMI = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -907,6 +911,36 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         jMenuBar1.add(maltsevMenu);
 
+        jMenu1.setText("Drawing");
+
+        drawConMI.setText("Con");
+        drawConMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawConMIActionPerformed(evt);
+            }
+        });
+        jMenu1.add(drawConMI);
+
+        drawSubMI.setText("Sub");
+        drawSubMI.setActionCommand("Sub");
+        drawSubMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawSubMIActionPerformed(evt);
+            }
+        });
+        jMenu1.add(drawSubMI);
+
+        drawAlgMI.setText("Algebra");
+        drawAlgMI.setActionCommand("Algebra");
+        drawAlgMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawAlgMIActionPerformed(evt);
+            }
+        });
+        jMenu1.add(drawAlgMI);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1039,6 +1073,18 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
   getComputationsController().setupPixleyTermTask();
 }//GEN-LAST:event_pixleyMIActionPerformed
 
+private void drawConMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawConMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_drawConMIActionPerformed
+
+private void drawSubMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawSubMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_drawSubMIActionPerformed
+
+private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawAlgMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_drawAlgMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1072,6 +1118,9 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton delOpButton;
     private javax.swing.JTextField descTextField;
     private javax.swing.JMenuItem distributivityMI;
+    private javax.swing.JMenuItem drawAlgMI;
+    private javax.swing.JMenuItem drawConMI;
+    private javax.swing.JMenuItem drawSubMI;
     private javax.swing.JPanel drawingEltsPanel;
     private javax.swing.JPanel drawingLeftPanel;
     private javax.swing.JPanel drawingMainPanel;
@@ -1088,6 +1137,7 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
