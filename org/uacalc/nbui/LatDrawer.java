@@ -63,10 +63,15 @@ public class LatDrawer extends JPanel {
             if (e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
               Diagram diag = drawPanel.getDiagram();
               Set<Vertex> idealFil = new HashSet<Vertex>();
-              List filter = v.getUnderlyingElem().filter();
-              for (Iterator it = filter.iterator(); it.hasNext(); ) {
-                //idealFil.add(e)//
+              List<Vertex> fil = diag.filter(v);
+              List<Vertex> idl = diag.ideal(v);
+              for (Vertex vert : fil) {
+                idealFil.add(vert);
               }
+              for (Vertex vert : idl) {
+                idealFil.add(vert);
+              }
+              drawPanel.setAllowedVertices(idealFil);
             }
             else {
               drawPanel.setAllowedVertices(null);
@@ -95,6 +100,7 @@ public class LatDrawer extends JPanel {
           }
           if (e.getPropertyName().equals(ChangeSupport.NOTHING_PRESSED)) {
             setSelectedElem(null);
+            drawPanel.setAllowedVertices(null);
             
             //diag.resetVertices();
             //setSelectedElem(null);
@@ -212,9 +218,9 @@ public class LatDrawer extends JPanel {
     });
 
     ButtonGroup speedGroup = new ButtonGroup();
-    JRadioButtonMenuItem fast = new JRadioButtonMenuItem("Fast");
+    JRadioButtonMenuItem fast = new JRadioButtonMenuItem("Fast", true);
     JRadioButtonMenuItem medium = new JRadioButtonMenuItem("Medium");
-    JRadioButtonMenuItem slow = new JRadioButtonMenuItem("Slow", true);
+    JRadioButtonMenuItem slow = new JRadioButtonMenuItem("Slow");
     JMenu speedMenu = mb.add(new JMenu("Improve Speed"));
     speedMenu.add(fast);
     speedMenu.add(medium);
@@ -222,6 +228,7 @@ public class LatDrawer extends JPanel {
     speedGroup.add(fast);
     speedGroup.add(medium);
     speedGroup.add(slow);
+    drawPanel.setUseImproveDelay(false);
     fast.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         drawPanel.setUseImproveDelay(false);

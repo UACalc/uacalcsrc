@@ -28,6 +28,7 @@ public class ConController {
       uacalcUI.getMainController().beep();
       uacalcUI.getMainController().setUserWarning(
           "Too many elements in the congruence lattice. More than " + maxSize + ".", false);
+      getConLatDrawer().setBasicLattice(null);
       return;
     }
     getConLatDrawer().setBasicLattice(alg.con().getBasicLattice());
