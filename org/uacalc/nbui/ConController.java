@@ -20,9 +20,18 @@ public class ConController {
   
   public LatDrawer getConLatDrawer() { return conLatDrawer; }
   
+  public void drawCon() {
+    SmallAlgebra alg = uacalcUI.getMainController().getCurrentAlgebra().getAlgebra();
+    if (alg == null) return;
+    final int conTabIndex = 3;
+    if (uacalcUI.getTabbedPane().getSelectedIndex() != conTabIndex) {
+      uacalcUI.getTabbedPane().setSelectedIndex(conTabIndex);
+      uacalcUI.repaint();
+    }
+    drawCon(alg, true);
+  }
   
-  
-  public void drawCon(SmallAlgebra alg) {
+  public void drawCon(SmallAlgebra alg, boolean makeIfNull) {
     final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
     if (!alg.con().isDrawable()) {
       uacalcUI.getMainController().beep();
@@ -31,7 +40,7 @@ public class ConController {
       getConLatDrawer().setBasicLattice(null);
       return;
     }
-    getConLatDrawer().setBasicLattice(alg.con().getBasicLattice());
+    getConLatDrawer().setBasicLattice(alg.con().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
     getConLatDrawer().repaint();
   }

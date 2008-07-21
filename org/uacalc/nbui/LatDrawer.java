@@ -281,6 +281,7 @@ public class LatDrawer extends JPanel {
   public BasicLattice getBasicLattice() { return lattice; }
   
   public void setBasicLattice(BasicLattice lat) {
+    drawPanel.setAllowedVertices(null); 
     lattice = lat;
     if (lat != null) setDiagram(lat.getDiagram());
     else setDiagram(null);

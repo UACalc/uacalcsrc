@@ -383,7 +383,10 @@ public class  BasicLattice extends GeneralAlgebra
   }
 
   public int elementIndex(Object obj) {
+    System.out.println("poset = " + poset + ", obj = " + obj);
     final POElem elem = (POElem)obj;
+    System.out.println("poset = " + poset 
+        + ", elem.getUnderlyingObject() = " + elem.getUnderlyingObject());
     return poset.elemOrder(elem);
   }
 

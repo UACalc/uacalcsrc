@@ -19,17 +19,27 @@ public class SubController {
   
   public LatDrawer getSubLatDrawer() { return subLatDrawer; }
   
+  public void drawSub() {
+    SmallAlgebra alg = uacalcUI.getMainController().getCurrentAlgebra().getAlgebra();
+    if (alg == null) return;
+    final int subTabIndex = 4;
+    if (uacalcUI.getTabbedPane().getSelectedIndex() != subTabIndex) {
+      uacalcUI.getTabbedPane().setSelectedIndex(subTabIndex);
+      uacalcUI.repaint();
+    }
+    drawSub(alg, true);
+  }
   
-  
-  public void drawSub(SmallAlgebra alg) {
+  public void drawSub(SmallAlgebra alg, boolean makeIfNull) {
     final int maxSize = SubalgebraLattice.MAX_DRAWABLE_SIZE;
     if (!alg.sub().isDrawable()) {
       uacalcUI.getMainController().beep();
       uacalcUI.getMainController().setUserWarning(
           "Too many elements in the subalgebra lattice. More than " + maxSize + ".", false);
+      getSubLatDrawer().setBasicLattice(null);
       return;
     }
-    getSubLatDrawer().setBasicLattice(alg.sub().getBasicLattice());
+    getSubLatDrawer().setBasicLattice(alg.sub().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
     getSubLatDrawer().repaint();
   }

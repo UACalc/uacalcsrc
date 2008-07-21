@@ -124,9 +124,16 @@ public class SubalgebraLattice implements Lattice {
   }
   
   public boolean isDrawable() {
-    if (nonDrawable) return false;
-    nonDrawable = !isSmallerThan(MAX_DRAWABLE_SIZE + 1);
-    return !nonDrawable;
+    if (universe != null) return cardinality() <= MAX_DRAWABLE_SIZE;
+    if (sizeComputed > 0) return false;
+    return isSmallerThan(MAX_DRAWABLE_SIZE + 1);
+    //if (nonDrawable) return false;
+    //nonDrawable = !isSmallerThan(MAX_DRAWABLE_SIZE + 1);
+    //return !nonDrawable;
+  }
+  
+  public BasicLattice getBasicLattice() {
+    return getBasicLattice(true);
   }
   
   /**
@@ -134,8 +141,8 @@ public class SubalgebraLattice implements Lattice {
    * 
    * @return a BasicLattice view
    */
-  public BasicLattice getBasicLattice() {
-    if (basicLat == null) basicLat = new BasicLattice("", this); // maybe a name
+  public BasicLattice getBasicLattice(boolean makeIfNull) {
+    if (basicLat == null && makeIfNull) basicLat = new BasicLattice("", this); // maybe a name
     return basicLat;
   }
   
@@ -624,6 +631,7 @@ public class SubalgebraLattice implements Lattice {
   public void makeUniverse(int maxSize) {
     if (monitoring()) monitor.printStart("finding the universe of Sub(" 
         + getAlgebra().getName() + ")");
+    sizeComputed = joinIrreducibles().size();
     universe = joinClosure(joinIrreducibles(), maxSize);
     /*
     universe = new HashSet(joinIrreducibles());
@@ -686,6 +694,7 @@ public class SubalgebraLattice implements Lattice {
         }
         Object  join = join(s, (BasicSet)ansList.get(i));
         if (!ans.contains(join)) {
+          sizeComputed++;
           ans.add(join);
           ansList.add(join);
           if (stopIfBig && ansList.size() >= maxSize) return null;

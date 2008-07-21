@@ -144,9 +144,13 @@ public class CongruenceLattice implements Lattice {
   }
   
   public boolean isDrawable() {
-    if (nonDrawable) return false;
-    nonDrawable = !isSmallerThan(MAX_DRAWABLE_SIZE + 1);
-    return !nonDrawable;
+    if (universe != null) return cardinality() <= MAX_DRAWABLE_SIZE;
+    if (sizeComputed > 0) return false;
+    return isSmallerThan(MAX_DRAWABLE_SIZE + 1);
+  }
+  
+  public BasicLattice getBasicLattice() {
+    return getBasicLattice(true);
   }
   
   /**
@@ -154,8 +158,8 @@ public class CongruenceLattice implements Lattice {
    * 
    * @return a BasicLattice view
    */
-  public BasicLattice getBasicLattice() {
-    if (basicLat == null) basicLat = new BasicLattice("", this, true); // maybe a name
+  public BasicLattice getBasicLattice(boolean makeIfNull) {
+    if (basicLat == null  && makeIfNull) basicLat = new BasicLattice("", this, true); // maybe a name
     return basicLat;
   }
   
@@ -412,6 +416,7 @@ public class CongruenceLattice implements Lattice {
 	  //    "\n [ Number of congruences is already " + s);
 	  //}
           int s = univ.size();
+          sizeComputed++;
           if (stopIfBig && s >= maxSize) return;
           if ( s % 10000 == 0) {
             System.out.println("size is " + s);
@@ -419,7 +424,6 @@ public class CongruenceLattice implements Lattice {
           }
           hash.add(join);
           univ.add(join);
-          sizeComputed++;
         }
       }
     }

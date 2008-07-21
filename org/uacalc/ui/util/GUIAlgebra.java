@@ -1,6 +1,8 @@
 package org.uacalc.ui.util;
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.*;
+import org.uacalc.lat.*;
 import java.io.File;
 import java.util.*;
 
@@ -31,6 +33,14 @@ public class GUIAlgebra {
    * can be saved.
    */
   private boolean needsSave = false;
+  
+  private List<Operation> semilatticeOps;
+  
+  private List<BasicLattice> lats;
+  
+  //private Map<Operation,BasicLattice> opToLat;
+  
+  private int currentLatIndex = 0;
   
   public GUIAlgebra(SmallAlgebra alg) {
     synchronized(this) {
@@ -98,6 +108,38 @@ public class GUIAlgebra {
 
   public boolean needsSave() {
     return needsSave;
+  }
+  
+  public List<Operation> getSemilatticeOperataions() {
+    if (semilatticeOps == null) {
+      semilatticeOps = new ArrayList<Operation>();
+      for (Operation opx : alg.operations()) {
+        if (Operations.isCommutative(opx) && Operations.isIdempotent(opx)
+            && Operations.isAssociative(opx)) semilatticeOps.add(opx);
+      }
+    }
+    return semilatticeOps;
+  }
+  
+  private void makeLattices() {
+    List<Operation> ops = getSemilatticeOperataions();
+    lats = new ArrayList<BasicLattice>(ops.size());
+    for (Operation op : ops) {
+      List univ = new ArrayList(alg.universe());
+      BasicLattice lat = op.symbol().equals(OperationSymbol.JOIN) ? 
+          Lattices.latticeFromJoin("", univ, op) : Lattices.latticeFromMeet("", univ, op);
+      //if (op.symbol().equals(OperationSymbol.JOIN)) lat = Lattices.dual(lat);
+      lats.add(lat);
+    }
+  }
+  
+  public BasicLattice getCurrentLattice(boolean makeIfNull) {
+    if (lats == null) {
+      if (!makeIfNull) return null;
+      makeLattices();
+    }
+    if (lats.size() == 0) return null;
+    return lats.get(currentLatIndex);
   }
   
   public String toString() {

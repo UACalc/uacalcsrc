@@ -97,7 +97,7 @@ public class CloserTiming {
       msPerApp = del / (appsThisPass - realInitCount);
       long t = (long)((appsNeeded - appsThisPass) * msPerApp);
       report.setTimeLeft(msToString(t));
-      System.out.println("Time Left: " + msToString(t));
+      //System.out.println("Time Left: " + msToString(t));
       long nextApps = countFuncApplications(currPassSize, nextPassSize + currPassSize);
       t = (long)(nextApps * msPerApp);
       report.setTimeNext(msToString(t));

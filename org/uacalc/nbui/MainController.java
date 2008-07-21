@@ -630,9 +630,9 @@ public class MainController {
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
     getAlgebraEditorController().setAlgebra(alg);
-    getConController().drawCon(alg.getAlgebra());
-    getSubController().drawSub(alg.getAlgebra());
-    getDrawingController().drawAlg(alg.getAlgebra());
+    getConController().drawCon(alg.getAlgebra(), false);
+    getSubController().drawSub(alg.getAlgebra(), false);
+    getDrawingController().drawAlg(alg, false);
   }
   
   public Random getRandom() {

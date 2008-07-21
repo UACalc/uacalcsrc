@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.*;
 
 import org.uacalc.alg.SmallAlgebra;
+import org.uacalc.ui.util.*;
 import org.uacalc.alg.op.*;
 import org.uacalc.lat.*;
 
@@ -32,8 +33,22 @@ public class DrawingController {
     }
     return ans;
   }
+
+  public void drawAlg() {
+    GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) return;
+    SmallAlgebra alg = gAlg.getAlgebra();
+    if (alg == null) return;
+    final int algDrawTabIndex = 5;
+    if (uacalcUI.getTabbedPane().getSelectedIndex() != algDrawTabIndex) {
+      uacalcUI.getTabbedPane().setSelectedIndex(algDrawTabIndex);
+      uacalcUI.repaint();
+    }
+    drawAlg(gAlg, true);
+  }
   
-  public void drawAlg(SmallAlgebra alg) {
+  public void drawAlg(GUIAlgebra gAlg, boolean makeIfNull) {
+    SmallAlgebra alg = gAlg.getAlgebra();
     if (alg.cardinality() > MAX_DRAWABLE_SIZE) {
       uacalcUI.getMainController().beep();
       uacalcUI.getMainController().setUserWarning(
@@ -43,6 +58,7 @@ public class DrawingController {
       uacalcUI.repaint();
       return;
     }
+    /*
     List<Operation> semilatOps = findSemilatticeOps(alg);
     if (semilatOps.isEmpty()) {
       uacalcUI.getMainController().beep();
@@ -50,12 +66,20 @@ public class DrawingController {
           "This algebra has no semlattice operations.", false);
       getLatDrawer().setBasicLattice(null);
       uacalcUI.repaint();
+      getLatDrawer().setBasicLattice(null);
       return;
     }
     List univ = new ArrayList(alg.universe());
     BasicLattice lat = Lattices.latticeFromMeet("", univ, semilatOps.get(0));
+    */
     // need to save these lat's, associated with the algebra and the op, 
     // probably in this class.
+    BasicLattice lat = gAlg.getCurrentLattice(makeIfNull);
+    if (makeIfNull && lat == null) {
+      uacalcUI.getMainController().beep();
+      uacalcUI.getMainController().setUserWarning(
+          "This algebra has no semlattice operations.", false); 
+    }
     getLatDrawer().setBasicLattice(lat);
     getLatDrawer().repaint();
   }

@@ -91,6 +91,49 @@ public class Lattices {
     return null;
   }
 
+  public static BasicLattice latticeFromJoin(final String name, final List univ, final Operation join) {
+    final int s = univ.size();
+    final List filters = new ArrayList(s);
+    for (Iterator it = univ.iterator(); it.hasNext(); ) {
+      final Object elem = it.next();
+      final List filter = new ArrayList();
+      for (Iterator it2 = univ.iterator(); it2.hasNext(); ) {
+        final List args = new ArrayList(2);
+        final Object elem2 = it2.next();
+        args.add(elem);
+        args.add(elem2);
+        if (join.valueAt(args).equals(elem2)) filter.add(elem2);
+      }
+      filters.add(filter);
+    }
+    int maxCount = 0;
+    for (Iterator it = filters.iterator(); it.hasNext(); ) {
+      if (((List)it.next()).size() == 1) {
+        maxCount++;
+        if (maxCount > 1) break;
+      }
+    }
+    if (maxCount > 1) {
+      String top = "TOP";
+      univ.add(top);
+      filters.add(new ArrayList(1));
+      for (Iterator it = filters.iterator(); it.hasNext(); ) {
+        ((List)it.next()).add(top);
+      }
+    }
+    try {
+      org.latdraw.orderedset.OrderedSet poset =
+        org.latdraw.orderedset.OrderedSet.orderedSetFromFilters(name, 
+            univ, filters);
+      return new BasicLattice(name, poset);
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
+  // this causes a npe  in making an ordered set from latdraw.
   public static BasicLattice dual(final BasicLattice lat) {
     Lattice latx = new BasicLattice(lat.getName() + "Dual", lat) {
       public List joinIrreducibles() { return lat.meetIrreducibles(); }      

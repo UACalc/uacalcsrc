@@ -1074,15 +1074,15 @@ private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_pixleyMIActionPerformed
 
 private void drawConMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawConMIActionPerformed
-// TODO add your handling code here:
+  getConController().drawCon();
 }//GEN-LAST:event_drawConMIActionPerformed
 
 private void drawSubMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawSubMIActionPerformed
-// TODO add your handling code here:
+  getSubController().drawSub();
 }//GEN-LAST:event_drawSubMIActionPerformed
 
 private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawAlgMIActionPerformed
-// TODO add your handling code here:
+  getDrawingController().drawAlg();
 }//GEN-LAST:event_drawAlgMIActionPerformed
 
   
@@ -1197,6 +1197,18 @@ private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
   
   public ComputationsController getComputationsController() {
     return getMainController().getComputationsController();
+  }
+  
+  public ConController getConController() {
+    return getMainController().getConController();
+  }
+  
+  public SubController getSubController() {
+    return getMainController().getSubController();
+  }
+  
+  public DrawingController getDrawingController() {
+    return getMainController().getDrawingController();
   }
 
   public javax.swing.JTextField getAlgNameTextField() {
