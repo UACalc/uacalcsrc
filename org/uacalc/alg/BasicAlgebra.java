@@ -142,6 +142,11 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return sub;
   }
   
+  public void resetConAndSub() {
+    con = null;
+    sub = null;
+  }
+  
   public void convertToDefaultValueOps() {
     List<Operation> ops = operations();
     List<Operation> opsDV = new ArrayList<Operation>(ops.size());

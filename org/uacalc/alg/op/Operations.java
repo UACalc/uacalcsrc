@@ -73,38 +73,44 @@ logger.setLevel(Level.FINE);
    * @return         true or false
    */
   public static boolean commutes(final int[] map, final Operation op0, 
-                                                  final Operation op1) {
+      final Operation op1) {
     Logger logger = Logger.getLogger("org.uacalc.alg.Operations");
     logger.setLevel(Level.FINE);
-        final int setSize = op0.getSetSize();
-        final int[] arr = new int[op0.arity()];
-        final int[] imageArr = new int[op0.arity()];
-        final int[] unaryArg = new int[1];
-        int v = map[0];
-        for (int i = 0 ; i < op0.arity(); i++) {
-          imageArr[i] = v; // v is unaryOp([0])
-        }
-        unaryArg[0] = map[op0.intValueAt(arr)];
-        if (op1.intValueAt(imageArr) != map[op0.intValueAt(arr)]) {
-          logger.info("fails to commute at " + ArrayString.toString(arr));
-          return false;
-        }
-        ArrayIncrementor inc = 
-                   SequenceGenerator.sequenceIncrementor(arr, setSize - 1);
-        while (inc.increment()) {
-          v = map[op0.intValueAt(arr)];
-          for (int i = 0 ; i < op0.arity(); i++) {
-            imageArr[i] = map[arr[i]];
-          }
-          if (op1.intValueAt(imageArr) != v) {
-            logger.info("fails to commute at " + ArrayString.toString(arr));
-            logger.info("with op " + op0.symbol().name());
-            return false;
-          }
-        }
-        return true;
+    final int setSize = op0.getSetSize();
+    final int[] arr = new int[op0.arity()];
+    final int[] imageArr = new int[op0.arity()];
+    final int[] unaryArg = new int[1];
+    int v = map[0];
+    for (int i = 0 ; i < op0.arity(); i++) {
+      imageArr[i] = v; // v is unaryOp([0])
+    }
+    unaryArg[0] = map[op0.intValueAt(arr)];
+    if (op1.intValueAt(imageArr) != map[op0.intValueAt(arr)]) {
+      logger.info("fails to commute at " + ArrayString.toString(arr));
+      return false;
+    }
+    ArrayIncrementor inc = 
+      SequenceGenerator.sequenceIncrementor(arr, setSize - 1);
+    while (inc.increment()) {
+      v = map[op0.intValueAt(arr)];
+      for (int i = 0 ; i < op0.arity(); i++) {
+        imageArr[i] = map[arr[i]];
       }
+      if (op1.intValueAt(imageArr) != v) {
+        logger.info("fails to commute at " + ArrayString.toString(arr));
+        logger.info("with op " + op0.symbol().name());
+        return false;
+      }
+    }
+    return true;
+  }
 
+  public static boolean isTotal(Operation op) {
+    if (op instanceof OperationWithDefaultValue) {
+      return ((OperationWithDefaultValue)op).isTotal();
+    }
+    return true;
+  }
   
   /**
    * Test if an operation is idempotent.

@@ -99,8 +99,11 @@ public class AlgebraEditorController {
       javax.swing.table.TableModel model = new OperationTableModel(op);
       model.addTableModelListener(new TableModelListener() {
         public void tableChanged(TableModelEvent evt) {
-          getActions().getCurrentAlgebra().setNeedsSave(true);
-          getActions().setTitle();
+          getMainController().getCurrentAlgebra().setNeedsSave(true);
+          getMainController().setTitle();
+          final MainController mc = getMainController();
+          mc.getPropertyChangeSupport().firePropertyChange(
+              MainController.ALGEBRA_CHANGED, null, null);
         }
       });
       JTable table = uacalc.getOpTable();
@@ -210,7 +213,7 @@ public class AlgebraEditorController {
     addOperation(name, arity);
   }
   
-  private MainController getActions() { return uacalc.getMainController(); }
+  private MainController getMainController() { return uacalc.getMainController(); }
   
   public Random getRandom() {
     return random;
@@ -252,6 +255,8 @@ public class AlgebraEditorController {
     uacalc.getOpsComboBox().addItem(makeOpItem(sym));
     uacalc.getOpsComboBox().setSelectedIndex(opList.size() - 1);
     uacalc.repaint();
+    final MainController mc = getMainController();
+    mc.getPropertyChangeSupport().firePropertyChange(MainController.ALGEBRA_CHANGED, null, null);
   }
   
   /*
@@ -294,6 +299,8 @@ public class AlgebraEditorController {
     // TODO: check this
     //if (opList.size() == 0 && opTablePanel != null) main.remove(opTablePanel);
     uacalc.repaint();
+    final MainController mc = getMainController();
+    mc.getPropertyChangeSupport().firePropertyChange(MainController.ALGEBRA_CHANGED, null, null);
   }
   
   public void setOperationTable(OperationInputTable table) {
@@ -497,18 +504,18 @@ public class AlgebraEditorController {
   }
   
   private void setupNewAlgebra() {
-    if (getActions().isDirty() && !getActions().checkSave()) return;
+    if (getMainController().isDirty() && !getMainController().checkSave()) return;
     String name = getAlgNameDialog();
     if (name == null) return;
     int card = getCardDialog();
     if (card > 0) {
       GUIAlgebra gAlg 
-        = getActions().addAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
-      getActions().setCurrentAlgebra(gAlg);
+        = getMainController().addAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
+      getMainController().setCurrentAlgebra(gAlg);
       setOperationTable(new OperationInputTable());
       gAlg.setNeedsSave(true);
       //getActions().setDirty(true);
-      getActions().setCurrentFile(null);
+      getMainController().setCurrentFile(null);
     }
   }
   

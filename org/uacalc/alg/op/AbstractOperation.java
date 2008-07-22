@@ -85,6 +85,10 @@ public abstract class AbstractOperation implements Operation {
     return true;
   }
 
+  public boolean isTotal() {
+    return Operations.isTotal(this);
+  }
+  
   /**
    * Test if this operation is totally symmetric; that is, invariant
    * under all permutation of the variables.

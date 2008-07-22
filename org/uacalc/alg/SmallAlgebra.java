@@ -66,6 +66,8 @@ public interface SmallAlgebra extends Algebra {
    * The subalgebra lattice.
    */
   public SubalgebraLattice sub();
+  
+  public void resetConAndSub();
 
   /**
    * For a BasicAlgebra this is null; for a QuotientAlgebra this is

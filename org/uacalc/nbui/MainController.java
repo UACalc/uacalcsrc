@@ -8,6 +8,10 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.util.prefs.*;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
@@ -41,19 +45,22 @@ public class MainController {
   private ConController conController;
   private SubController subController;
   private DrawingController drawingController;
+  private PropertyChangeSupport propertyChangeSupport;
   
   private JComboBox algListComboBox = new JComboBox();
+  public static final String ALGEBRA_CHANGED = "Algebra Changed";
   
   //private Tabs tabs;
   private final Random random = new Random();
   
   public MainController(UACalculatorUI uacalcUI) {
     this.uacalcUI = uacalcUI;
+    propertyChangeSupport = new PropertyChangeSupport(this);
     algEditorController = new AlgebraEditorController(uacalcUI);
     computationsController = new ComputationsController(uacalcUI);
-    conController = new ConController(uacalcUI);
-    subController = new SubController(uacalcUI);
-    drawingController = new DrawingController(uacalcUI);
+    conController = new ConController(uacalcUI, propertyChangeSupport);
+    subController = new SubController(uacalcUI, propertyChangeSupport);
+    drawingController = new DrawingController(uacalcUI, propertyChangeSupport);
     setupAlgTable();
   }
   
@@ -94,6 +101,9 @@ public class MainController {
   public File getCurrentFile() { return currentFile; }
   public void setCurrentFile(File f) { currentFile = f; }
   
+  public PropertyChangeSupport getPropertyChangeSupport() {
+    return propertyChangeSupport;
+  }  
   
   public void quit() {
     boolean dirty = false;
@@ -359,7 +369,7 @@ public class MainController {
     uacalcUI.repaint();
   }
   
-
+/*
   public void drawSub(SmallAlgebra alg) {
     final int maxSize = 100;
     if (alg.sub().cardinality() > maxSize) {
@@ -427,7 +437,7 @@ public class MainController {
     getLatDrawPanel().setDiagram(lat.getDiagram());
     uacalcUI.repaint();
   }
-  
+*/  
   public boolean save() {
     System.out.println("current alg = " + getCurrentAlgebra());
     if (getCurrentAlgebra() == null) return true;

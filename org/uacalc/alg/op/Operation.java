@@ -88,6 +88,13 @@ public interface Operation {
    * under all permutation of the variables.
    */
   public boolean isTotallySymmetric();
+  
+  /**
+   * Only OperationWithDefaultValue's can fail this.
+   * 
+   * @return
+   */
+  public boolean isTotal();
 
 }
 

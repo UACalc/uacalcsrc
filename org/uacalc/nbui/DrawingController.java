@@ -2,6 +2,9 @@ package org.uacalc.nbui;
 
 import java.awt.BorderLayout;
 import java.util.*;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 import org.uacalc.alg.SmallAlgebra;
 import org.uacalc.ui.util.*;
@@ -16,11 +19,24 @@ public class DrawingController {
   private LatDrawer latDrawer;
   
   
-  public DrawingController(UACalculatorUI uacalcUI) {
+  public DrawingController(UACalculatorUI uacalcUI, PropertyChangeSupport cs) {
     this.uacalcUI = uacalcUI;
     latDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getDrawingMainPanel().setLayout(new BorderLayout());
     uacalcUI.getDrawingMainPanel().add(latDrawer, BorderLayout.CENTER);
+    addPropertyChangeListener(cs);
+  }
+  
+  private void addPropertyChangeListener(PropertyChangeSupport cs) {
+    cs.addPropertyChangeListener(
+        MainController.ALGEBRA_CHANGED,
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            getLatDrawer().setBasicLattice(null);  
+            uacalcUI.getMainController().getCurrentAlgebra().resetLattices();
+          }
+        }
+    );
   }
   
   public LatDrawer getLatDrawer() { return latDrawer; }
@@ -48,6 +64,13 @@ public class DrawingController {
   }
   
   public void drawAlg(GUIAlgebra gAlg, boolean makeIfNull) {
+    if (!gAlg.getAlgebra().isTotal()) {
+      uacalcUI.getMainController().beep();
+      uacalcUI.getMainController().setUserWarning(
+          "Not all the operations of this algebra are total.", false);
+      getLatDrawer().setBasicLattice(null);
+      return;
+    }
     SmallAlgebra alg = gAlg.getAlgebra();
     if (alg.cardinality() > MAX_DRAWABLE_SIZE) {
       uacalcUI.getMainController().beep();

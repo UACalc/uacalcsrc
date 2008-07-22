@@ -121,6 +121,14 @@ public interface Algebra {
    */
   public boolean isIdempotent();
   
+  /**
+   * This will fail only if there are some OperationWithDefaultValue's
+   * which are not total.
+   * 
+   * @return
+   */
+  public boolean isTotal();
+  
   public boolean monitoring();
   
   public ProgressReport getMonitor();

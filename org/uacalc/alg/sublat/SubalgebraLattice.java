@@ -95,6 +95,7 @@ public class SubalgebraLattice implements Lattice {
     return monitor != null;
   }
 
+  public boolean isTotal() { return true; }
   
   public List constantOperations() { return SimpleList.EMPTY_LIST; }
 

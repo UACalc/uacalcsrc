@@ -121,6 +121,8 @@ public class CongruenceLattice implements Lattice {
   public final boolean monitoring() {
     return monitor != null;
   }
+  
+  public boolean isTotal() { return true; }
 
   public SmallAlgebra getAlgebra() { return alg; }
 

@@ -8,6 +8,7 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.alg.sublat.*;
 import org.uacalc.ui.tm.ProgressReport;
@@ -64,6 +65,12 @@ public class GeneralAlgebra implements Algebra {
     return monitor != null;
   }
   
+  public boolean isTotal() {
+    for (Operation op : operations) {
+      if (!op.isTotal()) return false;
+    }
+    return true;
+  }
   
   protected void setUniverse(Set univ) {
     this.universe = univ;
@@ -160,6 +167,11 @@ public class GeneralAlgebra implements Algebra {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * This does nothing but is overwritten for BasicAlgebra's.
+   */
+  public void resetConAndSub() { }
+  
   public void makeOperationTables() {}
 
   public SmallAlgebra parent() { return null; }

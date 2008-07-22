@@ -121,7 +121,7 @@ public class GUIAlgebra {
     return semilatticeOps;
   }
   
-  private void makeLattices() {
+  private void makeLattices(boolean forceRemake) {
     List<Operation> ops = getSemilatticeOperataions();
     lats = new ArrayList<BasicLattice>(ops.size());
     for (Operation op : ops) {
@@ -134,12 +134,17 @@ public class GUIAlgebra {
   }
   
   public BasicLattice getCurrentLattice(boolean makeIfNull) {
+    System.out.println("lats = " + lats + ", makeifNull = " + makeIfNull);
     if (lats == null) {
       if (!makeIfNull) return null;
-      makeLattices();
+      makeLattices(makeIfNull);
     }
     if (lats.size() == 0) return null;
     return lats.get(currentLatIndex);
+  }
+  
+  public void resetLattices() {
+    lats = null;
   }
   
   public String toString() {
