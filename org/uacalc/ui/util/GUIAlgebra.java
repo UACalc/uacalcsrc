@@ -122,6 +122,7 @@ public class GUIAlgebra {
   }
   
   private void makeLattices(boolean forceRemake) {
+    if (forceRemake) semilatticeOps = null;
     List<Operation> ops = getSemilatticeOperataions();
     lats = new ArrayList<BasicLattice>(ops.size());
     for (Operation op : ops) {
@@ -134,7 +135,6 @@ public class GUIAlgebra {
   }
   
   public BasicLattice getCurrentLattice(boolean makeIfNull) {
-    System.out.println("lats = " + lats + ", makeifNull = " + makeIfNull);
     if (lats == null) {
       if (!makeIfNull) return null;
       makeLattices(makeIfNull);

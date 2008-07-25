@@ -8,6 +8,9 @@ import java.beans.PropertyChangeEvent;
 import org.uacalc.alg.*;
 import org.uacalc.lat.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.ui.util.*;
+import org.latdraw.beans.*;
+import org.latdraw.diagram.*;
 
 public class ConController {
 
@@ -19,13 +22,23 @@ public class ConController {
     conLatDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getConMainPanel().setLayout(new BorderLayout());
     uacalcUI.getConMainPanel().add(conLatDrawer, BorderLayout.CENTER);
+    conLatDrawer.getDrawPanel().getChangeSupport().addPropertyChangeListener(
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent e) {
+            if (e.getPropertyName().equals(ChangeSupport.VERTEX_RIGHT_PRESSED)) {
+              Vertex v = (Vertex)e.getNewValue();
+              System.out.println("underlyingObj = " + v.getUnderlyingObject());
+            }
+          }
+      
+    });
     addPropertyChangeListener(cs);
   }
   
   private void addPropertyChangeListener(PropertyChangeSupport cs) {
     cs.addPropertyChangeListener(
         MainController.ALGEBRA_CHANGED,
-        new PropertyChangeListener() {
+        new   PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
             getConLatDrawer().setBasicLattice(null);
             final SmallAlgebra alg = uacalcUI.getMainController().getCurrentAlgebra().getAlgebra();
@@ -38,7 +51,9 @@ public class ConController {
   public LatDrawer getConLatDrawer() { return conLatDrawer; }
   
   public void drawCon() {
-    SmallAlgebra alg = uacalcUI.getMainController().getCurrentAlgebra().getAlgebra();
+    GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) return;
+    SmallAlgebra alg = gAlg.getAlgebra();
     if (alg == null) return;
     final int conTabIndex = 3;
     if (uacalcUI.getTabbedPane().getSelectedIndex() != conTabIndex) {
@@ -49,20 +64,22 @@ public class ConController {
   }
   
   public void drawCon(SmallAlgebra alg, boolean makeIfNull) {
-    if (!alg.isTotal()) {
-      uacalcUI.getMainController().beep();
-      uacalcUI.getMainController().setUserWarning(
-          "Not all the operations of this algebra are total.", false);
-      getConLatDrawer().setBasicLattice(null);
-      return;
-    }
-    final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
-    if (!alg.con().isDrawable()) {
-      uacalcUI.getMainController().beep();
-      uacalcUI.getMainController().setUserWarning(
-          "Too many elements in the congruence lattice. More than " + maxSize + ".", false);
-      getConLatDrawer().setBasicLattice(null);
-      return;
+    if (makeIfNull) {
+      if (!alg.isTotal()) {
+        uacalcUI.getMainController().beep();
+        uacalcUI.getMainController().setUserWarning(
+            "Not all the operations of this algebra are total.", false);
+        getConLatDrawer().setBasicLattice(null);
+        return;
+      }
+      final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
+      if (!alg.con().isDrawable()) {
+        uacalcUI.getMainController().beep();
+        uacalcUI.getMainController().setUserWarning(
+            "Too many elements in the congruence lattice. More than " + maxSize + ".", false);
+        getConLatDrawer().setBasicLattice(null);
+        return;
+      }
     }
     getConLatDrawer().setBasicLattice(alg.con().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());

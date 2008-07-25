@@ -306,9 +306,12 @@ public class MainController {
   }
 */
   
+  public GUIAlgebra addAlgebra(SmallAlgebra alg, boolean makeCurrent) {
+    return addAlgebra(alg, null, makeCurrent);
+  }
 
   public GUIAlgebra addAlgebra(SmallAlgebra alg) {
-    return addAlgebra(alg, null);
+    return addAlgebra(alg, null, true);
   }
   
   /**
@@ -317,13 +320,13 @@ public class MainController {
    * Right now the list of algebras is maintained the algebraTableModel.
    * We may want to change that.
    */
-  public GUIAlgebra addAlgebra(SmallAlgebra alg, File file) {
+  public GUIAlgebra addAlgebra(SmallAlgebra alg, File file, boolean makeCurrent) {
     final int index = getAlgebraList().size();
     GUIAlgebra guiAlg = new GUIAlgebra(alg, file);
-    getAlgebraList().add(guiAlg);
+    getAlgebraList().add(guiAlg, makeCurrent);
     scrollToBottom(uacalcUI.getAlgListTable());
     // Note: the revalidate, repaint is the key
-    uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
+    if (makeCurrent) uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
     uacalcUI.getAlgListTable().revalidate();
     uacalcUI.getAlgListTable().repaint();
     return guiAlg;
@@ -616,8 +619,8 @@ public class MainController {
       if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
         a.convertToDefaultValueOps();
       }
-      setCurrentAlgebra(addAlgebra(a, file));
       //setDirty(false);
+      setCurrentAlgebra(addAlgebra(a, file, true));
       uacalcUI.repaint();
     }
   }
@@ -639,8 +642,8 @@ public class MainController {
     setTitle();
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
-    getAlgebraEditorController().setAlgebra(alg);
     getConController().drawCon(alg.getAlgebra(), false);
+    getAlgebraEditorController().setAlgebra(alg);
     getSubController().drawSub(alg.getAlgebra(), false);
     getDrawingController().drawAlg(alg, false);
   }

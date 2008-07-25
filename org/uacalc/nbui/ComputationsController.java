@@ -32,7 +32,7 @@ public class ComputationsController {
     setupResultTable();
   }
 
-  private MainController getActions() { return uacalcUI.getMainController(); }
+  private MainController getMainControler() { return uacalcUI.getMainController(); }
   
   private void setupTasksTable() {
     final JTable tasksTable = uacalcUI.getComputationsTable();
@@ -221,6 +221,9 @@ public class ComputationsController {
           report.setTimeLeft("");
           ttm.setTerms(fr.getTerms());
           ttm.setVariables(fr.getVariables());
+          MainController mc = uacalcUI.getMainController();
+          //mc.setCurrentAlgebra(mc.addAlgebra(fr));
+          mc.addAlgebra(fr, false);
           if (getCurrentTask() == this) setResultTableColWidths();
         }
         else {
@@ -730,9 +733,9 @@ public class ComputationsController {
           JOptionPane.ERROR_MESSAGE);
       return;
     }
-    GUIAlgebra[] algs = new GUIAlgebra[getActions().getAlgebraList().size()];
+    GUIAlgebra[] algs = new GUIAlgebra[getMainControler().getAlgebraList().size()];
     int i = 0;
-    for (GUIAlgebra a : getActions().getAlgebraList()) {
+    for (GUIAlgebra a : getMainControler().getAlgebraList()) {
       algs[i++] = a;
     }
     GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,

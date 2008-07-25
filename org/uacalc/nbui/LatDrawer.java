@@ -44,7 +44,7 @@ public class LatDrawer extends JPanel {
   private BasicLattice lattice;
   
   private Vertex selectedElem;
-
+  
   //private static final Dimension scrollDim = new Dimension(200, 250);
 
 // was ConceptLattice, leave it in case we need it as an example.
@@ -53,50 +53,49 @@ public class LatDrawer extends JPanel {
     drawPanel = new org.latdraw.beans.DrawPanel();
     PropertyChangeListener changeListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
-          //Diagram diag = drawPanel.getDiagram();
-          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)
-              || e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
-            //diag.resetVertices();
-            //diag.hideLabels();
+          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
             Vertex v = (Vertex)e.getNewValue();
             setSelectedElem(v);
-            if (e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
-              Diagram diag = drawPanel.getDiagram();
-              Set<Vertex> idealFil = new HashSet<Vertex>();
+            return;
+          }
+          if (e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
+            Vertex v = (Vertex)e.getNewValue();
+            Diagram diag = drawPanel.getDiagram();
+            Set<Vertex> drawnVerts = new HashSet<Vertex>();
+            if (getSelectedElem() == null) setSelectedElem(v);
+            Vertex sel = getSelectedElem();
+            System.out.println("sel equals v is " + sel.equals(v));
+            System.out.println("(under elem) sel equals v is " 
+                + sel.getUnderlyingElem().equals(v.getUnderlyingElem()));
+            if (v.equals(getSelectedElem())) {
               List<Vertex> fil = diag.filter(v);
               List<Vertex> idl = diag.ideal(v);
               for (Vertex vert : fil) {
-                idealFil.add(vert);
+                drawnVerts.add(vert);
               }
               for (Vertex vert : idl) {
-                idealFil.add(vert);
+                drawnVerts.add(vert);
               }
-              drawPanel.setAllowedVertices(idealFil);
+              drawPanel.setAllowedVertices(drawnVerts);
+              repaint();
+              return;
             }
-            else {
-              drawPanel.setAllowedVertices(null);
-            }
-            //resetVertexColors();
-            /*
-            boolean vIsAtt = false;
-            boolean vIsObj = false;
-
-            //v.setHighlighted(true);
-            if (vIsAtt) {
-              v.setFilled(true);
-              if (vIsObj) v.setColor(Color.WHITE);
-              else v.setColor(ABOVE_COLOR);
-            }
-            else {
-              if (vIsObj) {
-                v.setColor(BELOW_COLOR);
-                v.setFilled(true);
+            if (diag.leq(sel, v)) {
+              for (Vertex vert : diag.ideal(v)) {
+                if (diag.leq(sel, vert)) drawnVerts.add(vert);
               }
-              else v.setColor(null);
+              drawPanel.setAllowedVertices(drawnVerts);
+              repaint();
+              return;
             }
-            //repaint();
-             */
-            return;
+            if (diag.leq(v, sel)) {
+              for (Vertex vert : diag.ideal(sel)) {
+                if (diag.leq(v, vert)) drawnVerts.add(vert);
+              }
+              drawPanel.setAllowedVertices(drawnVerts);
+              repaint();
+              return;
+            }
           }
           if (e.getPropertyName().equals(ChangeSupport.NOTHING_PRESSED)) {
             setSelectedElem(null);
@@ -438,6 +437,16 @@ public class LatDrawer extends JPanel {
   }
 */
 
+  // Will probably use a JPopupMenu instead
+  private String getRightClickOption(String[] opts, int defaultIndex) {
+    String opt = (String)JOptionPane.showInputDialog(uacalc,
+        "Options",
+        "Options",
+        JOptionPane.QUESTION_MESSAGE, null,
+        opts, defaultIndex);    
+    return opt;
+  }
+  
   public void setSelectedElem(Vertex selectedElem) {
     this.selectedElem = selectedElem;
     resetVertexColors();

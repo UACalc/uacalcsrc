@@ -64,22 +64,24 @@ public class DrawingController {
   }
   
   public void drawAlg(GUIAlgebra gAlg, boolean makeIfNull) {
-    if (!gAlg.getAlgebra().isTotal()) {
-      uacalcUI.getMainController().beep();
-      uacalcUI.getMainController().setUserWarning(
-          "Not all the operations of this algebra are total.", false);
-      getLatDrawer().setBasicLattice(null);
-      return;
-    }
-    SmallAlgebra alg = gAlg.getAlgebra();
-    if (alg.cardinality() > MAX_DRAWABLE_SIZE) {
-      uacalcUI.getMainController().beep();
-      uacalcUI.getMainController().setUserWarning(
-          "Too many elements in this algebra. More than " 
-          + MAX_DRAWABLE_SIZE + ".", false);
-      getLatDrawer().setBasicLattice(null);
-      uacalcUI.repaint();
-      return;
+    if (makeIfNull) {
+      if (!gAlg.getAlgebra().isTotal()) {
+        uacalcUI.getMainController().beep();
+        uacalcUI.getMainController().setUserWarning(
+            "Not all the operations of this algebra are total.", false);
+        getLatDrawer().setBasicLattice(null);
+        return;
+      }
+      SmallAlgebra alg = gAlg.getAlgebra();
+      if (alg.cardinality() > MAX_DRAWABLE_SIZE) {
+        uacalcUI.getMainController().beep();
+        uacalcUI.getMainController().setUserWarning(
+            "Too many elements in this algebra. More than " 
+            + MAX_DRAWABLE_SIZE + ".", false);
+        getLatDrawer().setBasicLattice(null);
+        uacalcUI.repaint();
+        return;
+      }
     }
     /*
     List<Operation> semilatOps = findSemilatticeOps(alg);
