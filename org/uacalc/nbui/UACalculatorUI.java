@@ -23,6 +23,13 @@ public class UACalculatorUI extends javax.swing.JFrame {
         initComponents();
         actions = new MainController(this);
         
+        try {
+          javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          // go with the default L&F
+        }
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //closes from title bar and from menu
         addWindowListener(new WindowAdapter() {

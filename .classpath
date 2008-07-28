@@ -4,6 +4,6 @@
 	<classpathentry kind="lib" path="jars/LatDraw.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-all-1.0.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-engine.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_10"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
