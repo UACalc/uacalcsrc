@@ -48,6 +48,15 @@ public interface Operation {
    * This (optional) operation is the int version.
    */
   public int intValueAt(int[] args);
+  
+  /**
+   * This (optional) operation is for fast access to the table,
+   * if it exits.
+   * 
+   * @param arg    the Horner encoding of the actual args.
+   * @return
+   */
+  public int intValueAt(int arg);
 
   /**
    * This will make a table and so make the operation faster but

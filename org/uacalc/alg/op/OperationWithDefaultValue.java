@@ -175,6 +175,15 @@ public class OperationWithDefaultValue extends AbstractOperation {
     return v;
   }
   
+  public int intValueAt(int arg) {
+    int v = op.intValueAt(arg);
+    if (v == -1) {
+      if (defaultValue != -2) return defaultValue;
+      return getRandomValueTable()[arg];
+    }
+    return v;
+  }
+  
   /**
    * Note this effectively kills the default value part
    * of this.

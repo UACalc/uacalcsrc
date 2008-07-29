@@ -65,6 +65,10 @@ public abstract class AbstractOperation implements Operation {
     throw new UnsupportedOperationException();
   }
   
+  public int intValueAt(int arg) {
+    throw new UnsupportedOperationException();
+  }
+  
   public boolean isTableBased() {
     return false;
   }

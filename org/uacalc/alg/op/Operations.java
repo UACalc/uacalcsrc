@@ -230,6 +230,12 @@ logger.setLevel(Level.FINE);
     // copy it. The final is so it can be used in the inner class.
     final List<Operation> opsx = new ArrayList<Operation>(ops);
     Operation op0 = (Operation)opsx.get(0);
+    final int arity = op0.arity();
+    final int numProjections = opsx.size();
+    final int[] algSizes = new int[opsx.size()];
+    for (int i = 0; i < algSizes.length; i++) {
+      algSizes[i] = opsx.get(i).getSetSize();
+    }
     return new AbstractOperation(op0.symbol(), algSize) {
           public Object valueAt(List args) {
             List ans = new ArrayList();
@@ -242,6 +248,15 @@ logger.setLevel(Level.FINE);
               ans.add(op.valueAt(arg));
             }
             return ans;
+          }
+          
+          public int[] valueAt(int[][] args) {
+            for (int i = 0; i < numProjections; i++) {
+              for (int j = 0; j < arity; j++) {
+                // here
+              }
+            }
+            return null;
           }
       };
   }
@@ -494,6 +509,9 @@ logger.setLevel(Level.FINE);
       public int intValueAt(final int[] args) {
         return values[Horner.horner(args, algSize)];
       }
+      public int intValueAt(int arg) {
+        return values[arg];
+      }
       
       public boolean isTableBased() { return true; }
     };
@@ -563,6 +581,10 @@ logger.setLevel(Level.FINE);
      */ 
     public int intValueAt(int[] args) {
       return valueTable[Horner.horner(args, algSize)];
+    }
+    
+    public int intValueAt(int arg) {
+      return valueTable[arg];
     }
 
     public Object valueAt(List args) {
