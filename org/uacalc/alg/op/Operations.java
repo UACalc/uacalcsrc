@@ -240,7 +240,7 @@ logger.setLevel(Level.FINE);
           public Object valueAt(List args) {
             List ans = new ArrayList();
             for (int i = 0; i < opsx.size(); i++) {
-              Operation op = opsx.get(i);
+              final Operation op = opsx.get(i);
               List arg = new ArrayList();
               for (Iterator it = args.iterator(); it.hasNext(); ) {
                 arg.add(((List)it.next()).get(i));
@@ -251,12 +251,16 @@ logger.setLevel(Level.FINE);
           }
           
           public int[] valueAt(int[][] args) {
+            int [] ans = new int[numProjections];
             for (int i = 0; i < numProjections; i++) {
-              for (int j = 0; j < arity; j++) {
-                // here
+              final Operation op = opsx.get(i);
+              int tmp = args[arity - 1][i];
+              for (int j = arity - 2; j >= 0; j--) {
+                tmp = algSizes[j] * tmp + args[j][i];
               }
+              ans[i] = op.intValueAt(tmp);
             }
-            return null;
+            return ans;
           }
       };
   }

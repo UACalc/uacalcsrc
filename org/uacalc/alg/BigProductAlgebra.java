@@ -145,6 +145,11 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    * int operations with a lookup table. This could cause space problems. 
    * And we directly generate the Horner encoding for the lookup to speed
    * things up.
+   * <p>
+   * If space becomes an issue, we could make sure if the valueTables for
+   * an operation on different coordinates happen to be equal, they are 
+   * identical.
+   * 
    */
   protected void makeOperations() {
     final int k = algebras.get(0).operations().size();
