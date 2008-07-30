@@ -275,8 +275,13 @@ public class Closer {
           for (int j = 0; j < arity; j++) {
             arg[j] = rawList.get(argIndeces[j]);
           }
+          
           int[] vRaw = f.valueAt(arg);
+          //int[] test = f.valueAt(arg);
           IntArray v = new IntArray(vRaw);
+          //IntArray testV = new IntArray(test);
+           
+          //System.out.println("vRaw == test is " + v.equals(new IntArray(test)));
           timing.incrementApps();
           //appsSoFar = appsSoFar + numberProjs;
           if (su.add(v)) {

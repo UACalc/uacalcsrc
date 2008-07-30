@@ -13,6 +13,7 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
+import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
 
 /**
@@ -139,6 +140,12 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     makeOperations();
   }
 
+  /**
+   * For speed we have make all operations on the coordinates into
+   * int operations with a lookup table. This could cause space problems. 
+   * And we directly generate the Horner encoding for the lookup to speed
+   * things up.
+   */
   protected void makeOperations() {
     final int k = algebras.get(0).operations().size();
     operations = new ArrayList<Operation>(k);
@@ -147,9 +154,9 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
            ((Operation)algebras.get(0).operations().get(i)).arity();
       final List<Operation> opList = new ArrayList<Operation>(numberOfFactors);
       for (int j = 0; j < numberOfFactors; j++) {
-        opList.add(algebras.get(j).operations().get(i));
+        // changed 2008/7/29 to make the int op.
+        opList.add(Operations.makeIntOperation(algebras.get(j).operations().get(i)));
       }
-      //final int[][] argsExpanded = new int[arity][numberOfProducts];
       final int[] arg = new int[arity];
       Operation op = new AbstractOperation(opList.get(0).symbol(), size) {
           // this will act on a list of IntArray's representing elments of
@@ -167,16 +174,43 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
             }
             return new IntArray(ans);
           }
-
+          // old
+          
           public int[] valueAt(int[][] args) {
-            final int[] ans = new int[numberOfFactors];
+            //System.out.println("called with args: " + ArrayString.toString(args));
+            //final int[] ans = new int[numberOfFactors];
+            final int[] ans2 = new int[numberOfFactors];
+            /*
             for (int j = 0; j < numberOfFactors; j++) {
               for (int index = 0; index < arity; index++) {
                 arg[index] = args[index][j];
-              }
+             }
               ans[j] = opList.get(j).intValueAt(arg);
             }
-            return ans;
+            */
+            
+            //try {
+            
+            for (int j = 0; j < numberOfFactors; j++) {
+              //final Operation op = opList.get(j);
+              //System.out.println("op = " + op);
+              final int size = sizes[j];
+              int tmp = args[arity - 1][j];
+              for (int index = arity - 2; index >= 0; index--) {
+                tmp = size * tmp + args[index][j];
+              }
+              ans2[j] = opList.get(j).intValueAt(tmp);
+            }
+            
+            //}
+            //catch (Exception ex) { ex.printStackTrace(); }
+            
+            //System.out.println("last op table: " + ArrayString.toString(opList.get(numberOfFactors - 1)));
+            //System.out.println("sizes: " + ArrayString.toString(sizes));
+            //System.out.println("args:  " + ArrayString.toString(args));
+            //System.out.println("ans:   " + ArrayString.toString(ans));
+            //System.out.println("ans2:  " + ArrayString.toString(ans2));
+            return ans2;
           }
       };
       operations.add(op);
