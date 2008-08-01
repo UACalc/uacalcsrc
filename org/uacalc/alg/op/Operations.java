@@ -225,6 +225,8 @@ logger.setLevel(Level.FINE);
    * Make a direct product operation. The <tt>ops</tt> should all have
    * the same arity and symbol but this does not check that. 
    */
+  // I think this is in BigProduct
+  /*
   public static Operation makeDirectProductOperation(List<Operation> ops, int algSize) {
     // it would be a disaster if the List ops got modified so we better
     // copy it. The final is so it can be used in the inner class.
@@ -264,6 +266,7 @@ logger.setLevel(Level.FINE);
           }
       };
   }
+  */
   
   /**
    * Test if these have the same int values on the common sized set.

@@ -160,7 +160,10 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
       final List<Operation> opList = new ArrayList<Operation>(numberOfFactors);
       for (int j = 0; j < numberOfFactors; j++) {
         // changed 2008/7/29 to make the int op.
-        opList.add(Operations.makeIntOperation(algebras.get(j).operations().get(i)));
+        Operation op = algebras.get(j).operations().get(i);
+        if (op.isTableBased()) opList.add(op);
+        else opList.add(Operations.makeIntOperation(op));
+        //opList.add(Operations.makeIntOperation(algebras.get(j).operations().get(i)));
       }
       final int[] arg = new int[arity];
       Operation op = new AbstractOperation(opList.get(0).symbol(), size) {

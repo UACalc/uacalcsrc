@@ -457,6 +457,7 @@ public class LatDrawer extends JPanel {
   }
   
   public void resetVertexColors() {
+    if (getDiagram() == null) return;
     getDiagram().resetVertices();
     getDiagram().hideLabels();
     if (selectedElem != null) selectedElem.setHighlighted(true);
