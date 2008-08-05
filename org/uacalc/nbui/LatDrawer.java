@@ -32,6 +32,8 @@ public class LatDrawer extends JPanel {
   public static final Color BELOW_COLOR = Color.PINK;
   public static final Color ABOVE_COLOR = Color.CYAN;
   public static final Color BOTH_COLOR = Color.WHITE;
+  public static final Color SELECTED_LIST_COLOR = Color.GREEN;
+
 
   private org.latdraw.beans.DrawPanel drawPanel;
 
@@ -44,6 +46,8 @@ public class LatDrawer extends JPanel {
   private BasicLattice lattice;
   
   private Vertex selectedElem;
+  
+  private List<Vertex> selectedElemList;
   
   //private static final Dimension scrollDim = new Dimension(200, 250);
 
@@ -58,6 +62,49 @@ public class LatDrawer extends JPanel {
             setSelectedElem(v);
             return;
           }
+          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED_CTRL)) {
+            Vertex v = (Vertex)e.getNewValue();
+            Vertex sel = getSelectedElem();
+            if (sel != null && !v.equals(sel)) {
+              Diagram diag = drawPanel.getDiagram();
+              addToSelectedElemList(v);
+              repaint();
+              return;
+            }  
+          }
+          if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED_SHIFT)) {
+            Vertex v = (Vertex)e.getNewValue();
+            Vertex sel = getSelectedElem();
+            if (sel != null && !v.equals(sel)) {
+              Diagram diag = drawPanel.getDiagram();
+              if (diag.leq(v, sel)) {
+                resetSelectedElemList();
+                resetVertexColors();
+                for (Vertex vert : diag.ideal(sel)) {
+                  if (diag.leq(v, vert) && !vert.equals(sel)) {
+                    addToSelectedElemList(vert);
+                  }
+                }
+                repaint();
+                return;
+              }
+              if (diag.leq(sel, v)) {
+                resetSelectedElemList();
+                resetVertexColors();
+                for (Vertex vert : diag.ideal(v)) {
+                  if (diag.leq(sel, vert) && !vert.equals(sel)) {
+                    addToSelectedElemList(vert);
+                  }
+                }
+                repaint();
+                return;
+              }
+              // incomparable case
+              resetSelectedElemList();
+              resetVertexColors();
+            }
+          }
+
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_MIDDLE_PRESSED)) {
             Vertex v = (Vertex)e.getNewValue();
             Diagram diag = drawPanel.getDiagram();
@@ -264,6 +311,10 @@ public class LatDrawer extends JPanel {
     validate();
     repaint();
   }
+  
+ 
+  
+  
 
   public UACalculatorUI getUACalculatorUI() { return uacalc; }
 
@@ -447,9 +498,21 @@ public class LatDrawer extends JPanel {
     return opt;
   }
   
+  private void addToSelectedElemList(Vertex v) {
+    if (selectedElemList == null) selectedElemList = new ArrayList<Vertex>();
+    selectedElemList.add(v);
+    v.setColor(SELECTED_LIST_COLOR);
+    v.setFilled(true);
+  }
+  
+  private void resetSelectedElemList() {
+    selectedElemList = null;
+    resetVertexColors();
+  }
+  
   public void setSelectedElem(Vertex selectedElem) {
     this.selectedElem = selectedElem;
-    resetVertexColors();
+    resetSelectedElemList();
   }
 
   public Vertex getSelectedElem() {

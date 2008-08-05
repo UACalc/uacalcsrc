@@ -73,12 +73,10 @@ public class SubalgebraLattice implements Lattice {
       arr[i] = i;
     }
     oneSubalg = new BasicSet(arr);
-    List lst = new ArrayList();
+    List<Integer> lst = new ArrayList<Integer>();
     final int[] empty = new int[0];
-    for (Iterator it = alg.constantOperations().iterator(); it.hasNext(); ) {
-      Operation op = (Operation)it.next();
-      final int k = op.intValueAt(empty);
-      lst.add(new Integer(k));
+    for (Operation op : alg.constantOperations()) {
+      lst.add(op.intValueAt(empty));
     }
     if (lst.size() == 0) zeroSubalg = BasicSet.EMPTY_SET;
     else {

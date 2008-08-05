@@ -459,6 +459,11 @@ public class  BasicLattice extends GeneralAlgebra
     return meet;
   }
   
+  public SubalgebraLattice sub() {
+    if (sub == null) sub = new SubalgebraLattice(this);
+    return sub;
+  }
+  
   public void convertToDefaultValueOps() {
     throw new UnsupportedOperationException("Only for basic algebras"); 
   }
