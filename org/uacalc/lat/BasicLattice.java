@@ -34,7 +34,7 @@ public class  BasicLattice extends GeneralAlgebra
   private List<POElem> univList;
   private HashSet<POElem> univHS;
   private int[] joinMeetTable;
-  final private List<Operation> operations = new ArrayList<Operation>();
+  //final private List<Operation> operations = new ArrayList<Operation>();
   private Operation join;
   private Operation meet;
   private List<POElem> joinIrreducibles;
@@ -51,6 +51,7 @@ public class  BasicLattice extends GeneralAlgebra
     super(name);
     this.poset = poset;
     univList = poset.univ();
+    operations = new ArrayList<Operation>();
     operations.add(makeJoinOperation());
     operations.add(makeMeetOperation());
   }
@@ -64,6 +65,7 @@ public class  BasicLattice extends GeneralAlgebra
     super(name);
     poset = makeOrderedSet(lat);
     univList = poset.univ();
+    operations = new ArrayList<Operation>();
     operations.add(makeJoinOperation());
     operations.add(makeMeetOperation());
   }
@@ -79,6 +81,7 @@ public class  BasicLattice extends GeneralAlgebra
     poset = makeOrderedSet(lat);
     if (label) makeTctTypeMap(poset, lat);
     univList = poset.univ();
+    operations = new ArrayList<Operation>();
     operations.add(makeJoinOperation());
     operations.add(makeMeetOperation());
   }

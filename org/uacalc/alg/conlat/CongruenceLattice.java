@@ -162,6 +162,7 @@ public class CongruenceLattice implements Lattice {
    */
   public BasicLattice getBasicLattice(boolean makeIfNull) {
     if (basicLat == null  && makeIfNull) basicLat = new BasicLattice("", this, true); // maybe a name
+    //if (basicLat != null) System.out.println("op size = " + basicLat.operations().size());
     return basicLat;
   }
   

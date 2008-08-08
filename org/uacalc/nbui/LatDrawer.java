@@ -6,6 +6,7 @@ import org.latdraw.diagram.*;
 import org.latdraw.beans.*;
 
 import org.uacalc.lat.*;
+import org.uacalc.alg.sublat.*;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -33,6 +34,7 @@ public class LatDrawer extends JPanel {
   public static final Color ABOVE_COLOR = Color.CYAN;
   public static final Color BOTH_COLOR = Color.WHITE;
   public static final Color SELECTED_LIST_COLOR = Color.GREEN;
+  public static final Color GENERATED_ELEMS_COLOR = Color.WHITE;
 
 
   private org.latdraw.beans.DrawPanel drawPanel;
@@ -171,7 +173,8 @@ public class LatDrawer extends JPanel {
             if (drawPanel.isRotating()) drawPanel.stopRotation();
             else drawPanel.startRotation();
           }
-          if (key == 's' || key == 'S') drawPanel.stopRotation();
+          //if (key == 's' || key == 'S') drawPanel.stopRotation();
+          if (key == 's' || key == 'S') showSublattice();
           if (key == '.' || key == '>') drawPanel.rotateOnce();
           if (key == ',' || key == '<') drawPanel.rotateLeft();
           if (key == 'd' || key == 'D') drawPanel.setDraggingAllowed(
@@ -341,6 +344,35 @@ public class LatDrawer extends JPanel {
 
   public JToolBar getToolBar() { return toolBar; }
 
+  private Set<Vertex> getSublattice(List<Vertex> gens) {
+    Set<Vertex> ans = new HashSet<Vertex>();
+    final int[] arr = new int[gens.size()];
+    for (int k = 0; k < arr.length; k++) {
+      arr[k] = gens.get(k).getUnderlyingElem().index();
+    }
+    int[] sub = getBasicLattice().sub().sg(arr).getArray();
+    for (int k = 0; k < sub.length; k++) {
+      ans.add(getDiagram().getVertices()[sub[k]]);
+    }
+    return ans;
+  }
+  
+  public void showSublattice() {
+    if (getSelectedElemList() != null) {
+      List<Vertex> elems = new ArrayList<Vertex>(getSelectedElemList());
+      elems.add(getSelectedElem());
+      Set<Vertex> sub = getSublattice(elems);
+      Set<Vertex> elemsSet = new HashSet<Vertex>(elems);
+      for (Vertex v : sub) {
+        if (!elemsSet.contains(v)) {
+          v.setColor(GENERATED_ELEMS_COLOR);
+          v.setFilled(true);
+        }
+      }
+      repaint();
+      System.out.println(sub.size());
+    }
+  }
   
 /*
   public void paint(java.awt.Graphics g) {
@@ -508,6 +540,10 @@ public class LatDrawer extends JPanel {
   private void resetSelectedElemList() {
     selectedElemList = null;
     resetVertexColors();
+  }
+  
+  public List<Vertex> getSelectedElemList() {
+    return selectedElemList;
   }
   
   public void setSelectedElem(Vertex selectedElem) {
