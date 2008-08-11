@@ -321,15 +321,24 @@ public class MainController {
    * We may want to change that.
    */
   public GUIAlgebra addAlgebra(SmallAlgebra alg, File file, boolean makeCurrent) {
+    return addAlgebra(new GUIAlgebra(alg, file), makeCurrent);
+  }
+  
+  /**
+   * Make alg into a GUIAlgebra, add it to the list and to the table
+   * with the list and scroll to the bottom.
+   * Right now the list of algebras is maintained the algebraTableModel.
+   * We may want to change that.
+   */
+  public GUIAlgebra addAlgebra(GUIAlgebra gAlg, boolean makeCurrent) {
     final int index = getAlgebraList().size();
-    GUIAlgebra guiAlg = new GUIAlgebra(alg, file);
-    getAlgebraList().add(guiAlg, makeCurrent);
+    getAlgebraList().add(gAlg, makeCurrent);
     scrollToBottom(uacalcUI.getAlgListTable());
     // Note: the revalidate, repaint is the key
     if (makeCurrent) uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
     uacalcUI.getAlgListTable().revalidate();
     uacalcUI.getAlgListTable().repaint();
-    return guiAlg;
+    return gAlg;
   }
   
   // TODO: soon each algebra will have a separate monitorPanel and these
@@ -487,15 +496,17 @@ public class MainController {
     SmallAlgebra alg = getCurrentAlgebra().getAlgebra();
     if (alg == null) return false;  
     for (Operation op : alg.operations()) {
-      if (!((OperationWithDefaultValue)op).isTotal()) {
-        uacalcUI.beep();
-        JOptionPane.showMessageDialog(uacalcUI,
-            "<html><center>Not all operations are total.<br>" 
-            + "Fill in the tables<br>"
-            + "or set a default value.</center></html>",
-            "Incomplete operation(s)",
-            JOptionPane.WARNING_MESSAGE);
-        return false;
+      if (op instanceof OperationWithDefaultValue) {
+        if (!((OperationWithDefaultValue)op).isTotal()) {
+          uacalcUI.beep();
+          JOptionPane.showMessageDialog(uacalcUI,
+              "<html><center>Not all operations are total.<br>" 
+              + "Fill in the tables<br>"
+              + "or set a default value.</center></html>",
+              "Incomplete operation(s)",
+              JOptionPane.WARNING_MESSAGE);
+          return false;
+        }
       }
     }
     alg.setName(uacalcUI.getAlgNameTextField().getText());

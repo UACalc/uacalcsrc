@@ -137,7 +137,7 @@ public class BasicSet extends IntArray implements Comparable {
     final int[] arr = getArray();
     for (int i = 0; i < arr.length; i++) {
       sb.append(ArrayString.toString(alg.getElement(arr[i])));
-      if (i != arr.length - 1) sb.append(", ");
+      if (i != arr.length - 1) sb.append(",");
     }
     sb.append("}");
     return sb.toString();

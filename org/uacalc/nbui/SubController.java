@@ -1,12 +1,16 @@
 package org.uacalc.nbui;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 import org.uacalc.alg.SmallAlgebra;
-import org.uacalc.alg.sublat.SubalgebraLattice;
+import org.uacalc.alg.Subalgebra;
+import org.uacalc.alg.sublat.*;
 import org.uacalc.ui.util.*;
 
 public class SubController {
@@ -20,6 +24,7 @@ public class SubController {
     uacalcUI.getSubMainPanel().setLayout(new BorderLayout());
     uacalcUI.getSubMainPanel().add(subLatDrawer, BorderLayout.CENTER);
     addPropertyChangeListener(cs);
+    createPopupMenu();
   }
   
   private void addPropertyChangeListener(PropertyChangeSupport cs) {
@@ -71,6 +76,39 @@ public class SubController {
     getSubLatDrawer().setBasicLattice(alg.sub().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
     getSubLatDrawer().repaint();
+  }
+  
+  public void createPopupMenu() {
+    JMenuItem menuItem;
+
+    //Create the popup menu.
+    JPopupMenu popup = new JPopupMenu();
+    menuItem = new JMenuItem("Make the subalgebra with this subuniverse");
+    menuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (getSubLatDrawer().getSelectedElem() == null) return;
+        BasicSet subUniv = (BasicSet)getSubLatDrawer().getSelectedElem().getUnderlyingObject();
+        if (subUniv.size() == 0) return;
+        GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+        SmallAlgebra alg = gAlg.getAlgebra();
+        Subalgebra sub = new Subalgebra(alg, subUniv);
+        if (alg.getName() != null && alg.getName().length() > 0) {
+          sub.setName("SubalgebraOf" + alg.getName());
+          sub.setDescription("The subalgebra of " + alg.getName() + ", univ " + subUniv); 
+        }
+        else sub.setDescription(" subalgebra " + subUniv);
+        GUIAlgebra gSub = new GUIAlgebra(sub, null, gAlg);
+        uacalcUI.getMainController().addAlgebra(gSub, false);
+      }
+    });
+    popup.add(menuItem);
+    //menuItem = new JMenuItem("Another popup menu item");
+    //menuItem.addActionListener(this);
+    //popup.add(menuItem);
+
+    //Add listener to the text area so the popup menu can come up.
+    MouseListener popupListener = new PopupListener(popup);
+    getSubLatDrawer().getDrawPanel().addMouseListener(popupListener);
   }
   
   

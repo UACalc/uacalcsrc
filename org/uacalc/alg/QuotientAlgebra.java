@@ -141,6 +141,10 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * Something that will print like a/\theta.
    */
   protected Set makeUniverse() {
+    final List<Integer> lst = new ArrayList<Integer>(size);
+    for (int i = 0; i < size; i++) {
+      lst.add(new Integer(representatives[i]));
+    }
     return new AbstractSet() {
         public int size() { return size; }
         public boolean contains(Object obj) {
@@ -156,7 +160,12 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
         }
         // should check if each has an iterator and make one
         public Iterator iterator() {
-          throw new UnsupportedOperationException();
+          //List<Integer> lst = new ArrayList<Integer>(size);
+          //for (int i = 0; i < size; i++) {
+          //  lst.add(new Integer(representatives[i]));
+          //}
+          return lst.iterator();
+          //throw new UnsupportedOperationException();
         }
       };
   }

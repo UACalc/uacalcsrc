@@ -1,6 +1,7 @@
 package org.uacalc.nbui;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
@@ -33,6 +34,7 @@ public class ConController {
       
     });
     addPropertyChangeListener(cs);
+    createPopupMenu();
   }
   
   private void addPropertyChangeListener(PropertyChangeSupport cs) {
@@ -86,4 +88,36 @@ public class ConController {
     getConLatDrawer().repaint();
   }
   
+  public void createPopupMenu() {
+    JMenuItem menuItem;
+
+    //Create the popup menu.
+    JPopupMenu popup = new JPopupMenu();
+    menuItem = new JMenuItem("Make quotient over selected elt");
+    menuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (getConLatDrawer().getSelectedElem() == null) return;
+        Partition par = (Partition)getConLatDrawer().getSelectedElem().getUnderlyingObject();
+        GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+        SmallAlgebra alg = gAlg.getAlgebra();
+        QuotientAlgebra quot = new QuotientAlgebra(alg, par);
+        if (alg.getName() != null && alg.getName().length() > 0) {
+          quot.setName("QuotOf" + alg.getName());
+          quot.setDescription("The quotient of " + alg.getName() + " by " + par); 
+        }
+        else quot.setDescription(" quotient by " + par);
+        GUIAlgebra gQuot = new GUIAlgebra(quot, null, gAlg);
+        uacalcUI.getMainController().addAlgebra(gQuot, false);
+      }
+    });
+    popup.add(menuItem);
+    //menuItem = new JMenuItem("Another popup menu item");
+    //menuItem.addActionListener(this);
+    //popup.add(menuItem);
+
+    //Add listener to the text area so the popup menu can come up.
+    MouseListener popupListener = new PopupListener(popup);
+    getConLatDrawer().getDrawPanel().addMouseListener(popupListener);
+  }
+
 }
