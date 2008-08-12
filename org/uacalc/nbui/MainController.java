@@ -636,6 +636,10 @@ public class MainController {
     }
   }
   
+  public void loadBuiltIn() {
+    
+  }
+  
   public void switchAlgebra(GUIAlgebra gAlg) {
     setCurrentFile(gAlg.getFile());
     setTitle();

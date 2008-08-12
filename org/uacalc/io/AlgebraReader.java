@@ -46,6 +46,7 @@ public final class AlgebraReader extends DefaultHandler {
 
 
   private File file;
+  private InputStream inputStream;
   private SmallAlgebra algebra;
   private int algType;
   private SimpleList tagStack = SimpleList.EMPTY_LIST;
@@ -75,14 +76,29 @@ public final class AlgebraReader extends DefaultHandler {
     this(new File(file));
   }
 
+  public AlgebraReader(InputStream is) throws IOException {
+    this.inputStream = is;
+  }
+  
   public SmallAlgebra readAlgebraFile() throws IOException, SAXException,
+                                               ParserConfigurationException {
+    //  Use an instance of ourselves as the SAX event handler
+    DefaultHandler handler = this;
+    //  Use the default (non-validating) parser
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser saxParser = factory.newSAXParser();
+    saxParser.parse(file, handler);
+    return algebra;
+  }
+  
+  public SmallAlgebra readAlgebraFromStream() throws IOException, SAXException,
                                                ParserConfigurationException {
     // Use an instance of ourselves as the SAX event handler
     DefaultHandler handler = this;
     // Use the default (non-validating) parser
     SAXParserFactory factory = SAXParserFactory.newInstance();
     SAXParser saxParser = factory.newSAXParser();
-    saxParser.parse(file, handler);
+    saxParser.parse(inputStream, handler);
     return algebra;
   }
 

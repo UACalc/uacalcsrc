@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path=""/>
+	<classpathentry excluding="resources/" kind="src" path=""/>
+	<classpathentry excluding="algebras/" kind="src" path="resources"/>
 	<classpathentry kind="lib" path="jars/LatDraw.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-all-1.0.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-engine.jar"/>
