@@ -148,9 +148,13 @@ public class GUIAlgebra {
   }
   
   public String toString() {
+    return toString(false);
+  }
+  
+  public String toString(boolean verbose) {
     String extra = "";
     String name = getAlgebra().getName();
-    if (name != null && name.length() > 0) extra = " (" + name + ")"; 
+    if (verbose && name != null && name.length() > 0) extra = " (" + name + ")"; 
     return "A" + serial + extra;
   }
   

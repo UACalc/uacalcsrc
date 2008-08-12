@@ -196,7 +196,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "F(" + gens + ") over " + alg.getName();
+    final String desc = "F(" + gens + ") over " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
@@ -291,7 +291,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Finding Jonsson terms for " + alg.getName();
+    final String desc = "Finding Jonsson terms for " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<java.util.List<Term>>  jonssonTermTask 
@@ -358,7 +358,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Finding Gumm terms for " + alg.getName();
+    final String desc = "Finding Gumm terms for " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<java.util.List<Term>>  gummTermTask 
@@ -421,7 +421,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Finding Hagemann-Mitschke terms for " + alg.getName();
+    final String desc = "Finding Hagemann-Mitschke terms for " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<java.util.List<Term>>  hmTermTask 
@@ -484,7 +484,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "A majority term over " + alg.getName();
+    final String desc = "A majority term over " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Term>  majTask = new BackgroundTask<Term>(report) {
@@ -547,7 +547,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "A Pixley term over " + alg.getName();
+    final String desc = "A Pixley term over " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Term>  pixleyTask = new BackgroundTask<Term>(report) {
@@ -610,7 +610,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "A Maltsev term over " + alg.getName();
+    final String desc = "A Maltsev term over " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Term>  majTask = new BackgroundTask<Term>(report) {
@@ -675,7 +675,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Near unanimity term of arity " + arity +  " over " + alg.getName();
+    final String desc = "Near unanimity term of arity " + arity +  " over " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Term>  nuTask = new BackgroundTask<Term>(report) {
@@ -738,14 +738,14 @@ public class ComputationsController {
     for (GUIAlgebra a : getMainControler().getAlgebraList()) {
       algs[i++] = a;
     }
-    GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+    final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
                      "<html><center>B in V(<font color=\"red\">A</font>)?<br>" 
                          + "Choose <font color=\"red\">A</font></center></html>", 
                      "B in V(A)",
                      JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
     //System.out.println("gA = " + gA);
     if (gA == null) return;
-    GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+    final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
         "<html><center><font color=\"red\">B</font> in V(A)?" 
             + "<br>Choose <font color=\"red\">B</font></center></html>", 
         "B in V(A)",
@@ -767,9 +767,9 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String nameA = A.getName() != null ? A.getName() : gA.toString();
-    final String nameB = B.getName() != null ? B.getName() : gB.toString();
-    final String desc = "Test if " + nameB + " in V(" + nameA + ")";
+    //final String nameA = A.getName() != null ? A.getName() : gA.toString();
+    //final String nameB = B.getName() != null ? B.getName() : gB.toString();
+    final String desc = "Test if " + gB.toString() + " in V(" + gA.toString() + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Equation>  nuTask = new BackgroundTask<Equation>(report) {
@@ -794,14 +794,15 @@ public class ComputationsController {
         }
         if (!cancelled) {
           if (eq == null) {
-            report.addEndingLine(nameB + "is in V(" + nameA + ")");
+            report.addEndingLine(gB.toString() + "is in V(" + gA.toString() + ")");
             ttm.setDescription(desc + ": it is!");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine(nameB + "is not in V(" + nameA + ")");
-            ttm.setDescription("An equation of " + nameA + " that fails in " + nameB 
+            report.addEndingLine(gB.toString() + "is not in V(" + gA.toString() + ")");
+            ttm.setDescription("An equation of " + gA.toString() 
+                + " that fails in " + gB.toString() 
                 + " by substituting " + ArrayString.toString(BGenerators) 
                 + " for the variables");
             updateResultTextField(this, ttm);
