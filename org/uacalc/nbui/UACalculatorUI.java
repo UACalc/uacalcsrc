@@ -118,6 +118,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         msgTextField = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        BuiltInAlgs = new javax.swing.JMenuItem();
         newMI = new javax.swing.JMenuItem();
         openMI = new javax.swing.JMenuItem();
         saveMI = new javax.swing.JMenuItem();
@@ -402,7 +403,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
         currentAlgPanelLayout.setVerticalGroup(
             currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
+            .addGap(0, 477, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -462,7 +463,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(resultDescLabel))
                     .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
             .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPaneLayout.createSequentialGroup()
                     .addGap(33, 33, 33)
@@ -530,7 +531,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(522, Short.MAX_VALUE))
+                .addContainerGap(520, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -765,6 +766,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         msgTextField.setText("Welcome to the Universal Algebra Calculator!");
 
         fileMenu.setText("File");
+
+        BuiltInAlgs.setText("Built In Algs");
+        BuiltInAlgs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BuiltInAlgsActionPerformed(evt);
+            }
+        });
+        fileMenu.add(BuiltInAlgs);
 
         newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         newMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
@@ -1084,6 +1093,10 @@ private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
   getDrawingController().drawAlg();
 }//GEN-LAST:event_drawAlgMIActionPerformed
 
+private void BuiltInAlgsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuiltInAlgsActionPerformed
+  getMainController().loadBuiltIn();
+}//GEN-LAST:event_BuiltInAlgsActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1097,6 +1110,7 @@ private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem BuiltInAlgs;
     private javax.swing.JButton addOpButton;
     private javax.swing.JMenuItem algFileMI;
     private javax.swing.JTable algListTable;
