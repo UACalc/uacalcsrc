@@ -62,6 +62,20 @@ public final class AlgebraIO {
     }
     return new BasicAlgebra(f.getName(), size, ops);
   }
+  
+  public static SmallAlgebra readAlgebraFromStream(InputStream is) 
+                       throws IOException, BadAlgebraFileException {
+    AlgebraReader r = new AlgebraReader(is);
+    try {
+      return r.readAlgebraFromStream();
+    }
+    catch (org.xml.sax.SAXException saxEx) {
+      throw new BadAlgebraFileException("Bad xml file");
+    }
+    catch (javax.xml.parsers.ParserConfigurationException parEx) {
+      throw new BadAlgebraFileException("Bad xml file");
+    }
+  }
 
   public static Operation readOp(int arity, int size, BufferedReader in)
                      throws IOException, BadAlgebraFileException {

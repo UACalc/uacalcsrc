@@ -637,7 +637,44 @@ public class MainController {
   }
   
   public void loadBuiltIn() {
-    
+    Object[] builtInAlgs = new Object[] {
+      "polin", "n5", "m3", "m4", "baker2", "lyndon"   
+    };
+    String algName = (String) JOptionPane.showInputDialog(uacalcUI,
+        "Choose an algebra:\n", "Choose an algebra",
+        JOptionPane.PLAIN_MESSAGE, null, // can be an icon,
+        builtInAlgs, builtInAlgs[0]);
+    if ((algName == null) || (algName.length() == 0)) return;
+    System.out.println(algName + " choosen");
+    ClassLoader cl = this.getClass().getClassLoader();
+
+    String theFileName = "algebras/" + algName + ".ua";
+    InputStream is = cl.getResourceAsStream(theFileName);
+
+    SmallAlgebra a = null;
+    try {
+      a = AlgebraIO.readAlgebraFromStream(is);
+      // TODO: add to list of algs
+    }
+    catch (BadAlgebraFileException e) {
+      e.printStackTrace();
+      beep();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      beep();
+    }
+    catch (NullPointerException e) {
+      System.err.println("open failed");
+      beep();
+    }
+    if (a != null) {
+      if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+        a.convertToDefaultValueOps();
+      }
+      setCurrentAlgebra(addAlgebra(a, null, true));
+      uacalcUI.repaint();
+    }
   }
   
   public void switchAlgebra(GUIAlgebra gAlg) {
