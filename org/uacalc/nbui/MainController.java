@@ -638,7 +638,9 @@ public class MainController {
   
   public void loadBuiltIn() {
     Object[] builtInAlgs = new Object[] {
-      "polin", "n5", "m3", "m4", "baker2", "lyndon"   
+      "polin", "lyndon", "n5", "m3", "m4", "baker2",
+      "lat2", "lat2-01", "ba2",
+      "sym3", "cyclic2", "cyclic3", "d16", "z3"
     };
     String algName = (String) JOptionPane.showInputDialog(uacalcUI,
         "Choose an algebra:\n", "Choose an algebra",
@@ -649,8 +651,12 @@ public class MainController {
     ClassLoader cl = this.getClass().getClassLoader();
 
     String theFileName = "algebras/" + algName + ".ua";
+    System.out.println("file: " + theFileName);
     InputStream is = cl.getResourceAsStream(theFileName);
-
+    if (is == null) {
+      System.out.println("null InputStream");
+      return;
+    }
     SmallAlgebra a = null;
     try {
       a = AlgebraIO.readAlgebraFromStream(is);

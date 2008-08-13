@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <algebra>
   <basicAlgebra>
-    <algName>BA2</algName>
+    <algName>ba2</algName>
+    <desc>The two element boolean algebra.</desc>
     <cardinality>2</cardinality>
     <operations>
       <op>
@@ -36,6 +37,28 @@
         <opTable>
           <intArray>
             <row>1,0</row>
+          </intArray>
+        </opTable>
+      </op>
+      <op>
+        <opSymbol>
+          <opName>zero</opName>
+          <arity>0</arity>
+        </opSymbol>
+        <opTable>
+          <intArray>
+            <row>0</row>
+          </intArray>
+        </opTable>
+      </op>
+      <op>
+        <opSymbol>
+          <opName>one</opName>
+          <arity>0</arity>
+        </opSymbol>
+        <opTable>
+          <intArray>
+            <row>1</row>
           </intArray>
         </opTable>
       </op>

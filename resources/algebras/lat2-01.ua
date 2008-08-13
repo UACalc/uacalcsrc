@@ -2,6 +2,7 @@
 <algebra>
   <basicAlgebra>
     <algName>lat2-01</algName>
+    <desc>The 2 element lattice with 0, 1 as constants.</desc>
     <cardinality>2</cardinality>
     <operations>
       <op>

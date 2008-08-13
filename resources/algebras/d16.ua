@@ -2,6 +2,7 @@
 <algebra>
   <basicAlgebra>
     <algName>UnaryTerms(D16)</algName>
+    <desc>The dihedral group of order 16</desc>
     <cardinality>16</cardinality>
     <universe>
       <elem>x</elem>

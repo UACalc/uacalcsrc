@@ -2,7 +2,7 @@
 <algebra>
   <basicAlgebra>
     <algName>polin</algName>
-    <desc>This is Polin's famous algebra. It generates a variety that is not congruence modular but nevertheless does satisfy a nontrivial congruence equaion. The variety is semidistributve and 4-permutible.</desc>
+    <desc>Polin's famous algebra. It generates a variety that is not congruence modular but nevertheless satisfies a nontrivial congruence equaion. The variety is semidistributve and 4-permutible.</desc>
     <cardinality>4</cardinality>
     <operations>
       <op>

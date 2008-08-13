@@ -2,6 +2,7 @@
 <algebra>
   <basicAlgebra>
     <algName>lyndon</algName>
+    <desc>Lyndon's 7 element nonfinitely based groupoid.</desc>
     <cardinality>7</cardinality>
     <operations>
       <op>

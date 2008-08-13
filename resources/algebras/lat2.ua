@@ -2,6 +2,7 @@
 <algebra>
   <basicAlgebra>
     <algName>lat2</algName>
+    <desc>The 2 element lattice.</desc>
     <cardinality>2</cardinality>
     <operations>
       <op>
