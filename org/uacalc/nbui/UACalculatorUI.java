@@ -7,6 +7,7 @@
 package org.uacalc.nbui;
 
 import java.awt.event.*;
+import java.io.*;
 
 
 /**
@@ -19,31 +20,46 @@ public class UACalculatorUI extends javax.swing.JFrame {
     
     
     /** Creates new form UACalculatorUI */
-    public UACalculatorUI() {
-        initComponents();
-        actions = new MainController(this);
-        
-        try {
-          javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        }
-        catch (Exception ex) {
-          ex.printStackTrace();
-          // go with the default L&F
-        }
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        //closes from title bar and from menu
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing (WindowEvent e) {
-              if (getMainController().isDirty()) {
-                if (getMainController().checkSave()) {
-                  System.exit(0);
-                }
-              }
-              else {
-                System.exit(0);
-              }
+    public UACalculatorUI(String[] args) {
+      String inFile = null;
+      
+
+      initComponents();
+      actions = new MainController(this);
+
+      try {
+        javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+        // go with the default L&F
+      }
+      setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+      //closes from title bar and from menu
+      addWindowListener(new WindowAdapter() {
+        public void windowClosing (WindowEvent e) {
+          if (getMainController().isDirty()) {
+            if (getMainController().checkSave()) {
+              System.exit(0);
             }
-          });
+          }
+          else {
+            System.exit(0);
+          }
+        }
+      });
+      if (args.length != 0) {
+        for (int i = 0; i < args.length; i++) {
+          System.out.println("args[" + i + "] = " + args[i]);
+        }
+        inFile = args[0];
+        if (args.length > 1 && inFile.equals("-open")) inFile = args[1];
+        File theFile = new File(inFile);
+        
+        actions.open(theFile);
+        
+        
+      }
     }
 
     /** This method is called from within the constructor to
@@ -768,6 +784,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         BuiltInAlgs.setText("Built In Algs");
+        BuiltInAlgs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
         BuiltInAlgs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BuiltInAlgsActionPerformed(evt);
@@ -1101,10 +1118,10 @@ private void BuiltInAlgsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   /**
    * @param args the command line arguments
    */
-  public static void main(String args[]) {
+  public static void main(final String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
-          new UACalculatorUI().setVisible(true);
+          new UACalculatorUI(args).setVisible(true);
         }
     });
   }
