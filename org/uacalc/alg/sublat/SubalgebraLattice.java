@@ -504,11 +504,6 @@ public class SubalgebraLattice implements Lattice {
     }
     if (!addConstantsToMap(homo, A, B)) return null;
     if (homo.size() == 0) return homo;  // do we really want to allow the empty homo?
-    //System.out.println("|A| = " + A.cardinality() + 
-    //    ", A gens = " + ArrayString.toString(gens) +
-    //    ", |B| = " + B.cardinality() +
-    //    ", B gens = " + ArrayString.toString(gensB) +
-    //    ", homo = " + homo);
     return extendToHomomorphism(homo, A, B);
   }
   
@@ -539,7 +534,7 @@ public class SubalgebraLattice implements Lattice {
         }
         argIndeces[arity - 1] = closedMark;
         ArrayIncrementor inc = 
-                    SequenceGenerator.nondecreasingSequenceIncrementor(
+                    SequenceGenerator.sequenceIncrementor(
                                   argIndeces, currentMark - 1, closedMark);
         final int[] arg = new int[arity];
         final int[] argB = new int[arity];
@@ -548,20 +543,17 @@ public class SubalgebraLattice implements Lattice {
             arg[i] = lst.get(argIndeces[i]).intValue();
             argB[i] = homo.get(lst.get(argIndeces[i])).intValue();
           }
-          ArrayIncrementor permInc = PermutationGenerator.arrayIncrementor(arg);
-          while (true) {
-            Integer v = new Integer(f.intValueAt(arg));
-            Integer w = new Integer(g.intValueAt(argB));
-            if (homo.containsKey(v)) {
-              if (!w.equals(homo.get(v))) {
-                return null; 
-              }
+          //ArrayIncrementor permInc = PermutationGenerator.arrayIncrementor(arg);  // stu
+          Integer v = new Integer(f.intValueAt(arg));
+          Integer w = new Integer(g.intValueAt(argB));
+          if (homo.containsKey(v)) {
+            if (!w.equals(homo.get(v))) {
+              return null; 
             }
-            else {
-              lst.add(v);
-              homo.put(v, w);
-            }
-            if (!permInc.increment()) break;
+          }
+          else {
+            lst.add(v);
+            homo.put(v, w);
           }
           if (!inc.increment()) break;
         }

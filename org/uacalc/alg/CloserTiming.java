@@ -65,7 +65,7 @@ public class CloserTiming {
     pass++;
     appsNeeded = countFuncApplications(lastPassSize, currPassSize);
     System.out.println("pass " + pass + ", funcAppsNeeded: " + appsNeeded);
-    report.setTimeNext("");
+    if (report != null) report.setTimeNext("");
     //appsSoFar = 0;
     //System.out.println("time for pass: " + (long)(appsNeeded * msPerApp));
   }
