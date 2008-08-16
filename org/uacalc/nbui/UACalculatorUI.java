@@ -134,7 +134,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         msgTextField = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        BuiltInAlgs = new javax.swing.JMenuItem();
+        builtInAlgsMI = new javax.swing.JMenuItem();
         newMI = new javax.swing.JMenuItem();
         openMI = new javax.swing.JMenuItem();
         saveMI = new javax.swing.JMenuItem();
@@ -547,7 +547,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(520, Short.MAX_VALUE))
+                .addContainerGap(516, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -783,14 +783,15 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        BuiltInAlgs.setText("Built In Algs");
-        BuiltInAlgs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
-        BuiltInAlgs.addActionListener(new java.awt.event.ActionListener() {
+        builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        builtInAlgsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
+        builtInAlgsMI.setText("Built In Algs");
+        builtInAlgsMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuiltInAlgsActionPerformed(evt);
+                builtInAlgsMIActionPerformed(evt);
             }
         });
-        fileMenu.add(BuiltInAlgs);
+        fileMenu.add(builtInAlgsMI);
 
         newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         newMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
@@ -987,14 +988,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(msgTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -1110,9 +1111,9 @@ private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
   getDrawingController().drawAlg();
 }//GEN-LAST:event_drawAlgMIActionPerformed
 
-private void BuiltInAlgsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuiltInAlgsActionPerformed
+private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_builtInAlgsMIActionPerformed
   getMainController().loadBuiltIn();
-}//GEN-LAST:event_BuiltInAlgsActionPerformed
+}//GEN-LAST:event_builtInAlgsMIActionPerformed
 
   
   /**
@@ -1127,12 +1128,12 @@ private void BuiltInAlgsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem BuiltInAlgs;
     private javax.swing.JButton addOpButton;
     private javax.swing.JMenuItem algFileMI;
     private javax.swing.JTable algListTable;
     private javax.swing.JTextField algNameTextField;
     private javax.swing.JPanel algebrasPanel;
+    private javax.swing.JMenuItem builtInAlgsMI;
     private javax.swing.JButton cancelCompButton;
     private javax.swing.JTextField cardTextField;
     private javax.swing.JButton clearLogButton;
