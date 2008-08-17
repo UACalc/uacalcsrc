@@ -62,6 +62,7 @@ public class MainController {
     subController = new SubController(uacalcUI, propertyChangeSupport);
     drawingController = new DrawingController(uacalcUI, propertyChangeSupport);
     setupAlgTable();
+    setTitle();
   }
   
   private void setupAlgTable() {
@@ -333,10 +334,10 @@ public class MainController {
   public GUIAlgebra addAlgebra(GUIAlgebra gAlg, boolean makeCurrent) {
     final int index = getAlgebraList().size();
     getAlgebraList().add(gAlg, makeCurrent);
-    scrollToBottom(uacalcUI.getAlgListTable());
     // Note: the revalidate, repaint is the key
     if (makeCurrent) uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
     uacalcUI.getAlgListTable().revalidate();
+    scrollToBottom(uacalcUI.getAlgListTable());
     uacalcUI.getAlgListTable().repaint();
     return gAlg;
   }

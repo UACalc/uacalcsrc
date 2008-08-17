@@ -41,8 +41,8 @@ public class ComputationsController {
     col.setPreferredWidth(40);
     col.setMinWidth(30);
     col = tasksTable.getColumnModel().getColumn(1);
-    col.setPreferredWidth(300);
-    col.setMinWidth(240);
+    col.setPreferredWidth(200);
+    col.setMinWidth(140);
     col = tasksTable.getColumnModel().getColumn(2);
     col.setPreferredWidth(50);
     col.setMinWidth(40);
@@ -63,8 +63,6 @@ public class ComputationsController {
     col.setMinWidth(100);
     tasksTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
-        final String cancel = "Cancel";
-        final String del = "Delete";
         int index = tasksTable.getSelectedRow();
         if (index >= 0) {
           taskTableModel.setCurrentTask(index);
@@ -78,16 +76,21 @@ public class ComputationsController {
           uacalcUI.getResultTable().setModel(termTableModels.get(index));
           setResultTableColWidths();
           uacalcUI.getResultTextField().setText(termTableModels.get(index).getDescription());
-          if (taskTableModel.getCurrentTask().getStatus() == BackgroundTask.Status.RUNNING) {
-            uacalcUI.getCancelCompButton().setText(cancel);
-          }
-          else uacalcUI.getCancelCompButton().setText(del);
+          resetCancelDelButton();
           uacalcUI.repaint();
         }
-        // TODO: do something
       }
     });
-  }  
+  }
+  
+  private void resetCancelDelButton() {
+    final String cancel = "Cancel";
+    final String del = "Delete";
+    if (taskTableModel.getCurrentTask().getStatus() == BackgroundTask.Status.RUNNING) {
+      uacalcUI.getCancelCompButton().setText(cancel);
+    }
+    else uacalcUI.getCancelCompButton().setText(del);
+  }
   
   private void setupResultTable() {
     final JTable resultTable = uacalcUI.getResultTable();
@@ -156,12 +159,14 @@ public class ComputationsController {
         ttm.fireTableDataChanged(); // this may be unnecessary
         setupResultTable();
       }
+      resetCancelDelButton();
       uacalcUI.repaint();
     }
   }
   
   private void addTask(BackgroundTask<?> task) {
     taskTableModel.addTask(task);
+    resetCancelDelButton();
     uacalcUI.getLogTextArea().setText(null);
     // 2 is the computations tab index.
     final int comTabIndex = 2;
@@ -210,6 +215,7 @@ public class ComputationsController {
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
+        resetCancelDelButton();
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient menory)");

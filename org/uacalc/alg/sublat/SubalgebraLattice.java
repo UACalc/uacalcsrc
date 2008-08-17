@@ -466,7 +466,6 @@ public class SubalgebraLattice implements Lattice {
         int gvalue = g.intValueAt(empty);
         if (homo.containsKey(fvalue)) {
           if (!homo.get(fvalue).equals(gvalue)) {
-            System.out.println("map inconsistent on constant" + f.symbol());
             return false;
           }
         }
