@@ -117,7 +117,6 @@ public class UACalculatorUI extends javax.swing.JFrame {
         logTextArea = new javax.swing.JTextArea();
         conPanel = new javax.swing.JPanel();
         conLeftPanel = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox();
         conMainPanel = new javax.swing.JPanel();
         conEltsPanel = new javax.swing.JPanel();
         subPanel = new javax.swing.JPanel();
@@ -568,23 +567,15 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         tabbedPane.addTab("Computations", computationsPanel);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout conLeftPanelLayout = new javax.swing.GroupLayout(conLeftPanel);
         conLeftPanel.setLayout(conLeftPanelLayout);
         conLeftPanelLayout.setHorizontalGroup(
             conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(conLeftPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox1, 0, 168, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 192, Short.MAX_VALUE)
         );
         conLeftPanelLayout.setVerticalGroup(
             conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(conLeftPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(497, Short.MAX_VALUE))
+            .addGap(0, 536, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout conMainPanelLayout = new javax.swing.GroupLayout(conMainPanel);
@@ -1161,7 +1152,6 @@ private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem freeAlgMI;
     private javax.swing.JCheckBox idempotentCB;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
