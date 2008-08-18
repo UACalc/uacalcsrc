@@ -82,7 +82,20 @@
 
   <target name="dist" depends="dist-jar,compile-dist-work"/>
 
+  <target name="dist-small" depends="dist-jar"/>
+
   <target name="dist-signed" depends="dist-jar-signed,compile-dist-work"/>
+
+  <target name="dist-nb" depends="dist-jar-nb"/>
+
+  <target name="dist-jar-nb" depends="clean,dist-files,compile-dist-src">
+    <mkdir dir="${dist.dir}/lib"/>
+    <delete file="${class.dir}/org/uacalc/nbui/UACalculatorUI.class"/>
+    <jar jarfile="${dist.dir}/lib/uacalc.jar" 
+         manifest="${manifest.file}"
+         basedir="${class.dir}"/>
+  </target>
+
 
   <target name="dist-jar-signed" depends="clean,dist-files,compile-dist-src">
     <!-- Create the distribution directory -->
