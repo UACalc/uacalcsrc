@@ -47,6 +47,8 @@ public class ConController {
   
   public void setTable() {
     uacalcUI.getConMainPanel().removeAll();
+    uacalcUI.getConMainPanel().revalidate();
+    uacalcUI.repaint();
   }
   
   private void setupButtons() {
