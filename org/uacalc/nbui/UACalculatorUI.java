@@ -117,6 +117,8 @@ public class UACalculatorUI extends javax.swing.JFrame {
         logTextArea = new javax.swing.JTextArea();
         conPanel = new javax.swing.JPanel();
         conLeftPanel = new javax.swing.JPanel();
+        conDiagButton = new javax.swing.JButton();
+        conTableButton = new javax.swing.JButton();
         conMainPanel = new javax.swing.JPanel();
         subPanel = new javax.swing.JPanel();
         subLeftPanel = new javax.swing.JPanel();
@@ -415,7 +417,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
         currentAlgPanelLayout.setVerticalGroup(
             currentAlgPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
+            .addGap(0, 477, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout algebrasPanelLayout = new javax.swing.GroupLayout(algebrasPanel);
@@ -475,7 +477,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(resultDescLabel))
                     .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
             .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPaneLayout.createSequentialGroup()
                     .addGap(33, 33, 33)
@@ -543,7 +545,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(518, Short.MAX_VALUE))
+                .addContainerGap(512, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -564,22 +566,46 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         tabbedPane.addTab("Computations", computationsPanel);
 
+        conDiagButton.setText("Diagram");
+        conDiagButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conDiagButtonActionPerformed(evt);
+            }
+        });
+
+        conTableButton.setText("Table");
+        conTableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conTableButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout conLeftPanelLayout = new javax.swing.GroupLayout(conLeftPanel);
         conLeftPanel.setLayout(conLeftPanelLayout);
         conLeftPanelLayout.setHorizontalGroup(
             conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 192, Short.MAX_VALUE)
+            .addGroup(conLeftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(conDiagButton)
+                .addGap(18, 18, 18)
+                .addComponent(conTableButton)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         conLeftPanelLayout.setVerticalGroup(
             conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 536, Short.MAX_VALUE)
+            .addGroup(conLeftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(conLeftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(conDiagButton)
+                    .addComponent(conTableButton))
+                .addContainerGap(495, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout conMainPanelLayout = new javax.swing.GroupLayout(conMainPanel);
         conMainPanel.setLayout(conMainPanelLayout);
         conMainPanelLayout.setHorizontalGroup(
             conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 672, Short.MAX_VALUE)
+            .addGap(0, 690, Short.MAX_VALUE)
         );
         conMainPanelLayout.setVerticalGroup(
             conMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -590,10 +616,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
         conPanel.setLayout(conPanelLayout);
         conPanelLayout.setHorizontalGroup(
             conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, conPanelLayout.createSequentialGroup()
+            .addGroup(conPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(conLeftPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(conMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -601,10 +627,10 @@ public class UACalculatorUI extends javax.swing.JFrame {
             conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(conPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(conPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(conMainPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(conLeftPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(conLeftPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         tabbedPane.addTab("Con", conPanel);
@@ -1058,6 +1084,14 @@ private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN
   getMainController().loadBuiltIn();
 }//GEN-LAST:event_builtInAlgsMIActionPerformed
 
+private void conDiagButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conDiagButtonActionPerformed
+  getConController().setDrawer();
+}//GEN-LAST:event_conDiagButtonActionPerformed
+
+private void conTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conTableButtonActionPerformed
+  getConController().setTable();
+}//GEN-LAST:event_conTableButtonActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1083,9 +1117,11 @@ private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JPanel computationsLogPane;
     private javax.swing.JPanel computationsPanel;
     private javax.swing.JTable computationsTable;
+    private javax.swing.JButton conDiagButton;
     private javax.swing.JPanel conLeftPanel;
     private javax.swing.JPanel conMainPanel;
     private javax.swing.JPanel conPanel;
+    private javax.swing.JButton conTableButton;
     private javax.swing.JPanel currentAlgPanel;
     private javax.swing.JComboBox defaultEltComboBox;
     private javax.swing.JButton delOpButton;
@@ -1351,6 +1387,14 @@ private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 
     public javax.swing.JPanel getConLeftPanel() {
         return conLeftPanel;
+    }
+
+    public javax.swing.JButton getConDiagButton() {
+        return conDiagButton;
+    }
+
+    public javax.swing.JButton getConTableButton() {
+        return conTableButton;
     }
   
 }
