@@ -35,6 +35,34 @@ public class ConController {
     });
     addPropertyChangeListener(cs);
     createPopupMenu();
+    //setupButtons();
+  }
+  
+  public void setDrawer() {
+    uacalcUI.getConMainPanel().removeAll();
+    uacalcUI.getConMainPanel().add(conLatDrawer, BorderLayout.CENTER);
+    uacalcUI.getConMainPanel().revalidate();
+    drawCon();
+  }
+  
+  public void setTable() {
+    uacalcUI.getConMainPanel().removeAll();
+  }
+  
+  private void setupButtons() {
+    uacalcUI.getConLeftPanel().setLayout(new GridLayout(1,2));
+    JButton diagBut = new JButton("Diagram");
+    JButton tableBut = new JButton("Table");
+    uacalcUI.getConLeftPanel().add(diagBut);
+    uacalcUI.getConLeftPanel().add(tableBut);
+    diagBut.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        uacalcUI.getConMainPanel().removeAll();
+        uacalcUI.getConMainPanel().add(conLatDrawer, BorderLayout.CENTER);
+        uacalcUI.getConMainPanel().revalidate();
+        drawCon();
+      }
+    });
   }
   
   private void addPropertyChangeListener(PropertyChangeSupport cs) {
