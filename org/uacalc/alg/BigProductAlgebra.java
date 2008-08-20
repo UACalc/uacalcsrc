@@ -171,7 +171,6 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
           // the product and return an IntArray.
           // does this need code for zeroary ops??
           public Object valueAt(List args) {
-            //List ans = new ArrayList();
             final int[] ans = new int[numberOfFactors];
             for (int j = 0; j < numberOfFactors; j++) {
               int index = 0;

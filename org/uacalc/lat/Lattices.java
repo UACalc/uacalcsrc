@@ -47,6 +47,110 @@ public class Lattices {
     return null;
   }
 
+  /**
+   * Make a lattice from a meet operation using Integers for labels.
+   * 
+   * @param name
+   * @param meet  a semilattice operations viewed as a meet
+   * @return      a BasicLattice mainly for drawing
+   */
+  public static BasicLattice latticeFromMeet(final String name, final Operation meet) {
+    final int s = meet.getSetSize();
+    final List<Integer> univ = new ArrayList<Integer>(s);
+    for (int i = 0; i < s; i++) {
+      univ.add(new Integer(i));
+    }
+    final List<List<Integer>> filters = new ArrayList<List<Integer>>(s);
+    for (int i = 0; i < s; i++) {
+      final List<Integer> filter = new ArrayList<Integer>();
+      for (int j = 0; j < s; j++) {
+        if (meet.intValueAt(new int[] {i, j}) == i) filter.add(new Integer(j)); 
+      }
+      filters.add(filter);
+    }
+    int maxCount = 0;
+    for (List<Integer> filter : filters) {
+      if (filter.size() == 1) {
+        maxCount++;
+        if (maxCount > 1) break;
+      }
+    }
+    if (maxCount > 1) {
+      univ.add(new Integer(-1));
+      final List<Integer> topFilter = new ArrayList<Integer>(1);
+      final Integer minusOne = new Integer(-1);
+      filters.add(topFilter);
+      for (List<Integer> filter : filters) {
+        filter.add(minusOne);
+      }
+    }
+    try {
+      org.latdraw.orderedset.OrderedSet poset =
+        org.latdraw.orderedset.OrderedSet.orderedSetFromFilters(name, 
+                                                                univ, filters);
+      return new BasicLattice(name, poset);
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
+  /**
+   * Make a lattice from a join operation using Integers for labels.
+   * 
+   * @param name
+   * @param join  a semilattice operations viewed as a join
+   * @return
+   */
+  public static BasicLattice latticeFromJoin(final String name, final Operation join) {
+    final int s = join.getSetSize();
+    final List<Integer> univ = new ArrayList<Integer>(s);
+    for (int i = 0; i < s; i++) {
+      univ.add(new Integer(i));
+    }
+    final List<List<Integer>> filters = new ArrayList<List<Integer>>(s);
+    for (int i = 0; i < s; i++) {
+      final List<Integer> filter = new ArrayList<Integer>();
+      for (int j = 0; j < s; j++) {
+        if (join.intValueAt(new int[] {i, j}) == j) filter.add(new Integer(j)); 
+      }
+      filters.add(filter);
+    }
+    boolean hasZero = false;
+    for (List<Integer> filter : filters) {
+      if (filter.size() == s) {
+        hasZero = true;
+        break;
+      }
+    }
+    if (!hasZero) {
+      univ.add(new Integer(-1));
+      final List<Integer> botFilter = new ArrayList<Integer>(univ);
+      filters.add(botFilter);
+    }
+    try {
+      org.latdraw.orderedset.OrderedSet poset =
+        org.latdraw.orderedset.OrderedSet.orderedSetFromFilters(name, 
+                                                                univ, filters);
+      return new BasicLattice(name, poset);
+    }
+    catch (org.latdraw.orderedset.NonOrderedSetException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
+  
+  /**
+   * These older versions where trying to display the elements 
+   * but were having problems.
+   * 
+   * @param name
+   * @param univ
+   * @param meet
+   * @return
+   */
   public static BasicLattice latticeFromMeet(final String name, 
                                              final List univ, 
                                              final Operation meet) {
@@ -91,6 +195,15 @@ public class Lattices {
     return null;
   }
 
+  /**
+   * These older versions where trying to display the elements 
+   * but were having problems.
+   * 
+   * @param name
+   * @param univ
+   * @param meet
+   * @return
+   */
   public static BasicLattice latticeFromJoin(final String name, final List univ, final Operation join) {
     final int s = univ.size();
     final List filters = new ArrayList(s);

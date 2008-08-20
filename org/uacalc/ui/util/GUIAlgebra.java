@@ -124,12 +124,12 @@ public class GUIAlgebra {
   private void makeLattices(boolean forceRemake) {
     if (forceRemake) semilatticeOps = null;
     List<Operation> ops = getSemilatticeOperataions();
+    System.out.println("number of semilat ops = " + ops.size());
     lats = new ArrayList<BasicLattice>(ops.size());
     for (Operation op : ops) {
-      List univ = new ArrayList(alg.universe());
+      //List univ = new ArrayList(alg.universe());
       BasicLattice lat = op.symbol().equals(OperationSymbol.JOIN) ? 
-          Lattices.latticeFromJoin("", univ, op) : Lattices.latticeFromMeet("", univ, op);
-      //if (op.symbol().equals(OperationSymbol.JOIN)) lat = Lattices.dual(lat);
+          Lattices.latticeFromJoin("", op) : Lattices.latticeFromMeet("", op);
       lats.add(lat);
     }
   }

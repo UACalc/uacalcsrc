@@ -40,7 +40,7 @@ public class LatDrawer extends JPanel {
   private org.latdraw.beans.DrawPanel drawPanel;
 
   private JPanel mainPanel;
-  private JPanel appPanel;
+  //private JPanel appPanel;
   private JToolBar toolBar;
 
   private UACalculatorUI uacalc;
@@ -297,8 +297,8 @@ public class LatDrawer extends JPanel {
     });
     
     toolBar = makeToolBar();
-    appPanel = new JPanel();
-    appPanel.setLayout(new BorderLayout());
+    //appPanel = new JPanel();
+    //appPanel.setLayout(new BorderLayout());
     mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout());
     mainPanel.add(drawPanel, BorderLayout.CENTER);

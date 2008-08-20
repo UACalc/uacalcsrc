@@ -50,15 +50,21 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
     final int k = superAlgebra.operations().size();
     operations = new ArrayList(k);
     for (int i = 0; i < k; i++) {
-      final Operation opx = (Operation)superAlgebra.operations().get(i);
+      final Operation opx = superAlgebra.operations().get(i);
       final int arity = opx.arity();
       Operation op = new AbstractOperation(opx.symbol(), size) {
           // this is not tested yet
           public Object valueAt(List args) {
+            //System.out.println("quot args " + args);
+            final int[] argsArr = new int[arity];
+            for (int i = 0 ; i < arity; i++) {
+              argsArr[i] = superAlgebra.elementIndex(args.get(i)); 
+            }
+            return superAlgebra.getElement(congruence.representative(opx.intValueAt(argsArr)));
             // maybe make a now Object to represent a/\theta!!!!!!!!!!
             // for now use the "representatives" 
-            return superAlgebra.getElement(congruence.representative(
-                            superAlgebra.elementIndex(opx.valueAt(args))));
+            //return superAlgebra.getElement(congruence.representative(
+            //                superAlgebra.elementIndex(opx.valueAt(args))));
           }
           Operation tableOp = null;
           public void makeTable() {
@@ -141,9 +147,13 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * Something that will print like a/\theta.
    */
   protected Set makeUniverse() {
-    final List<Integer> lst = new ArrayList<Integer>(size);
+    // this needs serious work: the "Set" consists of QuotientElement's
+    // but the Iterator gives Integers. Probably only the Iterator is 
+    // used right now (2008/08/19).
+    final List lst = new ArrayList(size);
     for (int i = 0; i < size; i++) {
-      lst.add(new Integer(representatives[i]));
+      //lst.add(new Integer(representatives[i]));
+      lst.add(superAlgebra().getElement(representatives[i]));
     }
     return new AbstractSet() {
         public int size() { return size; }
@@ -160,14 +170,14 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
         }
         // should check if each has an iterator and make one
         public Iterator iterator() {
-          //List<Integer> lst = new ArrayList<Integer>(size);
-          //for (int i = 0; i < size; i++) {
-          //  lst.add(new Integer(representatives[i]));
-          //}
           return lst.iterator();
           //throw new UnsupportedOperationException();
         }
       };
+  }
+  
+  public Set universe() {
+    return universe;
   }
   
   public void convertToDefaultValueOps() {

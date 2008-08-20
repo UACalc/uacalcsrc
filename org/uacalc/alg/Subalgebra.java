@@ -96,7 +96,15 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
       Operation op = new AbstractOperation(opx.symbol(), size) {
           // this is not tested yet
           public Object valueAt(List args) {
-            return opx.valueAt(args);
+            //System.out.println("sub args " + args);
+            final int[] argsArr = new int[arity];
+            for (int i = 0 ; i < arity; i++) {
+              argsArr[i] = superAlgebra.elementIndex(args.get(i)); 
+            }
+            return superAlgebra.getElement(opx.intValueAt(argsArr));
+            //return superAlgebra.getElement(index(
+            //    superAlgebra.elementIndex(opx.valueAt(args))));
+            //return opx.valueAt(args);
           }
           Operation tableOp = null;
           public void makeTable() {
@@ -162,11 +170,13 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
   public List getUniverseList() { return null; }
   public Map getUniverseOrder() { return null; }
 
+  public Set universe() { return universe  ; }
 
   protected Set makeUniverse() {
-    final List<Integer> lst = new ArrayList<Integer>(size);
+    final List lst = new ArrayList(size);
     for (int i = 0; i < size; i++) {
-      lst.add(new Integer(univArray[i]));
+      //lst.add(new Integer(univArray[i]));
+      lst.add(getElement(i));
     }
     return new AbstractSet() {
         public int size() { return size; }
