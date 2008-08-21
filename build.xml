@@ -90,8 +90,11 @@
 
   <target name="dist-jar-nb" depends="clean,dist-files,compile-dist-src">
     <mkdir dir="${dist.dir}/lib"/>
-    <delete file="${class.dir}/org/uacalc/nbui/UACalculatorUI.class"/>
     <jar jarfile="${dist.dir}/lib/uacalc.jar" 
+         manifest="${manifest.file}"
+         basedir="${class.dir}"/>
+    <delete file="${class.dir}/org/uacalc/nbui/UACalculatorUI.class"/>
+    <jar jarfile="${dist.dir}/lib/uacalc-nb.jar" 
          manifest="${manifest.file}"
          basedir="${class.dir}"/>
   </target>
