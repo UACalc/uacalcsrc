@@ -54,6 +54,7 @@ public class CongruenceLattice implements Lattice {
   private int numOps;
   
   public static final int MAX_DRAWABLE_SIZE = 100;
+  public static final int MAX_DRAWABLE_INPUT_SIZE = 2500;
   private boolean nonDrawable = false;
 
   private Partition zeroCong;
@@ -170,10 +171,14 @@ public class CongruenceLattice implements Lattice {
     if (!isDrawable()) return null;
     return getBasicLattice().getDiagram();
   }
-
+  
   public List<Partition> principals() {
+    return principals(null);
+  }
+
+  public List<Partition> principals(ProgressReport report) {
     if (!principalsMade) {
-      makePrincipals();
+      makePrincipals(report);
       principalsMade = true;
     }
     return principalCongruences;
@@ -182,9 +187,20 @@ public class CongruenceLattice implements Lattice {
   public int cardinality() {
     return universe().size();
   }
-
+  
+  public int inputSize() {
+    final int card = cardinality();
+    if (card < 0) return -1;
+    return similarityType().inputSize(card);
+  }
+  
   public Set<Partition> universe() {
-    if (universe == null) makeUniverse();
+    return universe(null);
+  }
+  
+
+  public Set<Partition> universe(ProgressReport report) {
+    if (universe == null) makeUniverse(report);
     return universe;
   }
 
@@ -205,12 +221,19 @@ public class CongruenceLattice implements Lattice {
   public void setName(String v) {
     throw new UnsupportedOperationException();
   }
+  
+  public boolean joinIrreduciblesFound() {
+    return joinIrreducibles != null;
+  }
 
+  public List<Partition> joinIrreducibles() {
+    return joinIrreducibles(null);
+  }
   /**
    * A list of the join irreducibles; constructed if necessary.
    */
-  public List<Partition> joinIrreducibles() {
-    if (joinIrreducibles == null) makeJoinIrreducibles();
+  public List<Partition> joinIrreducibles(ProgressReport report) {
+    if (joinIrreducibles == null) makeJoinIrreducibles(report);
     return joinIrreducibles;
   }
 
@@ -292,8 +315,8 @@ public class CongruenceLattice implements Lattice {
   // congruence of that.
   //public CongruenceLattice con() { return null; }
 
-  public void makePrincipals() {
-    if (monitoring()) monitor.printStart("finding principal congruences of " 
+  public void makePrincipals(ProgressReport report) {
+    if (report != null) report.addStartLine("finding principal congruences of " 
                                                         + getAlgebra().getName());
     HashMap<Partition,Partition> pcIdMap = new HashMap<Partition,Partition>();  // to keep equal congruences identical
     principalCongruences = new ArrayList<Partition>();
@@ -302,24 +325,25 @@ public class CongruenceLattice implements Lattice {
     principalCongruencesRep = new HashMap<Partition,IntArray>();
     for (int i = 0; i < algSize - 1; i++) {
       for (int j = i + 1; j < algSize; j++) {
+        if (Thread.currentThread().isInterrupted()) {
+          if (report != null) report.addEndingLine("cancelled ...");
+          return;
+        }
         Partition partCong = makeCg(i, j);
         if (pcIdMap.get(partCong) == null) {
           pcIdMap.put(partCong, partCong);
           principalCongruences.add(partCong);
           principalCongruencesRep.put(partCong, new IntArray(new int[] {i, j}));
+          if (report != null) report.setSize(principalCongruences.size());
         }
         else {
-          partCong = (Partition)pcIdMap.get(partCong);
+          partCong = pcIdMap.get(partCong);
         }
-        principalCongruencesLookup.put(new IntArray(new int[] {i, j}),
-				       partCong);
-	//if( !principalCongruences.contains(partCong)) {
-        //  principalCongruences.add(partCong);
-        //}
+        principalCongruencesLookup.put(new IntArray(new int[] {i, j}), partCong);
       }
     }
     sortByRank(principalCongruences);
-    if (monitoring()) monitor.printEnd("principal congruences of " 
+    if (report != null) report.addEndingLine("principal congruences of " 
                + getAlgebra().getName() + ": size = " + principalCongruences.size());
   }
 
@@ -363,8 +387,16 @@ public class CongruenceLattice implements Lattice {
   }
 */
   
+  public void makeUniverse(ProgressReport report) {
+    makeUniverse(-1, report);
+  }
+  
+  public void makeUniverse(int size) {
+    makeUniverse(size, null);
+  }
+  
   public void makeUniverse() {
-    makeUniverse(-1);
+    makeUniverse(-1, null);
   }
   
   /**
@@ -372,11 +404,12 @@ public class CongruenceLattice implements Lattice {
    * calculation starts over. We might change that if there is enough
    * demand.
    */
-  public void makeUniverse(int maxSize) {
+  public void makeUniverse(int maxSize, ProgressReport report) {
     final boolean stopIfBig = maxSize > 0 ? true : false;
-    if (monitoring()) monitor.printStart("finding the universe of Con(" 
+    
+    if (report != null) report.addStartLine("finding the universe of Con(" 
                                                      + getAlgebra().getName() + ")");
-    List<Partition> univ = new ArrayList<Partition>(joinIrreducibles());
+    List<Partition> univ = new ArrayList<Partition>(joinIrreducibles(report));
     HashSet<Partition> hash = new HashSet<Partition>(joinIrreducibles());
     sizeComputed = univ.size();
     makeUniverseK = 0;
@@ -388,15 +421,16 @@ public class CongruenceLattice implements Lattice {
       k++;
       System.out.println("k = " + k);
       if (Thread.currentThread().isInterrupted()) {
-        if (monitoring()) {
-            monitor.printlnToLog("Cancelled (" + univ.size() + " elements so far)");
-            return;
+        if (report != null) {
+          report.addEndingLine("Cancelled (" + univ.size() + " elements so far)");
+          return;
         }
       }
       else {
-        if (monitoring()) {
-            monitor.setPassFieldText(k + " of " + size);
-            monitor.setSizeFieldText("" + univ.size());
+        if (report != null) {
+          report.addLine("pass " + k + " of " + size + ", size: " + univ.size());
+          report.setPass(k);
+          report.setSize(univ.size());
         }
       }
       makeUniverseK++;
@@ -432,10 +466,10 @@ public class CongruenceLattice implements Lattice {
     }
     hash.add(zeroCong);
     univ.add(0, zeroCong);
-    if (monitoring()) monitor.setSizeFieldText("" + univ.size());
+    if (report != null) report.setSize(univ.size());
     universe = new LinkedHashSet<Partition>(univ);
     congruencesHash = hash;
-    if (monitoring()) monitor.printEnd("|Con(" + getAlgebra().getName() + ")| = " + univ.size());
+    if (report != null) report.addEndingLine("|Con(" + getAlgebra().getName() + ")| = " + univ.size());
   }
 
   /**
@@ -467,15 +501,13 @@ public class CongruenceLattice implements Lattice {
 //      It's almost free. And I need to have them without calculating
 //      the conlat.
 // since principalCongruences is sorted by rank, this will be too.
-  public void makeJoinIrreducibles() {
-    if (monitoring()) monitor.printStart("finding join irreducible congruences of " + getAlgebra().getName());
+  public void makeJoinIrreducibles(ProgressReport report) {
+    if (report != null) report.addStartLine("finding join irreducible congruences of " + getAlgebra().getName());
     joinIrreducibles = new ArrayList<Partition>();
     lowerCoverOfJIs = new HashMap<Partition,Partition>();
-    for (Iterator it = principals().iterator(); it.hasNext(); ) {
-      Partition part = (Partition)it.next();
+    for (Partition part : principals(report)) {
       Partition join = zero();
-      for (Iterator it2 = principals().iterator(); it2.hasNext(); ) {
-        Partition part2 = (Partition)it2.next();
+      for (Partition part2 : principals(report)) {
         if (part2.leq(part) && (!part.equals(part2))) {
           join = join.join(part2);
         }
@@ -484,9 +516,14 @@ public class CongruenceLattice implements Lattice {
       if (!part.equals(join)) {
         joinIrreducibles.add(part);
         lowerCoverOfJIs.put(part, join);
+        if (report != null) report.setSize(joinIrreducibles.size());
+      }
+      if (Thread.currentThread().isInterrupted()) {
+        if (report != null) report.addEndingLine("cancelled ...");
+        return;
       }
     }
-    if (monitoring()) monitor.printEnd("join irreducible congruences of " 
+    if (report != null) report.printEnd("join irreducible congruences of " 
         + getAlgebra().getName() + ": size = " + joinIrreducibles.size());
   }
   
@@ -638,22 +675,29 @@ public class CongruenceLattice implements Lattice {
     if (typeSet == null) makeTypeSet();
     return typeSet;
   }
-
+  
   private void makeTypeSet() {
-    if (monitoring()) monitor.printStart("computing TCT types ...");
+    makeTypeSet(null);
+  }
+
+  private void makeTypeSet(ProgressReport report) {
+    if (report != null) report.addStartLine("computing TCT types ...");
     typeSet = new HashSet<Integer>();
     for (Iterator<Partition> it = joinIrreducibles().iterator(); it.hasNext(); ) {
       typeSet.add(new Integer(type(it.next())));
     }
-    if (monitoring()) monitor.printEnd("TCT types = " + typeSet);
+    if (report != null) report.addEndingLine("TCT types = " + typeSet);
   }
 
+  public int type(Partition beta) {
+    return typeJI(beta, null);
+  }
 
   /**
    * Find the type of beta over its lower cover. Beta is assumed
    * to be join irreducible.
    */
-  public int type(Partition beta) {
+  public int typeJI(Partition beta, ProgressReport report) {
     //if (monitoring()) monitor.printStart("computing TCT type of " + beta);
     Subtrace st = getJoinIrredToSubtraceMap().get(beta);
     if (st == null) {
@@ -667,14 +711,18 @@ public class CongruenceLattice implements Lattice {
     //if (monitoring()) monitor.printEnd("TCT type of " + beta + " is " + st.type());
     return st.type();
   }
+  
+  public int type(Partition beta, Partition alpha) {
+    return type(beta, alpha, null);
+  }
 
   /**
    * Find the type for beta over alpha. Beta is assumed
    * to cover alpha.
    */
-  public int type(Partition beta, Partition alpha) {
+  public int type(Partition beta, Partition alpha, ProgressReport report) {
     final Partition gamma = findJoinIrred(alpha, beta);
-    return type(gamma);
+    return typeJI(gamma, report);
   }
 
   /**

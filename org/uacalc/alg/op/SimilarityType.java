@@ -3,6 +3,7 @@
 package org.uacalc.alg.op;
 
 import java.util.*;
+import java.math.*;
 
 /**
  * A set of OperationSymbol's.
@@ -32,14 +33,28 @@ public class SimilarityType {
     this.operationSymbols = opSyms;
   }
 
-/*
-  public SimilarityType(List opSyms) {
-    this.operationSymbols = opSyms;
-  }
-*/
-
   public List<OperationSymbol> getOperationSymbols() { 
     return operationSymbols; 
+  }
+  
+  /**
+   * This calculates the (computer) input size. If it exceeds 
+   * the max int value, it returns -1; If there are no operations
+   * it returns the algebra size.
+   * 
+   * @param algSize the algebra size
+   * @return the input size if it is an int
+   */
+  public int inputSize(int algSize) {
+    if (operationSymbols.size() == 0) return algSize;
+    BigInteger inputSize = BigInteger.ZERO;
+    final BigInteger algebraSize = BigInteger.valueOf((long)algSize);
+    final BigInteger max = BigInteger.valueOf((long)Integer.MAX_VALUE);
+    for (OperationSymbol sym : operationSymbols) {
+      inputSize = inputSize.add(algebraSize.pow(sym.arity()));
+      if (inputSize.compareTo(max) >= 0) return -1;
+    }
+    return (int)inputSize.longValue();
   }
 
   public String toString() {

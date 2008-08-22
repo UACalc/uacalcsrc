@@ -155,6 +155,12 @@ public class GeneralAlgebra implements Algebra {
     return -1;
   }
   
+  public int inputSize() {
+    final int card = cardinality();
+    if (card < 0) return -1;
+    return similarityType().inputSize(card);
+  }
+  
   public Set universe() {
     return universe;
   }

@@ -114,6 +114,12 @@ public class SubalgebraLattice implements Lattice {
     return universe().size();
   }
   
+  public int inputSize() {
+    final int card = cardinality();
+    if (card < 0) return -1;
+    return similarityType().inputSize(card);
+  }
+  
   public boolean isSmallerThan(int size) {
     if (universe != null) return cardinality() < size;
     if (joinIrreducibles().size() >= size) return false;

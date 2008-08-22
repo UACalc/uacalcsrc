@@ -105,6 +105,25 @@ public class ConController {
         return;
       }
       final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
+      final int inputSize = alg.inputSize();
+      if (!alg.con().universeFound()) { 
+        if (inputSize < 0 || inputSize > CongruenceLattice.MAX_DRAWABLE_INPUT_SIZE) {
+          uacalcUI.getMainController().beep();
+          uacalcUI.getMainController().setUserMessage(
+              "The input size (" + inputSize + ") is pretty big; " +
+              "putting this in a background task.", false);
+          // for testing;
+          final int comTabIndex = 2;
+          if (uacalcUI.getTabbedPane().getSelectedIndex() != comTabIndex) {
+            uacalcUI.getTabbedPane().setSelectedIndex(comTabIndex);
+            uacalcUI.repaint();
+          }
+          uacalcUI.getComputationsController().setupCongruencesTask();
+
+          getConLatDrawer().setBasicLattice(null);
+          return;
+        }
+      }
       if (!alg.con().isDrawable()) {
         uacalcUI.getMainController().beep();
         uacalcUI.getMainController().setUserWarning(

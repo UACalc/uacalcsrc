@@ -71,6 +71,14 @@ public interface Algebra {
    * @return  the cardinality if possible, else a negative int
    */
   public int cardinality();
+  
+  /**
+   * The sum of the cardinality of the algebra raised
+   * to the arity of the operations.
+   * 
+   * @return the inputSize or -1 if it is not an int
+   */
+  public int inputSize();
 
   public boolean isUnary();
 
