@@ -816,6 +816,7 @@ public class ComputationsController {
         report.addStartLine(desc);
         report.setDescription(desc);
         java.util.Set<Partition> ans = alg.con().universe(report);
+        alg.con().typeSet(report);  // make want to make this optional
         return ans;
       }
       public void onCompletion(java.util.List<Partition> congs, Throwable exception, 

@@ -670,9 +670,13 @@ public class CongruenceLattice implements Lattice {
     }
     return new BasicPartition(part);
   }
-
+  
   public Set typeSet() {
-    if (typeSet == null) makeTypeSet();
+    return typeSet(null);
+  }
+
+  public Set typeSet(ProgressReport report) {
+    if (typeSet == null) makeTypeSet(report);
     return typeSet;
   }
   
@@ -683,8 +687,8 @@ public class CongruenceLattice implements Lattice {
   private void makeTypeSet(ProgressReport report) {
     if (report != null) report.addStartLine("computing TCT types ...");
     typeSet = new HashSet<Integer>();
-    for (Iterator<Partition> it = joinIrreducibles().iterator(); it.hasNext(); ) {
-      typeSet.add(new Integer(type(it.next())));
+    for (Partition part : joinIrreducibles(report)) {
+      typeSet.add(new Integer(typeJI(part, report)));
     }
     if (report != null) report.addEndingLine("TCT types = " + typeSet);
   }
@@ -698,17 +702,20 @@ public class CongruenceLattice implements Lattice {
    * to be join irreducible.
    */
   public int typeJI(Partition beta, ProgressReport report) {
-    //if (monitoring()) monitor.printStart("computing TCT type of " + beta);
     Subtrace st = getJoinIrredToSubtraceMap().get(beta);
     if (st == null) {
-      if (monitoring()) monitor.printStart("computing TCT type of " + beta);
+      // we may only need one report line.
+      if (report != null) report.addStartLine("finding a subtrace of " + beta);
       st = subtrace(beta);
-      if (st.type() <= 0) getTypeFinder().findType(st);
-      if (monitoring()) monitor.printEnd("TCT type of " + beta + " is " + st.type());
+      //if (st.type() <= 0) getTypeFinder().findType(st);
+      if (report != null) report.addEndingLine("subtrace " + beta + " is " + st.toString(true));
     }
-    //final Subtrace st = subtrace(beta);
-    if (st.type() <= 0) getTypeFinder().findType(st);
-    //if (monitoring()) monitor.printEnd("TCT type of " + beta + " is " + st.type());
+    if (st.type() <= 0) {
+      if (report != null) report.addStartLine("computing TCT type of " 
+          + beta + ", subtrace: " + st.toString(true));
+      getTypeFinder().findType(st);
+      if (report != null) report.addEndingLine("TCT type is " + st.type());
+    }
     return st.type();
   }
   
