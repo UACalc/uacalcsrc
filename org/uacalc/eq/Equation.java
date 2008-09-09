@@ -43,8 +43,9 @@ public class Equation {
   }
   
   /**
-   * Check if this equation hold in alg, returning a place where it fails
-   * or null if it is true.
+   * Check if this equation holds in <code>alg</code>, 
+   * returning a place where it fails
+   * or <code>null</code> if it is true.
    * 
    * @param alg
    * @return
@@ -57,8 +58,9 @@ public class Equation {
   }
   
   /**
-   * Check if this equation hold in alg, returning the map from variables to ints
-   * where it fails or null if it is true.
+   * Check if this equation holds in <code>alg</code>, 
+   * returning the map from variables to ints
+   * where it fails or <code>null</code> if it is true.
    * 
    * @param alg
    * @return
