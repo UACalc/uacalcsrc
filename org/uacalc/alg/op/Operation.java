@@ -75,6 +75,14 @@ public interface Operation {
    */
   public int[] getTable();
   
+  /**
+   * A table with default and random values filled in or null
+   * if that is not possible.
+   * 
+   * @return
+   */
+  public int[] getTotalTable();
+  
   public boolean isTableBased();
 
   /**

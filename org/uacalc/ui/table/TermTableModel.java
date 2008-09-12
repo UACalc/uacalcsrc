@@ -3,12 +3,14 @@ package org.uacalc.ui.table;
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
 import org.uacalc.terms.*;
+import org.uacalc.util.*;
 
 public class TermTableModel extends AbstractTableModel {
   
   //private List<Term> terms = new ArrayList<Term>();
   private Term[] terms;
   private Variable[] variables;
+  private List<IntArray> universeList;
   private String description;
 
   public TermTableModel() {
@@ -42,6 +44,13 @@ public class TermTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
   
+  public void setUniverse(List<IntArray> univ) {
+    System.out.println("setUniverse called");
+    universeList = univ;
+    System.out.println("col count = " + getColumnCount());
+    fireTableDataChanged();
+  }
+  
   /**
    * For the description text field (not really part of the table model).
    */
@@ -58,7 +67,8 @@ public class TermTableModel extends AbstractTableModel {
   public Variable[] getVariables() { return variables; }
   
   public int getColumnCount() {
-    return 2;
+    if (universeList == null  || universeList.size() == 0) return 2;
+    return 2 + universeList.get(0).size();
   }
   
 /*    This causes an error 
@@ -74,12 +84,14 @@ public class TermTableModel extends AbstractTableModel {
   
   public String getColumnName(int col) {
     if (col == 0) return "Index";
-    return "Term";
+    if (col == 1) return "Term";
+    return String.valueOf(col - 2);
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
     if (columnIndex == 0) return rowIndex;
-    return terms[rowIndex];
+    if (columnIndex == 1) return terms[rowIndex];
+    return universeList.get(rowIndex).get(columnIndex - 2);
   }
 
   public boolean isCellEditable(int row, int col) { return false; }

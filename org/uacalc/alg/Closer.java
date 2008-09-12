@@ -423,7 +423,7 @@ if (false) {
           ? new Operation[k] : null;
     for (int i = 0; i < k; i++) {
       Operation op = ops.get(i);
-      opTables[i] = op.getTable();
+      opTables[i] = op.getTotalTable();
       arities[i] = op.arity();
       symbols[i] = op.symbol();
       if (imgOps != null) imgOps[i] = imageAlgebra.getOperation(op.symbol());

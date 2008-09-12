@@ -123,6 +123,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                   boolean decompose, 
                                   ProgressReport report) {
     super(name);
+    setThinGenerators(thinGens);
+    setDecompose(decompose);
     //System.out.println("progressReport in Free is " + report);
     String line = "constructing free algebra on " + numberOfGens 
                    + " generators over " + alg.getName();
@@ -207,6 +209,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     else System.out.println(line);
   }
   
+  // TODO: this should be moved to SubProductAlgebra !!!!!!!!!
   private void setupGensAndProductAlg(final SmallAlgebra alg, 
                                       final int numberOfGens, 
                                       final boolean decompose,

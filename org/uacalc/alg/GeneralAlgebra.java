@@ -24,7 +24,7 @@ import org.uacalc.ui.tm.ProgressReport;
 public class GeneralAlgebra implements Algebra {
 
   protected List<Operation> operations;
-  protected Map operationsMap;
+  protected Map<OperationSymbol,Operation> operationsMap;
   protected SimilarityType similarityType;
   protected Set universe;
   //private final int[] similarityType;
@@ -81,8 +81,9 @@ public class GeneralAlgebra implements Algebra {
     this.operations = ops;
   }
 
-  public Map getOperationsMap() {
-    if (operationsMap == null) operationsMap = Operations.makeMap(operations);
+  public Map<OperationSymbol,Operation> getOperationsMap() {
+    
+    if (operationsMap == null) operationsMap = Operations.makeMap(operations());
     return operationsMap;
   }
 
@@ -91,7 +92,8 @@ public class GeneralAlgebra implements Algebra {
   }
 
   public Operation getOperation(OperationSymbol sym) {
-    return (Operation)getOperationsMap().get(sym);
+    System.out.println("op map = " + getOperationsMap());
+    return getOperationsMap().get(sym);
   }
 
   public boolean isUnary() {

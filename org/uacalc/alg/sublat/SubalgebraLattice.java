@@ -533,6 +533,14 @@ public class SubalgebraLattice implements Lattice {
         final int arity = f.arity();
         if (arity == 0) continue;  // constansts are already there
         Operation g = B.getOperation(f.symbol());
+        System.out.println("g = " + g + ", B = " + B + ", B class " + B.getClass()
+            + ", f.symbol " + f.symbol());
+        //for (Operation op : B.operations()) {
+        //  System.out.println("B op symbol is " + op.symbol());
+        //}
+        System.out.println("here");
+        System.out.println("f  g have the same symbol: " + (f.symbol().equals(B.operations().get(0).symbol())));
+        System.out.println("f.getClass() = " + f.getClass());
         int[] argIndeces = new int[arity];
         for (int i = 0; i < arity - 1; i++) {
           argIndeces[i] = 0;

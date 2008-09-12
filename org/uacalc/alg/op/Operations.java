@@ -212,10 +212,9 @@ logger.setLevel(Level.FINE);
   /**
    * This makes a hash map from the operation symbols to the operations.
    */
-  public static Map makeMap(List ops) {
-    final HashMap map = new HashMap(ops.size());
-    for (Iterator it = ops.iterator(); it.hasNext(); ) {
-      final Operation op = (Operation)it.next();
+  public static Map<OperationSymbol,Operation> makeMap(List<Operation> ops) {
+    final HashMap<OperationSymbol,Operation> map = new HashMap<OperationSymbol,Operation>(ops.size());
+    for (Operation op : ops) {
       map.put(op.symbol(), op);
     }
     return map;

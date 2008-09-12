@@ -118,6 +118,8 @@ public abstract class AbstractOperation implements Operation {
   public void makeTable() {}
 
   public int[] getTable() { return valueTable; }
+  
+  public int[] getTotalTable() { return valueTable; }
 
 
 }

@@ -75,6 +75,7 @@ public class ComputationsController {
             uacalcUI.getLogTextArea().append(s + nl);
           }
           uacalcUI.getResultTable().setModel(termTableModels.get(index));
+          //System.out.println("setResultsTable called from setUpTaskTable");
           setResultTableColWidths();
           uacalcUI.getResultTextField().setText(termTableModels.get(index).getDescription());
           resetCancelDelButton();
@@ -116,10 +117,11 @@ public class ComputationsController {
   private void setResultTableColWidths() {
     final JTable resultTable = uacalcUI.getResultTable();
     final int cols = resultTable.getColumnCount();
+    //System.out.println("col count xxx = " + cols);
     for (int i = 0; i < cols; i++) {
       TableColumn col = resultTable.getColumnModel().getColumn(i);
       if (i == 0) col.setPreferredWidth(60);
-      else if (i == 1) col.setPreferredWidth(900);
+      else if (i == 1) col.setPreferredWidth(700);  // was 900; TODO: fix
       else col.setPreferredWidth(40);
     }
   }
@@ -201,6 +203,7 @@ public class ComputationsController {
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
+    //System.out.println("first");
     setResultTableColWidths();
     final String desc = "F(" + gens + ") over " + gAlg.toString(true);
     ttm.setDescription(desc);
@@ -226,12 +229,26 @@ public class ComputationsController {
         if (!cancelled) {
           report.addEndingLine("Done computing the free algebra");
           report.setTimeLeft("");
+          System.out.println("ttm = " + ttm);
+          System.out.println("fr = " + fr);
+          System.out.println("exception: " + exception);
+          if (exception != null) exception.printStackTrace();
           ttm.setTerms(fr.getTerms());
           ttm.setVariables(fr.getVariables());
+          if (!decompose) {
+            ttm.setUniverse(fr.getUniverseList());
+          }
           MainController mc = uacalcUI.getMainController();
           //mc.setCurrentAlgebra(mc.addAlgebra(fr));
           mc.addAlgebra(fr, false);
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if (getCurrentTask() == this) {
+            uacalcUI.getResultTable().setModel(ttm);
+            ttm.fireTableStructureChanged();
+            ttm.fireTableDataChanged();
+            //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
+            setResultTableColWidths();
+            uacalcUI.repaint();
+          }
         }
         else {
           report.addEndingLine("Computation cancelled");

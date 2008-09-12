@@ -33,7 +33,7 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
   /**
    * If a universe is not given, use Integers.
    */
-  public BasicAlgebra(String name, final int s, List operations) {
+  public BasicAlgebra(String name, final int s, List<Operation> operations) {
     super(name, new AbstractSet() {
       public boolean contains(Object obj) {
         try {
@@ -73,7 +73,7 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * This constructs a SmallAlgebra from a ordered list of elements. The
    * operations need to have intValueAt(int[]) implemented.
    */
-  public BasicAlgebra(String name, List univ, List operations) {
+  public BasicAlgebra(String name, List univ, List<Operation> operations) {
 // not tested yet
     super(name, new HashSet(univ));
     this.universeList = univ;
@@ -82,9 +82,8 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
     for (Iterator it = univ.iterator(); it.hasNext() ; k++) {
       universeOrder.put(it.next(), new Integer(k));
     }
-    List ops = new ArrayList(operations.size());
-    for (Iterator it = operations.iterator(); it.hasNext() ; ) {
-      final Operation op = (Operation)it.next();
+    List<Operation> ops = new ArrayList<Operation>(operations.size());
+    for (final Operation op : operations) {
       ops.add(new AbstractOperation(op.symbol(), univ.size()) {
          public int intValueAt(int[] args) {
            return op.intValueAt(args);

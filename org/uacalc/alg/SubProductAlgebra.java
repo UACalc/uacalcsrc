@@ -29,6 +29,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   protected BigProductAlgebra productAlgebra;
   protected List<IntArray> gens; // a list of IntArray's
   protected List<IntArray> univ; // a list of IntArray's
+  protected boolean thinGenerators;
+  protected boolean decompose;
 
   // a map from IntArray's of elements of the 
   protected HashMap<IntArray,Integer> univHashMap; 
@@ -125,6 +127,24 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     }
     return transpose;
   }
+  
+  public void setThinGenerators(boolean v) { thinGenerators = v; }
+  
+  /**
+   * 
+   * @param v
+   * @return   true if the generators have been thinned
+   */
+  public boolean getThinGenerators(boolean v) { return thinGenerators; }
+  
+  public void setDecompose(boolean v) { decompose = v; }
+  
+  /**
+   * 
+   * @param v
+   * @return   true if the generators have been decomposed and thinned
+   */
+  public boolean getDecompose(boolean v) { return decompose; }
 
   public List<IntArray> thinGenerators() {
     List<IntArray> projs = transpose(gens);

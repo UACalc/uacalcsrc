@@ -195,6 +195,25 @@ public class OperationWithDefaultValue extends AbstractOperation {
   }
   
   /**
+   * Get the table with the default and random values filled in.
+   * 
+   * @return  the filled in table or null
+   */
+  public int[] getTotalTable() {
+    final int n = valueTable.length;
+    final int[] vt = new int[n];
+    for (int i = 0; i < n; i++) {
+      if (valueTable[i] == -1) {
+        if (defaultValue == -1) return null;
+        if (defaultValue == -2) vt[i] = getRandomValueTable()[i];
+        else vt[i] = defaultValue;
+      }
+      else vt[i] = valueTable[i];
+    }
+    return vt;
+  }
+  
+  /**
    * Make an operation with the default value filled in.
    * 
    * @return an operation or null if the defaultValue is -1 and there is a -1 in the table
