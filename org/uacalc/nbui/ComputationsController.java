@@ -3,10 +3,10 @@ package org.uacalc.nbui;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
+//import java.awt.*;
+//import java.awt.event.*;
 import java.util.*;
-import java.io.*;
+//import java.io.*;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
