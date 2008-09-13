@@ -291,6 +291,10 @@ public class ComputationsController {
     return getNumberDialog(1, "Number of generators?",  "Free Algebra");
   }
   
+  public int getGensDialog() {
+    return getNumberDialog(1, "Number of generators?",  "Free Algebra");
+  }
+  
   private String getThinGens() {
     String opt = (String)JOptionPane.showInputDialog(uacalcUI,
         "Choose one",
@@ -298,6 +302,91 @@ public class ComputationsController {
         JOptionPane.QUESTION_MESSAGE, null,
         thinningOptions, thinningOptions[2]);    
     return opt;
+  }
+  
+  public void setupSubPowerTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int pow = getNumberDialog(1, "What is the power?", "Power");
+    final int gens = getNumberDialog(1, "Number of generators?", "Generators");
+    if (!(gens > 0)  || !(pow > 0)) return;
+    System.out.println("gens = " + gens);
+    //final String thinOpt = getThinGens();
+    //if (thinOpt == null) return;
+    //int optIndex = 0;
+    //if (thinOpt == thinningOptions[1]) optIndex = 1;
+    //if (thinOpt == thinningOptions[2]) optIndex = 2;
+    //final boolean decompose = optIndex == 2 ? true : false;
+    //final boolean thin = decompose || optIndex == 1;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    //System.out.println("first");
+    setResultTableColWidths();
+    final String desc =  "" + gens + " generated sub of " + gAlg.toString(true) + " ^" + pow;
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<SubProductAlgebra>  subPowerTask = new BackgroundTask<SubProductAlgebra>(report) {
+      public SubProductAlgebra compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Computing the free algebra");
+        report.setDescription(desc);
+        SubProductAlgebra ans = new SubProductAlgebra("sub of " + alg.getName() + "^" + pow, null, null, true);  // here
+        return ans;
+      }
+      public void onCompletion(SubProductAlgebra fr, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        resetCancelDelButton();
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient menory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done computing the free algebra");
+          report.setTimeLeft("");
+          System.out.println("ttm = " + ttm);
+          System.out.println("fr = " + fr);
+          System.out.println("exception: " + exception);
+          if (exception != null) exception.printStackTrace();
+          ttm.setTerms(fr.getTerms());
+          ttm.setVariables(fr.getVariables());
+          //if (!decompose) {
+          //  ttm.setUniverse(fr.getUniverseList());
+          //}
+          MainController mc = uacalcUI.getMainController();
+          //mc.setCurrentAlgebra(mc.addAlgebra(fr));
+          mc.addAlgebra(fr, false);
+          if (getCurrentTask() == this) {
+            uacalcUI.getResultTable().setModel(ttm);
+            ttm.fireTableStructureChanged();
+            ttm.fireTableDataChanged();
+            //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
+            setResultTableColWidths();
+            uacalcUI.repaint();
+          }
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(subPowerTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(subPowerTask);
   }
   
   public void setupJonssonTermsTask() {
