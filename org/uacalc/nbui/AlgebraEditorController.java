@@ -24,8 +24,7 @@ public class AlgebraEditorController {
   //private java.util.List<OperationWithDefaultValue> opList;
   private java.util.List<Operation> opList;
   private java.util.List<OperationSymbol> symbolList;
-  private java.util.Map<OperationSymbol,Operation> opMap 
-       = new HashMap<OperationSymbol,Operation>();
+  private java.util.Map<OperationSymbol,Operation> opMap;
   private final Random random = RandomGenerator.getRandom();
   
   
@@ -250,6 +249,7 @@ public class AlgebraEditorController {
     OperationWithDefaultValue op = 
           new OperationWithDefaultValue(sym, algSize);
     opList.add(op);
+    opMap.put(op.symbol(), op);
     symbolList.add(sym);
     opMap.put(sym, op);
     uacalc.getOpsComboBox().addItem(makeOpItem(sym));
@@ -450,6 +450,7 @@ public class AlgebraEditorController {
     }
     table.setVisible(true);
     opList = alg.operations();
+    opMap = alg.getOperationsMap();
     //java.util.List<Operation> ops = alg.operations();
     //symbolList = new ArrayList<OperationSymbol>();
     //opMap = new HashMap<OperationSymbol,Operation>();

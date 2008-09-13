@@ -310,8 +310,11 @@ public class CongruenceLattice implements Lattice {
 
   // TODO fix this
   public Operation getOperation(OperationSymbol sym) { return null; }
+  
+  //TODO fix this
+  public Map<OperationSymbol,Operation> getOperationsMap() { return null; }
 
-  // we weill try to convert this to a SmallLattice and find the 
+  // we will try to convert this to a SmallLattice and find the 
   // congruence of that.
   //public CongruenceLattice con() { return null; }
 

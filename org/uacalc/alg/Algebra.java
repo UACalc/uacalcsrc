@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 
 import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.alg.op.Operation;
@@ -95,6 +96,8 @@ public interface Algebra {
    * the symbol is not part of the similarityType.
    */
   public Operation getOperation(OperationSymbol sym);
+  
+  public Map<OperationSymbol,Operation> getOperationsMap();
 
   //public CongruenceLattice con();  // only for SmallAlgebra's
 
