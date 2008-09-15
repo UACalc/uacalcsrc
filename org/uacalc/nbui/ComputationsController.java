@@ -222,7 +222,7 @@ public class ComputationsController {
         resetCancelDelButton();
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -351,7 +351,7 @@ public class ComputationsController {
         resetCancelDelButton();
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -453,7 +453,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -520,7 +520,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -583,7 +583,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -645,7 +645,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -708,7 +708,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -771,7 +771,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -836,7 +836,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
@@ -900,7 +900,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           //updateResultTextField(this, ttm);
           return;
         }
@@ -962,7 +962,7 @@ public class ComputationsController {
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           //updateResultTextField(this, ttm);
           return;
         }
@@ -1057,7 +1057,7 @@ public class ComputationsController {
         }
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
-          ttm.setDescription(desc + " (insufficient menory)");
+          ttm.setDescription(desc + " (insufficient memory)");
           updateResultTextField(this, ttm);
           return;
         }
