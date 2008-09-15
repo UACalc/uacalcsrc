@@ -316,9 +316,12 @@ public class ComputationsController {
     }
     final SmallAlgebra alg = gAlg.getAlgebra();
     final int pow = getNumberDialog(1, "What is the power?", "Power");
-    final int gens = getNumberDialog(1, "Number of generators?", "Generators");
-    if (!(gens > 0)  || !(pow > 0)) return;
-    System.out.println("gens = " + gens);
+    if (pow == -1) return;
+    final int numGens = getNumberDialog(1, "Number of generators?", "Generators");
+    if (!(numGens > 0)  || !(pow > 0)) return;
+    //System.out.println("gens = " + numGens + ", pow = " + pow);
+    final BigProductAlgebra prodAlg = new BigProductAlgebra(alg, pow);
+    final List<IntArray> gens = getSubPowerGens(pow, numGens);
     //final String thinOpt = getThinGens();
     //if (thinOpt == null) return;
     //int optIndex = 0;
@@ -331,18 +334,19 @@ public class ComputationsController {
     termTableModels.add(ttm);
     //System.out.println("first");
     setResultTableColWidths();
-    final String desc =  "" + gens + " generated sub of " + gAlg.toString(true) + " ^" + pow;
+    final String desc =  "" + numGens + " generated sub of " + gAlg.toString(true) + " ^" + pow;
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<SubProductAlgebra>  subPowerTask = new BackgroundTask<SubProductAlgebra>(report) {
       public SubProductAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
-        report.addStartLine("Computing the free algebra");
+        report.addStartLine("Computing a sub power of " + gAlg.toString(true));
         report.setDescription(desc);
-        SubProductAlgebra ans = new SubProductAlgebra("sub of " + alg.getName() + "^" + pow, null, null, true);  // here
+        SubProductAlgebra ans = new SubProductAlgebra("sub of " + alg.getName() + "^" + pow, prodAlg, 
+            gens, true, report);  // here
         return ans;
       }
-      public void onCompletion(SubProductAlgebra fr, Throwable exception, 
+      public void onCompletion(SubProductAlgebra subPow, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         resetCancelDelButton();
         if (outOfMemory) {
@@ -352,20 +356,18 @@ public class ComputationsController {
           return;
         }
         if (!cancelled) {
-          report.addEndingLine("Done computing the free algebra");
+          report.addEndingLine("Done computing sub power of " + gAlg.toString(true));
           report.setTimeLeft("");
           System.out.println("ttm = " + ttm);
-          System.out.println("fr = " + fr);
+          System.out.println("subPow = " + subPow);
           System.out.println("exception: " + exception);
           if (exception != null) exception.printStackTrace();
-          ttm.setTerms(fr.getTerms());
-          ttm.setVariables(fr.getVariables());
-          //if (!decompose) {
-          //  ttm.setUniverse(fr.getUniverseList());
-          //}
+          ttm.setTerms(subPow.getTerms());
+          ttm.setVariables(subPow.getVariables());
+          ttm.setUniverse(subPow.getUniverseList());
           MainController mc = uacalcUI.getMainController();
           //mc.setCurrentAlgebra(mc.addAlgebra(fr));
-          mc.addAlgebra(fr, false);
+          mc.addAlgebra(subPow, false);
           if (getCurrentTask() == this) {
             uacalcUI.getResultTable().setModel(ttm);
             ttm.fireTableStructureChanged();
@@ -387,6 +389,37 @@ public class ComputationsController {
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(subPowerTask);
+  }
+  
+  private List<IntArray> getSubPowerGens(int pow, int numGens) {
+    final int n = pow * numGens;
+    String numStr = JOptionPane.showInputDialog(uacalcUI, 
+        "Input the generating vectors, one after another, " + n + " numbers" , 
+        "Generators", JOptionPane.QUESTION_MESSAGE);
+    String[] numsArr = numStr.split("\\s+");
+    if (numsArr.length != n) return null;
+    int[] nums = new int[n];
+    try {
+      for (int i = 0; i < n; i++) {
+        nums[i] = Integer.parseInt(numsArr[i]);
+      }
+    }
+    catch (NumberFormatException e) {
+      return null;
+    }
+    List<IntArray> ans = new ArrayList<IntArray>(numGens);
+    for (int i = 0; i < numGens; i++) {
+      int[] raw = new int[pow];
+      ans.add(new IntArray(raw));
+      for (int j = 0; j < pow; j++) {
+        raw[j] = nums[i*pow + j];
+      }
+    }
+    //IntArray ia0 = new IntArray(new int[] {0, 1, 0, 1});
+    //IntArray ia1 = new IntArray(new int[] {0, 0, 1, 1});
+    //ans.add(ia0);
+    //ans.add(ia1);
+    return ans;
   }
   
   public void setupJonssonTermsTask() {

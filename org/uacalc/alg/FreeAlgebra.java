@@ -182,24 +182,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
     }
 
-    termMap = new HashMap<IntArray,Term>();
-    if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
-    if (gens.size() == 2) {
-      termMap.put(gens.get(0), Variable.x);
-      termMap.put(gens.get(1), Variable.y);
-    }
-    if (gens.size() == 3) {
-      termMap.put(gens.get(0), Variable.x);
-      termMap.put(gens.get(1), Variable.y);
-      termMap.put(gens.get(2), Variable.z);
-    }
-    int k = 0;
-    if (gens.size() > 3) {
-      for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
-        Variable var = new VariableImp("x_" + k);
-        termMap.put(it.next(), var);
-      }
-    }
+    termMap = setupGensToVarsMap(gens);
     if (makeUniverse) makeUniverse(report);
     if (size == 0) line = "made the free algebra, but haven't found the elements.";
     else line = "done constructing free algebra, size = " + size;

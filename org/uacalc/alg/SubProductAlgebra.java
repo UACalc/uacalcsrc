@@ -5,6 +5,7 @@ package org.uacalc.alg;
 import java.util.*;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
+import org.uacalc.ui.tm.ProgressReport;
 
 import org.uacalc.alg.SmallAlgebra.AlgebraType;
 import org.uacalc.alg.conlat.*;
@@ -58,19 +59,24 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     this(name, prod, gens, false);
   }
 
+  public SubProductAlgebra(String name, BigProductAlgebra prod, 
+      List<IntArray> gens, boolean findTerms) {
+    this(name, prod, gens, findTerms, null);
+    
+  }
+  
   /**
    * Construct the direct product of a List of SmallAlgebra's.
    * gens is a list of IntArray's.
    */
   public SubProductAlgebra(String name, BigProductAlgebra prod, 
-                           List<IntArray> gens, boolean findTerms) {
+                           List<IntArray> gens, boolean findTerms, ProgressReport report) {
     super(name);
     productAlgebra = prod;
     // some gyrations to eliminate duplicates but keep the order the same.
     HashSet<IntArray> hs = new HashSet<IntArray>(gens.size());
     List<IntArray> gens2 = new ArrayList<IntArray>(gens.size());
-    for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); ) {
-      IntArray elem = it.next();
+    for (IntArray elem : gens) {
       if (!hs.contains(elem)) {
         hs.add(elem);
         gens2.add(elem);
@@ -79,14 +85,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     gens = gens2;
     this.gens = gens2;
     if (findTerms) {
-      termMap = new HashMap<IntArray,Term>();
-      int k = 0;
-      for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
-        IntArray gen = it.next();
-        Variable var = new VariableImp("x_" + k);
-        termMap.put(gen, var);
-      }
-      univ = productAlgebra.sgClose(gens, termMap);
+      termMap = setupGensToVarsMap(gens);
+      univ = productAlgebra.sgClose(gens, termMap, null, report);
       terms = new Term[univ.size()];
       for (int i = 0; i < univ.size(); i++) {
         terms[i] = termMap.get(univ.get(i));
@@ -230,6 +230,29 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
       ((Operation)it.next()).makeTable();
     }
   }
+  
+  protected Map<IntArray,Term> setupGensToVarsMap(List<IntArray> gens) {
+    Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
+    if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
+    if (gens.size() == 2) {
+      termMap.put(gens.get(0), Variable.x);
+      termMap.put(gens.get(1), Variable.y);
+    }
+    if (gens.size() == 3) {
+      termMap.put(gens.get(0), Variable.x);
+      termMap.put(gens.get(1), Variable.y);
+      termMap.put(gens.get(2), Variable.z);
+    }
+    int k = 0;
+    if (gens.size() > 3) {
+      for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
+        Variable var = new VariableImp("x_" + k);
+        termMap.put(it.next(), var);
+      }
+    }
+    return termMap;
+  }
+  
 
   public Term[] getTerms() {
     return terms;

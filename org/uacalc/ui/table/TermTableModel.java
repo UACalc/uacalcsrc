@@ -45,9 +45,11 @@ public class TermTableModel extends AbstractTableModel {
   }
   
   public void setUniverse(List<IntArray> univ) {
-    System.out.println("setUniverse called");
+    //System.out.println("setUniverse called");
     universeList = univ;
-    System.out.println("col count = " + getColumnCount());
+    //System.out.println("col count = " + getColumnCount());
+    //System.out.println("univ size = " + univ.size());
+    //System.out.println("univ: " + univ);
     fireTableDataChanged();
   }
   
