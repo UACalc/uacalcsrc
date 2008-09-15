@@ -144,6 +144,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         tasksMenu = new javax.swing.JMenu();
         freeAlgMI = new javax.swing.JMenuItem();
         membershipTestMI = new javax.swing.JMenuItem();
+        subPowerMI = new javax.swing.JMenuItem();
         maltsevMenu = new javax.swing.JMenu();
         distributivityMI = new javax.swing.JMenuItem();
         modularityMI = new javax.swing.JMenuItem();
@@ -545,7 +546,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(512, Short.MAX_VALUE))
+                .addContainerGap(508, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -846,6 +847,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         tasksMenu.add(membershipTestMI);
 
+        subPowerMI.setText("Sub Power");
+        subPowerMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subPowerMIActionPerformed(evt);
+            }
+        });
+        tasksMenu.add(subPowerMI);
+
         jMenuBar1.add(tasksMenu);
 
         maltsevMenu.setText("Maltsev");
@@ -1092,6 +1101,10 @@ private void conTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
   getConController().setTable();
 }//GEN-LAST:event_conTableButtonActionPerformed
 
+private void subPowerMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subPowerMIActionPerformed
+  getComputationsController().setupSubPowerTask();
+}//GEN-LAST:event_subPowerMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1187,6 +1200,7 @@ private void conTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JPanel subLeftPanel;
     private javax.swing.JPanel subMainPanel;
     private javax.swing.JPanel subPanel;
+    private javax.swing.JMenuItem subPowerMI;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JMenu tasksMenu;
     private javax.swing.JMenuItem uaFileMI;
