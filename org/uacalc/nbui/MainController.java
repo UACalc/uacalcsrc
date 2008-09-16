@@ -825,6 +825,19 @@ public class MainController {
     delayer.start();
   }
 
+  public static void tableToCSV(String desc, TableModel model, PrintStream out) {
+    final String comma = ",";
+    final String eol = "\n";
+    out.println("," + desc + comma);
+    out.println(",,");
+    for (int i = 0; i < model.getRowCount(); i++) {
+      for (int j = 0 ; j < model.getColumnCount(); j++) {
+        out.print(model.getValueAt(i, j));
+        out.println(comma);
+      }
+      out.println(eol);
+    }
+  }
 
 
   
