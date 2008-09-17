@@ -577,7 +577,55 @@ public class MainController {
     return false;
   }
 
+  public boolean writeCVSTable() {
+    TermTableModel model = uacalcUI.getComputationsController().getCurrentTermTableModel();
+    if (model == null) return false;
+    String desc = model.getDescription();  
+    String pwd = getPrefs().get("algebraDir", null);
+    if (pwd == null) pwd = System.getProperty("user.dir");
+    JFileChooser fileChooser;
+    if (pwd != null)
+      fileChooser = new JFileChooser(pwd);
+    else
+      fileChooser = new JFileChooser();
 
+    fileChooser.addChoosableFileFilter(
+        new ExtFileFilter("csv files (*.csv)",  ExtFileFilter.CSV_EXT));
+         
+    int option = fileChooser.showSaveDialog(uacalcUI);
+    if (option == JFileChooser.APPROVE_OPTION) {
+      // save original user selection
+      File selectedFile = fileChooser.getSelectedFile();
+      File f = selectedFile;
+      try {
+        String extension = ExtFileFilter.getExtension(f);
+        String ext = ExtFileFilter.CSV_EXT;
+        if (extension == null || !extension.equals(ext)) {
+          f = new File(f.getCanonicalPath() + "." + ext);
+        }
+        if (f.exists()) {
+          Object[] options = { "Yes", "No" };
+          int n = JOptionPane.showOptionDialog(uacalcUI,
+              "The file already exists. Overwrite?", "File Exists",
+              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+              options, options[0]);
+          if (n == JOptionPane.NO_OPTION) {
+            return false;
+          }
+        }
+        tableToCSV(desc, model, new PrintStream(f));
+        setTimedMessage("" + f + " saved");
+        return true;
+      }
+      catch (IOException e) {
+        beep();
+        return false;
+      }
+    }
+    return false;
+  }
+
+  
   public void open() {
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");

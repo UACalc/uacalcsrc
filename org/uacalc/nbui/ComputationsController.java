@@ -85,6 +85,12 @@ public class ComputationsController {
     });
   }
   
+  public TermTableModel getCurrentTermTableModel() {
+    int index = uacalcUI.getComputationsTable().getSelectedRow();
+    if (index < 0) return null;
+    return termTableModels.get(index);
+  }
+  
   private void resetCancelDelButton() {
     final String cancel = "Cancel";
     final String del = "Delete";
@@ -322,6 +328,10 @@ public class ComputationsController {
     //System.out.println("gens = " + numGens + ", pow = " + pow);
     final BigProductAlgebra prodAlg = new BigProductAlgebra(alg, pow);
     final List<IntArray> gens = getSubPowerGens(pow, numGens);
+    if (gens == null) {
+      uacalcUI.getMainController().beep();
+      return;
+    }
     //final String thinOpt = getThinGens();
     //if (thinOpt == null) return;
     //int optIndex = 0;
@@ -396,6 +406,7 @@ public class ComputationsController {
     String numStr = JOptionPane.showInputDialog(uacalcUI, 
         "Input the generating vectors, one after another, " + n + " numbers" , 
         "Generators", JOptionPane.QUESTION_MESSAGE);
+    if (numStr == null) return null;  // user cancelled
     String[] numsArr = numStr.split("\\s+");
     if (numsArr.length != n) return null;
     int[] nums = new int[n];
@@ -405,6 +416,8 @@ public class ComputationsController {
       }
     }
     catch (NumberFormatException e) {
+      uacalcUI.getMainController().beep();
+      uacalcUI.getMainController().setUserWarning("bad number", false);
       return null;
     }
     List<IntArray> ans = new ArrayList<IntArray>(numGens);
