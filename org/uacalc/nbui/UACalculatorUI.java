@@ -139,6 +139,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         saveAsMenu = new javax.swing.JMenu();
         uaFileMI = new javax.swing.JMenuItem();
         algFileMI = new javax.swing.JMenuItem();
+        tableCVSMI = new javax.swing.JMenuItem();
         quitMI = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         tasksMenu = new javax.swing.JMenu();
@@ -546,7 +547,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(508, Short.MAX_VALUE))
+                .addContainerGap(498, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -814,6 +815,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         saveAsMenu.add(algFileMI);
 
         fileMenu.add(saveAsMenu);
+
+        tableCVSMI.setText("Save Results Table");
+        tableCVSMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tableCVSMIActionPerformed(evt);
+            }
+        });
+        fileMenu.add(tableCVSMI);
 
         quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         quitMI.setText("Quit");
@@ -1105,6 +1114,10 @@ private void subPowerMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
   getComputationsController().setupSubPowerTask();
 }//GEN-LAST:event_subPowerMIActionPerformed
 
+private void tableCVSMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCVSMIActionPerformed
+  getMainController().writeCVSTable();
+}//GEN-LAST:event_tableCVSMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1202,6 +1215,7 @@ private void subPowerMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel subPanel;
     private javax.swing.JMenuItem subPowerMI;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JMenuItem tableCVSMI;
     private javax.swing.JMenu tasksMenu;
     private javax.swing.JMenuItem uaFileMI;
     // End of variables declaration//GEN-END:variables
