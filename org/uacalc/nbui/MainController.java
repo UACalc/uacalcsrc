@@ -579,6 +579,7 @@ public class MainController {
 
   public boolean writeCVSTable() {
     TermTableModel model = uacalcUI.getComputationsController().getCurrentTermTableModel();
+    System.out.println("model = " + model);
     if (model == null) return false;
     String desc = model.getDescription();  
     String pwd = getPrefs().get("algebraDir", null);
@@ -880,10 +881,12 @@ public class MainController {
     out.println(",,");
     for (int i = 0; i < model.getRowCount(); i++) {
       for (int j = 0 ; j < model.getColumnCount(); j++) {
+        if (j == 1) out.print("\"");
         out.print(model.getValueAt(i, j));
-        out.println(comma);
+        if (j == 1) out.print("\"");
+        out.print(comma);
       }
-      out.println(eol);
+      out.print(eol);
     }
   }
 

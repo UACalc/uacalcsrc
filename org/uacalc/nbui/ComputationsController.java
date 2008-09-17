@@ -86,7 +86,9 @@ public class ComputationsController {
   }
   
   public TermTableModel getCurrentTermTableModel() {
-    int index = uacalcUI.getComputationsTable().getSelectedRow();
+    if (taskTableModel == null) return null;
+    int index = taskTableModel.index(taskTableModel.getCurrentTask());
+    //int index = uacalcUI.getComputationsTable().getSelectedRow();
     if (index < 0) return null;
     return termTableModels.get(index);
   }
@@ -404,7 +406,8 @@ public class ComputationsController {
   private List<IntArray> getSubPowerGens(int pow, int numGens) {
     final int n = pow * numGens;
     String numStr = JOptionPane.showInputDialog(uacalcUI, 
-        "Input the generating vectors, one after another, " + n + " numbers" , 
+        "<html>Input the generating vectors, one after another,<br> " 
+        + n + " numbers, each separated by a space.</html>", 
         "Generators", JOptionPane.QUESTION_MESSAGE);
     if (numStr == null) return null;  // user cancelled
     String[] numsArr = numStr.split("\\s+");
