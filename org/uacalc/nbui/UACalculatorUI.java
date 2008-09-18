@@ -479,7 +479,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(resultDescLabel))
                     .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(173, Short.MAX_VALUE))
             .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPaneLayout.createSequentialGroup()
                     .addGap(33, 33, 33)
@@ -816,6 +816,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         fileMenu.add(saveAsMenu);
 
+        tableCVSMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
         tableCVSMI.setText("Save Results Table");
         tableCVSMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
