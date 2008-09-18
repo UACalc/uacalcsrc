@@ -431,10 +431,6 @@ public class ComputationsController {
         raw[j] = nums[i*pow + j];
       }
     }
-    //IntArray ia0 = new IntArray(new int[] {0, 1, 0, 1});
-    //IntArray ia1 = new IntArray(new int[] {0, 0, 1, 1});
-    //ans.add(ia0);
-    //ans.add(ia1);
     return ans;
   }
   
