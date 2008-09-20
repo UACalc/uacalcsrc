@@ -92,7 +92,6 @@ public class GeneralAlgebra implements Algebra {
   }
 
   public Operation getOperation(OperationSymbol sym) {
-    System.out.println("op map = " + getOperationsMap());
     return getOperationsMap().get(sym);
   }
 
