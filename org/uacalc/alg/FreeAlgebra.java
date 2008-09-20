@@ -41,8 +41,18 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                  // univ to Integers (the index).
 */
 
+  
   /**
-   * Consturct a free algebra without giving it a name.
+   * This constructs a finitely presented algebra and it is only
+   * correct if the algebra is in a CD variety. Use with caution.
+   */
+  public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
+                     List<Equation> relations, ProgressReport report) {
+    this(alg, numberOfGens, true, true, true, relations, report);
+  }
+  
+  /**
+   * Construct a free algebra without giving it a name.
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens) {
     this(alg, numberOfGens, true);
@@ -53,7 +63,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    */
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, ProgressReport report) {
     this("F(" + numberOfGens + ") over " + alg.getName(),
-        alg, numberOfGens, true, true, true, report);
+        alg, numberOfGens, true, true, true, null, report);
   }
   
   
@@ -96,14 +106,15 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
       boolean makeUniverse, boolean thinGens, 
       ProgressReport report) {
-    this(name, alg, numberOfGens, makeUniverse, thinGens, false, report);
+    this(name, alg, numberOfGens, makeUniverse, thinGens, false, null, report);
   }
   
   public FreeAlgebra(SmallAlgebra alg, int numberOfGens, 
                      boolean makeUniverse, boolean thinGens, 
-                     boolean decompose, ProgressReport report) {
+                     boolean decompose, List<Equation> relations, 
+                     ProgressReport report) {
     this("F(" + numberOfGens + ") over " + alg.getName(), alg, numberOfGens,
-         makeUniverse, thinGens, decompose, report);
+         makeUniverse, thinGens, decompose, relations, report);
   }
   
   /**
@@ -120,7 +131,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    */
   public FreeAlgebra(String name, SmallAlgebra alg, int numberOfGens, 
                                   boolean makeUniverse, boolean thinGens, 
-                                  boolean decompose, 
+                                  boolean decompose, List<Equation> relations,
                                   ProgressReport report) {
     super(name);
     setThinGenerators(thinGens);
@@ -133,7 +144,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     else System.out.println(line);
     //decompose = true;
-    setupGensAndProductAlg(alg, numberOfGens, decompose, report);
+    setupGensAndProductAlg(alg, numberOfGens, decompose, relations, report);
     /*
     final int n = alg.cardinality();
     int s = 1;
@@ -196,12 +207,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   private void setupGensAndProductAlg(final SmallAlgebra alg, 
                                       final int numberOfGens, 
                                       final boolean decompose,
+                                      final List<Equation> relations,
                                       final ProgressReport report) {
     if (decompose) {
       if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
       final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
       final List<IntArray> projs = new ArrayList<IntArray>();
-      for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens)) {
+      for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens, relations)) {
         algs.add(algV.getAlgebra());
         projs.add(new IntArray(algV.getVector()));
       }
@@ -236,7 +248,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   }
   
   private List<AlgebraWithGeneratingVector> setupSIProjections(
-                          final SmallAlgebra alg, final int numberOfGens) {
+                          final SmallAlgebra alg, final int numberOfGens, List<Equation> relations) {
     final List<AlgebraWithGeneratingVector> ans = new ArrayList<AlgebraWithGeneratingVector>();
     final int n = alg.cardinality();
     final int[] vec = new int[numberOfGens];
@@ -244,7 +256,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       vec[i] = 0;
     }
     ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(vec, n-1);
-    List<AlgebraWithGeneratingVector> decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec);
+    List<AlgebraWithGeneratingVector> decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec, relations);
     for (AlgebraWithGeneratingVector a : decomp ) {
       ans.add(a);
     }
@@ -314,7 +326,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                                int[] bGens, ProgressReport report) {
     //FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
     // TODO: fix this, fix this fix this !!! make the decomp = true !!!!!!!!!
-    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, true, report);
+    FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, true, null, report);
     System.out.println("gens v length = " + F.generators().get(0).size());
     report.addLine("gens v length = " + F.generators().get(0).size());
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());

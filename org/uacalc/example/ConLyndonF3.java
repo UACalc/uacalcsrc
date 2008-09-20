@@ -20,7 +20,7 @@ public class ConLyndonF3 {
     
     SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile(alg0File);
     int numberOfGens = 4;
-    FreeAlgebra fr = new FreeAlgebra(alg0, numberOfGens, true, true, true, null);
+    FreeAlgebra fr = new FreeAlgebra(alg0, numberOfGens, true, true, true, null, null);
     CongruenceLattice con = fr.con();
     System.out.println("|F(" + numberOfGens + ")| = " + fr.cardinality());
     System.out.println("|Con(F(" + numberOfGens + "))| = " + con.cardinality());

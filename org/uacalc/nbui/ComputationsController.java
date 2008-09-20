@@ -222,7 +222,7 @@ public class ComputationsController {
         report.addStartLine("Computing the free algebra");
         report.setDescription(desc);
         FreeAlgebra freeAlg = new FreeAlgebra("F(" + gens + ") over " + alg.getName(),
-                                              alg, gens, true, thin, decompose, report);
+                                              alg, gens, true, thin, decompose, null, report);
         return freeAlg;
       }
       public void onCompletion(FreeAlgebra fr, Throwable exception, 
