@@ -222,12 +222,13 @@ public class Closer {
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
     int pass = 0;
-    CloserTiming timing = new CloserTiming(algebra, report);
+    CloserTiming timing = null; 
+    if (reportNotNull) timing = new CloserTiming(algebra, report);
     //int currPassSize = 0; // for time left
     //int lastPassSize = 0; // for time left
     //final int numberProjs = algebra.getNumberOfFactors(); // for time left
     while (closedMark < currentMark) {
-      timing.updatePass(ans.size());
+      if (reportNotNull) timing.updatePass(ans.size());
       //lastPassSize = currPassSize;
       //currPassSize = ans.size();
       //long funcAppsNeeded = countFuncApplications(lastPassSize, currPassSize);
@@ -282,12 +283,12 @@ public class Closer {
           //IntArray testV = new IntArray(test);
            
           //System.out.println("vRaw == test is " + v.equals(new IntArray(test)));
-          timing.incrementApps();
+          if (reportNotNull) timing.incrementApps();
           //appsSoFar = appsSoFar + numberProjs;
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
-            timing.incrementNextPassSize();
+            if (reportNotNull) timing.incrementNextPassSize();
             if (reportNotNull) report.setSize(ans.size());
             if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {

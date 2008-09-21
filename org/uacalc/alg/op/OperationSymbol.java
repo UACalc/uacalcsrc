@@ -68,11 +68,8 @@ public class OperationSymbol {
   }
 
   public boolean equals(Object obj) {
-    System.out.println("calling equals on " + this + " and " + obj);
     if (!(obj instanceof OperationSymbol)) return false;
     OperationSymbol sym = (OperationSymbol)obj;
-    System.out.println("sym.name() = " + sym.name());
-    System.out.println("sym.arity() = " + sym.arity());
     return name.equals(sym.name()) && arity == sym.arity();
   }
 

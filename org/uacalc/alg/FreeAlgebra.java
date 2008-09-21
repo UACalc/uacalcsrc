@@ -262,7 +262,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     }
     while (inc.increment()) {
       //System.out.println("vec = " + ArrayString.toString(vec));
-      decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec);
+      decomp = AlgebraWithGeneratingVector.siDecompose(alg, vec, relations);
       //System.out.println("decomp size = " + decomp.size());
       for (AlgebraWithGeneratingVector a : decomp) {
         boolean dumped = false;
