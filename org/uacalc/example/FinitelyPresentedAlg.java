@@ -35,24 +35,31 @@ public class FinitelyPresentedAlg {
   }
   static List<Term> xyList = new ArrayList<Term>();
   static List<Term> uvList = new ArrayList<Term>();
+  static List<Term> xzList = new ArrayList<Term>();
   static {
     xyList.add(Variable.x);
     xyList.add(Variable.y);
     uvList.add(vars5.get(3));
     uvList.add(vars5.get(4));
+    xzList.add(Variable.x);
+    xzList.add(Variable.z);
     
   }
   
   static Term xy = new NonVariableTerm(meet, xyList);
+  static Term xz = new NonVariableTerm(meet, xzList);
   static Term uv = new NonVariableTerm(meet, uvList);
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
 
     SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(algFile);
-    //relations.add(new Equation(Variable.x, xy, vars4));  // x < y on 4
+    //relations.add(new Equation(Variable.x, xy, vars4));  // x < y on 4  138 elements
+    
+    //relations.add(new Equation(Variable.x, xy, vars5)); // 2603 elements
+    //relations.add(new Equation(vars5.get(3), uv, vars5));
     
     relations.add(new Equation(Variable.x, xy, vars5));
-    relations.add(new Equation(vars5.get(3), uv, vars5));
+    relations.add(new Equation(Variable.x, xz, vars5));
     
     FreeAlgebra fr = new FreeAlgebra(alg, 5, relations, null);
     System.out.println("fr size = " + fr.cardinality());
