@@ -10,7 +10,9 @@ import org.uacalc.io.*;
 
 public class FinitelyPresentedAlg {
 
-  static String algFile = "/home/ralph/Java/Algebra/algebras/m3.ua";
+  static String m3File = "/home/ralph/Java/Algebra/algebras/m3.ua";
+  static String m4File = "/home/ralph/Java/Algebra/algebras/m4.ua";
+  static String twoFile = "/home/ralph/Java/Algebra/algebras/lat2.xml";
   static int numGens = 4;
   // This should be a generating set of alg1. Make it as small as possible.
   static OperationSymbol meet = OperationSymbol.MEET;
@@ -18,6 +20,22 @@ public class FinitelyPresentedAlg {
   static List<Variable> vars4 = new ArrayList<Variable>();
   static List<Variable> vars5;
   static List<Variable> vars6;
+
+  /**
+   * Make a relation u below v.
+   * 
+   * @param u
+   * @param v
+   * @param vars
+   * @return
+   */
+  static Equation makeOrderRelation(Variable u, Variable v, List<Variable> vars) {
+    List<Term> uvList = new ArrayList<Term>();
+    uvList.add(u);
+    uvList.add(v);
+    Term uv = new NonVariableTerm(meet, uvList);
+    return new Equation(u, uv, vars);
+  }
   
   static {
     vars4.add(Variable.x);
@@ -52,14 +70,15 @@ public class FinitelyPresentedAlg {
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
 
-    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(algFile);
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(m4File);
     //relations.add(new Equation(Variable.x, xy, vars4));  // x < y on 4  138 elements
     
     //relations.add(new Equation(Variable.x, xy, vars5)); // 2603 elements
     //relations.add(new Equation(vars5.get(3), uv, vars5));
     
-    relations.add(new Equation(Variable.x, xy, vars5));
-    relations.add(new Equation(Variable.x, xz, vars5));
+    relations.add(makeOrderRelation(Variable.x, Variable.y, vars5));
+    relations.add(makeOrderRelation(Variable.x, Variable.z, vars5));
+    relations.add(makeOrderRelation(Variable.x, vars5.get(3), vars5));
     
     FreeAlgebra fr = new FreeAlgebra(alg, 5, relations, null);
     System.out.println("fr size = " + fr.cardinality());
