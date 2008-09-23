@@ -33,7 +33,9 @@ public class Closer {
   List<IntArray> generators;
   Map<IntArray,Term> termMap; // initially a map from generators to variables.
   IntArray eltToFind;
-  List<IntArray> eltsToFind;
+  List<IntArray> eltsToFind;  // find all
+  Map<IntArray,Integer> indecesMapOfFoundElts;
+  final static Integer minusOne = new Integer(-1);
   SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
   Equation failingEquation = null; // a list of two terms
@@ -137,7 +139,13 @@ public class Closer {
   
   public List<IntArray> getElementsToFind() { return eltsToFind; }
   
-  public void setElementsToFind(List<IntArray> e) { eltsToFind = e; }
+  public void setElementsToFind(List<IntArray> e) {
+    eltsToFind = e;
+    indecesMapOfFoundElts = new HashMap<IntArray,Integer>(e.size());
+    for (IntArray ia : e) {
+      indecesMapOfFoundElts.put(ia, minusOne);
+    }
+  }
   
   //protected static ProgressReport monitor;
   
@@ -198,6 +206,8 @@ public class Closer {
     }
     
     if (report != null) report.addStartLine("subpower closing ...");
+    
+    int specialEtsFound = 0;
 
     final int numOfOps = algebra.operations().size();  
     List<Operation> imgOps = null;
@@ -212,6 +222,7 @@ public class Closer {
     final boolean reportNotNull = report == null ? false : true;
     final boolean imgAlgNull = imgOps == null ? true : false;
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
     final boolean operationNotNull = operation == null ? false : true;
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
@@ -335,6 +346,17 @@ public class Closer {
               if (reportNotNull) report.addEndingLine("closing done, found "
                                                + eltToFind + ", at " + ans.size());
               return ans;
+            }
+            if (eltsToFindNotNull  && indecesMapOfFoundElts.get(v).equals(minusOne)) {
+              final int index = ans.size() - 1;
+              indecesMapOfFoundElts.put(v, index);
+              specialEtsFound++;
+              if (reportNotNull) report.addLine("found " + v + ", at " + index);
+              if (specialEtsFound == eltsToFind.size()) {
+                if (reportNotNull) report.addEndingLine("closing done, found all "
+                    + eltsToFind.size() + " elems ");
+                return ans;
+              }
             }
           }
           else {

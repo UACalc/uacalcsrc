@@ -1175,6 +1175,10 @@ System.out.println("got to idempotent");
     }
     return null;
   }
+  
+  public List<Term> primalityTerms(SmallAlgebra alg, ProgressReport report) {
+    return null;
+  }
 
 
   public static void main(String[] args) {
