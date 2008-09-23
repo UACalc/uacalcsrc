@@ -76,7 +76,7 @@ public class FinitelyPresentedAlg {
     //relations.add(new Equation(Variable.x, xy, vars5)); // 2603 elements
     //relations.add(new Equation(vars5.get(3), uv, vars5));
     
-    relations.add(makeOrderRelation(Variable.x, Variable.y, vars5));
+    relations.add(makeOrderRelation(Variable.x, Variable.y, vars5)); // over M_4 it has 56956 elements
     relations.add(makeOrderRelation(Variable.x, Variable.z, vars5));
     relations.add(makeOrderRelation(Variable.x, vars5.get(3), vars5));
     
