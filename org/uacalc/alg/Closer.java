@@ -354,6 +354,7 @@ public class Closer {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
               specialEtsFound++;
+              System.out.println("found " + v);
               if (reportNotNull) report.addLine("found " + v + ", at " + index);
               if (specialEtsFound == eltsToFind.size()) {
                 if (reportNotNull) report.addEndingLine("closing done, found all "
