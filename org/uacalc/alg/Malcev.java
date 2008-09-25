@@ -1176,12 +1176,84 @@ System.out.println("got to idempotent");
     return null;
   }
   
-  public List<Term> primalityTerms(SmallAlgebra alg, ProgressReport report) {
+  /**
+   * This gives unary terms evaluating to the characteristic
+   * functions of the one element subsets of alg; a term which
+   * applied to these unit vectors gives the identity function; and
+   * a binary term giving a semilattice operation on {0, 1}.
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
+  public static List<Term> primalityTerms(SmallAlgebra alg, ProgressReport report) {
+    Term semilatTerm = semilatTerm(alg, report);
+    if (semilatTerm == null) return null;
+    System.out.println("semilat term: " + semilatTerm);
+    Term idTerm = idTerm(alg, report);
+    System.out.println("id term: " + idTerm);
     return null;
+  }
+  
+  /**
+   * Gives a binary term of alg that is a semilattice meet on 0 and 1 
+   * or null if there is none.
+   *  
+   * @param alg
+   * @param report
+   * @return
+   */
+  private static Term semilatTerm(SmallAlgebra alg, ProgressReport report) {
+    final BigProductAlgebra alg4 = new BigProductAlgebra(alg, 4);
+    IntArray meet = new IntArray(new int[] {0,0,0,1});
+    List<IntArray> gens = new ArrayList<IntArray>(2);
+    gens.add(new IntArray(new int[] {0,0,1,1}));
+    gens.add(new IntArray(new int[] {0,1,0,1}));
+    Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
+    termMap.put(gens.get(0), Variable.x);
+    termMap.put(gens.get(1), Variable.y);
+    Closer closer = new Closer(alg4, gens, termMap);
+    closer.setProgressReport(report);
+    closer.setElementToFind(meet);
+    List<IntArray> lst = closer.sgClose();
+    return termMap.get(meet);
+  }
+  
+  private static Term idTerm(SmallAlgebra alg, ProgressReport report) {
+    final int n = alg.cardinality();
+    final BigProductAlgebra prod = new BigProductAlgebra(alg, n);
+    List<IntArray> gens = new ArrayList<IntArray>(n);
+    Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
+    final int[] idArr = new int[n];
+    for (int i = 0; i < n; i++) {
+      final int[] arr = new int[n];
+      arr[i] = 1;
+      final IntArray ia = new IntArray(arr);
+      gens.add(ia);
+      termMap.put(ia, new VariableImp("x_" + i));
+      idArr[i] = i;
+    }
+    final IntArray id = new IntArray(idArr);
+    Closer closer = new Closer(prod, gens, termMap);
+    closer.setProgressReport(report);
+    closer.setElementToFind(id);
+    List<IntArray> lst = closer.sgClose();
+    return termMap.get(id);
   }
 
 
   public static void main(String[] args) {
+    SmallAlgebra alg = null;
+    try {
+      alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
+        "/home/ralph/Java/Algebra/algebras/Clark7.ua");
+    }
+    catch (Exception e) { 
+      e.printStackTrace();
+      return;
+    }
+    primalityTerms(alg, null);
+    /*
     if (args.length == 0) return;
     SmallAlgebra alg0 = null;
     int arity = 3;
@@ -1202,7 +1274,7 @@ System.out.println("got to idempotent");
     //IntArray ia = findDayQuadrupleInSquare(alg0);
     //System.out.println("day quad is " + ia);
     System.out.println("congr mod var = " + congruenceModularVariety(alg0));
-    
+    */
   }
 
 
