@@ -1256,6 +1256,7 @@ System.out.println("got to idempotent");
     final int n = alg.cardinality();
     List<IntArray> units = unitVectors(n);
     FreeAlgebra F = new FreeAlgebra(alg, 1, false, false, false, null, report);
+    System.out.println("here !!! made the free");
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setProgressReport(report);
     closer.setElementsToFind(units);

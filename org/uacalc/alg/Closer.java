@@ -227,6 +227,8 @@ public class Closer {
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
     final boolean operationNotNull = operation == null ? false : true;
+    
+    System.out.println("Finding: " + eltsToFind);
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
