@@ -1191,10 +1191,18 @@ System.out.println("got to idempotent");
     if (semilatTerm == null) return null;
     System.out.println("semilat term: " + semilatTerm);
     Term idTerm = idTerm(alg, report);
+    if (idTerm == null) return null;
     System.out.println("id term: " + idTerm);
     List<Term> unitTerms = unitTerms(alg, report);
+    if (unitTerms == null) return null;
     System.out.println("unit terms: " + unitTerms);
-    return null;
+    List<Term> ans = new ArrayList<Term>(alg.cardinality() + 2);
+    ans.add(semilatTerm);
+    ans.add(idTerm);
+    for (Term term : unitTerms) {
+      ans.add(term);
+    }
+    return ans;
   }
   
   /**
@@ -1273,13 +1281,14 @@ System.out.println("got to idempotent");
     SmallAlgebra alg = null;
     try {
       alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-        "/home/ralph/Java/Algebra/algebras/Clark7.ua");
+        "/home/ralph/Java/Algebra/algebras/Clark3.ua");
     }
     catch (Exception e) { 
       e.printStackTrace();
       return;
     }
-    primalityTerms(alg, null);
+    List<Term> foo = primalityTerms(alg, null);
+    System.out.println("terms are " + foo);
     /*
     if (args.length == 0) return;
     SmallAlgebra alg0 = null;

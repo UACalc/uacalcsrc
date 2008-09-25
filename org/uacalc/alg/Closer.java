@@ -350,6 +350,7 @@ public class Closer {
                                                + eltToFind + ", at " + ans.size());
               return ans;
             }
+            // the get is  likely to be null so do it in this order.
             if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
@@ -584,6 +585,7 @@ if (false) {
               }
               return ans;
             }
+            // the get is  likely to be null so do it in this order.
             if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
