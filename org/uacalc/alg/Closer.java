@@ -350,7 +350,7 @@ public class Closer {
                                                + eltToFind + ", at " + ans.size());
               return ans;
             }
-            if (eltsToFindNotNull  && indecesMapOfFoundElts.get(v).equals(minusOne)) {
+            if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
               specialEtsFound++;
@@ -584,7 +584,7 @@ if (false) {
               }
               return ans;
             }
-            if (eltsToFindNotNull  && indecesMapOfFoundElts.get(v).equals(minusOne)) {
+            if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
               specialEtsFound++;
