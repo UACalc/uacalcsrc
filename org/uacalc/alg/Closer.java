@@ -35,6 +35,7 @@ public class Closer {
   IntArray eltToFind;
   List<IntArray> eltsToFind;  // find all
   Map<IntArray,Integer> indecesMapOfFoundElts;
+  boolean allEltsFound = false;
   final static Integer minusOne = new Integer(-1);
   SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
@@ -146,6 +147,8 @@ public class Closer {
       indecesMapOfFoundElts.put(ia, minusOne);
     }
   }
+  
+  public boolean allElementsFound() { return allEltsFound; }
   
   //protected static ProgressReport monitor;
   
@@ -355,6 +358,7 @@ public class Closer {
               if (specialEtsFound == eltsToFind.size()) {
                 if (reportNotNull) report.addEndingLine("closing done, found all "
                     + eltsToFind.size() + " elems ");
+                allEltsFound = true;
                 return ans;
               }
             }

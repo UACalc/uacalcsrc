@@ -1192,6 +1192,8 @@ System.out.println("got to idempotent");
     System.out.println("semilat term: " + semilatTerm);
     Term idTerm = idTerm(alg, report);
     System.out.println("id term: " + idTerm);
+    List<Term> unitTerms = unitTerms(alg, report);
+    System.out.println("unit terms: " + unitTerms);
     return null;
   }
   
@@ -1224,13 +1226,11 @@ System.out.println("got to idempotent");
     final BigProductAlgebra prod = new BigProductAlgebra(alg, n);
     List<IntArray> gens = new ArrayList<IntArray>(n);
     Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
+    List<IntArray> units = unitVectors(n);
     final int[] idArr = new int[n];
     for (int i = 0; i < n; i++) {
-      final int[] arr = new int[n];
-      arr[i] = 1;
-      final IntArray ia = new IntArray(arr);
-      gens.add(ia);
-      termMap.put(ia, new VariableImp("x_" + i));
+      gens.add(units.get(i));
+      termMap.put(units.get(i), new VariableImp("x_" + i));
       idArr[i] = i;
     }
     final IntArray id = new IntArray(idArr);
@@ -1239,6 +1239,33 @@ System.out.println("got to idempotent");
     closer.setElementToFind(id);
     List<IntArray> lst = closer.sgClose();
     return termMap.get(id);
+  }
+  
+  private static List<IntArray> unitVectors(int n) {
+    List<IntArray> ans = new ArrayList<IntArray>(n);
+    for (int i = 0; i < n; i++) {
+      final int[] arr = new int[n];
+      arr[i] = 1;
+      final IntArray ia = new IntArray(arr);
+      ans.add(ia);
+    }
+    return ans;
+  }
+  
+  private static List<Term> unitTerms(SmallAlgebra alg, ProgressReport report) {
+    final int n = alg.cardinality();
+    List<IntArray> units = unitVectors(n);
+    FreeAlgebra F = new FreeAlgebra(alg, 1, false, false, false, null, report);
+    Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
+    closer.setProgressReport(report);
+    closer.setElementsToFind(units);
+    closer.sgClose();
+    if (!closer.allElementsFound()) return null;
+    List<Term> ans = new ArrayList<Term>(n);
+    for (IntArray ia : units) {
+      ans.add(closer.getTermMap().get(ia));
+    }
+    return ans;
   }
 
 
