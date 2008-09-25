@@ -227,8 +227,6 @@ public class Closer {
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
     final boolean operationNotNull = operation == null ? false : true;
-    
-    System.out.println("Finding: " + eltsToFind);
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
@@ -470,7 +468,10 @@ if (false) {
     final boolean reportNotNull = report == null ? false : true;
     final boolean imgAlgNull = imgOps == null ? true : false;
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
     final boolean operationNotNull = operation == null ? false : true;
+    
+    int specialEtsFound = 0;
     
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
@@ -582,6 +583,19 @@ if (false) {
                     + eltToFind + ", at " + ans.size());
               }
               return ans;
+            }
+            if (eltsToFindNotNull  && indecesMapOfFoundElts.get(v).equals(minusOne)) {
+              final int index = ans.size() - 1;
+              indecesMapOfFoundElts.put(v, index);
+              specialEtsFound++;
+              System.out.println("found " + v);
+              if (reportNotNull) report.addLine("found " + v + ", at " + index);
+              if (specialEtsFound == eltsToFind.size()) {
+                if (reportNotNull) report.addEndingLine("closing done, found all "
+                    + eltsToFind.size() + " elems ");
+                allEltsFound = true;
+                return ans;
+              }
             }
           }
           else {

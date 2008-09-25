@@ -1255,9 +1255,7 @@ System.out.println("got to idempotent");
   private static List<Term> unitTerms(SmallAlgebra alg, ProgressReport report) {
     final int n = alg.cardinality();
     List<IntArray> units = unitVectors(n);
-    System.out.println("here !!! before !! xx made the free");
     FreeAlgebra F = new FreeAlgebra(alg, 1, false, false, false, null, report);
-    System.out.println("here !!! made the free");
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setProgressReport(report);
     closer.setElementsToFind(units);
