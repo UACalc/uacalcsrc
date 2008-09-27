@@ -1109,4 +1109,66 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(nuTask);
   }
   
+  public void setupPrimalTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Terms witnessing primality of " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<Term>>  primalTask = new BackgroundTask<List<Term>>(report) {
+      public List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<Term> pTerms = Malcev.primalityTerms(alg, report);
+        return pTerms;
+      }
+      public void onCompletion(List<Term> pTerms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (pTerms == null) {
+            report.addEndingLine("This algebra is not primal");
+            ttm.setDescription(desc + ": there are none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found terms showing primality; see <a link here>.");
+            ttm.setTerms(pTerms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(primalTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(primalTask);
+  }
+  
+  
 }
