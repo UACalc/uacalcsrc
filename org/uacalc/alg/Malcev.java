@@ -1280,8 +1280,11 @@ System.out.println("got to idempotent");
   public static void main(String[] args) {
     SmallAlgebra alg = null;
     try {
-      alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-        "/home/ralph/Java/Algebra/algebras/Clark3.ua");
+      if (args.length > 0) 
+        alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
+      else 
+        alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
+          "/home/ralph/Java/Algebra/algebras/Clark3.ua");
     }
     catch (Exception e) { 
       e.printStackTrace();
