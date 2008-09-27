@@ -327,24 +327,6 @@ public class Closer {
                 }
               }
             }
-            // cannot do this exit if we are searching  for an equation !!!!!
-            if (imgAlgNull) {
-              if (algebra.cardinality() > 0 && ans.size() == algebra.cardinality()) {
-                if (reportNotNull) {
-                  report.addEndingLine("found all " + ans.size() + " elements");
-                  report.setSize(ans.size());
-                }
-                return ans;
-              }
-            }
-            else {
-              final int[] args = new int[arity];
-              for (int t = 0; t < arity; t++) {
-                args[t] = homomorphism.get(ans.get(argIndeces[t]));
-              }
-              homomorphism.put(v, imgOps.get(i).intValueAt(args));
-            }
-            
             if (eltToFindNotNull && v.equals(eltToFind)) {
               if (reportNotNull) report.addEndingLine("closing done, found "
                                                + eltToFind + ", at " + ans.size());
@@ -364,6 +346,26 @@ public class Closer {
                 return ans;
               }
             }
+            
+            // cannot do this exit if we are searching  for an equation !!!!!
+            if (imgAlgNull) {
+              if (algebra.cardinality() > 0 && ans.size() == algebra.cardinality()) {
+                if (reportNotNull) {
+                  report.addEndingLine("found all " + ans.size() + " elements");
+                  report.setSize(ans.size());
+                }
+                return ans;
+              }
+            }
+            else {
+              final int[] args = new int[arity];
+              for (int t = 0; t < arity; t++) {
+                args[t] = homomorphism.get(ans.get(argIndeces[t]));
+              }
+              homomorphism.put(v, imgOps.get(i).intValueAt(args));
+            }
+            
+            
           }
           else {
             if (imgOps != null) {
@@ -552,6 +554,29 @@ if (false) {
                 }
               }
             }
+            if (eltToFindNotNull && v.equals(eltToFind)) {
+              if (reportNotNull) {
+                report.setSize(ans.size());
+                report.addEndingLine("closing done, found "
+                    + eltToFind + ", at " + ans.size());
+              }
+              return ans;
+            }
+            // the get is  likely to be null so do it in this order.
+            if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
+              final int index = ans.size() - 1;
+              indecesMapOfFoundElts.put(v, index);
+              specialEtsFound++;
+              System.out.println("found " + v);
+              if (reportNotNull) report.addLine("found " + v + ", at " + index);
+              if (specialEtsFound == eltsToFind.size()) {
+                if (reportNotNull) report.addEndingLine("closing done, found all "
+                    + eltsToFind.size() + " elems ");
+                allEltsFound = true;
+                return ans;
+              }
+            }
+            
             // can't quit early if we are looking for a homomorphism
             if (imgOps == null) {
               final int size = ans.size();
@@ -577,28 +602,7 @@ if (false) {
               }
               return null;
             }
-            if (eltToFindNotNull && v.equals(eltToFind)) {
-              if (reportNotNull) {
-                report.setSize(ans.size());
-                report.addEndingLine("closing done, found "
-                    + eltToFind + ", at " + ans.size());
-              }
-              return ans;
-            }
-            // the get is  likely to be null so do it in this order.
-            if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
-              final int index = ans.size() - 1;
-              indecesMapOfFoundElts.put(v, index);
-              specialEtsFound++;
-              System.out.println("found " + v);
-              if (reportNotNull) report.addLine("found " + v + ", at " + index);
-              if (specialEtsFound == eltsToFind.size()) {
-                if (reportNotNull) report.addEndingLine("closing done, found all "
-                    + eltsToFind.size() + " elems ");
-                allEltsFound = true;
-                return ans;
-              }
-            }
+            
           }
           else {
             if (!imgAlgNull) {
