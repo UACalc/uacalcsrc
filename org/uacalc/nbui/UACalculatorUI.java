@@ -146,6 +146,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         freeAlgMI = new javax.swing.JMenuItem();
         membershipTestMI = new javax.swing.JMenuItem();
         subPowerMI = new javax.swing.JMenuItem();
+        primalMI = new javax.swing.JMenuItem();
         maltsevMenu = new javax.swing.JMenu();
         distributivityMI = new javax.swing.JMenuItem();
         modularityMI = new javax.swing.JMenuItem();
@@ -479,7 +480,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(resultDescLabel))
                     .addComponent(resultTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
             .addGroup(resultPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPaneLayout.createSequentialGroup()
                     .addGap(33, 33, 33)
@@ -547,7 +548,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(498, Short.MAX_VALUE))
+                .addContainerGap(496, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -865,6 +866,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         tasksMenu.add(subPowerMI);
 
+        primalMI.setText("Primality");
+        primalMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                primalMIActionPerformed(evt);
+            }
+        });
+        tasksMenu.add(primalMI);
+
         jMenuBar1.add(tasksMenu);
 
         maltsevMenu.setText("Maltsev");
@@ -1119,6 +1128,10 @@ private void tableCVSMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
   getMainController().writeCVSTable();
 }//GEN-LAST:event_tableCVSMIActionPerformed
 
+private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
+  getComputationsController().setupPrimalTermsTask();
+}//GEN-LAST:event_primalMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1204,6 +1217,7 @@ private void tableCVSMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem openMI;
     private javax.swing.JComboBox opsComboBox;
     private javax.swing.JMenuItem pixleyMI;
+    private javax.swing.JMenuItem primalMI;
     private javax.swing.JMenuItem quitMI;
     private javax.swing.JLabel resultDescLabel;
     private javax.swing.JPanel resultPane;
