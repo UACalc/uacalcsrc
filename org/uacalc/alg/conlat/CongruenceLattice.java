@@ -53,7 +53,7 @@ public class CongruenceLattice implements Lattice {
   private int algSize;
   private int numOps;
   
-  public static final int MAX_DRAWABLE_SIZE = 100;
+  public static final int MAX_DRAWABLE_SIZE = 150;
   public static final int MAX_DRAWABLE_INPUT_SIZE = 2500;
   private boolean nonDrawable = false;
 
