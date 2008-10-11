@@ -197,7 +197,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
   /**
    * Get the table with the default and random values filled in.
    * 
-   * @return  the filled in table or null
+   * @return  the filled in table or null if not possible
    */
   public int[] getTotalTable() {
     final int n = valueTable.length;

@@ -12,6 +12,7 @@ import org.uacalc.eq.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
+import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 
@@ -454,7 +455,10 @@ if (false) {
           ? new Operation[k] : null;
     for (int i = 0; i < k; i++) {
       Operation op = ops.get(i);
-      opTables[i] = op.getTotalTable();
+      if (op instanceof OperationWithDefaultValue) {
+        opTables[i] = ((OperationWithDefaultValue)op).getTotalTable();
+      }
+      else opTables[i] = op.getTable();
       arities[i] = op.arity();
       symbols[i] = op.symbol();
       if (imgOps != null) imgOps[i] = imageAlgebra.getOperation(op.symbol());
