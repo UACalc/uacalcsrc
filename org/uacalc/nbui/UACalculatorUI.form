@@ -281,6 +281,53 @@
             <Property name="text" type="java.lang.String" value="Edit"/>
           </Properties>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="hspMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Menu"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="quotMI">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Quotient"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quotMIActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="subMI">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Subalgebra"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="subMIActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="prodMI">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Product"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prodMIActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="powMI">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Power"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="powMIActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="subpowMI">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Sub Power"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="subpowMIActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="tasksMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tasks"/>
@@ -904,7 +951,7 @@
                                   <Component id="jScrollPane3" min="-2" pref="137" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="496" max="32767" attributes="0"/>
+                          <EmptySpace pref="476" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

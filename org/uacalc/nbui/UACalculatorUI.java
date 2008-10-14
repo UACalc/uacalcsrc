@@ -142,6 +142,12 @@ public class UACalculatorUI extends javax.swing.JFrame {
         tableCVSMI = new javax.swing.JMenuItem();
         quitMI = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
+        hspMenu = new javax.swing.JMenu();
+        quotMI = new javax.swing.JMenuItem();
+        subMI = new javax.swing.JMenuItem();
+        prodMI = new javax.swing.JMenuItem();
+        powMI = new javax.swing.JMenuItem();
+        subpowMI = new javax.swing.JMenuItem();
         tasksMenu = new javax.swing.JMenu();
         freeAlgMI = new javax.swing.JMenuItem();
         membershipTestMI = new javax.swing.JMenuItem();
@@ -548,7 +554,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(496, Short.MAX_VALUE))
+                .addContainerGap(476, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -839,6 +845,50 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         editMenu.setText("Edit");
         jMenuBar1.add(editMenu);
+
+        hspMenu.setText("Menu");
+
+        quotMI.setText("Quotient");
+        quotMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quotMIActionPerformed(evt);
+            }
+        });
+        hspMenu.add(quotMI);
+
+        subMI.setText("Subalgebra");
+        subMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subMIActionPerformed(evt);
+            }
+        });
+        hspMenu.add(subMI);
+
+        prodMI.setText("Product");
+        prodMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prodMIActionPerformed(evt);
+            }
+        });
+        hspMenu.add(prodMI);
+
+        powMI.setText("Power");
+        powMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                powMIActionPerformed(evt);
+            }
+        });
+        hspMenu.add(powMI);
+
+        subpowMI.setText("Sub Power");
+        subpowMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subpowMIActionPerformed(evt);
+            }
+        });
+        hspMenu.add(subpowMI);
+
+        jMenuBar1.add(hspMenu);
 
         tasksMenu.setText("Tasks");
 
@@ -1132,6 +1182,26 @@ private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
   getComputationsController().setupPrimalTermsTask();
 }//GEN-LAST:event_primalMIActionPerformed
 
+private void quotMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_quotMIActionPerformed
+
+private void subMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_subMIActionPerformed
+
+private void prodMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prodMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_prodMIActionPerformed
+
+private void powMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powMIActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_powMIActionPerformed
+
+private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subpowMIActionPerformed
+  getComputationsController().setupSubPowerTask();
+}//GEN-LAST:event_subpowMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1177,6 +1247,7 @@ private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JPanel editorPanel;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem freeAlgMI;
+    private javax.swing.JMenu hspMenu;
     private javax.swing.JCheckBox idempotentCB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -1217,8 +1288,11 @@ private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuItem openMI;
     private javax.swing.JComboBox opsComboBox;
     private javax.swing.JMenuItem pixleyMI;
+    private javax.swing.JMenuItem powMI;
     private javax.swing.JMenuItem primalMI;
+    private javax.swing.JMenuItem prodMI;
     private javax.swing.JMenuItem quitMI;
+    private javax.swing.JMenuItem quotMI;
     private javax.swing.JLabel resultDescLabel;
     private javax.swing.JPanel resultPane;
     private javax.swing.JTable resultTable;
@@ -1226,9 +1300,11 @@ private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenu saveAsMenu;
     private javax.swing.JMenuItem saveMI;
     private javax.swing.JPanel subLeftPanel;
+    private javax.swing.JMenuItem subMI;
     private javax.swing.JPanel subMainPanel;
     private javax.swing.JPanel subPanel;
     private javax.swing.JMenuItem subPowerMI;
+    private javax.swing.JMenuItem subpowMI;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JMenuItem tableCVSMI;
     private javax.swing.JMenu tasksMenu;
