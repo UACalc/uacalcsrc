@@ -283,7 +283,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="hspMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Menu"/>
+            <Property name="text" type="java.lang.String" value="HSP"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="quotMI">
@@ -951,7 +951,7 @@
                                   <Component id="jScrollPane3" min="-2" pref="137" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="476" max="32767" attributes="0"/>
+                          <EmptySpace pref="474" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

@@ -554,7 +554,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(476, Short.MAX_VALUE))
+                .addContainerGap(474, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -846,7 +846,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         editMenu.setText("Edit");
         jMenuBar1.add(editMenu);
 
-        hspMenu.setText("Menu");
+        hspMenu.setText("HSP");
 
         quotMI.setText("Quotient");
         quotMI.addActionListener(new java.awt.event.ActionListener() {
