@@ -1195,7 +1195,7 @@ private void prodMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_prodMIActionPerformed
 
 private void powMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powMIActionPerformed
-// TODO add your handling code here:
+  getComputationsController().formPowerAlgebra();
 }//GEN-LAST:event_powMIActionPerformed
 
 private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subpowMIActionPerformed
