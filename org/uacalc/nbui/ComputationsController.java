@@ -1170,5 +1170,22 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(primalTask);
   }
   
+  public void formPowerAlgebra() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    int pow = getNumberDialog(2, "power?",  "Power Algebra");
+    if (!(pow > 1)) return;
+    PowerAlgebra powAlg = new PowerAlgebra(alg, pow);
+    MainController mc = uacalcUI.getMainController();
+    mc.addAlgebra(powAlg, true);
+  }
   
 }

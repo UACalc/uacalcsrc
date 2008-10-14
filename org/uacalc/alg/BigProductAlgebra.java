@@ -265,17 +265,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   public int cardinality() {
     if (cardinality > -2) return cardinality;
-    final BigInteger max = BigInteger.valueOf((long)Integer.MAX_VALUE); 
-    BigInteger v = BigInteger.ONE;
-    for (int i = 0; i < sizes.length; i++) {
-      v = v.multiply(BigInteger.valueOf((long)sizes[i]));
-      if (v.compareTo(max) > 0) {
-        cardinality = -1;
-        break;
-      }
-    }
-    if (cardinality == -1) return cardinality;
-    cardinality = v.intValue();
+    cardinality = ProductAlgebra.calcCard(sizes);
     return cardinality;
   }
 

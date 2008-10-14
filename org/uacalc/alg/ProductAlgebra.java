@@ -4,6 +4,7 @@ package org.uacalc.alg;
 
 import java.util.*;
 import java.util.logging.*;
+import java.math.BigInteger;
 import org.uacalc.util.*;
 
 import org.uacalc.alg.SmallAlgebra.AlgebraType;
@@ -55,11 +56,7 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
       sizes[k] = ((SmallAlgebra)it.next()).cardinality();
     }
-    int n = 1;
-    for (int i = 0; i < numberOfProducts; i++) {
-      n *= sizes[i];
-    }
-    size = n;
+    size = calcCard(sizes);
     universe = makeCartesianProduct(algs);
     makeOperations();
   }
@@ -251,6 +248,25 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public List sgClose(List elems) {
     List ans = new ArrayList();
     return ans;
+  }
+  
+  /**
+   * Returns the product cardinality if it is an int; otherwise
+   * it returns -1.
+   * 
+   * @param sizes
+   * @return
+   */
+  public static int calcCard(int[] sizes) {
+    final BigInteger max = BigInteger.valueOf((long)Integer.MAX_VALUE); 
+    BigInteger v = BigInteger.ONE;
+    for (int i = 0; i < sizes.length; i++) {
+      v = v.multiply(BigInteger.valueOf((long)sizes[i]));
+      if (v.compareTo(max) > 0) {
+        return -1;
+      }
+    }
+    return v.intValue();
   }
   
   public void convertToDefaultValueOps() {

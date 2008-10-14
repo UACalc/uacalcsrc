@@ -39,19 +39,14 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
     super(name);
     root = alg;
     rootSize = alg.cardinality();
-    List algs = new ArrayList(power);
+    List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>(power);
     for (int i = 0; i < power; i++) {
       algs.add(alg);
     }
     algebras = algs;
     numberOfProducts = algs.size();
     sizes = new int[numberOfProducts];
-    int n = 1;
-    for (int i = 0; i < numberOfProducts; i++) {
-      sizes[i] = rootSize;
-      n *= rootSize;
-    }
-    size = n;
+    size = calcCard(sizes);
     universe = makeCartesianProduct(algs);
     makeOperations(); 
   }
