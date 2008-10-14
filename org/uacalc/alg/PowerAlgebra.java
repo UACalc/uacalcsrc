@@ -7,6 +7,7 @@ import java.util.logging.*;
 import org.uacalc.util.*;
 
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.sublat.SubalgebraLattice;
 
 /**
  * This class represents the direct product of <tt>SmallAlgebra</tt>s.
@@ -46,6 +47,9 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
     algebras = algs;
     numberOfProducts = algs.size();
     sizes = new int[numberOfProducts];
+    for (int i = 0; i < numberOfProducts; i++) {
+      sizes[i] = rootSize;
+    }
     size = calcCard(sizes);
     universe = makeCartesianProduct(algs);
     makeOperations(); 
@@ -62,6 +66,16 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
   }
 
   public int getPower() { return numberOfProducts; }
+  
+  public CongruenceLattice con() {
+    if (con == null) con = new CongruenceLattice(this);
+    return con;
+  }
+
+  public SubalgebraLattice sub() {
+    if (sub == null) sub = new SubalgebraLattice(this);
+    return sub;
+  }
   
   public AlgebraType algebraType() {
     return AlgebraType.POWER;
