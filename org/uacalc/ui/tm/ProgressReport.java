@@ -5,6 +5,7 @@ import javax.swing.JTextField;
 import java.util.*;
 import org.uacalc.ui.MonitorPanel;
 import org.uacalc.ui.table.TaskTableModel;
+import org.uacalc.alg.AlgebraWithGeneratingVector;
 
 
 public class ProgressReport {
@@ -17,6 +18,8 @@ public class ProgressReport {
   private JTextField descField;
   
   private TaskTableModel taskTableModel;
+  
+  private AlgebraWithGeneratingVector witnessAlgebra;
   
   private volatile List<String> logLines = new ArrayList<String>();
   private volatile int pass;
@@ -47,7 +50,13 @@ public class ProgressReport {
     taskTableModel = monitorPanel.getTaskTableModel();
   }
   
+  public AlgebraWithGeneratingVector getWitnessAlgebra() {
+    return witnessAlgebra;
+  }
   
+  public void setWitnessAlgebra(AlgebraWithGeneratingVector alg) {
+    witnessAlgebra = alg;
+  }
   
   public TaskTableModel getTaskTableModel() {
     return taskTableModel;
