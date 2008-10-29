@@ -34,6 +34,74 @@ public class Malcev {
   //public static Monitor getMonitor() { return monitor; }
   public static void setMonitor(ProgressReport m) { monitor = m; }
   
+  public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg) {
+    return  markovicMcKenzieSiggersTaylorTerm(alg, false, null);
+  }
+  
+  public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg, boolean idempotent) {
+    return  markovicMcKenzieSiggersTaylorTerm(alg, idempotent, null);
+  }
+  
+  public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg, 
+                                                       boolean isIdempotent,
+                                                       ProgressReport report) {
+    if (alg.cardinality() == 1)  return Variable.x;
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2);
+    f2.makeOperationTables();
+    //logger.info("f2 size is " + f2.cardinality());
+    IntArray g0;
+    IntArray g1;
+    IntArray g2;
+    IntArray g3;
+    if (isIdempotent) {
+      g0 = new IntArray(new int[] {1,0,0,0});
+      g1 = new IntArray(new int[] {0,0,0,1});
+      g2 = new IntArray(new int[] {0,1,1,0});
+      g3 = new IntArray(new int[] {0,1,0,0});
+    }
+    else {
+      g0 = new IntArray(new int[] {1,0,0,0,0});
+      g1 = new IntArray(new int[] {0,0,0,1,0});
+      g2 = new IntArray(new int[] {0,1,1,0,0});
+      g3 = new IntArray(new int[] {0,1,0,0,0});
+    }
+    List<IntArray> gens = new ArrayList<IntArray>(3);
+    gens.add(g0);
+    gens.add(g1);
+    gens.add(g2);
+    gens.add(g3);
+    final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
+    termMap.put(g0, new VariableImp("x0"));
+    termMap.put(g1, new VariableImp("x1"));
+    termMap.put(g2, new VariableImp("x2"));
+    termMap.put(g3, new VariableImp("x3"));
+    //final IntArray yx = new IntArray(new int[] {1,0});
+    BigProductAlgebra f2pow;
+    if (isIdempotent) {
+      f2pow = new BigProductAlgebra(f2, 4);
+    }
+    else {
+      f2pow = new BigProductAlgebra(f2, 5);
+    }
+    List sub = f2pow.sgClose(gens, termMap);
+    //logger.info("sub alg of the " + (isIdempotent ? "third" : "fourth")
+    //   + " power of f2 size " + sub.size());
+    IntArray ia = null;
+    for (Iterator it = sub.iterator(); it.hasNext(); ) {
+      ia = (IntArray)it.next();
+      if (ia.get(0) == ia.get(1) && ia.get(2) == ia.get(3)) {
+        if (isIdempotent) break;
+        if (ia.get(4) == 0) break; // last coord is x
+      }
+      ia = null;
+    }
+    if (ia != null) return (Term)termMap.get(ia);
+    return null;
+  }
+
+    
+  
+  
   /**
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
@@ -1341,14 +1409,19 @@ System.out.println("got to idempotent");
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
       else 
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-          "/home/ralph/Java/Algebra/algebras/3pol_alt3.alg");
+            "/home/ralph/Java/Algebra/algebras/3pol_alt3.alg"
+            //"/home/ralph/Java/Algebra/algebras/n5.ua"
+            );
     }
     catch (Exception e) { 
       e.printStackTrace();
       return;
     }
-    IntArray ia = findDayQuadrupleInSquare(alg, null);
-    System.out.println("day quad is " + ia);
+    Term term = markovicMcKenzieSiggersTaylorTerm(alg, true, null);
+    System.out.println("term = " + term);
+    
+    //IntArray ia = findDayQuadrupleInSquare(alg, null);
+    //System.out.println("day quad is " + ia);
     //System.out.println("congr mod var = " + congruenceModularVariety(alg));
     //List<Term> foo = primalityTerms(alg, null);
     //List<Term> foo = jonssonTerms(alg);
