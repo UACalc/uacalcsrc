@@ -35,17 +35,17 @@ public class Malcev {
   public static void setMonitor(ProgressReport m) { monitor = m; }
   
   public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg) {
-    return  markovicMcKenzieSiggersTaylorTerm(alg, false, null);
+    return  markovicMcKenzieSiggersTaylorTerm(alg, null);
   }
   
-  public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg, boolean idempotent) {
-    return  markovicMcKenzieSiggersTaylorTerm(alg, idempotent, null);
-  }
   
   public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg, 
-                                                       boolean isIdempotent,
                                                        ProgressReport report) {
+    
     if (alg.cardinality() == 1)  return Variable.x;
+    final boolean isIdempotent = alg.isIdempotent();
+    final int[][] blocks = new int[][] {{0,1},{2,3}};
+    final int[][] values = new int[][] {{4,0}};
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
@@ -83,6 +83,16 @@ public class Malcev {
     else {
       f2pow = new BigProductAlgebra(f2, 5);
     }
+    Closer closer = new Closer(f2pow, gens, termMap);
+    closer.setProgressReport(report);
+    closer.setBlocks(blocks);
+    if (!isIdempotent) closer.setValues(values);
+    closer.sgClosePower();
+    if (closer.getElementToFind() != null) {
+      return termMap.get(closer.getElementToFind());
+    }
+    
+    /*
     List sub = f2pow.sgClose(gens, termMap);
     //logger.info("sub alg of the " + (isIdempotent ? "third" : "fourth")
     //   + " power of f2 size " + sub.size());
@@ -96,6 +106,7 @@ public class Malcev {
       ia = null;
     }
     if (ia != null) return (Term)termMap.get(ia);
+    */
     return null;
   }
 
@@ -1409,7 +1420,7 @@ System.out.println("got to idempotent");
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
       else 
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-            "/home/ralph/Java/Algebra/algebras/3pol_alt3.alg"
+            "/home/ralph/Java/Algebra/algebras/lyndon.ua"
             //"/home/ralph/Java/Algebra/algebras/n5.ua"
             );
     }
@@ -1417,7 +1428,7 @@ System.out.println("got to idempotent");
       e.printStackTrace();
       return;
     }
-    Term term = markovicMcKenzieSiggersTaylorTerm(alg, true, null);
+    Term term = markovicMcKenzieSiggersTaylorTerm(alg, null);
     System.out.println("term = " + term);
     
     //IntArray ia = findDayQuadrupleInSquare(alg, null);

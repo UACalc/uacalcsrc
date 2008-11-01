@@ -32,6 +32,39 @@ public class IntArray implements Cloneable {
     this.size = size;
     this.array = new int[size];
   }
+  
+  public boolean satisfiesConstraint(final int[][] blocks) {
+    for (int i = 0; i < blocks.length; i++) {
+      final int[] block = blocks[i];
+      final int first = array[block[0]];
+      for (int j = 1; j < block.length; j++) {
+        if (first != array[block[j]]) return false;
+      }
+    }
+    return true;
+  }
+  
+  /**
+   * Checks if this intArray is equal on the indices of each block and
+   * has the values specified by <code>values</code>.
+   * 
+   * @param blocks      an array of the level blocks 
+   * @param values      an array of pairs [i,v] specifying array[i] = v
+   * @return            true if the condition is satisfied
+   */
+  public boolean satisfiesConstraint(final int[][] blocks, final int[][] values) {
+    for (int i = 0; i < blocks.length; i++) {
+      final int[] block = blocks[i];
+      final int first = array[block[0]];
+      for (int j = 1; j < block.length; j++) {
+        if (first != array[block[j]]) return false;
+      }
+    }
+    for (int i = 0; i < values.length; i++) {
+      if (array[values[i][0]] != values[i][1]) return false;
+    }
+    return true;
+  }
 
   public final boolean equals(Object obj) {
     if (obj == null) return false;

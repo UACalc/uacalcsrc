@@ -816,6 +816,69 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
   
+  public void setupMarkovicMcKenzieSiggersTaylorTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI,
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A Markovic-McKenzie-Siggers Taylor term over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  mmstTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term mmstTerm = Malcev.markovicMcKenzieSiggersTaylorTerm(alg, report);
+        return mmstTerm;
+      }
+      public void onCompletion(Term mmstTerm, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (mmstTerm == null) {
+            report.addEndingLine("The variety has no Taylor term");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a Markovic-McKenzie-Siggers Taylor term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(mmstTerm);
+            ttm.setTerms(terms);
+          }
+          if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(mmstTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(mmstTask);
+  }
+  
   public void setupNUTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {

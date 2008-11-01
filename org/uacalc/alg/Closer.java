@@ -33,6 +33,9 @@ public class Closer {
   boolean completed = false; // sometimes we end early
   List<IntArray> generators;
   Map<IntArray,Term> termMap; // initially a map from generators to variables.
+  // this is double used: it is set in the closing if we are looking
+  // for a pattern but set before is it an element we are looking for.
+  // probably should have separate fields for these two things.
   IntArray eltToFind;
   List<IntArray> eltsToFind;  // find all
   Map<IntArray,Integer> indecesMapOfFoundElts;
@@ -45,6 +48,10 @@ public class Closer {
   // an operation on the set of the root algebra; to test if it is in the clone. 
   Operation operation;
   Term termForOperation;
+  // a blocks and values constraint as in IntArray.
+  int[][] blocks;
+  int[][] values;
+  
   ProgressReport report;
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
@@ -150,6 +157,14 @@ public class Closer {
   }
   
   public boolean allElementsFound() { return allEltsFound; }
+  
+  public int[][] getBlocks() { return blocks; }
+  
+  public void setBlocks(int[][] blocks) { this.blocks = blocks; }
+  
+  public int[][] getValues() { return values; }
+  
+  public void setValues(int[][] values) { this.values = values; }
   
   //protected static ProgressReport monitor;
   
@@ -477,6 +492,8 @@ if (false) {
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
     final boolean operationNotNull = operation == null ? false : true;
+    final boolean blocksNotNull = blocks == null ? false : true;
+    final boolean valuesNotNull = values == null ? false : true;
     
     int specialEtsFound = 0;
     
@@ -577,6 +594,24 @@ if (false) {
                 if (reportNotNull) report.addEndingLine("closing done, found all "
                     + eltsToFind.size() + " elems ");
                 allEltsFound = true;
+                return ans;
+              }
+            }
+            if (blocksNotNull) {  // not this assumes that if values != null then so is blocks
+              boolean found = false;
+              if (valuesNotNull) {  
+                if (v.satisfiesConstraint(blocks, values)) found = true;
+              }
+              else {
+                if (v.satisfiesConstraint(blocks)) found = true;
+              }
+              if (found) {
+                eltToFind = v;
+                if (reportNotNull) {
+                  report.setSize(ans.size());
+                  report.addEndingLine("closing done, found "
+                      + eltToFind + ", at " + ans.size());
+                }
                 return ans;
               }
             }
