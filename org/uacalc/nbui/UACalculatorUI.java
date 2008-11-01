@@ -161,6 +161,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         majorityMI = new javax.swing.JMenuItem();
         pixleyMI = new javax.swing.JMenuItem();
         nuMI = new javax.swing.JMenuItem();
+        mmstMI = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         drawConMI = new javax.swing.JMenuItem();
         drawSubMI = new javax.swing.JMenuItem();
@@ -554,7 +555,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, computationsLogPaneLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(474, Short.MAX_VALUE))
+                .addContainerGap(472, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout computationsPanelLayout = new javax.swing.GroupLayout(computationsPanel);
@@ -984,6 +985,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
         });
         maltsevMenu.add(nuMI);
 
+        mmstMI.setText("MMS Taylor term");
+        mmstMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mmstMIActionPerformed(evt);
+            }
+        });
+        maltsevMenu.add(mmstMI);
+
         jMenuBar1.add(maltsevMenu);
 
         jMenu1.setText("Drawing");
@@ -1202,6 +1211,10 @@ private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
   getComputationsController().setupSubPowerTask();
 }//GEN-LAST:event_subpowMIActionPerformed
 
+private void mmstMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mmstMIActionPerformed
+  getComputationsController().setupMarkovicMcKenzieSiggersTaylorTermTask();
+}//GEN-LAST:event_mmstMIActionPerformed
+
   
   /**
    * @param args the command line arguments
@@ -1276,6 +1289,7 @@ private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuItem maltsevMI;
     private javax.swing.JMenu maltsevMenu;
     private javax.swing.JMenuItem membershipTestMI;
+    private javax.swing.JMenuItem mmstMI;
     private javax.swing.JMenuItem modularityMI;
     private javax.swing.JTextField msgTextField;
     private javax.swing.JMenuItem nPermMI;
