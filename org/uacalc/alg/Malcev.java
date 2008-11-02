@@ -46,7 +46,7 @@ public class Malcev {
     final boolean isIdempotent = alg.isIdempotent();
     final int[][] blocks = new int[][] {{0,1},{2,3}};
     final int[][] values = new int[][] {{4,0}};
-    FreeAlgebra f2 = new FreeAlgebra(alg, 2);
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
