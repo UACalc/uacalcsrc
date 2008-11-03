@@ -112,7 +112,12 @@ public class NonVariableTerm implements Term {
         }
         @Override
         public int[] getTable() {
-          if (tableOp == null) makeTable();
+          //if (tableOp == null) makeTable();
+          return tableOp.getTable();
+        }
+        @Override
+        public int[] getTable(boolean makeTable) {
+          if (makeTable) makeTable();
           return tableOp.getTable();
         }
 

@@ -209,8 +209,12 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
             tableOp = Operations.makeIntOperation(symbol(), size, values);
           }
           public int[] getTable() {
-            if (tableOp == null) makeTable();
+            if (tableOp == null) return null;
             return tableOp.getTable();
+          }
+          public int[] getTable(boolean makeTable) {
+            if (makeTable && tableOp == null) makeTable();
+            return getTable();
           }
           public int intValueAt(final int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);

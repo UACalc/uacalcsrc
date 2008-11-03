@@ -47,7 +47,7 @@ public class Malcev {
     final int[][] blocks = new int[][] {{0,1},{2,3}};
     final int[][] values = new int[][] {{4,0}};
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
-    f2.makeOperationTables();
+    //f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
     IntArray g1;
@@ -1420,7 +1420,7 @@ System.out.println("got to idempotent");
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
       else 
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-            "/home/ralph/Java/Algebra/algebras/lyndon.ua"
+            "/home/ralph/Java/Algebra/algebras/wm3.ua"
             //"/home/ralph/Java/Algebra/algebras/n5.ua"
             );
     }

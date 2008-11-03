@@ -46,6 +46,10 @@ public class TermOperationImp
     return interpretation.getTable();
   }
 
+  @Override
+  public int[] getTable(boolean makeTable) {
+    return interpretation.getTable(makeTable);
+  }
 
   /**
    * This gives the term.

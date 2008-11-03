@@ -60,7 +60,7 @@ public interface Operation {
 
   /**
    * This will make a table and so make the operation faster but
-   * require more space. So if A is in HSP(B) then for ints x and y,
+   * requires more space. So if A is in HSP(B) then for ints x and y,
    * x * y would be evaluated by finding the representative
    * of x and y of the congruence; then these representatives would be
    * expanded into array representing the corresponding elements in the 
@@ -74,6 +74,15 @@ public interface Operation {
    * Get the table for this operation or null if it does not exist.
    */
   public int[] getTable();
+  
+  /**
+   * Get the table for this operation. If it does not exist
+   * make it if makeTable is true.
+   * 
+   * @param makeTable   forces the table to be made if necessary
+   * @return            the table
+   */
+  public int[] getTable(boolean makeTable);
   
   public boolean isTableBased();
 

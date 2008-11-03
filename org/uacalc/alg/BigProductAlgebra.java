@@ -161,8 +161,9 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
       for (int j = 0; j < numberOfFactors; j++) {
         // changed 2008/7/29 to make the int op.
         Operation op = algebras.get(j).operations().get(i);
-        if (op.isTableBased()) opList.add(op);
-        else opList.add(Operations.makeIntOperation(op));
+        //if (op.isTableBased()) opList.add(op);
+        //else opList.add(Operations.makeIntOperation(op));
+        opList.add(op);
         //opList.add(Operations.makeIntOperation(algebras.get(j).operations().get(i)));
       }
       final int[] arg = new int[arity];
@@ -199,14 +200,22 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
             //try {
             
             for (int j = 0; j < numberOfFactors; j++) {
-              //final Operation op = opList.get(j);
-              //System.out.println("op = " + op);
-              final int size = sizes[j];
-              int tmp = args[arity - 1][j];
-              for (int index = arity - 2; index >= 0; index--) {
-                tmp = size * tmp + args[index][j];
+              final Operation op = opList.get(j);
+              if (op.isTableBased()) {
+                //System.out.println("op = " + op);
+                final int size = sizes[j];
+                int tmp = args[arity - 1][j];
+                for (int index = arity - 2; index >= 0; index--) {
+                  tmp = size * tmp + args[index][j];
+                }
+                ans2[j] = opList.get(j).intValueAt(tmp);
               }
-              ans2[j] = opList.get(j).intValueAt(tmp);
+              else {
+                for (int index = 0; index < arity; index++) {
+                  arg[index] = args[index][j];
+                }
+                ans2[j] = opList.get(j).intValueAt(arg);
+              }
             }
             
             //}

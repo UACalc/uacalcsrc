@@ -468,12 +468,17 @@ if (false) {
     final Operation[] imgOps = 
       (homomorphism != null && imageAlgebra != null  && termMap != null) 
           ? new Operation[k] : null;
+    boolean nullTable = false;
     for (int i = 0; i < k; i++) {
       Operation op = ops.get(i);
       if (op instanceof OperationWithDefaultValue) {
         opTables[i] = ((OperationWithDefaultValue)op).getTotalTable();
       }
-      else opTables[i] = op.getTable();
+      else {
+        opTables[i] = op.getTable();
+        if (opTables[i] == null) nullTable = true;
+      }
+      System.out.println("nullTable = " + nullTable);
       arities[i] = op.arity();
       symbols[i] = op.symbol();
       if (imgOps != null) imgOps[i] = imageAlgebra.getOperation(op.symbol());
@@ -536,16 +541,30 @@ if (false) {
           //}
           final int[] vRaw = new int[power];
 
-
-          for (int j = 0; j < power; j++) {
-            int factor = algSize;
-            int index = rawList.get(argIndeces[0])[j];
-            for (int r = 1; r < arity; r++) {
-              index += factor * rawList.get(argIndeces[r])[j];
-              factor = factor * algSize;
+//yyy;
+          if (opTable != null) {
+            for (int j = 0; j < power; j++) {
+              int factor = algSize;
+              int index = rawList.get(argIndeces[0])[j];
+              for (int r = 1; r < arity; r++) {
+                index += factor * rawList.get(argIndeces[r])[j];
+                factor = factor * algSize;
+              }
+              vRaw[j] = opTable[index];
             }
-            vRaw[j] = opTable[index];
           }
+            
+          else {
+            final Operation f = ops.get(i);
+            for (int j = 0; j < power; j++) {
+              final int[] arg = new int[f.arity()];
+              for (int r = 0; r < arity; r++) {
+                arg[r] = rawList.get(argIndeces[r])[j];
+              }
+              vRaw[j] = f.intValueAt(arg);
+            }
+          }
+
           IntArray v = new IntArray(vRaw);
           if (su.add(v)) {
             ans.add(v);

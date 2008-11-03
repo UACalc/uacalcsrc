@@ -512,6 +512,7 @@ logger.setLevel(Level.FINE);
         return opx.valueAt(args);
       }
       public int[] getTable() { return values; }
+      public int[] getTable(boolean makeTable) { return values; }
       public int intValueAt(final int[] args) {
         return values[Horner.horner(args, algSize)];
       }
