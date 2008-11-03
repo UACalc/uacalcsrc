@@ -110,10 +110,10 @@ public class CongruenceLattice implements Lattice {
 
   public CongruenceLattice(SmallAlgebra alg) {
     this.alg = alg;
-    System.out.println("alg = " +alg);
+    //System.out.println("alg = " +alg);
     algSize = alg.cardinality();
     numOps = alg.operations().size();
-    System.out.println("algSize = " + algSize);
+    //System.out.println("algSize = " + algSize);
     zeroCong = BasicPartition.zero(algSize);
     oneCong = BasicPartition.one(algSize);
   }
