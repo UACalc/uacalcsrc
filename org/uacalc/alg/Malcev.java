@@ -47,6 +47,7 @@ public class Malcev {
     final int[][] blocks = new int[][] {{0,1},{2,3}};
     final int[][] values = new int[][] {{4,0}};
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     //f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
@@ -128,6 +129,7 @@ public class Malcev {
   public static Term findNUF(SmallAlgebra alg, int arity, ProgressReport report) {
     if (alg.cardinality() == 1) return new VariableImp("x0");
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+ // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     final List<IntArray> gens = new ArrayList<IntArray>(arity);
     final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
@@ -243,6 +245,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   public static Term weakMajorityTerm(SmallAlgebra alg, boolean isIdempotent) {
     if (alg.cardinality() == 1)  return Variable.x;
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
@@ -332,6 +335,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       return ans;
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
@@ -749,6 +753,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   public static boolean congruenceModularVariety(SmallAlgebra alg) {
     if (alg.isIdempotent()) return congruenceModularForIdempotent(alg);
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     //List gens = f2.generators();
     IntArray a = new IntArray(new int[] {0,0});
@@ -763,6 +768,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     BigProductAlgebra f2squared = new BigProductAlgebra(f2, 2);
     //List sub = f2squared.sgClose(gens, termMap);
     SmallAlgebra sub = new SubProductAlgebra("", f2squared, gens);
+    // ** Need to put in a test if the tables will fit in memory. **
     sub.makeOperationTables();
     logger.info("sub alg of f2 square size is " + sub.cardinality());
     Partition cgcd = sub.con().Cg(c, d);
@@ -845,6 +851,7 @@ System.out.println("got to idempotent");
       return ans;
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
@@ -1041,6 +1048,7 @@ System.out.println("got to idempotent");
       }
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0});
@@ -1081,6 +1089,7 @@ System.out.println("got to idempotent");
       }
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. ** 
     f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
@@ -1132,6 +1141,7 @@ System.out.println("got to idempotent");
       }
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
@@ -1175,6 +1185,7 @@ System.out.println("got to idempotent");
       return ans;
     }
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
     logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0});
