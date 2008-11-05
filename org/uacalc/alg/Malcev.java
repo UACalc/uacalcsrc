@@ -1413,7 +1413,7 @@ System.out.println("got to idempotent");
     FreeAlgebra F = new FreeAlgebra(alg, 1, false, false, false, null, report);
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setProgressReport(report);
-    closer.setElementsToFind(units);
+    closer.setElementsToFind(units, F.generators());
     closer.sgClose();
     if (!closer.allElementsFound()) return null;
     List<Term> ans = new ArrayList<Term>(n);

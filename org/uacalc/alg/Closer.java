@@ -40,6 +40,7 @@ public class Closer {
   List<IntArray> eltsToFind;  // find all
   Map<IntArray,Integer> indecesMapOfFoundElts;
   boolean allEltsFound = false;
+  int specialEltsFound = 0;
   final static Integer minusOne = new Integer(-1);
   SmallAlgebra imageAlgebra;
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
@@ -148,11 +149,17 @@ public class Closer {
   
   public List<IntArray> getElementsToFind() { return eltsToFind; }
   
-  public void setElementsToFind(List<IntArray> e) {
+  public void setElementsToFind(List<IntArray> e, List<IntArray> gens) {
     eltsToFind = e;
     indecesMapOfFoundElts = new HashMap<IntArray,Integer>(e.size());
     for (IntArray ia : e) {
       indecesMapOfFoundElts.put(ia, minusOne);
+    }
+    for (int i = 0; i < gens.size(); i++) {
+      if (minusOne.equals(indecesMapOfFoundElts.get(gens.get(i)))) {
+        indecesMapOfFoundElts.put(gens.get(i), i);
+        specialEltsFound++;
+      }
     }
   }
   
@@ -225,8 +232,6 @@ public class Closer {
     }
     
     if (report != null) report.addStartLine("subpower closing ...");
-    
-    int specialEtsFound = 0;
 
     final int numOfOps = algebra.operations().size();  
     List<Operation> imgOps = null;
@@ -352,10 +357,9 @@ public class Closer {
             if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
-              specialEtsFound++;
-              System.out.println("found " + v);
+              specialEltsFound++;
               if (reportNotNull) report.addLine("found " + v + ", at " + index);
-              if (specialEtsFound == eltsToFind.size()) {
+              if (specialEltsFound == eltsToFind.size()) {
                 if (reportNotNull) report.addEndingLine("closing done, found all "
                     + eltsToFind.size() + " elems ");
                 allEltsFound = true;
@@ -500,7 +504,6 @@ if (false) {
     final boolean blocksNotNull = blocks == null ? false : true;
     final boolean valuesNotNull = values == null ? false : true;
     
-    int specialEtsFound = 0;
     
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
@@ -606,10 +609,10 @@ if (false) {
             if (eltsToFindNotNull  && minusOne.equals(indecesMapOfFoundElts.get(v))) {
               final int index = ans.size() - 1;
               indecesMapOfFoundElts.put(v, index);
-              specialEtsFound++;
+              specialEltsFound++;
               System.out.println("found " + v);
               if (reportNotNull) report.addLine("found " + v + ", at " + index);
-              if (specialEtsFound == eltsToFind.size()) {
+              if (specialEltsFound == eltsToFind.size()) {
                 if (reportNotNull) report.addEndingLine("closing done, found all "
                     + eltsToFind.size() + " elems ");
                 allEltsFound = true;
