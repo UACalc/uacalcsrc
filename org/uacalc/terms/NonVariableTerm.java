@@ -128,7 +128,7 @@ public class NonVariableTerm implements Term {
         @Override
         public int intValueAt(int[] args) {
           if (tableOp != null) return tableOp.intValueAt(args);
-          Map map = new  HashMap();
+          Map<Variable,Integer> map = new  HashMap<Variable,Integer>();
           for (int i = 0; i < args.length; i++) {
             map.put(varlist.get(i), new Integer(args[i]));
           }
@@ -143,18 +143,18 @@ public class NonVariableTerm implements Term {
   }
 
   public List<Variable> getVariableList() {
-    List lst = new ArrayList();
+    List<Variable> lst = new ArrayList<Variable>();
     addVariables(this, lst);
     return lst;
   }
 
-  private void addVariables(Term t, List vars) {
+  private void addVariables(Term t, List<Variable> vars) {
     if (t.isaVariable()) {
-      if (!vars.contains(t)) vars.add(t);
+      if (!vars.contains(t)) vars.add((Variable)t);
     }
     else {
-      for (Iterator it = t.getChildren().iterator(); it.hasNext(); ) {
-        addVariables((Term)it.next(), vars);
+      for (Term term : t.getChildren() ) {
+        addVariables(term, vars);
       }
     }
   }
@@ -163,16 +163,16 @@ public class NonVariableTerm implements Term {
 
   public int length() {
     int ans = 1;
-    for (Iterator it = getChildren().iterator(); it.hasNext(); ) {
-      ans =  ans + ((Term)it.next()).length();
+    for (Term t : getChildren()) {
+      ans =  ans + t.length();
     }
     return ans;
   }
 
   public int depth() {
     int max = 0;
-    for (Iterator it = getChildren().iterator(); it.hasNext(); ) {
-      max =  Math.max(max, ((Term)it.next()).depth());
+    for (Term t : getChildren()) {
+      max =  Math.max(max, t.depth());
     }
     return 1 + max;
   }
@@ -185,10 +185,10 @@ public class NonVariableTerm implements Term {
   public StringBuffer writeStringBuffer(StringBuffer sb) {
     sb.append(leadingOperationSymbol().name());
     sb.append(LEFT_PAR);
-    List children = getChildren();
+    List<Term> children = getChildren();
     final int n = children.size() - 1;
     for (int i = 0; i < n ; i++) {
-      Term child = (Term)children.get(i);
+      Term child = children.get(i);
       child.writeStringBuffer(sb);
       sb.append(COMMA);
     }

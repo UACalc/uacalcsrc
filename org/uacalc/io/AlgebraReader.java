@@ -41,8 +41,10 @@ public final class AlgebraReader extends DefaultHandler {
   private String cardinalityString = EMPTY_STRING;
   private String arityString = EMPTY_STRING;
   private String powerString = EMPTY_STRING;
+  private String powersString = EMPTY_STRING;
   private String rowString = EMPTY_STRING;
   private String intArrayString = EMPTY_STRING;
+  private String productElemString = EMPTY_STRING;
 
 
   private File file;
@@ -56,6 +58,7 @@ public final class AlgebraReader extends DefaultHandler {
   private int cardinality;
   private int arity;
   private int power;
+  private int[] powers;
   private OperationSymbol opSym;
   private Operation op;
   private List ops = new ArrayList();
@@ -63,8 +66,10 @@ public final class AlgebraReader extends DefaultHandler {
   private int intArrayIndex;
   private List universe = new ArrayList();
   private List factors = new ArrayList();
+  private List generators = new ArrayList();
   private SmallAlgebra superAlgebra;
   private SmallAlgebra rootAlgebra;
+  private Algebra bigAlgebra;
   private Partition congruence;
   private int[] subUniverse;
 
@@ -121,7 +126,7 @@ public final class AlgebraReader extends DefaultHandler {
     intArrayIndex = intArrayIndex + n;
   }
 
-  private int[] intArray(String str) {
+  private int[] rawIntArray(String str) {
     String[] strArr = str.split(",\\s*");
     final int n = strArr.length;
     int[] ans = new int[n];
@@ -129,6 +134,10 @@ public final class AlgebraReader extends DefaultHandler {
       ans[i] = Integer.parseInt(strArr[i]);
     } 
     return ans;
+  }
+  
+  private IntArray intArray(String str) {
+    return new IntArray(rawIntArray(str));
   }
 
   public void startElement(String namespaceURI,
@@ -146,7 +155,9 @@ public final class AlgebraReader extends DefaultHandler {
     if ("cardinality".equals(elemName)) cardinalityString = EMPTY_STRING;
     if ("arity".equals(elemName)) arityString = EMPTY_STRING;
     if ("power".equals(elemName)) powerString = EMPTY_STRING;
+    if ("powers".equals(elemName)) powersString = EMPTY_STRING;
     if ("row".equals(elemName)) rowString = EMPTY_STRING;
+    if ("productElem".equals(elemName)) productElemString = EMPTY_STRING;
     if ("intArray".equals(elemName)) intArrayString = EMPTY_STRING;
 
     if ("basicAlgebra".equals(elemName)) algType = BASIC;
@@ -183,10 +194,16 @@ public final class AlgebraReader extends DefaultHandler {
     if ("arity".equals(currentTag())) arityString += s;
     if ("power".equals(currentTag())) powerString += s;
     if ("row".equals(currentTag())) rowString += s;
-    if ("intArray".equals(currentTag()) 
-              && "congruence".equals(parentTag()) && s.length() > 0) {
-      intArrayString += s;
+    if ("intArray".equals(currentTag())) {
+      if ("congruence".equals(parentTag()) && s.length() > 0) {
+        intArrayString += s;
+      }
+      else if ("powers".equals(parentTag()) && s.length() > 0) {
+        powersString += s;
+      }
     }
+    
+    if ("productElem".equals(currentTag())) productElemString += s;
   }
 
   public void endElement(String namespaceURI, String lName, String qName) 
@@ -205,10 +222,16 @@ public final class AlgebraReader extends DefaultHandler {
             cardinality = Integer.parseInt(cardinalityString.trim());
     if ("arity".equals(elemName)) arity = Integer.parseInt(arityString.trim());
     if ("power".equals(elemName)) power = Integer.parseInt(powerString.trim());
+    if ("powers".equals(elemName)) powers = rawIntArray(powersString.trim());
     if ("row".equals(elemName)) intRow(rowString.trim());
     if ("intArray".equals(elemName) && "congruence".equals(parent)) {
       intArrayString = intArrayString.trim();
-      if (intArrayString.length() > 0) intArray = intArray(intArrayString);
+      if (intArrayString.length() > 0) intArray = rawIntArray(intArrayString);
+    }
+    if ("productElem".equals(elemName)) {
+      productElemString = productElemString.trim();
+      if ("generators".equals(parent)) generators.add(intArray(productElemString));
+      else if ("universe".equals(parent)) universe.add(intArray(productElemString));
     }
 
     if ("op".equals(elemName)) {
@@ -252,6 +275,19 @@ public final class AlgebraReader extends DefaultHandler {
       else  algebra = new ProductAlgebra(factors);
       algName = null;
       factors.clear();
+    }
+    if ("bigProductAlgebra".equals(elemName)) {
+      if (algName != null) bigAlgebra = new BigProductAlgebra(algName, 
+                                               (List<SmallAlgebra>)factors, powers);
+      else  bigAlgebra = new BigProductAlgebra((List<SmallAlgebra>)factors, powers);
+      algName = null;
+      factors.clear();
+    }
+    if ("subProductAlgebra".equals(elemName)) {
+      // we hack around the super tag by just skipping it since
+      // the BigProductAlgebra cannot be cast into a SmallAlgebra.
+      algebra = new SubProductAlgebra(algName, (BigProductAlgebra)bigAlgebra, 
+                           (List<IntArray>)generators, (List<IntArray>)universe);
     }
     if ("subAlgebra".equals(elemName)) {
       if (algName == null) {
