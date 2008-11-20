@@ -96,6 +96,11 @@ public class VariableImp implements Variable {
   public int depth() { return 0; }
 
   public int length() { return 1; }
+  
+  public Term substitute(Map<Variable,Term> map) {
+    if (map.get(this) != null) return map.get(this);
+    return this;
+  }
 
   public String toString() { return getName(); }
 

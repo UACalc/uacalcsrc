@@ -90,6 +90,42 @@ public class Taylor {
     return r;
   }
   
+  /**
+   * Constructs a term with a balanced term tree. All internal
+   * nodes have f and leaves are the variables from varList so
+   * varList should have length k^depth, where k is the arity of f.
+   * 
+   * @param f
+   * @param depth       the depth, at least 1
+   * @param varList
+   * @return
+   */
+  public Term makeBalancedTayorTerm(OperationSymbol f, int depth, List<Variable> varList) {
+    return balancedTT(f, depth, varList, 0);
+  }
+  
+  private Term balancedTT(OperationSymbol f, int depth, 
+                          List<Variable> varList, int start) {
+    final int k = f.arity();
+    final int factor = varList.size() / k;
+    if (depth == 1) {
+      List<Term> lst = new ArrayList<Term>(k);
+      for (int i = 0; i < k; i++) {
+        lst.add(varList.get(start + i));
+      }
+      return new NonVariableTerm(f, lst);
+    }
+    List<Term> lst = new ArrayList<Term>(k);
+    int current = 0;
+    for (int i = 0; i < k; i++) {
+      lst.add(balancedTT(f, depth - 1, varList, current));
+      current = current + factor;
+    }
+    return new NonVariableTerm(f, lst);
+  }
+  
+  
+  
   public static int lexicographicallyCompare(IntArray a, IntArray b) {
     return lexicographicallyCompare(a.getArray(), b.getArray());
   }

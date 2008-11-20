@@ -99,9 +99,17 @@ public interface Term {
    * The list of variables in the order they appear in the term.
    */
   public List<Variable> getVariableList();
+  
+  /**
+   * Replace some of the variables with terms.
+   * 
+   * @param map   a map for the substitution
+   * @return
+   */
+  public Term substitute(Map<Variable,Term> map);
 
   /**
-   * A reasonabley good printout of the term.
+   * A reasonably good printout of the term.
    */
   public String toString();
 

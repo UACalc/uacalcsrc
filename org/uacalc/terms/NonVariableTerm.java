@@ -176,6 +176,14 @@ public class NonVariableTerm implements Term {
     }
     return 1 + max;
   }
+  
+  public Term substitute(Map<Variable,Term> map) {
+    List<Term> newChildren = new ArrayList<Term>(getChildren().size());
+    for (Term t : getChildren()) {
+      newChildren.add(t.substitute(map));
+    }
+    return new NonVariableTerm(leadingOperationSymbol(), newChildren);
+  }
 
   public String toString() {
     StringBuffer sb = new StringBuffer();
