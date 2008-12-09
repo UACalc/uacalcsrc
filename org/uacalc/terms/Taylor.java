@@ -55,6 +55,60 @@ public class Taylor {
     makeRootMap(inteqs);
   }
   
+  /**
+   * Find the canonical form of a term <tt>t</tt> in the language of
+   * <tt>f</tt>  with variables <tt>x</tt> and <tt>y</tt>. 
+   * This first reduces via idempotence and then chooses the lexicographic
+   * order with <tt>x</tt> before <tt>y</tt>.
+   * 
+   * @param t
+   * @return
+   */
+  public Term canonicalForm(Term t) {
+    if (t.isaVariable()) return t;
+    List<Term> children = t.getChildren();
+    List<Term> canonicalChildren = new ArrayList<Term>(arity);
+    for (Term child : children) {
+      canonicalChildren.add(canonicalForm(child));
+    }
+    List<Term> reps = new ArrayList<Term>();
+    Map<Term,Integer> map = new HashMap<Term,Integer>();
+    int current = 0;
+    for (Term child : canonicalChildren) {
+      if (map.get(child) == null) {
+        map.put(child, current++);
+        reps.add(child);
+        if (current > 2) {
+          return new NonVariableTerm(taylorTerm.leadingOperationSymbol(), canonicalChildren);
+        }
+      }
+    }
+    if (current == 1) return canonicalChildren.get(0); // all the same
+    Term smallTerm, bigTerm;
+    if (lexicographicallyCompare(reps.get(0), reps.get(1)) < 0) {
+      smallTerm = reps.get(0);
+      bigTerm = reps.get(1);
+    }
+    else {
+      smallTerm = reps.get(1);
+      bigTerm = reps.get(0);
+    }
+    int[] foo = new int[arity];
+    for (int i = 0; i < arity; i++) {
+      if (smallTerm.equals(canonicalChildren.get(i))) foo[i] = 0;
+      else foo[i] = 1;
+    }
+    IntArray root = findRoot(new IntArray(foo));
+    if (allEqual(root, 0)) return smallTerm;
+    if (allEqual(root, 1)) return bigTerm;
+    List<Term> modChildren = new ArrayList<Term>(arity);
+    for (int i = 0; i < arity; i++) {
+      if (root.get(i) == 0) modChildren.add(smallTerm);
+      else modChildren.add(bigTerm);
+    }
+    return new NonVariableTerm(taylorTerm.leadingOperationSymbol(), modChildren);
+  }
+  
   private void makeRootMapFromEqs(List<Equation> eqs) {
     // TODO:
   }
@@ -63,13 +117,32 @@ public class Taylor {
     for (List<IntArray> eq : inteqs) {
       IntArray r0 = findRoot(eq.get(0));
       IntArray r1 = findRoot(eq.get(1));
-      if (lexicographicallyCompare(r0, r1) < 0) rootMap.put(r1, r0);
-      else if (lexicographicallyCompare(r0, r1) > 0) rootMap.put(r0, r1);
+      if (lexicographicallyCompare(r0, r1) < 0) {
+        if (allEqual(r1, 1)) rootMap.put(r0, r1);
+        else rootMap.put(r1, r0);
+      }
+      else if (lexicographicallyCompare(r0, r1) > 0) {
+        if (allEqual(r0, 1)) rootMap.put(r1, r0);
+        rootMap.put(r0, r1);
+      }
       r0 = findRoot(complement(eq.get(0)));
       r1 = findRoot(complement(eq.get(1)));
-      if (lexicographicallyCompare(r0, r1) < 0) rootMap.put(r1, r0);
-      else if (lexicographicallyCompare(r0, r1) > 0) rootMap.put(r0, r1);
+      if (lexicographicallyCompare(r0, r1) < 0) {
+        if (allEqual(r1, 1)) rootMap.put(r0, r1);
+        else rootMap.put(r1, r0);
+      }
+      else if (lexicographicallyCompare(r0, r1) > 0) {
+        if (allEqual(r0, 1)) rootMap.put(r1, r0);
+        else rootMap.put(r0, r1);
+      }
     }
+  }
+  
+  private boolean allEqual(IntArray ia, int value) {
+    for (int i = 0; i < arity; i++) {
+      if (ia.get(i) != value) return false;
+    }
+    return true;
   }
   
   private IntArray complement(IntArray ia) {
@@ -124,7 +197,21 @@ public class Taylor {
     return new NonVariableTerm(f, lst);
   }
   
-  
+  public int lexicographicallyCompare(Term s, Term t) {
+    if (s.equals(t)) return 0;
+    if (s.depth() < t.depth()) return -1;
+    if (t.depth() < s.depth()) return 1;
+    if (s.isaVariable()) {  // so both are variables
+      if (s.equals(Variable.x)) return -1;
+      return 1;
+    }
+    for (int i = 0; i < arity; i++) {
+      int c = lexicographicallyCompare(s.getChildren().get(i), t.getChildren().get(i));
+      if (c < 0) return -1;
+      if (c > 0) return 1;
+    }
+    return 0;
+  }
   
   public static int lexicographicallyCompare(IntArray a, IntArray b) {
     return lexicographicallyCompare(a.getArray(), b.getArray());
