@@ -38,6 +38,9 @@ public class Taylor {
   List<Equation> eqs;
   private final Map<IntArray,IntArray> rootMap = new HashMap<IntArray,IntArray>();
   
+  private static Taylor markovicMcKenzieTerm;
+  private static Taylor siggersTerm;
+  
   public Taylor(Term taylor, List<Equation> eqs) {
     taylorTerm = taylor;
     arity = taylor.leadingOperationSymbol().arity();
@@ -45,16 +48,21 @@ public class Taylor {
     makeRootMapFromEqs(eqs);
   }
   
-  public Taylor(int arity, List<List<IntArray>> inteqs) {
-    this.arity = arity;
+  public Taylor(OperationSymbol sym, List<List<IntArray>> inteqs) {
+    this.arity = sym.arity();
     List<Term> vars = new ArrayList<Term>(arity);
     for (int i = 0; i < arity; i++) {
       vars.add(new VariableImp("x_" + i));
     }
-    taylorTerm = new NonVariableTerm(new OperationSymbol("f", arity), vars);
+    taylorTerm = new NonVariableTerm(sym, vars);
     makeRootMap(inteqs);
   }
   
+  public Taylor(int arity, List<List<IntArray>> inteqs) {
+    this(new OperationSymbol("f", arity), inteqs);
+  }
+  
+
   /**
    * Find the canonical form of a term <tt>t</tt> in the language of
    * <tt>f</tt>  with variables <tt>x</tt> and <tt>y</tt>. 
@@ -111,6 +119,50 @@ public class Taylor {
   
   private void makeRootMapFromEqs(List<Equation> eqs) {
     // TODO:
+  }
+  
+  public static Taylor markovicMcKenzieTerm() {
+    if (markovicMcKenzieTerm == null) {
+      List<List<IntArray>> eqs = new ArrayList<List<IntArray>>(2);
+      List<IntArray> eq = new ArrayList<IntArray>(2);
+      eq.add(new IntArray(new int[] {1,0,0,0}));
+      eq.add(new IntArray(new int[] {0,0,1,1}));
+      eqs.add(eq);
+      eq = new ArrayList<IntArray>(2);
+      eq.add(new IntArray(new int[] {0,0,1,0}));
+      eq.add(new IntArray(new int[] {0,1,0,0}));
+      eqs.add(eq);
+      markovicMcKenzieTerm = new Taylor(new OperationSymbol("mm", 4), eqs);
+    }
+    return markovicMcKenzieTerm;
+  }
+  
+  public static Taylor siggersTerm() {
+    if (siggersTerm == null) {
+      List<List<IntArray>> eqs = new ArrayList<List<IntArray>>(2);
+      List<IntArray> eq = new ArrayList<IntArray>(2);
+      eq.add(new IntArray(new int[] {1,1,0,0,0,0}));
+      eq.add(new IntArray(new int[] {0,0,1,0,1,0}));
+      eqs.add(eq);
+      eq = new ArrayList<IntArray>(2);
+      eq.add(new IntArray(new int[] {0,0,0,0,1,1}));
+      eq.add(new IntArray(new int[] {0,1,0,1,0,0}));
+      eqs.add(eq);
+      siggersTerm = new Taylor(new OperationSymbol("s", 6), eqs);
+    }
+    return siggersTerm;
+  }
+  
+  /**
+   * Find a term which in the language of this which satisfies
+   * the identities of g.
+   * 
+   * @param g
+   * @return
+   */
+  public Term interprets(Taylor g, int level) {
+    
+    return null;
   }
   
   private void makeRootMap(List<List<IntArray>> inteqs) {
