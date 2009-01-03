@@ -161,7 +161,12 @@ public class Taylor {
    * @return
    */
   public Term interprets(Taylor g, int level) {
-    
+    int pow = 1;
+    for (int i = 0 ; i < level; i++) {
+      pow = pow * arity;
+    }
+    int [] seq = new int[pow];
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, g.arity() - 1);
     return null;
   }
   
@@ -279,5 +284,6 @@ public class Taylor {
     return 0;
   }
   
+  public int arity() { return arity; }
   
 }
