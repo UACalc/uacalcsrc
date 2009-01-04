@@ -36,6 +36,7 @@ public class Taylor {
   Term taylorTerm;
   int arity;
   List<Equation> eqs;
+  List<List<IntArray>> inteqs; // the equations as pairs of IntArray's.
   private final Map<IntArray,IntArray> rootMap = new HashMap<IntArray,IntArray>();
   
   private static Taylor markovicMcKenzieTerm;
@@ -49,6 +50,7 @@ public class Taylor {
   }
   
   public Taylor(OperationSymbol sym, List<List<IntArray>> inteqs) {
+    this.inteqs = inteqs;
     this.arity = sym.arity();
     List<Term> vars = new ArrayList<Term>(arity);
     for (int i = 0; i < arity; i++) {
@@ -161,12 +163,19 @@ public class Taylor {
    * @return
    */
   public Term interprets(Taylor g, int level) {
+    final int gArity = g.arity();
+    final List<List<IntArray>> inteqs = g.inteqs();
     int pow = 1;
     for (int i = 0 ; i < level; i++) {
       pow = pow * arity;
     }
     int [] seq = new int[pow];
-    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, g.arity() - 1);
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, gArity - 1);
+    while (inc.increment()) {
+      for (List<IntArray> eq : inteqs) {
+        
+      }
+    }
     return null;
   }
   
@@ -285,5 +294,9 @@ public class Taylor {
   }
   
   public int arity() { return arity; }
+  
+  public List<List<IntArray>> inteqs() { return inteqs; }
+  
+  public List<Equation> equations() { return eqs; }
   
 }
