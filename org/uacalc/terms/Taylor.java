@@ -119,6 +119,41 @@ public class Taylor {
     return new NonVariableTerm(taylorTerm.leadingOperationSymbol(), modChildren);
   }
   
+  public IntArray canonicalForm(IntArray arr) {
+    return canonicalForm(arr, 0, arr.size());
+  }
+  
+  private IntArray canonicalForm(IntArray arr, int start, int len) {
+    if (len == arity) {
+      final int[] tmp = new int[arity];
+      System.arraycopy(arr, start, tmp, 0, len);
+      System.arraycopy(findRoot(new IntArray(tmp)).getArray(), 0, arr, start, arity);
+      return arr;
+    }
+    final int len2 = len / arity;
+    HashSet<IntArray> hset = new HashSet<IntArray>();
+    for (int i = 0; i < arity; i++) {
+      hset.add(canonicalForm(arr, start + i * len2, len2));
+    }
+    if (hset.size() == 2) {
+      Iterator<IntArray> it = hset.iterator();
+      IntArray first = it.next();
+      IntArray second = it.next();
+      if (lexicographicallyCompare(first, second) > 0) {
+        IntArray tmp = second;
+        second = first;
+        first = tmp;
+      }
+      IntArray foo = new IntArray(arity);
+      for (int i = 0; i < arity; i++) {
+        // here !!!
+      }
+    }
+    return arr;
+  }
+  
+  
+  
   private void makeRootMapFromEqs(List<Equation> eqs) {
     // TODO:
   }
@@ -177,6 +212,19 @@ public class Taylor {
       }
     }
     return null;
+  }
+  
+  public Term termFromArray(final int[] arr, final int start, final int len) {
+    if (len == 1) {
+      if (arr[start] == 0) return Variable.x;
+      return Variable.y;
+    }
+    final int len2 = len / arity;
+    List<Term> lst = new ArrayList<Term>(arity);
+    for (int i = 0 ;  i < arity; i++) {
+      lst.add(termFromArray(arr, start + i * len2, len2));
+    }
+    return new NonVariableTerm(taylorTerm.leadingOperationSymbol(), lst);
   }
   
   private void makeRootMap(List<List<IntArray>> inteqs) {
