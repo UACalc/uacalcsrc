@@ -214,6 +214,10 @@ public class Taylor {
     return null;
   }
   
+  public Term termFromArray(final int[] arr) {
+    return termFromArray(arr, 0, arr.length);
+  }
+  
   public Term termFromArray(final int[] arr, final int start, final int len) {
     if (len == 1) {
       if (arr[start] == 0) return Variable.x;
@@ -346,5 +350,15 @@ public class Taylor {
   public List<List<IntArray>> inteqs() { return inteqs; }
   
   public List<Equation> equations() { return eqs; }
+  
+  public static void main(String[] args) {
+    List<List<IntArray>> eqs = new ArrayList<List<IntArray>>();
+    List<IntArray> eq = new ArrayList<IntArray>(2);
+    eq.add(new IntArray(new int[] {0,1}));
+    eq.add(new IntArray(new int[] {1,0}));
+    eqs.add(eq);
+    Taylor f = new Taylor(2, eqs);
+    System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
+  }
   
 }
