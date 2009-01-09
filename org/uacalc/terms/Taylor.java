@@ -206,8 +206,10 @@ public class Taylor {
     }
     int [] seq = new int[pow];
     ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, gArity - 1);
+long c = 0;
     while (inc.increment()) {
-      System.out.println("seq = " + ArrayString.toString(seq));
+      //System.out.println("seq = " + ArrayString.toString(seq));
+if (c++ % 1000000 == 0) System.out.println("c = " + c);
       boolean ok = true;
       for (List<IntArray> eq : inteqs) {
         int[] side = eq.get(0).getArray();
@@ -385,7 +387,7 @@ public class Taylor {
 
     Taylor f = new Taylor(4, eqs);
     //System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
-    f.interprets(markovicMcKenzieTerm(), 1);
+    f.interprets(markovicMcKenzieTerm(), 2);
     //siggersTerm().interprets(markovicMcKenzieTerm(), 2);
     //markovicMcKenzieTerm().interprets(siggersTerm(), 1);
     System.out.println("done");
