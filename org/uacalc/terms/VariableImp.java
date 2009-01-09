@@ -34,6 +34,7 @@ public class VariableImp implements Variable {
   }
 
   public boolean equals(Object obj) {
+    if (!(obj instanceof VariableImp)) return false;
     final VariableImp v = (VariableImp)obj;
     return name.equals(v.getName());
   }

@@ -207,8 +207,28 @@ public class Taylor {
     int [] seq = new int[pow];
     ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(seq, gArity - 1);
     while (inc.increment()) {
+      System.out.println("seq = " + ArrayString.toString(seq));
+      boolean ok = true;
       for (List<IntArray> eq : inteqs) {
-        
+        int[] side = eq.get(0).getArray();
+        int[] arr = new int[pow];
+        for (int i = 0; i < pow; i++) {
+          arr[i] = side[seq[i]];
+        }
+        Term left = canonicalForm(termFromArray(arr));
+        side = eq.get(1).getArray();
+        for (int i = 0; i < pow; i++) {
+          arr[i] = side[seq[i]];
+        }
+        Term rt = canonicalForm(termFromArray(arr));
+        if (!rt.equals(left)) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) {
+        System.out.println("this works: " + ArrayString.toString(seq));
+        return null;
       }
     }
     return null;
@@ -358,7 +378,10 @@ public class Taylor {
     eq.add(new IntArray(new int[] {1,0}));
     eqs.add(eq);
     Taylor f = new Taylor(2, eqs);
-    System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
+    //System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
+    f.interprets(markovicMcKenzieTerm(), 1);
+    siggersTerm().interprets(markovicMcKenzieTerm(), 2);
+    System.out.println("done");
   }
   
 }

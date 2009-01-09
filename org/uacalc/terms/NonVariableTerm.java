@@ -42,6 +42,7 @@ public class NonVariableTerm implements Term {
   }
   
   public boolean equals(Object obj) {
+    if (!(obj instanceof NonVariableTerm)) return false;
     final NonVariableTerm t = (NonVariableTerm)obj;
     return t.leadingOperationSymbol().equals(leadingOperationSymbol) 
                                &&  t.getChildren().equals(children);
