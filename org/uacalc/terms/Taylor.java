@@ -374,13 +374,19 @@ public class Taylor {
   public static void main(String[] args) {
     List<List<IntArray>> eqs = new ArrayList<List<IntArray>>();
     List<IntArray> eq = new ArrayList<IntArray>(2);
-    eq.add(new IntArray(new int[] {0,1}));
-    eq.add(new IntArray(new int[] {1,0}));
+    //eq.add(new IntArray(new int[] {0,1}));
+    //eq.add(new IntArray(new int[] {1,0}));
+    eq.add(new IntArray(new int[] {1,0,0,0}));
+    eq.add(new IntArray(new int[] {0,1,0,0}));
     eqs.add(eq);
-    Taylor f = new Taylor(2, eqs);
+    eq.add(new IntArray(new int[] {0,0,1,0}));
+    eq.add(new IntArray(new int[] {0,0,0,1}));
+    eqs.add(eq);
+
+    Taylor f = new Taylor(4, eqs);
     //System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
     f.interprets(markovicMcKenzieTerm(), 1);
-    siggersTerm().interprets(markovicMcKenzieTerm(), 2);
+    //siggersTerm().interprets(markovicMcKenzieTerm(), 2);
     //markovicMcKenzieTerm().interprets(siggersTerm(), 1);
     System.out.println("done");
   }
