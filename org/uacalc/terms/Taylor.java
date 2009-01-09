@@ -381,6 +381,7 @@ public class Taylor {
     //System.out.println(f.termFromArray(new int[] {0,1,1,0,0,0,1,1}));
     f.interprets(markovicMcKenzieTerm(), 1);
     siggersTerm().interprets(markovicMcKenzieTerm(), 2);
+    //markovicMcKenzieTerm().interprets(siggersTerm(), 1);
     System.out.println("done");
   }
   
