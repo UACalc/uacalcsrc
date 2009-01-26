@@ -740,6 +740,11 @@ public class MainController {
 
   public GUIAlgebra getCurrentAlgebra() { return currentAlgebra; }
   
+  public void removeCurrentAlgebra() {
+    // need to check if it needs saving
+    getAlgebraList().removeAlgebra(getCurrentAlgebra());
+  }
+  
   public void setCurrentAlgebra(SmallAlgebra alg) {
     setCurrentAlgebra(new GUIAlgebra(alg));
   }
