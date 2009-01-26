@@ -743,6 +743,10 @@ public class MainController {
   public void removeCurrentAlgebra() {
     // need to check if it needs saving
     getAlgebraList().removeAlgebra(getCurrentAlgebra());
+    //uacalcUI.getAlgListTable().setRowSelectionInterval(index, index);
+    uacalcUI.getAlgListTable().revalidate();
+    scrollToBottom(uacalcUI.getAlgListTable());
+    uacalcUI.getAlgListTable().repaint();
   }
   
   public void setCurrentAlgebra(SmallAlgebra alg) {
