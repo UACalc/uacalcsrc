@@ -7,7 +7,7 @@
   <property name="src.dir" value="."/>
   <property name="work.dir" value="../local"/>
   <property name="image.dir" value="${src.dir}/org/uacalc/ui/images"/>
-  <property name="algs.dir" value="../../../workspace/algebra/bin/algebras"/>
+  <property name="algs.dir" value="resources/algebras"/>
 
   <property name="class.dir" value="../classes"/>
   <property name="jar.dir" value="jars"/>
@@ -58,6 +58,7 @@
 
   <target name="compile-dist-work">
     <mkdir dir="${class.dir}"/>
+    <mkdir dir="${work.dir}"/>
     <javac srcdir="${work.dir}" 
            debug="${dist-debug}"
            destdir="${class.dir}"
