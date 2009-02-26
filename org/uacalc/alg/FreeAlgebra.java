@@ -219,7 +219,13 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
       productAlgebra = new BigProductAlgebra(algs);
       gens = transpose(projs);
-      if (report != null) report.addEndingLine("number of projections: " + projs.size());
+      final SortedMap<Integer,Integer> sizeMultiplicities = productAlgebra.sizeMultiplicities();
+      StringBuffer sb = new StringBuffer();
+      for (Integer k : sizeMultiplicities.keySet()) {
+        sb.append("" + k + "(" + sizeMultiplicities.get(k) + "), ");
+      }
+      if (report != null) report.addEndingLine("number of projections: " + projs.size()
+                               + ", sizes: " + sb.toString());
       System.out.println("projs size = " + projs.size());
     }
     else {

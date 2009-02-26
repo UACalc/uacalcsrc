@@ -298,6 +298,16 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   public SmallAlgebra projection(int k) {
     return algebras.get(k);
   }
+  
+  public SortedMap<Integer,Integer> sizeMultiplicities() {
+    SortedMap<Integer,Integer> ans = new TreeMap<Integer,Integer>();
+    for (int i = 0; i < sizes.length; i++) {
+      final int k = sizes[i];
+      if (ans.get(k) == null) ans.put(k, 1);
+      else ans.put(k, ans.get(k) + 1);
+    }
+    return ans;
+  }
 
   /**
    * Don't use this yet; it is not implemented.
