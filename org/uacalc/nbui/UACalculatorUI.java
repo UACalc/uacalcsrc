@@ -2084,7 +2084,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     
 private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
