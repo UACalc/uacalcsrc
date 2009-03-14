@@ -1083,14 +1083,14 @@ public class UACalculatorUI extends javax.swing.JFrame {
     private void initComponentsDesignLayout() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();//panel for editor tab
+        jPanel2 = new javax.swing.JPanel();//panel for algebras tab
+        jPanel3 = new javax.swing.JPanel();//panel for computations tab
+        jPanel4 = new javax.swing.JPanel();//panel for con
+        jPanel5 = new javax.swing.JPanel();//panel for sub tab
+        jPanel6 = new javax.swing.JPanel();//panel for drawing tab
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
         tabbedPane = new javax.swing.JTabbedPane();
         editorPanel = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
