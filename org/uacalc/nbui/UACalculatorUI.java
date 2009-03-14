@@ -163,7 +163,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         pixleyMI = new javax.swing.JMenuItem();
         nuMI = new javax.swing.JMenuItem();
         mmstMI = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        drawingMenu = new javax.swing.JMenu();
         drawConMI = new javax.swing.JMenuItem();
         drawSubMI = new javax.swing.JMenuItem();
         drawAlgMI = new javax.swing.JMenuItem();
@@ -1003,7 +1003,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         jMenuBar1.add(maltsevMenu);
 
-        jMenu1.setText("Drawing");
+        drawingMenu.setText("Drawing");
 
         drawConMI.setText("Con");
         drawConMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1011,7 +1011,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawConMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawConMI);
+        drawingMenu.add(drawConMI);
 
         drawSubMI.setText("Sub");
         drawSubMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1019,7 +1019,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawSubMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawSubMI);
+        drawingMenu.add(drawSubMI);
 
         drawAlgMI.setText("Algebra");
         drawAlgMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1027,9 +1027,9 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawAlgMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawAlgMI);
+        drawingMenu.add(drawAlgMI);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(drawingMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -1174,7 +1174,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
         pixleyMI = new javax.swing.JMenuItem();
         nuMI = new javax.swing.JMenuItem();
         mmstMI = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        drawingMenu = new javax.swing.JMenu();
         drawConMI = new javax.swing.JMenuItem();
         drawSubMI = new javax.swing.JMenuItem();
         drawAlgMI = new javax.swing.JMenuItem();
@@ -2014,7 +2014,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
 
         jMenuBar1.add(maltsevMenu);
 
-        jMenu1.setText("Drawing");
+        drawingMenu.setText("Drawing");
 
         drawConMI.setText("Con");
         drawConMI.addActionListener(new java.awt.event.ActionListener() {
@@ -2022,7 +2022,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawConMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawConMI);
+        drawingMenu.add(drawConMI);
 
         drawSubMI.setText("Sub");
         drawSubMI.addActionListener(new java.awt.event.ActionListener() {
@@ -2030,7 +2030,7 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawSubMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawSubMI);
+        drawingMenu.add(drawSubMI);
 
         drawAlgMI.setText("Algebra");
         drawAlgMI.addActionListener(new java.awt.event.ActionListener() {
@@ -2038,9 +2038,9 @@ public class UACalculatorUI extends javax.swing.JFrame {
                 drawAlgMIActionPerformed(evt);
             }
         });
-        jMenu1.add(drawAlgMI);
+        drawingMenu.add(drawAlgMI);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(drawingMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -2289,6 +2289,7 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JMenuItem drawSubMI;
     private javax.swing.JPanel drawingLeftPanel;
     private javax.swing.JPanel drawingMainPanel;
+    private javax.swing.JMenu drawingMenu;
     private javax.swing.JPanel drawingPanel;
     private javax.swing.JMenu editMenu;
     private javax.swing.JPanel editorPanel;
@@ -2302,7 +2303,6 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
