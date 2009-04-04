@@ -92,6 +92,7 @@ public class CongruenceLattice implements Lattice {
   private List<Partition> joinIrreducibles = null;
   private List<Partition> atoms = null;
   private List<Partition> meetIrreducibles = null;
+  private List<Partition> coatoms = null;
   private Map<Partition,Partition> lowerCoverOfJIs = null;
   private Set<Partition> congruencesHash = null;
 //  private List<Partition> meetIrredCongruences = null;
@@ -272,7 +273,8 @@ public class CongruenceLattice implements Lattice {
   
   // TODO either do something or may throw UnsupportedOperationException
   public List<Partition> coatoms() {
-    return null;
+    meetIrreducibles();
+    return coatoms;
   }
 
   public Object join(Object a, Object b) { 
@@ -850,8 +852,10 @@ public class CongruenceLattice implements Lattice {
     Iterator<Partition> it = universe().iterator();
     while (it.hasNext()) {
       Partition elem = it.next();
-      if (upperCoversMap().get(elem).size() == 1) {
-	      meetIrreducibles.add(elem);
+      List<Partition> ucs = upperCoversMap().get(elem);
+      if (ucs.size() == 1) {
+        meetIrreducibles.add(elem);
+        if (ucs.get(0).equals(one())) coatoms.add(elem);
       }
     }
   }
