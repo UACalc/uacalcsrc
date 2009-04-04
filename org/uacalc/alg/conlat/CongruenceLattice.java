@@ -849,6 +849,7 @@ public class CongruenceLattice implements Lattice {
 
   private void makeMeetIrreducibles() {
     meetIrreducibles = new ArrayList<Partition>();
+    coatoms = new ArrayList<Partition>();
     Iterator<Partition> it = universe().iterator();
     while (it.hasNext()) {
       Partition elem = it.next();
