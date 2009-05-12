@@ -508,6 +508,63 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     return ans;
   }
+  
+  /**
+   * 
+   * 
+   * @param pars
+   * @return
+   */
+  public static List<Partition> closureAt(List<BasicPartition> pars) {
+    final BasicPartition alpha = pars.get(0);
+    final int n = alpha.size();
+    int[][] blocks = alpha.getBlocks();
+    List<IntArray> univ = new ArrayList<IntArray>();
+    for (int i = 0; i < blocks.length; i++) {
+      final int[] block = blocks[i];
+      for (int j = 0; j < block.length; j++) {
+        for ( int k = 0; k < block.length; k++) {
+          univ.add(new IntArray(new int[] {j, k}));
+        }
+      }
+    }
+    final int size = univ.size();
+    Partition firstProj = alpha.inducedPartition(univ, 0);
+    Set<Partition> hs = new HashSet<Partition>();
+    hs.add(firstProj);
+    hs.add(alpha.inducedPartition(univ, 1));
+    for (BasicPartition par : pars) {
+      hs.add(par.inducedPartition(univ, 0));
+      hs.add(par.inducedPartition(univ, 1));      
+    }
+    
+    
+    return new ArrayList<Partition>(hs);
+  }
+  
+  /**
+   * Find the induced partition on a subset of a direct product
+   * whose <code>coord</code> coordinates are related by 
+   * this.
+   * 
+   * 
+   * @param par
+   * @param prodUniv
+   * @param coord
+   * @return
+   */
+  private Partition inducedPartition(List<IntArray> prodUniv, int coord) {
+    final int n = prodUniv.size();
+    Partition ans = zero(n);
+    for (int i = 0; i < n; i++) {
+      for (int j = i+1; j < n; j++) {
+        final int r = representative(prodUniv.get(i).get(coord));
+        final int s = representative(prodUniv.get(j).get(coord));
+        if (r != s) ans.joinBlocks(r, s);
+      }
+    }
+    return ans;
+  }
 
   public static void main(String[] args) {
     BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
