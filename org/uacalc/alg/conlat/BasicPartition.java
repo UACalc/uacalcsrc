@@ -565,6 +565,50 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     return ans;
   }
+  
+  public static List<Partition> joinClosure(List<Partition> pars) {
+    Set<Partition> hs = new HashSet<Partition>(pars);
+    List<Partition> ans = new ArrayList<Partition>(pars);
+    int k = 0;
+    for (Partition elt : pars) {
+      k++;
+      int n = ans.size();
+      for (int i = k; i < n; i++) {
+        Partition join = elt.join(ans.get(i));
+        if (hs.add(join)) ans.add(join);
+      }
+    }
+    return ans;
+  }
+  
+  public static List<Partition> meetClosure(List<Partition> pars) {
+    Set<Partition> hs = new HashSet<Partition>(pars);
+    List<Partition> ans = new ArrayList<Partition>(pars);
+    int k = 0;
+    for (Partition elt : pars) {
+      k++;
+      int n = ans.size();
+      for (int i = k; i < n; i++) {
+        Partition join = elt.meet(ans.get(i));
+        if (hs.add(join)) ans.add(join);
+      }
+    }
+    return ans;
+  }
+  
+  public static List<Partition> subUniverseGenerated(List<Partition> gens) {
+    List<Partition> ans = meetClosure(gens);
+    ans = meetClosure(ans);
+    int k = ans.size();
+    while (true) {
+      ans = joinClosure(ans);
+      if (ans.size() == k) return ans;
+      k = ans.size();
+      ans = meetClosure(ans);
+      if (ans.size() == k) return ans;
+      k = ans.size();
+    }
+  }
 
   public static void main(String[] args) {
     BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
