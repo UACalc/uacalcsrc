@@ -529,9 +529,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       }
     }
     final int size = univ.size();
-    Partition firstProj = alpha.inducedPartition(univ, 0);
+    Partition firstProj = zero(alpha.size()).inducedPartition(univ, 0);
+    Partition alpha0 = alpha.inducedPartition(univ, 0);
     Set<Partition> hs = new HashSet<Partition>();
     hs.add(firstProj);
+    hs.add(zero(alpha.size()).inducedPartition(univ, 1)); //second proj kernel
+    hs.add(alpha0);
     hs.add(alpha.inducedPartition(univ, 1));
     for (BasicPartition par : pars) {
       hs.add(par.inducedPartition(univ, 0));
