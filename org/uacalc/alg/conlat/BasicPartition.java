@@ -524,25 +524,50 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       final int[] block = blocks[i];
       for (int j = 0; j < block.length; j++) {
         for ( int k = 0; k < block.length; k++) {
-          univ.add(new IntArray(new int[] {j, k}));
+          univ.add(new IntArray(new int[] {block[j], block[k]}));
         }
       }
     }
+    System.out.println("univ: " + univ);
     final int size = univ.size();
     Partition firstProj = zero(alpha.size()).inducedPartition(univ, 0);
+    Partition secondProj = zero(alpha.size()).inducedPartition(univ, 1);
+    System.out.println("firstProj: " + firstProj);
+    System.out.println("secondProj: " + secondProj);
     Partition alpha0 = alpha.inducedPartition(univ, 0);
+    System.out.println("alpha: " + alpha);
+    System.out.println("alpha0: " + alpha0);
     Set<Partition> hs = new HashSet<Partition>();
     hs.add(firstProj);
     hs.add(zero(alpha.size()).inducedPartition(univ, 1)); //second proj kernel
-    hs.add(alpha0);
+    hs.add(alpha0); 
     hs.add(alpha.inducedPartition(univ, 1));
     for (BasicPartition par : pars) {
+      System.out.println("gen par is " + par);
+      System.out.println("gen par_0 is " + par.inducedPartition(univ, 0));
       hs.add(par.inducedPartition(univ, 0));
       hs.add(par.inducedPartition(univ, 1));      
     }
-    
-    
-    return new ArrayList<Partition>(hs);
+    List<Partition> sub = subUniverseGenerated(new ArrayList<Partition>(hs));
+    System.out.println("sub size = " + sub.size());
+    List<Partition> ans = new ArrayList<Partition>();
+    for (Partition par : sub) {
+      //System.out.println("par: " + par +" is geq firstProj: " + firstProj.leq(par));
+      if (firstProj.leq(par)) ans.add(((BasicPartition)par).projection(univ, n, 0));
+    }
+    return ans;
+  }
+  
+  public Partition projection(List<IntArray> universe, int size, int coord) {
+    BasicPartition ans = zero(size);
+    final int n = size();
+    for (int i = 0; i < n; i++) {
+      int r = ans.root(universe.get(i).get(coord));
+      int s = ans.root(universe.get(root(i)).get(coord));
+      if (r != s) ans.joinBlocks(r, s);
+    }
+    ans.normalize();
+    return ans;
   }
   
   /**
@@ -557,15 +582,19 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @return
    */
   private Partition inducedPartition(List<IntArray> prodUniv, int coord) {
+    //System.out.println("par is " + toString());
     final int n = prodUniv.size();
-    Partition ans = zero(n);
+    BasicPartition ans = zero(n);
     for (int i = 0; i < n; i++) {
       for (int j = i+1; j < n; j++) {
-        final int r = representative(prodUniv.get(i).get(coord));
-        final int s = representative(prodUniv.get(j).get(coord));
-        if (r != s) ans.joinBlocks(r, s);
+        if (root(prodUniv.get(i).get(coord)) == root(prodUniv.get(j).get(coord))) {
+          final int r = ans.root(i);
+          final int s = ans.root(j);
+          if (r != s) ans.joinBlocks(r, s);
+        }
       }
     }
+    ans.normalize();
     return ans;
   }
   
@@ -604,9 +633,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     ans = meetClosure(ans);
     int k = ans.size();
     while (true) {
+      System.out.println("k = " + k);
       ans = joinClosure(ans);
       if (ans.size() == k) return ans;
       k = ans.size();
+      System.out.println("k = " + k);
       ans = meetClosure(ans);
       if (ans.size() == k) return ans;
       k = ans.size();
@@ -614,10 +645,96 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
 
   public static void main(String[] args) {
+    
+    // Using any of these as theta gives the full 7 element closure.
+    // |L(\theta)| = 31 for the first one, and 164 for other two.
     BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
-    BasicPartition par1 = new BasicPartition(new int[] {-1, -2, 1, -1});
-    int ans = permutabilityLevel(2, 3, par0, par1);
-    System.out.println("level is " + ans);
+    BasicPartition par1 = new BasicPartition(new int[] {-2, -2, 0, 1});
+    BasicPartition par2 = new BasicPartition(new int[] {-2,-2, 1, 0});
+    
+    BasicPartition jb0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4});
+    BasicPartition jb1 = new BasicPartition(new int[] {-3, -2, 1, 0, 0, -1});
+    BasicPartition jb2 = new BasicPartition(new int[] {-1, -3, -2, 1, 2, 1});
+    System.out.println("jb2 = " + jb2);
+    
+    //for |X|=5,
+    //|01|23|4|
+    //|0|12|34|
+    //|024|13|
+    // this gives the full closure showing this is super bad (52 elements)
+    // L(\theta) has 21147 elements.
+
+    BasicPartition snow0 = new BasicPartition(new int[] {-2, 0, -2, 2, -1});
+    BasicPartition snow1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3});
+    BasicPartition snow2 = new BasicPartition(new int[] {-3, -3, 0, 1, 0});
+    System.out.println("snow2 = " + snow2);
+    
+    // rf0 |01|2|3|
+    // rf1 |0|1|23|
+    // rf2 |02|13|
+    BasicPartition rfjoin = new BasicPartition(new int[] {-2, 0, -2, 2});
+    BasicPartition rf0 = new BasicPartition(new int[] {-2, 0, -1, -1});
+    BasicPartition rf1 = new BasicPartition(new int[] {-2, -2, 0, 1});
+    BasicPartition rf2 = new BasicPartition(new int[] {-1, -1, -2, 2});
+    
+    // |0|14|23|
+    // |023|14|
+    // |02|13|4|
+    // This just generates 3 x 2, so it is stupid.
+    BasicPartition rfx0 = new BasicPartition(new int[] {-1, -2, -2, 2, 1});
+    BasicPartition rfx1 = new BasicPartition(new int[] {-3, -2, 0, 0, 1});
+    BasicPartition rfx2 = new BasicPartition(new int[] {-2, -2, 0, 1, -1});
+    
+    // |01|23|45|
+    // |0|12|34|5|
+    // |05|12|34|
+    // This one is complete
+    BasicPartition rfy0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4});
+    BasicPartition rfy1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
+    BasicPartition rfy2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0});
+    
+    // |024|135|
+    // |0|12|34|5|
+    // |05|12|34|
+    // This one is complete
+    BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
+    BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
+    BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0}); 
+    
+    // |012|345|6|7|
+    // |012|345|67|
+    // |0|146|257|3|
+    // |03|146|257|
+    // this seems to give a closed hexagon. (At least closed under the L(\theta) 
+    // construction.
+    
+    BasicPartition rfw0 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3, -1, -1});
+    BasicPartition rfw1 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3, -2, 6});
+    BasicPartition rfw2 = new BasicPartition(new int[] {-1, -3, -3, -1, 1, 2, 1, 2}); 
+    BasicPartition rfw3 = new BasicPartition(new int[] {-2, -3, -3, 0, 1, 2, 1, 2}); 
+    
+    List<BasicPartition> gens = new ArrayList<BasicPartition>();
+    //gens.add(one(4));
+    gens.add(rfw0);
+    gens.add(rfw1);
+    gens.add(rfw2);
+    gens.add(rfw3);
+    System.out.println("gens: " + gens);
+    List<Partition> closure = closureAt(gens);
+    for (Partition par : closure) {
+      System.out.print(par);
+      if (par.equals(gens.get(0))) System.out.println(" **");
+      else if (gens.contains(par)) System.out.println(" *");
+      else System.out.println("");
+    }
+    System.out.println("closure size: " + closure.size());
+    
+    
+    
+    //BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
+    //BasicPartition par1 = new BasicPartition(new int[] {-1, -2, 1, -1});
+    //int ans = permutabilityLevel(2, 3, par0, par1);
+    //System.out.println("level is " + ans);
   }
 
 }
