@@ -712,13 +712,48 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition rfw1 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3, -2, 6});
     BasicPartition rfw2 = new BasicPartition(new int[] {-1, -3, -3, -1, 1, 2, 1, 2}); 
     BasicPartition rfw3 = new BasicPartition(new int[] {-2, -3, -3, 0, 1, 2, 1, 2}); 
+  
+    // |01|23|45|
+    // |05|21|43|
+    // |03|25|41|
+    // |024|135|
+    BasicPartition bill0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4});
+    BasicPartition bill1 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0});
+    BasicPartition bill2 = new BasicPartition(new int[] {-2, -2, -2, 0, 1, 2}); 
+    BasicPartition bill3 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1}); 
+    
+    // |01|23|45|67|
+    // |07|21|43|65|
+    // |05|27|41|63|
+    // |03|25|47|61|
+    // |0246|1357|
+    BasicPartition billx0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4, -2, 6});
+    BasicPartition billx1 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, -2, 5, 0});
+    BasicPartition billx2 = new BasicPartition(new int[] {-2, -2, -2, -2, 1, 0, 3, 2}); 
+    BasicPartition billx3 = new BasicPartition(new int[] {-2, -2, -2, 0, -2, 2, 1, 4}); 
+    BasicPartition billx4 = new BasicPartition(new int[] {-4, -4, 0, 1, 0, 1, 0, 1}); 
+    
+    // |01|23|45|67|89|
+    // |09|21|43|65|87|
+    // |07|29|41|63|85|
+    // |05|27|49|61|83|
+    // |03|25|47|69|81|
+    // |02468|13579|
+    BasicPartition billy0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4, -2, 6, -2, 8});
+    BasicPartition billy1 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, -2, 5, -2, 7, 0});
+    BasicPartition billy2 = new BasicPartition(new int[] {-2, -2, -2, -2, 1, -2, 3, 0, 5, 2});  // |07|29|41|63|85|
+    BasicPartition billy3 = new BasicPartition(new int[] {-2, -2, -2, -2, -2, 0, 1, 2, 3, 4}); // |05|27|49|61|83|
+    BasicPartition billy4 = new BasicPartition(new int[] {-2, -2, -2, 0, -2, 2, -2, 4, 1, 6}); // |03|25|47|69|81|
+    BasicPartition billy5 = new BasicPartition(new int[] {-5, -5, 0, 1, 0, 1, 0, 1, 0, 1}); 
     
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
     //gens.add(one(4));
-    gens.add(rfw0);
-    gens.add(rfw1);
-    gens.add(rfw2);
-    gens.add(rfw3);
+    gens.add(billy0);
+    gens.add(billy4);
+    gens.add(billy1);
+    gens.add(billy2);
+    gens.add(billy3);
+    gens.add(billy5);
     System.out.println("gens: " + gens);
     List<Partition> closure = closureAt(gens);
     for (Partition par : closure) {
