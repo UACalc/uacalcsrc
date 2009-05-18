@@ -509,6 +509,48 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return ans;
   }
   
+  public static List<IntArray> unaryClone(List<Partition> pars) {
+    final int n = pars.get(0).size();
+    List<IntArray> lst = new ArrayList<IntArray>();
+    IntArray ia = new IntArray(n);
+    unaryCloneAux(ia, 0, n, lst, pars);
+    
+    return lst;
+  }
+  
+  private static void unaryCloneAux(final IntArray arr, 
+                                       final int index,
+                                       final int n,
+                                       final List<IntArray> lst,
+                                       final List<Partition> pars) {
+    if (index == n) {
+      IntArray copy = new IntArray(n);
+      System.arraycopy(arr.getArray(), 0, copy.getArray(), 0, n);
+      lst.add(copy);
+      return;
+    }
+    for (int value = 0; value < n; value++) {
+      if (respects(arr, index, value, pars)) {
+        arr.set(index, value);
+        unaryCloneAux(arr, index + 1, n, lst, pars);
+      }
+    }
+  }
+  
+  private static boolean respects(final IntArray partialFunction, 
+                           final int index, final int value, 
+                           final List<Partition> pars) {
+    for (Partition par : pars) {
+      final int r = par.representative(index);
+      for (int i = 0; i < index; i++) {
+        if (r == par.representative(i)) {
+          if (!par.isRelated(value, partialFunction.get(i))) return false;
+        }
+      }
+    }
+    return true;
+  }
+  
   /**
    * 
    * 
@@ -746,15 +788,47 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition billy4 = new BasicPartition(new int[] {-2, -2, -2, 0, -2, 2, -2, 4, 1, 6}); // |03|25|47|69|81|
     BasicPartition billy5 = new BasicPartition(new int[] {-5, -5, 0, 1, 0, 1, 0, 1, 0, 1}); 
     
+    // (045|123) (03|15|24) (01|25|34) (02|14|35)
+    // DeMeo's closed M_4
+    BasicPartition demeo0 = new BasicPartition(new int[] {-3, -3, 1, 1, 0, 0});
+    BasicPartition demeo1 = new BasicPartition(new int[] {-2, -2, -2, 0, 2, 1});
+    BasicPartition demeo2 = new BasicPartition(new int[] {-2, 0, -2, -2, 3, 2});
+    BasicPartition demeo3 = new BasicPartition(new int[] {-2, -2, 0, -2, 1, 3 }); 
+    
+    // Snow's example of a superbad M_3 for odd |X| is:
+    // |01|23|...|2a|
+    // |0|12|34|...|2a-1,2a|
+    // |evens|odds|
+    BasicPartition snow90 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4, -2, 6, -1});
+    BasicPartition snow91 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -2, 5, -2, 7});
+    BasicPartition snow92 = new BasicPartition(new int[] {-5, -4, 0, 1, 0, 1, 0, 1, 0});
+    
+    BasicPartition snow130 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4, -2, 6, -2, 8, -2, 10, -1});
+    BasicPartition snow131 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -2, 5, -2, 7, -2, 9, -2, 11});
+    BasicPartition snow132 = new BasicPartition(new int[] {-7, -6, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0});
+    
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
     //gens.add(one(4));
-    gens.add(billy0);
-    gens.add(billy4);
-    gens.add(billy1);
-    gens.add(billy2);
+    
+    //gens.add(demeo0);
+    //gens.add(demeo1);
+    //gens.add(demeo2);
+    //gens.add(demeo3);
+    
+    //gens.add(snow130);
+    //gens.add(snow131);
+    //gens.add(snow132);
+    
+    //gens.add(billy0);
+    //gens.add(billy1);
+    //gens.add(billy2);
     gens.add(billy3);
+    gens.add(billy4);
     gens.add(billy5);
+    
+    
     System.out.println("gens: " + gens);
+    
     List<Partition> closure = closureAt(gens);
     for (Partition par : closure) {
       System.out.print(par);
@@ -765,6 +839,24 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("closure size: " + closure.size());
     
     
+    //List<Partition> pars = new ArrayList<Partition>();
+    //Partition par = new BasicPartition(new int[] {-2, 0, -1});
+    //pars.add(zero(3));
+    //pars.add(par);
+    
+    //pars.add(demeo0);
+    //pars.add(demeo1);
+    //pars.add(demeo2);
+    //pars.add(demeo3);
+    
+    List<Partition> pars = new ArrayList<Partition>();
+    for (BasicPartition gen : gens) {
+      pars.add((Partition)gen);
+    }
+    long t = System.currentTimeMillis();
+    List<IntArray> lst = unaryClone(pars);
+    System.out.println("time: " + (System.currentTimeMillis() - t));
+    System.out.println("functs: (" + lst.size() + ")\n" + lst);
     
     //BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
     //BasicPartition par1 = new BasicPartition(new int[] {-1, -2, 1, -1});
