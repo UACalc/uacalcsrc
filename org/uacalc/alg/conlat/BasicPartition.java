@@ -4,6 +4,9 @@ package org.uacalc.alg.conlat;
 
 import org.uacalc.util.IntArray;
 
+import org.uacalc.alg.op.*; // only needed in main
+import org.uacalc.alg.*;    // only needed in main
+
 
 import java.util.*;
 
@@ -509,6 +512,18 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return ans;
   }
   
+  public static SmallAlgebra unaryCloneAlgebra(List<Partition> pars) {
+    String f = "f_";
+    final int size = pars.get(0).size();
+    final List<IntArray> lst = unaryClone(pars);
+    System.out.println("number of ops in the unary clone is " + lst.size());
+    final List<Operation> ops = new ArrayList<Operation>(lst.size());
+    for (int i = 0; i < lst.size(); i++) {
+      ops.add(Operations.makeIntOperation(f + i, 1, size, lst.get(i).getArray()));
+    }
+    return new BasicAlgebra("", size, ops);
+  }
+  
   public static List<IntArray> unaryClone(List<Partition> pars) {
     final int n = pars.get(0).size();
     List<IntArray> lst = new ArrayList<IntArray>();
@@ -807,6 +822,21 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition snow131 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -2, 5, -2, 7, -2, 9, -2, 11});
     BasicPartition snow132 = new BasicPartition(new int[] {-7, -6, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0});
     
+    // Take the pentagon on seven elements
+    // |06|15|2|3|4|
+    // |06|145|23|
+    // |034|16|25|
+    // and you also get the intermediate element
+    // |06|145|2|3|
+    // in the closure.
+    // JB
+    BasicPartition jb70 = new BasicPartition(new int[] {-2, -2, -1, -1, -1, 1, 0});
+    BasicPartition jb71 = new BasicPartition(new int[] {-2, -3, -2, 2, 1, 1, 0});
+    BasicPartition jb72 = new BasicPartition(new int[] {-3, -2, -2, 0, 0, 2, 1});
+    
+    
+    
+    
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
     //gens.add(one(4));
     
@@ -822,9 +852,9 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(billy0);
     //gens.add(billy1);
     //gens.add(billy2);
-    gens.add(billy3);
-    gens.add(billy4);
-    gens.add(billy5);
+    gens.add(jb72);
+    gens.add(jb70);
+    gens.add(jb71);
     
     
     System.out.println("gens: " + gens);
@@ -853,10 +883,22 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (BasicPartition gen : gens) {
       pars.add((Partition)gen);
     }
-    long t = System.currentTimeMillis();
-    List<IntArray> lst = unaryClone(pars);
-    System.out.println("time: " + (System.currentTimeMillis() - t));
-    System.out.println("functs: (" + lst.size() + ")\n" + lst);
+    
+    //long t = System.currentTimeMillis();
+    //List<IntArray> lst = unaryClone(pars);
+    //System.out.println("time: " + (System.currentTimeMillis() - t));
+    //System.out.println("functs: (" + lst.size() + ")\n" + lst);
+    //String f = "f_";
+    //final int size = gens.get(0).size();
+    //List<Operation> ops = new ArrayList<Operation>(lst.size());
+    //for (int i = 0; i < lst.size(); i++) {
+      //ops.add(Operations.makeIntOperation(f + i, 1, size, lst.get(i).getArray()));
+    //}
+    SmallAlgebra alg = unaryCloneAlgebra(pars);
+    System.out.println("|Con(A)| = " + alg.con().universe().size());
+    for (Partition par : alg.con().universe()) {
+      System.out.println(par);
+    }
     
     //BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
     //BasicPartition par1 = new BasicPartition(new int[] {-1, -2, 1, -1});
