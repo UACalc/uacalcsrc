@@ -19,7 +19,7 @@ import org.uacalc.util.*;
 
 public class ComputationsController {
   
-  private final UACalculatorUI uacalcUI;
+  private final UACalc uacalcUI;
   // these next should be glued together better. Maybe put the later as
   // a field in the former so there is only one list.
   private TaskTableModel taskTableModel = new TaskTableModel();
@@ -27,7 +27,7 @@ public class ComputationsController {
   private static final String[] thinningOptions
       = new String[] {"use all coords", "thin coords", "decompose and thin"};
   
-  public ComputationsController(UACalculatorUI uacalcUI) {
+  public ComputationsController(UACalc uacalcUI) {
     this.uacalcUI = uacalcUI;
     setupTasksTable();
     setupResultTable();
@@ -190,7 +190,7 @@ public class ComputationsController {
   public void setupFreeAlgebraTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -273,7 +273,7 @@ public class ComputationsController {
   }
   
   public int getNumberDialog(int min, String message, String title) {
-    String numStr = JOptionPane.showInputDialog(uacalcUI, 
+    String numStr = JOptionPane.showInputDialog(uacalcUI.getFrame(), 
                     message, title, JOptionPane.QUESTION_MESSAGE);
     if (numStr == null) return -1;
     int num = -1;
@@ -285,7 +285,7 @@ public class ComputationsController {
       gensOk = false;
     }
     if (!gensOk || num < min) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>The number must be at least " + min + "<br>"
           + "Try again.</html>",
           "Number format error",
@@ -304,7 +304,7 @@ public class ComputationsController {
   }
   
   private String getThinGens() {
-    String opt = (String)JOptionPane.showInputDialog(uacalcUI,
+    String opt = (String)JOptionPane.showInputDialog(uacalcUI.getFrame(),
         "Choose one",
         "Thinning Options",
         JOptionPane.QUESTION_MESSAGE, null,
@@ -315,7 +315,7 @@ public class ComputationsController {
   public void setupSubPowerTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -405,7 +405,7 @@ public class ComputationsController {
   
   private List<IntArray> getSubPowerGens(int pow, int numGens) {
     final int n = pow * numGens;
-    String numStr = JOptionPane.showInputDialog(uacalcUI, 
+    String numStr = JOptionPane.showInputDialog(uacalcUI.getFrame(), 
         "<html>Input the generating vectors, one after another,<br> " 
         + n + " numbers, each separated by a space.</html>", 
         "Generators", JOptionPane.QUESTION_MESSAGE);
@@ -437,7 +437,7 @@ public class ComputationsController {
   public void setupJonssonTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -504,7 +504,7 @@ public class ComputationsController {
   public void setupGummTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -567,7 +567,7 @@ public class ComputationsController {
   public void setupHagemannMitschkeTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -630,7 +630,7 @@ public class ComputationsController {
   public void setupMajorityTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -693,7 +693,7 @@ public class ComputationsController {
   public void setupPixleyTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -756,7 +756,7 @@ public class ComputationsController {
   public void setupMalcevTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -819,7 +819,7 @@ public class ComputationsController {
   public void setupMarkovicMcKenzieSiggersTaylorTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -882,7 +882,7 @@ public class ComputationsController {
   public void setupNUTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -947,7 +947,7 @@ public class ComputationsController {
   public void setupJICongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -1008,7 +1008,7 @@ public class ComputationsController {
   public void setupCongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -1070,7 +1070,7 @@ public class ComputationsController {
   public void setupBinVATask() {
     final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg2 == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -1082,14 +1082,14 @@ public class ComputationsController {
     for (GUIAlgebra a : getMainControler().getAlgebraList()) {
       algs[i++] = a;
     }
-    final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+    final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
                      "<html><center>B in V(<font color=\"red\">A</font>)?<br>" 
                          + "Choose <font color=\"red\">A</font></center></html>", 
                      "B in V(A)",
                      JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
     //System.out.println("gA = " + gA);
     if (gA == null) return;
-    final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI,
+    final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
         "<html><center><font color=\"red\">B</font> in V(A)?" 
             + "<br>Choose <font color=\"red\">B</font></center></html>", 
         "B in V(A)",
@@ -1099,7 +1099,7 @@ public class ComputationsController {
     final SmallAlgebra A = gA.getAlgebra();
     final SmallAlgebra B = gB.getAlgebra();
     if (!A.isSimilarTo(B)) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>Ths algebras must have the same similarity type.<br>",
           "Algebras Not Similar",
           JOptionPane.ERROR_MESSAGE);
@@ -1175,7 +1175,7 @@ public class ComputationsController {
   public void setupPrimalTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",
@@ -1236,7 +1236,7 @@ public class ComputationsController {
   public void formPowerAlgebra() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>You must have an algebra loaded.<br>"
           + "Use the file menu or make a new one.</html>",
           "No algebra error",

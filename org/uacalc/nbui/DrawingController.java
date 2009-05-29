@@ -15,11 +15,11 @@ import org.uacalc.lat.*;
 public class DrawingController {
   
   public static final int MAX_DRAWABLE_SIZE = 100;
-  private final UACalculatorUI uacalcUI;
+  private final UACalc uacalcUI;
   private LatDrawer latDrawer;
   
   
-  public DrawingController(UACalculatorUI uacalcUI, PropertyChangeSupport cs) {
+  public DrawingController(UACalc uacalcUI, PropertyChangeSupport cs) {
     this.uacalcUI = uacalcUI;
     latDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getDrawingMainPanel().setLayout(new BorderLayout());

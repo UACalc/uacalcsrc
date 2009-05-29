@@ -43,7 +43,7 @@ public class LatDrawer extends JPanel {
   //private JPanel appPanel;
   private JToolBar toolBar;
 
-  private UACalculatorUI uacalc;
+  private UACalc uacalc;
   
   private BasicLattice lattice;
   
@@ -54,7 +54,7 @@ public class LatDrawer extends JPanel {
   //private static final Dimension scrollDim = new Dimension(200, 250);
 
 // was ConceptLattice, leave it in case we need it as an example.
-  public LatDrawer(UACalculatorUI uacalc) {
+  public LatDrawer(UACalc uacalc) {
     this.uacalc = uacalc;
     drawPanel = new org.latdraw.beans.DrawPanel();
     PropertyChangeListener changeListener = new PropertyChangeListener() {
@@ -319,7 +319,7 @@ public class LatDrawer extends JPanel {
   
   
 
-  public UACalculatorUI getUACalculatorUI() { return uacalc; }
+  public UACalc getUACalc() { return uacalc; }
 
   public Diagram getDiagram() { return drawPanel.getDiagram(); }
 
@@ -522,7 +522,7 @@ public class LatDrawer extends JPanel {
 
   // Will probably use a JPopupMenu instead
   private String getRightClickOption(String[] opts, int defaultIndex) {
-    String opt = (String)JOptionPane.showInputDialog(uacalc,
+    String opt = (String)JOptionPane.showInputDialog(uacalc.getFrame(),
         "Options",
         "Options",
         JOptionPane.QUESTION_MESSAGE, null,

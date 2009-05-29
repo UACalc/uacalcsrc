@@ -15,10 +15,10 @@ import org.uacalc.ui.util.*;
 
 public class SubController {
 
-  private final UACalculatorUI uacalcUI;
+  private final UACalc uacalcUI;
   private LatDrawer subLatDrawer;
   
-  public SubController(UACalculatorUI uacalcUI, PropertyChangeSupport cs) {
+  public SubController(UACalc uacalcUI, PropertyChangeSupport cs) {
     this.uacalcUI = uacalcUI;
     subLatDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getSubMainPanel().setLayout(new BorderLayout());

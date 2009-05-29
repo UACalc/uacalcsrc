@@ -15,10 +15,10 @@ import org.latdraw.diagram.*;
 
 public class ConController {
 
-  private final UACalculatorUI uacalcUI;
+  private final UACalc uacalcUI;
   private LatDrawer conLatDrawer;
   
-  public ConController(UACalculatorUI uacalcUI, PropertyChangeSupport cs) {
+  public ConController(UACalc uacalcUI, PropertyChangeSupport cs) {
     this.uacalcUI = uacalcUI;
     conLatDrawer = new LatDrawer(uacalcUI);
     uacalcUI.getConMainPanel().setLayout(new BorderLayout());

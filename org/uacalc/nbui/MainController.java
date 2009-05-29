@@ -30,7 +30,7 @@ import org.uacalc.ui.tm.ProgressReport;
 public class MainController {
 
   private boolean dirty = false;
-  private UACalculatorUI uacalcUI;
+  private UACalc uacalcUI;
   private GUIAlgebra currentAlgebra;  // Small ??
   //private java.util.List<SmallAlgebra> algebraList = new ArrayList<SmallAlgebra>();
   private AlgebraTableModel algebraTableModel = new  AlgebraTableModel();
@@ -53,7 +53,7 @@ public class MainController {
   //private Tabs tabs;
   private final Random random = new Random();
   
-  public MainController(UACalculatorUI uacalcUI) {
+  public MainController(UACalc uacalcUI) {
     this.uacalcUI = uacalcUI;
     propertyChangeSupport = new PropertyChangeSupport(this);
     algEditorController = new AlgebraEditorController(uacalcUI);
@@ -124,7 +124,7 @@ public class MainController {
   
   public boolean checkSave() {
     Object[] options = { "Yes", "No" };
-    int n = JOptionPane.showOptionDialog(uacalcUI,
+    int n = JOptionPane.showOptionDialog(uacalcUI.getFrame(),
         "Some algebra have not been saved. Exit anyway?", 
         "Unsaved Algebras",
         JOptionPane.YES_NO_OPTION, 
@@ -386,7 +386,7 @@ public class MainController {
   public void drawSub(SmallAlgebra alg) {
     final int maxSize = 100;
     if (alg.sub().cardinality() > maxSize) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>This subalgebra lattice has " + alg.sub().cardinality() + " elements.<br>"
           + "At most " + maxSize + " elements allowed.</html>",
           "Sub Too Big",
@@ -402,7 +402,7 @@ public class MainController {
   public void drawCon(SmallAlgebra alg) {
     final int maxSize = 100;
     if (alg.con().cardinality() > maxSize) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>This congruence lattice has " + alg.con().cardinality() + " elements.<br>"
           + "At most " + maxSize + " elements allowed.</html>",
           "Con Too Big",
@@ -420,7 +420,7 @@ public class MainController {
   public void drawBelinda(SmallAlgebra alg) {
     final int maxSize = 100;
     if (alg.cardinality() > maxSize) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>This algebra has " + alg.cardinality() + " elements.<br>"
           + "At most " + maxSize + " elements allowed.</html>",
           "Algebra Too Big",
@@ -437,7 +437,7 @@ public class MainController {
       }
     }
     if (op == null) {
-      JOptionPane.showMessageDialog(uacalcUI,
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
           "<html>This algebra does not have any semilattice operations.<br>",
           "No Lattice Operation",
           JOptionPane.WARNING_MESSAGE);
@@ -459,7 +459,7 @@ public class MainController {
     for (Operation op : alg.operations()) {
       if (!((OperationWithDefaultValue)op).isTotal()) {
         uacalcUI.beep();
-        JOptionPane.showMessageDialog(uacalcUI,
+        JOptionPane.showMessageDialog(uacalcUI.getFrame(),
             "<html><center>Not all operations are total.<br>" 
             + "Fill in the tables<br>"
             + "or set a default value.</center></html>",
@@ -500,7 +500,7 @@ public class MainController {
       if (op instanceof OperationWithDefaultValue) {
         if (!((OperationWithDefaultValue)op).isTotal()) {
           uacalcUI.beep();
-          JOptionPane.showMessageDialog(uacalcUI,
+          JOptionPane.showMessageDialog(uacalcUI.getFrame(),
               "<html><center>Not all operations are total.<br>" 
               + "Fill in the tables<br>"
               + "or set a default value.</center></html>",
@@ -539,7 +539,7 @@ public class MainController {
                             ExtFileFilter.UA_EXTS) :
          new ExtFileFilter("Alg Files Old Format (*.alg)", 
                             ExtFileFilter.ALG_EXT));
-    int option = fileChooser.showSaveDialog(uacalcUI);
+    int option = fileChooser.showSaveDialog(uacalcUI.getFrame());
     if (option == JFileChooser.APPROVE_OPTION) {
       // save original user selection
       File selectedFile = fileChooser.getSelectedFile();
@@ -551,7 +551,7 @@ public class MainController {
         }
         if (f.exists()) {
           Object[] options = { "Yes", "No" };
-          int n = JOptionPane.showOptionDialog(uacalcUI,
+          int n = JOptionPane.showOptionDialog(uacalcUI.getFrame(),
               "The file already exists. Overwrite?", "Algebra Exists",
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
               options, options[0]);
@@ -593,7 +593,7 @@ public class MainController {
     fileChooser.addChoosableFileFilter(
         new ExtFileFilter("csv files (*.csv)",  ExtFileFilter.CSV_EXT));
          
-    int option = fileChooser.showSaveDialog(uacalcUI);
+    int option = fileChooser.showSaveDialog(uacalcUI.getFrame());
     if (option == JFileChooser.APPROVE_OPTION) {
       // save original user selection
       File selectedFile = fileChooser.getSelectedFile();
@@ -606,7 +606,7 @@ public class MainController {
         }
         if (f.exists()) {
           Object[] options = { "Yes", "No" };
-          int n = JOptionPane.showOptionDialog(uacalcUI,
+          int n = JOptionPane.showOptionDialog(uacalcUI.getFrame(),
               "The file already exists. Overwrite?", "File Exists",
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
               options, options[0]);
@@ -640,7 +640,7 @@ public class MainController {
     //fileChooser.addChoosableFileFilter(
     //     new ExtFileFilter("Board Files (*.brd)", ExtFileFilter.BOARD_EXT));
     //fileChooser.setAccessory(new CurvePreviewer(this, fileChooser));
-    int option = fileChooser.showOpenDialog(uacalcUI);
+    int option = fileChooser.showOpenDialog(uacalcUI.getFrame());
 
     if (option==JFileChooser.APPROVE_OPTION) {
       theFile = fileChooser.getSelectedFile();
@@ -692,7 +692,7 @@ public class MainController {
       "lat2", "lat2-01", "ba2",
       "sym3", "cyclic2", "cyclic3", "d16", "z3"
     };
-    String algName = (String) JOptionPane.showInputDialog(uacalcUI,
+    String algName = (String) JOptionPane.showInputDialog(uacalcUI.getFrame(),
         "Choose an algebra:\n", "Choose an algebra",
         JOptionPane.PLAIN_MESSAGE, null, // can be an icon,
         builtInAlgs, builtInAlgs[0]);
@@ -833,7 +833,7 @@ public class MainController {
   public void setUserMessage(String msg, boolean popup) {
     uacalcUI.getMsgTextField().setText(msg);
     if (popup) {
-      JOptionPane.showMessageDialog(uacalcUI, msg, "Information",
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(), msg, "Information",
           JOptionPane.INFORMATION_MESSAGE);
     }
   }
@@ -862,7 +862,7 @@ public class MainController {
     beep();
     if (popup) {
       beep();
-      JOptionPane.showMessageDialog(uacalcUI, msg, "Warning",
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(), msg, "Warning",
         JOptionPane.ERROR_MESSAGE);
     }
   }

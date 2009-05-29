@@ -17,7 +17,7 @@ import org.uacalc.ui.util.*;
 
 public class AlgebraEditorController {
 
-  private final UACalculatorUI uacalc;
+  private final UACalc uacalc;
   private String desc;
   //private SmallAlgebra alg;
   private int algSize;
@@ -28,7 +28,7 @@ public class AlgebraEditorController {
   private final Random random = RandomGenerator.getRandom();
   
   
-  public AlgebraEditorController(final UACalculatorUI uacalc) {
+  public AlgebraEditorController(final UACalc uacalc) {
     this.uacalc = uacalc;
 
     
@@ -177,15 +177,15 @@ public class AlgebraEditorController {
   
   public void deleteOp() {
     if (opList == null) {
-      JOptionPane.showMessageDialog(uacalc, "There is no algebra.");
+      JOptionPane.showMessageDialog(uacalc.getFrame(), "There is no algebra.");
       return;
     }
     if (opList.size() == 0) {
-      JOptionPane.showMessageDialog(uacalc, "There is no operation to delete.");
+      JOptionPane.showMessageDialog(uacalc.getFrame(), "There is no operation to delete.");
       return;
     }
     int n = JOptionPane.showConfirmDialog(
-        uacalc,
+        uacalc.getFrame(),
         "Delete this operation?",
         "Delete this operatin?",
         JOptionPane.YES_NO_OPTION);
@@ -231,7 +231,7 @@ public class AlgebraEditorController {
   private boolean validSymbol(OperationSymbol sym) {
     if (symbolList.contains(sym)) {
       uacalc.beep();
-      JOptionPane.showMessageDialog(uacalc,
+      JOptionPane.showMessageDialog(uacalc.getFrame(),
           "<html><center>There is already an operation with this symbol.<br>" 
           + "Choose another sybmol.<br>"
           + "</center></html>",
@@ -525,7 +525,7 @@ public class AlgebraEditorController {
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
       uacalc.beep();
-      JOptionPane.showMessageDialog(uacalc,
+      JOptionPane.showMessageDialog(uacalc.getFrame(),
           "name required, and no spaces",
           "Name format error",
           JOptionPane.ERROR_MESSAGE);
@@ -535,7 +535,7 @@ public class AlgebraEditorController {
   }
   
   public int getArityDialog() {
-    String arityStr = JOptionPane.showInputDialog(uacalc, "What is the arity?");
+    String arityStr = JOptionPane.showInputDialog(uacalc.getFrame(), "What is the arity?");
     if (arityStr == null) return -1;
     int arity = -1;
     boolean arityOk = true;
@@ -546,7 +546,7 @@ public class AlgebraEditorController {
       arityOk = false;
     }
     if (!arityOk || arity < 0) {
-      JOptionPane.showMessageDialog(uacalc,
+      JOptionPane.showMessageDialog(uacalc.getFrame(),
           "arity must be a nonnegative integer",
           "Number format error",
           JOptionPane.ERROR_MESSAGE);
@@ -559,7 +559,7 @@ public class AlgebraEditorController {
     String name = JOptionPane.showInputDialog(uacalc, "Short name (with no spaces) for the algebra?");
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
-      JOptionPane.showMessageDialog(uacalc,
+      JOptionPane.showMessageDialog(uacalc.getFrame(),
           "name required, and no spaces",
           "Name format error",
           JOptionPane.ERROR_MESSAGE);
@@ -581,7 +581,7 @@ public class AlgebraEditorController {
       cardOk = false;
     }
     if (!cardOk || card <= 0) {
-      JOptionPane.showMessageDialog(uacalc,
+      JOptionPane.showMessageDialog(uacalc.getFrame(),
           "cardinality must be a positive integer",
           "Number format error",
           JOptionPane.ERROR_MESSAGE);

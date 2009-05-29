@@ -14,7 +14,7 @@ import java.io.*;
  *
  * @author  ralph
  */
-public class UACalculatorUI extends javax.swing.JFrame {
+public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
 
     private final MainController actions;
     
@@ -2360,6 +2360,10 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     // End of variables declaration//GEN-END:variables
 
 
+  public javax.swing.JFrame getFrame() {
+    return this;
+  }
+    
   public MainController getMainController() {
     return actions;
   }
