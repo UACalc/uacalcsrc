@@ -515,28 +515,48 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public static SmallAlgebra unaryCloneAlgebra(List<Partition> pars) {
     String f = "f_";
     final int size = pars.get(0).size();
-    final List<IntArray> lst = unaryClone(pars);
+    final NavigableSet<IntArray> lst = unaryClone(pars);
+    //System.out.println("TreeSet: " + lst);
+    //IntArray ia0 = new IntArray(new int[] {0, 0, 4, 0, 0, 0, 0});
+    //System.out.println("ceiling 0 0 4 0 ... = " + lst.ceiling(ia0));
     System.out.println("number of ops in the unary clone is " + lst.size());
     final List<Operation> ops = new ArrayList<Operation>(lst.size());
-    for (int i = 0; i < lst.size(); i++) {
-      ops.add(Operations.makeIntOperation(f + i, 1, size, lst.get(i).getArray()));
+    int i = 0;
+    for (IntArray ia : lst) {
+      ops.add(Operations.makeIntOperation(f + i, 1, size, ia.getArray()));
+      i++;
     }
     return new BasicAlgebra("", size, ops);
   }
   
-  public static List<IntArray> unaryClone(List<Partition> pars) {
+  public static SmallAlgebra binaryCloneAlgebra(List<Partition> pars) {
+    String b = "b_";
+    final int size = pars.get(0).size();
+    final NavigableSet<IntArray> lst = binaryClone(pars);
+    System.out.println("number of ops in the binary clone is " + lst.size());
+    final List<Operation> ops = new ArrayList<Operation>(lst.size());
+    int i = 0;
+    for (IntArray ia : lst) {
+      ops.add(Operations.makeIntOperation(b + i, 2, size, ia.getArray()));
+      i++;
+    }
+    return new BasicAlgebra("", size, ops);
+  }
+  
+  public static NavigableSet<IntArray> unaryClone(List<Partition> pars) {
     final int n = pars.get(0).size();
-    List<IntArray> lst = new ArrayList<IntArray>();
+    //List<IntArray> lst = new ArrayList<IntArray>();
+    NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     IntArray ia = new IntArray(n);
-    unaryCloneAux(ia, 0, n, lst, pars);
+    unaryCloneAux(ia, 0, n, set, pars);
     
-    return lst;
+    return set;
   }
   
   private static void unaryCloneAux(final IntArray arr, 
                                        final int index,
                                        final int n,
-                                       final List<IntArray> lst,
+                                       final NavigableSet<IntArray> lst,
                                        final List<Partition> pars) {
     if (index == n) {
       IntArray copy = new IntArray(n);
@@ -552,6 +572,47 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
   }
   
+  public static NavigableSet<IntArray> binaryClone(List<Partition> pars) {
+    return binaryClone(pars, null);
+  }
+  
+  public static NavigableSet<IntArray> binaryClone(List<Partition> pars, 
+                                                   NavigableSet<IntArray> unaryClone) {
+    final int n = pars.get(0).size();
+    if (unaryClone == null) unaryClone = unaryClone(pars);
+    NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
+    List<IntArray> partialOp = new ArrayList<IntArray>(n);
+    for (int i = 0; i < n; i++) {
+      partialOp.add(null);
+    }
+    binaryCloneAux(partialOp, 0, n, unaryClone, set);
+    System.out.println("binary clone size = " + set.size());
+    return set;
+  }
+  
+  private static void binaryCloneAux(final List<IntArray> partialOp, 
+                                        final int index, 
+                                        final int n, 
+                                        final NavigableSet<IntArray> unaryClone,
+                                        final NavigableSet<IntArray> set) {
+    if (index == n) {
+      int[] op = new int[n*n];
+      for (int i = 0; i < n; i++) {
+        final int[] row = partialOp.get(i).toArray();
+        System.arraycopy(row, 0, op, i * n, n);
+      }
+      set.add(new IntArray(op));
+      //System.out.println("set size = " + set.size());
+      return;
+    }
+    for (IntArray unaryFn : unaryClone) {
+      if (respects(partialOp, index, n, unaryFn, unaryClone)) {
+        partialOp.set(index, unaryFn);
+        binaryCloneAux(partialOp, index + 1, n, unaryClone, set);
+      }
+    }
+  }
+  
   private static boolean respects(final IntArray partialFunction, 
                            final int index, final int value, 
                            final List<Partition> pars) {
@@ -562,6 +623,34 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
           if (!par.isRelated(value, partialFunction.get(i))) return false;
         }
       }
+    }
+    return true;
+  }
+  
+  private static boolean respects(final List<IntArray> partialBinaryOp, // a list of index-many rows 
+                                  final int index,
+                                  final int n,
+                                  final IntArray unaryOp, // a possible row to add
+                                  NavigableSet<IntArray> unaryClone) {
+    final IntArray ia = new IntArray(n);
+    for (int col = 0; col < n; col++) {
+      for (int i = 0 ; i < index; i++) {
+        ia.set(i, partialBinaryOp.get(i).get(col));
+      }
+      //System.out.println("unaryOp(" + col + ") = " + unaryOp.get(col));
+      //System.out.println("index = " + index);
+      ia.set(index, unaryOp.get(col));
+      if (!isInitialMember(ia, index, unaryClone)) return false;
+    }
+    return true;
+  }
+  
+  private static boolean isInitialMember(final IntArray ia,
+                                         final int index,
+                                         final NavigableSet<IntArray> unaryClone) {
+    final IntArray c = unaryClone.ceiling(ia);
+    for (int i = 0; i <= index; i++) {
+      if (c.get(i) != ia.get(i)) return false;
     }
     return true;
   }
@@ -834,16 +923,31 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition jb71 = new BasicPartition(new int[] {-2, -3, -2, 2, 1, 1, 0});
     BasicPartition jb72 = new BasicPartition(new int[] {-3, -2, -2, 0, 0, 2, 1});
     
+    // Here is a double-winged pentagon that is a congruence lattice on
+    // 7 elements.
+    //   |0123456|
+    //   |056|14|2|3|
+    //   |0|1|246|35|
+    //   |0123|45|6|
+    //   |03|12|45|6|
+    //   |0|1|2|3|4|5|6|
+    BasicPartition jbdw0 = new BasicPartition(new int[] {-3, -2, -1, -1, 1, 0, 0}); // |056|14|2|3|
+    BasicPartition jbdw1 = new BasicPartition(new int[] {-1, -1, -3, -2, 2, 3, 2}); // |0|1|246|35|
+    BasicPartition jbdw2 = new BasicPartition(new int[] {-4, 0, 0, 0, -2, 4, -1}); // |0123|45|6|
+    BasicPartition jbdw3 = new BasicPartition(new int[] {-2, -2, 1, 0, -2, 4, -1}); // |03|12|45|6|
+
+
+    
     
     
     
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
     //gens.add(one(4));
     
-    //gens.add(demeo0);
-    //gens.add(demeo1);
-    //gens.add(demeo2);
-    //gens.add(demeo3);
+    gens.add(demeo0);
+    gens.add(demeo1);
+    gens.add(demeo2);
+    gens.add(demeo3);
     
     //gens.add(snow130);
     //gens.add(snow131);
@@ -852,9 +956,15 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(billy0);
     //gens.add(billy1);
     //gens.add(billy2);
-    gens.add(jb72);
-    gens.add(jb70);
-    gens.add(jb71);
+    
+    //gens.add(jb72);
+    //gens.add(jb70);
+    //gens.add(jb71);
+    
+    //gens.add(jbdw0);
+    //gens.add(jbdw1);
+    //gens.add(jbdw2);
+    //gens.add(jbdw3);
     
     
     System.out.println("gens: " + gens);
@@ -899,6 +1009,18 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (Partition par : alg.con().universe()) {
       System.out.println(par);
     }
+    
+    //binaryClone(pars, null);
+    SmallAlgebra alg2 = binaryCloneAlgebra(pars);
+    try {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg2, "/tmp/alg2.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
+    
+    Set unaryFns = unaryClone(pars);
+    System.out.println("|Pol_1| = " + unaryFns.size());
+    System.out.println("unaries: " + unaryFns);
+    
     
     //BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
     //BasicPartition par1 = new BasicPartition(new int[] {-1, -2, 1, -1});
