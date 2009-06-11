@@ -124,6 +124,21 @@ public class IntArray implements Cloneable {
   public final void set(int index, int value) {
     array[index] = value;
   }
+  
+  public static Comparator<IntArray> lexicographicComparitor() {
+    return new Comparator<IntArray>() {
+      public int compare(IntArray ia0, IntArray ia1) {
+        final int min = Math.min(ia0.size(), ia1.size());
+        for (int i = 0 ; i < min; i++ ) {
+          if (ia0.get(i) < ia1.get(i)) return -1;
+          if (ia0.get(i) > ia1.get(i)) return 1;
+        }
+        if (ia0.size() < ia1.size()) return -1;
+        if (ia0.size() > ia1.size()) return 1;
+        return 0;
+      }
+    };
+  }
 
   public Object clone() {
     IntArray ia = new IntArray(size);
