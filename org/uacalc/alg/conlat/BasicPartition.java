@@ -936,18 +936,20 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition jbdw2 = new BasicPartition(new int[] {-4, 0, 0, 0, -2, 4, -1}); // |0123|45|6|
     BasicPartition jbdw3 = new BasicPartition(new int[] {-2, -2, 1, 0, -2, 4, -1}); // |03|12|45|6|
 
-
-    
+    BasicPartition dw0 = new BasicPartition(new int[] {-3, 0, -2, 2, 0, -3, 5, -2, 7, 5}); // |014|23|569|78|
+    BasicPartition dw1 = new BasicPartition(new int[] {-3, -2, 0, 1, -3, 0, 4, -2, 4, 7}); // |014|23|569|78|
+    BasicPartition dw2 = new BasicPartition(new int[] {-4, -2, 1, 0, -2, 4, 0, 0, -2, 8}); // |014|23|569|78|
+    BasicPartition dw3 = new BasicPartition(new int[] {-4, -4, 1, 0, -2, 4, 0, 0, 1, 1}); // |014|23|569|78|
     
     
     
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
     //gens.add(one(4));
     
-    gens.add(demeo0);
-    gens.add(demeo1);
-    gens.add(demeo2);
-    gens.add(demeo3);
+    //gens.add(demeo0);
+    //gens.add(demeo1);
+    //gens.add(demeo2);
+    //gens.add(demeo3);
     
     //gens.add(snow130);
     //gens.add(snow131);
@@ -966,9 +968,14 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(jbdw2);
     //gens.add(jbdw3);
     
+    gens.add(dw0);
+    gens.add(dw1);
+    gens.add(dw2);
+    gens.add(dw3);
     
     System.out.println("gens: " + gens);
     
+    /*
     List<Partition> closure = closureAt(gens);
     for (Partition par : closure) {
       System.out.print(par);
@@ -977,7 +984,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       else System.out.println("");
     }
     System.out.println("closure size: " + closure.size());
-    
+    */
     
     //List<Partition> pars = new ArrayList<Partition>();
     //Partition par = new BasicPartition(new int[] {-2, 0, -1});
