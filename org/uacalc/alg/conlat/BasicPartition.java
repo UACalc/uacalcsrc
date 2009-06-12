@@ -971,6 +971,15 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition bdw2 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1, -1, -1}); // |024|135|6|7|
     BasicPartition bdw3 = new BasicPartition(new int[] {-3, -3, 1, 0, -1, -1, 0, 1}); // |036|127|4|5|
 
+    // |0,1,2,6|3,5|4|7,8|    |0,3,4,8|1|2,7|5,6|
+    //                                                      |1,4,5,7|2,3|0|6,8|
+    // |0,1,2,6|3|5|4|7,8|    |0,3,4,8|1|7|2|5,6|
+    BasicPartition swh0 = new BasicPartition(new int[] {-1, -4, -2, 2, 1, 1, -2, 1, 6}); // |1,4,5,7|2,3|0|6,8|
+    BasicPartition swh1 = new BasicPartition(new int[] {-4, 0, 0, -2, -1, 3, 0, -2, 7}); // |0,1,2,6|3,5|4|7,8|
+    BasicPartition swh2 = new BasicPartition(new int[] {-4, 0, 0, -1, -1, -1, 0, -2, 7}); // |0,1,2,6|3|5|4|7,8|
+    BasicPartition swh3 = new BasicPartition(new int[] {-4,-1, -2, 0, 0, -2, 5, 2, 0}); // |0,3,4,8|1|2,7|5,6|
+    BasicPartition swh4 = new BasicPartition(new int[] {-4,-1, -1, 0, 0, -2, 5, -1, 0}); // |0,3,4,8|1|7|2|5,6|
+
     
     BasicPartition dw0 = new BasicPartition(new int[] {-3, 0, -2, 2, 0, -3, 5, -2, 7, 5}); // |014|23|569|78|
     BasicPartition dw1 = new BasicPartition(new int[] {-3, -2, 0, 1, -3, 0, 4, -2, 4, 7}); // |014|23|569|78|
@@ -1001,15 +1010,22 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(jb71);
     
 
-    gens.add(jbdw0);
-    gens.add(jbdw1);
-    gens.add(jbdw2);
-    gens.add(jbdw3);
+    //gens.add(jbdw0);
+    //gens.add(jbdw1);
+    //gens.add(jbdw2);
+    //gens.add(jbdw3);
     
     //gens.add(dw0);
     //gens.add(dw1);
     //gens.add(dw2);
     //gens.add(dw3);
+    
+    gens.add(swh0);
+    gens.add(swh1);
+    gens.add(swh2);
+    gens.add(swh3);
+    gens.add(swh4);
+
     
     System.out.println("gens: " + gens);
     
