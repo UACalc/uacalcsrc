@@ -543,31 +543,51 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return new BasicAlgebra("", size, ops);
   }
   
+  /**
+   * The uses a depth first search to find the set of all unary function
+   * which respect all partition in pars.
+   * 
+   * @param pars
+   * @return
+   */
   public static NavigableSet<IntArray> unaryClone(List<Partition> pars) {
+    // n is the size of the set the partition are on.
     final int n = pars.get(0).size();
-    //List<IntArray> lst = new ArrayList<IntArray>();
+    // set is an empty set to hold the answer.
     NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
+    // ia is really just a vector of length n to hold the function we are considering
     IntArray ia = new IntArray(n);
+    // call the (recursive) workhorse.
     unaryCloneAux(ia, 0, n, set, pars);
     
     return set;
   }
   
+  /**
+   * Find all functions repecting the partition and extending the 
+   * partial function arr and add them to the answer.
+   * 
+   * @param arr     a vector representing the partial function f defined for i < k
+   * @param k       the first place the function is not defined
+   * @param n       the size of the underlying set for the partitions
+   * @param ans     the answer set
+   * @param pars    the list of partitions
+   */
   private static void unaryCloneAux(final IntArray arr, 
-                                       final int index,
+                                       final int k,
                                        final int n,
-                                       final NavigableSet<IntArray> lst,
+                                       final NavigableSet<IntArray> ans,
                                        final List<Partition> pars) {
-    if (index == n) {
+    if (k == n) {
       IntArray copy = new IntArray(n);
       System.arraycopy(arr.getArray(), 0, copy.getArray(), 0, n);
-      lst.add(copy);
+      ans.add(copy);
       return;
     }
     for (int value = 0; value < n; value++) {
-      if (respects(arr, index, value, pars)) {
-        arr.set(index, value);
-        unaryCloneAux(arr, index + 1, n, lst, pars);
+      if (respects(arr, k, value, pars)) {
+        arr.set(k, value);
+        unaryCloneAux(arr, k + 1, n, ans, pars);
       }
     }
   }
@@ -614,11 +634,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   private static boolean respects(final IntArray partialFunction, 
-                           final int index, final int value, 
+                           final int k, final int value, 
                            final List<Partition> pars) {
     for (Partition par : pars) {
-      final int r = par.representative(index);
-      for (int i = 0; i < index; i++) {
+      final int r = par.representative(k);
+      for (int i = 0; i < k; i++) {
         if (r == par.representative(i)) {
           if (!par.isRelated(value, partialFunction.get(i))) return false;
         }
@@ -936,10 +956,27 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition jbdw2 = new BasicPartition(new int[] {-4, 0, 0, 0, -2, 4, -1}); // |0123|45|6|
     BasicPartition jbdw3 = new BasicPartition(new int[] {-2, -2, 1, 0, -2, 4, -1}); // |03|12|45|6|
 
+    
+    //                          |01234567|
+
+    //|01|23|4567|
+    //|01|23|46|57|           |024|135|6|7|           |036|127|4|5|
+
+
+    //                        |0|1|2|3|4|5|6|7|
+
+    
+    BasicPartition bdw0 = new BasicPartition(new int[] {-2, 0, -2, 2, -4, 4, 4, 4}); // |01|23|4567|
+    BasicPartition bdw1 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, -2, 4, 5}); // |01|23|46|57|
+    BasicPartition bdw2 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1, -1, -1}); // |024|135|6|7|
+    BasicPartition bdw3 = new BasicPartition(new int[] {-3, -3, 1, 0, -1, -1, 0, 1}); // |036|127|4|5|
+
+    
     BasicPartition dw0 = new BasicPartition(new int[] {-3, 0, -2, 2, 0, -3, 5, -2, 7, 5}); // |014|23|569|78|
     BasicPartition dw1 = new BasicPartition(new int[] {-3, -2, 0, 1, -3, 0, 4, -2, 4, 7}); // |014|23|569|78|
     BasicPartition dw2 = new BasicPartition(new int[] {-4, -2, 1, 0, -2, 4, 0, 0, -2, 8}); // |014|23|569|78|
     BasicPartition dw3 = new BasicPartition(new int[] {-4, -4, 1, 0, -2, 4, 0, 0, 1, 1}); // |014|23|569|78|
+
     
     
     
@@ -963,15 +1000,16 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(jb70);
     //gens.add(jb71);
     
-    //gens.add(jbdw0);
-    //gens.add(jbdw1);
-    //gens.add(jbdw2);
-    //gens.add(jbdw3);
+
+    gens.add(jbdw0);
+    gens.add(jbdw1);
+    gens.add(jbdw2);
+    gens.add(jbdw3);
     
-    gens.add(dw0);
-    gens.add(dw1);
-    gens.add(dw2);
-    gens.add(dw3);
+    //gens.add(dw0);
+    //gens.add(dw1);
+    //gens.add(dw2);
+    //gens.add(dw3);
     
     System.out.println("gens: " + gens);
     
@@ -1024,9 +1062,13 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     catch (Exception e) { e.printStackTrace(); }
     
-    Set unaryFns = unaryClone(pars);
+    Set<IntArray> unaryFns = unaryClone(pars);
     System.out.println("|Pol_1| = " + unaryFns.size());
     System.out.println("unaries: " + unaryFns);
+    for (IntArray f : unaryFns) {
+      boolean idem = f.isIdempotent();
+      System.out.println(f + (idem ? " *" : ""));
+    }
     
     
     //BasicPartition par0 = new BasicPartition(new int[] {-2, 0, -1, -1});
