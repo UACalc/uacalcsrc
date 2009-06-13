@@ -1015,16 +1015,16 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(jbdw2);
     //gens.add(jbdw3);
     
-    //gens.add(dw0);
-    //gens.add(dw1);
-    //gens.add(dw2);
-    //gens.add(dw3);
+    gens.add(dw0);
+    gens.add(dw1);
+    gens.add(dw2);
+    gens.add(dw3);
     
-    gens.add(swh0);
-    gens.add(swh1);
-    gens.add(swh2);
-    gens.add(swh3);
-    gens.add(swh4);
+    //gens.add(swh0);
+    //gens.add(swh1);
+    //gens.add(swh2);
+    //gens.add(swh3);
+    //gens.add(swh4);
 
     
     System.out.println("gens: " + gens);
