@@ -105,7 +105,7 @@ public class Malcev {
     final int[][] values = new int[][] {{4,0}};
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. **
-    //f2.makeOperationTables();
+    f2.makeOperationTables();
     //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
     IntArray g1;
