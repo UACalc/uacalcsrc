@@ -230,9 +230,21 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
   public void makeOperationTables() {
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      ((Operation)it.next()).makeTable();
+    for (Operation op : operations()) {
+      final int memReserve = 1048576;
+      byte[] buf = new byte[memReserve];
+      try {
+        op.makeTable();
+      }
+      catch (OutOfMemoryError mem) {
+        buf = null;
+        System.out.println("not enough memory to make the op table");
+      }
+      finally { buf = null; }
     }
+    //for (Iterator it = operations().iterator(); it.hasNext(); ) {
+    //  ((Operation)it.next()).makeTable();
+    //}
   }
   
   protected Map<IntArray,Term> setupGensToVarsMap(List<IntArray> gens) {

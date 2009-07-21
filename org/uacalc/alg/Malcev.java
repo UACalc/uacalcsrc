@@ -34,11 +34,68 @@ public class Malcev {
   //public static Monitor getMonitor() { return monitor; }
   public static void setMonitor(ProgressReport m) { monitor = m; }
   
+  /**
+   * Gives a Kearnes-Kiss join term. See their monograph, chapter 3.
+   * 
+   */
+  public static Term joinTerm(SmallAlgebra alg) {
+    return joinTerm(alg, null);
+  }
+  
+  /**
+   * Gives a Kearnes-Kiss join term. See their monograph, chapter 3.
+   * 
+   */
+  public static Term joinTerm(SmallAlgebra alg, ProgressReport report) {
+    if (alg.cardinality() == 1)  return Variable.x;
+    final Term taylor = markovicMcKenzieSiggersTaylorTerm(alg, report);
+    final Map<Variable,Term> map = new HashMap<Variable,Term>(4);
+    final Variable x0 = new VariableImp("x0");
+    final Variable x1 = new VariableImp("x1");
+    final Variable x2 = new VariableImp("x2");
+    final Variable x3 = new VariableImp("x3");
+    map.put(x0, Variable.x);
+    map.put(x1, Variable.x);
+    map.put(x2, Variable.y);
+    map.put(x3, Variable.y);
+    final Term t0 = taylor.substitute(map);
+    
+    map.put(x0, Variable.x);
+    map.put(x1, Variable.x);
+    map.put(x2, Variable.y);
+    map.put(x3, Variable.x);
+    final Term t1 = taylor.substitute(map);
+    
+    map.put(x0, Variable.y);
+    map.put(x1, Variable.x);
+    map.put(x2, Variable.x);
+    map.put(x3, Variable.x);
+    final Term t2 = taylor.substitute(map);
+    
+    final Term t3 = t2;
+    
+    map.put(x0, t0);
+    map.put(x1, t1);
+    map.put(x2, t2);
+    map.put(x3, t3);
+    // TODO: need to simplify this term !!!!!!!!!!!!!
+    return taylor.substitute(map);
+  }
+  
+  /**
+   * Gives a term t(x,y,z,u) satisfying t(y,x,x,x) = t(x,x,y,y) and
+   * t(x,x,y,x) = t(x,y,x,x).
+   * 
+   */
   public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg) {
     return  markovicMcKenzieSiggersTaylorTerm(alg, null);
   }
   
-  
+  /**
+   * Gives a term t(x,y,z,u) satisfying t(y,x,x,x) = t(x,x,y,y) and
+   * t(x,x,y,x) = t(x,y,x,x).
+   * 
+   */
   public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg, 
                                                        ProgressReport report) {
     
