@@ -521,7 +521,7 @@ public class AlgebraEditorController {
   }
   
   private String getOpNameDialog() {
-    String name = JOptionPane.showInputDialog(uacalc, "Operation symbol? (with no spaces)");
+    String name = JOptionPane.showInputDialog(uacalc.getFrame(), "Operation symbol? (with no spaces)");
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
       uacalc.beep();
@@ -556,7 +556,7 @@ public class AlgebraEditorController {
   }
   
   private String getAlgNameDialog() {
-    String name = JOptionPane.showInputDialog(uacalc, "Short name (with no spaces) for the algebra?");
+    String name = JOptionPane.showInputDialog(uacalc.getFrame(), "Short name (with no spaces) for the algebra?");
     if (name == null) return null;
     if (name.length() == 0 || name.indexOf(" ") > 0) {
       JOptionPane.showMessageDialog(uacalc.getFrame(),
@@ -570,7 +570,7 @@ public class AlgebraEditorController {
   }
   
   public int getCardDialog() {
-    String cardStr = JOptionPane.showInputDialog(uacalc, "What is the cardinality?");
+    String cardStr = JOptionPane.showInputDialog(uacalc.getFrame(), "What is the cardinality?");
     if (cardStr == null) return -1;
     int card = -1;
     boolean cardOk = true;
