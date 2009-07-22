@@ -980,11 +980,16 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition swh3 = new BasicPartition(new int[] {-4,-1, -2, 0, 0, -2, 5, 2, 0}); // |0,3,4,8|1|2,7|5,6|
     BasicPartition swh4 = new BasicPartition(new int[] {-4,-1, -1, 0, 0, -2, 5, -1, 0}); // |0,3,4,8|1|7|2|5,6|
 
+    BasicPartition vs0 = new BasicPartition(new int[] {-2, 0, -2, 2}); // |01|23|
+    BasicPartition vs1 = new BasicPartition(new int[] {-2, -2, 0, 1}); // |02|13|
+    BasicPartition vs2 = new BasicPartition(new int[] {-2, -2, 1, 0}); // |03|12|
+
     
     BasicPartition dw0 = new BasicPartition(new int[] {-3, 0, -2, 2, 0, -3, 5, -2, 7, 5}); // |014|23|569|78|
     BasicPartition dw1 = new BasicPartition(new int[] {-3, -2, 0, 1, -3, 0, 4, -2, 4, 7}); // |014|23|569|78|
     BasicPartition dw2 = new BasicPartition(new int[] {-4, -2, 1, 0, -2, 4, 0, 0, -2, 8}); // |014|23|569|78|
     BasicPartition dw3 = new BasicPartition(new int[] {-4, -4, 1, 0, -2, 4, 0, 0, 1, 1}); // |014|23|569|78|
+
 
     
     
@@ -1015,6 +1020,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(jbdw2);
     //gens.add(jbdw3);
     
+
+    //gens.add(vs0);
+    //gens.add(vs1);
+    //gens.add(vs2);
+
     gens.add(dw0);
     gens.add(dw1);
     gens.add(dw2);
