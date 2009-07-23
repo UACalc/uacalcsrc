@@ -120,7 +120,7 @@ public class Taylor {
   }
   
   public IntArray canonicalForm(IntArray arr) {
-    return canonicalForm(arr, 0, arr.size());
+    return canonicalForm(arr, 0, arr.universeSize());
   }
   
   private IntArray canonicalForm(IntArray arr, int start, int len) {
@@ -286,7 +286,7 @@ if (c++ % 1000000 == 0) System.out.println("c = " + c);
   }
   
   private IntArray complement(IntArray ia) {
-    final int n = ia.size();
+    final int n = ia.universeSize();
     final int[] arr = new int[n];
     for (int i = 0; i < n; i++) {
       if (ia.get(i) == 0) arr[i] = 1;

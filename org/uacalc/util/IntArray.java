@@ -109,7 +109,7 @@ public class IntArray implements Cloneable {
     return array;
   }
 
-  public final int size() {
+  public final int universeSize() {
     return size;
   }
 
@@ -143,13 +143,13 @@ public class IntArray implements Cloneable {
   public static Comparator<IntArray> lexicographicComparitor() {
     return new Comparator<IntArray>() {
       public int compare(IntArray ia0, IntArray ia1) {
-        final int min = Math.min(ia0.size(), ia1.size());
+        final int min = Math.min(ia0.universeSize(), ia1.universeSize());
         for (int i = 0 ; i < min; i++ ) {
           if (ia0.get(i) < ia1.get(i)) return -1;
           if (ia0.get(i) > ia1.get(i)) return 1;
         }
-        if (ia0.size() < ia1.size()) return -1;
-        if (ia0.size() > ia1.size()) return 1;
+        if (ia0.universeSize() < ia1.universeSize()) return -1;
+        if (ia0.universeSize() > ia1.universeSize()) return 1;
         return 0;
       }
     };

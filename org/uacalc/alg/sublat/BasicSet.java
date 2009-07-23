@@ -38,7 +38,7 @@ public class BasicSet extends IntArray implements Comparable {
    */
   public int compareTo(Object o) {
     BasicSet set = (BasicSet)o;
-    final int n = set.size();
+    final int n = set.universeSize();
     if (size < n) return -1;
     if (size > n) return 1;
     for (int i = 0; i < n; i++) {
@@ -117,7 +117,7 @@ public class BasicSet extends IntArray implements Comparable {
    */
   public BasicSet setDifference(BasicSet set2) {
     List lst = new ArrayList();
-    final int n = size();
+    final int n = universeSize();
     for (int i = 0; i < n; i++) {
       if (!set2.contains(get(i))) lst.add(new Integer(get(i)));
     }

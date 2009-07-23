@@ -268,18 +268,18 @@ public class SubalgebraLattice implements Lattice {
     BasicSet seta = (BasicSet)a;
     BasicSet setb = (BasicSet)b;
     BasicSet foo;
-    if (setb.size() > seta.size()) {
+    if (setb.universeSize() > seta.universeSize()) {
       foo = seta;
       seta = setb;
       setb = foo;
     }
     foo = setb.setDifference(seta);
-    final int closedMark = seta.size();
-    List lst = new ArrayList(closedMark + foo.size());
+    final int closedMark = seta.universeSize();
+    List lst = new ArrayList(closedMark + foo.universeSize());
     for (int i = 0; i < closedMark; i++) {
       lst.add(new Integer(seta.get(i)));
     }
-    for (int i = 0; i < foo.size(); i++) {
+    for (int i = 0; i < foo.universeSize(); i++) {
       lst.add(new Integer(foo.get(i)));
     }
     return makeSg(lst, closedMark);
@@ -354,10 +354,10 @@ public class SubalgebraLattice implements Lattice {
   public BasicSet sg(int[] gens) {
     final int g = gens.length;
     if (g == 0) return zeroSubalg;
-    List<Integer> gensList = new ArrayList<Integer>(g + zeroSubalg.size());
+    List<Integer> gensList = new ArrayList<Integer>(g + zeroSubalg.universeSize());
     // ToDo delete elems of gens which lie in zeroSubalg.
     // add all constants
-    for (int i = 0 ; i < zeroSubalg.size(); i++) {
+    for (int i = 0 ; i < zeroSubalg.universeSize(); i++) {
       gensList.add(new Integer(zeroSubalg.get(i)));
     }
 /*
@@ -715,17 +715,17 @@ public class SubalgebraLattice implements Lattice {
       BasicSet lower = BasicSet.EMPTY_SET;
       for (int j = i - 1; j >= 0; j--) {
         BasicSet set2 = (BasicSet)ones.get(j);
-        if (set.size() == set2.size()) continue;
+        if (set.universeSize() == set2.universeSize()) continue;
         if (set2.leq(set) && !set2.leq(lower)) {
           if (lower.equals(BasicSet.EMPTY_SET)) lower = set2;
           else {
-            final int mark = lower.size();
+            final int mark = lower.universeSize();
             List u = new ArrayList();
             for (int k = 0; k < mark; k++) {
               u.add(new Integer(lower.get(k)));
             }
             BasicSet diff = set2.setDifference(lower);
-            for (int k = 0; k < diff.size(); k++) {
+            for (int k = 0; k < diff.universeSize(); k++) {
               u.add(new Integer(diff.get(k)));
             }
             lower = makeSg(u, mark);
@@ -900,7 +900,7 @@ public class SubalgebraLattice implements Lattice {
         BasicSet sub = sg(arr);
         //System.out.println("arr = " + ArrayString.toString(arr) + ", sub = " + sub);
         //if (one().leq(sub)) return new BasicSet(arr);
-        if (sub.size() == algSize) return new BasicSet(arr);
+        if (sub.universeSize() == algSize) return new BasicSet(arr);
         if (!inc.increment()) break;
       }
     }

@@ -88,7 +88,7 @@ public class SubController {
       public void actionPerformed(ActionEvent e) {
         if (getSubLatDrawer().getSelectedElem() == null) return;
         BasicSet subUniv = (BasicSet)getSubLatDrawer().getSelectedElem().getUnderlyingObject();
-        if (subUniv.size() == 0) return;
+        if (subUniv.universeSize() == 0) return;
         GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
         SmallAlgebra alg = gAlg.getAlgebra();
         Subalgebra sub = new Subalgebra(alg, subUniv);

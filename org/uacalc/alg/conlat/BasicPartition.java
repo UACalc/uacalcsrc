@@ -39,6 +39,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
 //  }
 
   private int blockCount = -1;
+  
+  private NavigableSet<IntArray> pairs;
 
   public BasicPartition(int[] part) {
     this.array = part;
@@ -88,6 +90,23 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public boolean isRelated(int i, int j) {
     if(representative(i) == representative(j) ) return true;
     return false;
+  }
+  
+  public Iterator<IntArray> iterator() {
+    if (pairs == null) {
+      pairs = new TreeSet<IntArray>();
+      int[][] blocks = getBlocks();
+      for (int i = 0; i < blocks.length; i++) {
+        int[] block = blocks[i];
+        for (int j = 0; j < block.length; j++) {
+          for (int k = j; k < blocks.length; k++) {
+            pairs.add(new IntArray(new int[] {j, k}));
+            if (j != k) pairs.add(new IntArray(new int[] {k, j}));
+          }
+        }
+      }
+    }    
+    return pairs.iterator();
   }
 
 
@@ -238,7 +257,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     // this is actually an n^2 algorithm. If speed becomes a problem
     // we can introduce some data structure to make it faster.
     int ans = 1;
-    final int size = par0.size();
+    final int size = par0.universeSize();
     final int[] arr0 = new int[size];
     final int[] arr1 = new int[size];
     System.arraycopy(par0.toArray(), 0, arr0, 0, size);
@@ -287,7 +306,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public static int permutabilityLevel(Partition par0, Partition par1) {
     int level = -1;
     Partition join = par0.join(par1);
-    final int n = par0.size();
+    final int n = par0.universeSize();
     for (int i = 0; i < n; i++) {
       for (int j = i + 1; j < n; j++) {
         if (join.isRelated(i,j)) {
@@ -514,7 +533,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static SmallAlgebra unaryCloneAlgebra(List<Partition> pars) {
     String f = "f_";
-    final int size = pars.get(0).size();
+    final int size = pars.get(0).universeSize();
     final NavigableSet<IntArray> lst = unaryClone(pars);
     //System.out.println("TreeSet: " + lst);
     //IntArray ia0 = new IntArray(new int[] {0, 0, 4, 0, 0, 0, 0});
@@ -531,7 +550,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static SmallAlgebra binaryCloneAlgebra(List<Partition> pars) {
     String b = "b_";
-    final int size = pars.get(0).size();
+    final int size = pars.get(0).universeSize();
     final NavigableSet<IntArray> lst = binaryClone(pars);
     System.out.println("number of ops in the binary clone is " + lst.size());
     final List<Operation> ops = new ArrayList<Operation>(lst.size());
@@ -552,7 +571,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    */
   public static NavigableSet<IntArray> unaryClone(List<Partition> pars) {
     // n is the size of the set the partition are on.
-    final int n = pars.get(0).size();
+    final int n = pars.get(0).universeSize();
     // set is an empty set to hold the answer.
     NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     // ia is really just a vector of length n to hold the function we are considering
@@ -598,7 +617,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static NavigableSet<IntArray> binaryClone(List<Partition> pars, 
                                                    NavigableSet<IntArray> unaryClone) {
-    final int n = pars.get(0).size();
+    final int n = pars.get(0).universeSize();
     if (unaryClone == null) unaryClone = unaryClone(pars);
     NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     List<IntArray> partialOp = new ArrayList<IntArray>(n);
@@ -683,7 +702,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    */
   public static List<Partition> closureAt(List<BasicPartition> pars) {
     final BasicPartition alpha = pars.get(0);
-    final int n = alpha.size();
+    final int n = alpha.universeSize();
     int[][] blocks = alpha.getBlocks();
     List<IntArray> univ = new ArrayList<IntArray>();
     for (int i = 0; i < blocks.length; i++) {
@@ -696,8 +715,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     System.out.println("univ: " + univ);
     final int size = univ.size();
-    Partition firstProj = zero(alpha.size()).inducedPartition(univ, 0);
-    Partition secondProj = zero(alpha.size()).inducedPartition(univ, 1);
+    Partition firstProj = zero(alpha.universeSize()).inducedPartition(univ, 0);
+    Partition secondProj = zero(alpha.universeSize()).inducedPartition(univ, 1);
     System.out.println("firstProj: " + firstProj);
     System.out.println("secondProj: " + secondProj);
     Partition alpha0 = alpha.inducedPartition(univ, 0);
@@ -705,7 +724,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("alpha0: " + alpha0);
     Set<Partition> hs = new HashSet<Partition>();
     hs.add(firstProj);
-    hs.add(zero(alpha.size()).inducedPartition(univ, 1)); //second proj kernel
+    hs.add(zero(alpha.universeSize()).inducedPartition(univ, 1)); //second proj kernel
     hs.add(alpha0); 
     hs.add(alpha.inducedPartition(univ, 1));
     for (BasicPartition par : pars) {
@@ -726,7 +745,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public Partition projection(List<IntArray> universe, int size, int coord) {
     BasicPartition ans = zero(size);
-    final int n = size();
+    final int n = universeSize();
     for (int i = 0; i < n; i++) {
       int r = ans.root(universe.get(i).get(coord));
       int s = ans.root(universe.get(root(i)).get(coord));

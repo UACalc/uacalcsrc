@@ -176,8 +176,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       List<IntArray> lst = thinGenerators();
       //time = System.currentTimeMillis() - time;
       if (report != null) {
-        report.addEndingLine("thinned " + gens.get(0).size() + " coordinates down to " 
-            + lst.get(0).size()
+        report.addEndingLine("thinned " + gens.get(0).universeSize() + " coordinates down to " 
+            + lst.get(0).universeSize()
             // + " (" + time + " ms)"
             );
       }
@@ -185,12 +185,12 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
         //System.out.println("time for thinning = " + time);
         System.out.println("thin size = " + lst.size());
         System.out.println("thin = " + lst);
-        System.out.println("thin coord length = " + lst.get(0).size());
-        System.out.println("gens coord length = " + gens.get(0).size());
+        System.out.println("thin coord length = " + lst.get(0).universeSize());
+        System.out.println("gens coord length = " + gens.get(0).universeSize());
       }
 
       gens = lst;
-      productAlgebra = new BigProductAlgebra(alg, gens.get(0).size());
+      productAlgebra = new BigProductAlgebra(alg, gens.get(0).universeSize());
     }
 
     termMap = setupGensToVarsMap(gens);
@@ -333,8 +333,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     //FreeAlgebra F = new FreeAlgebra(A, bGens.length, false);
     // TODO: fix this, fix this fix this !!! make the decomp = true !!!!!!!!!
     FreeAlgebra F = new FreeAlgebra(A, bGens.length, false, true, true, null, report);
-    System.out.println("gens v length = " + F.generators().get(0).size());
-    report.addLine("gens v length = " + F.generators().get(0).size());
+    System.out.println("gens v length = " + F.generators().get(0).universeSize());
+    report.addLine("gens v length = " + F.generators().get(0).universeSize());
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setProgressReport(report);
     closer.setImageAlgebra(B);

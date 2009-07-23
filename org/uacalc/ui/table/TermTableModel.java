@@ -70,7 +70,7 @@ public class TermTableModel extends AbstractTableModel {
   
   public int getColumnCount() {
     if (universeList == null  || universeList.size() == 0) return 2;
-    return 2 + universeList.get(0).size();
+    return 2 + universeList.get(0).universeSize();
   }
   
 /*    This causes an error 

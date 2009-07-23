@@ -3,7 +3,7 @@ package org.uacalc.alg.conlat;
 import java.util.*;
 import org.uacalc.util.*;
 
-public class BasicBinaryRelation {
+public class BasicBinaryRelation implements BinaryRelation {
 
   private final NavigableSet<IntArray> pairs;
   private final int univSize;
@@ -20,6 +20,12 @@ public class BasicBinaryRelation {
   
   public boolean isRelated(int i, int j) {
     return pairs.contains(new IntArray(new int[]{i, j}));
+  }
+  
+  public int universeSize() { return univSize; }
+  
+  public Iterator<IntArray> iterator() {
+    return pairs.iterator();
   }
   
   public void add(int i, int j) {

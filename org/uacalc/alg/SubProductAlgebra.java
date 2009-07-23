@@ -116,7 +116,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   
   public static List<IntArray> transpose(List<IntArray> lst) {
     final int k = lst.size(); // if k = 0 we should throw an IllegalArguementExcpetion
-    final int n = lst.get(0).size();
+    final int n = lst.get(0).universeSize();
     List<IntArray> transpose = new ArrayList<IntArray>(n);
     for (int i = 0 ; i < n ; i++) {
       final int[] ithProj = new int[k];

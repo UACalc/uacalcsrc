@@ -13,7 +13,7 @@ import java.util.*;
  * @author Ralph Freese
  * @version $Id$
  */
-public interface Partition {
+public interface Partition extends BinaryRelation {
 
   /**
    * Printing types: the internal representation.
@@ -57,7 +57,7 @@ public interface Partition {
 
   public void normalize();
 
-  public int size();
+  public int universeSize();
 
   public int numberOfBlocks();
 

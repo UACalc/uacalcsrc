@@ -72,6 +72,11 @@ public class CongruenceLattice implements Lattice {
    * A map from pairs [i,j] to the array representing Cg(i, j).
    */
   private HashMap<IntArray,Partition> principalCongruencesLookup = null;
+  
+  /**
+   * A map from [i,j] to Tg(i, j).
+   */
+  private HashMap<IntArray,BinaryRelation> principalTolerancesLookup = null;
 
   /**
    * A map from principal congruences to pairs [i,j] such that Cg(i, j).
@@ -651,8 +656,7 @@ public class CongruenceLattice implements Lattice {
       int x = ((int[])pairs.first())[0];
       int y = ((int[])pairs.first())[1];
       pairs = pairs.rest();
-      for (Iterator it = alg.operations().iterator(); it.hasNext(); ) {
-        Operation f = (Operation)it.next();
+      for (Operation f : alg.operations()) {
         int arity = f.arity();
       	int[] arg = new int[arity];
 	      int[] arg2 = arg;
@@ -678,11 +682,57 @@ public class CongruenceLattice implements Lattice {
     return new BasicPartition(part);
   }
   
-  public Set typeSet() {
+  public BinaryRelation Tg(int a, int b) {
+    if (principalCongruencesLookup != null) {
+      BinaryRelation rel =  principalTolerancesLookup.get(new int[] {a, b});
+      if (rel != null) return rel;
+    }
+    final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 2);
+    final List<IntArray> gens = new ArrayList<IntArray>(algSize + 2);
+    gens.add(new IntArray(new int[] {a, b}));
+    gens.add(new IntArray(new int[] {b, a}));
+    for (int i = 0; i < algSize; i++) {
+      gens.add(new IntArray(new int[] {i, i}));
+    }
+    final SubProductAlgebra alg2 = new SubProductAlgebra("", prod, gens);    
+    return new BasicBinaryRelation(alg2.getUniverseList(), algSize);
+  }
+  
+  /**
+   * The set M(S,T) as in Kearnes-Kiss and other places. Note
+   * our correspondence between 2x2 matrices and 4-tuples is (a00, a01, a10, a11),
+   * that is, first row then second row. This may differ from what Kiss uses 
+   * sometimes.
+   * 
+   * @param S    a binary relation but usually a tolerance or congruence
+   * @param T
+   * @return
+   */
+  public List<IntArray> matrices(BinaryRelation S, BinaryRelation T) {
+    List<IntArray> gens = new ArrayList<IntArray>();
+    for (int i = 0; i < algSize; i++) {
+      gens.add(new IntArray(new int[] {i, i, i, i}));
+    }
+    for (IntArray ia : S) {
+      final int a = ia.get(0);
+      final int b = ia.get(1);
+      if (a != b) gens.add(new IntArray(new int[] {a,b,a,b}));
+    }
+    for (IntArray ia : T) {
+      final int a = ia.get(0);
+      final int b = ia.get(1);
+      if (a != b) gens.add(new IntArray(new int[] {a,a,b,b}));
+    }
+    final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 4);
+    final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens);
+    return alg4.getUniverseList();
+  }
+  
+  public Set<Integer> typeSet() {
     return typeSet(null);
   }
 
-  public Set typeSet(ProgressReport report) {
+  public Set<Integer> typeSet(ProgressReport report) {
     if (typeSet == null) makeTypeSet(report);
     return typeSet;
   }

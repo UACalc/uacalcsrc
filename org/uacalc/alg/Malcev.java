@@ -452,7 +452,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     }
     Comparator<IntArray> c = new Comparator<IntArray>() {
         public int compare(IntArray ia1, IntArray ia2) {
-          for (int i = 0; i < ia1.size(); i++) {
+          for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
           }
@@ -647,7 +647,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
         public int compare(Object o1, Object o2) {
           IntArray ia1 = (IntArray)o1;
           IntArray ia2 = (IntArray)o2;
-          for (int i = 0; i < ia1.size(); i++) {
+          for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
           }
@@ -953,7 +953,7 @@ System.out.println("got to idempotent");
         public int compare(Object o1, Object o2) {
           IntArray ia1 = (IntArray)o1;
           IntArray ia2 = (IntArray)o2;
-          for (int i = 0; i < ia1.size(); i++) {
+          for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
           }
@@ -1277,7 +1277,7 @@ System.out.println("got to idempotent");
         public int compare(Object o1, Object o2) {
           IntArray ia1 = (IntArray)o1;
           IntArray ia2 = (IntArray)o2;
-          for (int i = 0; i < ia1.size(); i++) {
+          for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
           }
