@@ -7,6 +7,7 @@ import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.lat.*;
+import org.uacalc.element.*;
 
 import java.util.*;
 import java.util.logging.*;
@@ -698,6 +699,64 @@ public class CongruenceLattice implements Lattice {
     return new BasicBinaryRelation(alg2.getUniverseList(), algSize);
   }
   
+  public SubProductElement strongRectangularityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return strongRectangularityFailure(S, T, delta, null);
+  }
+  
+  public SubProductElement strongRectangularityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+    if (mats == null) mats = matrices(S, T);
+    for (IntArray mat : mats.getUniverseList()) {
+      if (delta.isRelated(mat.get(1), mat.get(2)) && !delta.isRelated(mat.get(2), mat.get(3))) {
+        return new SubProductElement(mat, mats); 
+      }
+    }
+    return null;
+  }
+  
+  
+  public SubProductElement weakCentalityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return weakCentalityFailure(S, T, delta, null);
+  }
+  
+  public SubProductElement weakCentalityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+    if (mats == null) mats = matrices(S, T);
+    for (IntArray mat : mats.getUniverseList()) {
+      if (delta.isRelated(mat.get(0), mat.get(1))
+            && delta.isRelated(mat.get(1), mat.get(2))
+            && !delta.isRelated(mat.get(2), mat.get(3))) {
+        return new SubProductElement(mat, mats); 
+      }
+    }
+    return null;
+  }
+  
+  
+  public SubProductElement centalityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return centalityFailure(S, T, delta, null);
+  }
+  
+  public SubProductElement centalityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+    if (mats == null) mats = matrices(S, T);
+    for (IntArray mat : mats.getUniverseList()) {
+      if (delta.isRelated(mat.get(0), mat.get(1)) && !delta.isRelated(mat.get(2), mat.get(3))) {
+        return new SubProductElement(mat, mats); 
+      }
+    }
+    return null;
+  }
+  
+  public boolean centralizes(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return centralizes(S, T, delta, null);
+  }
+  
+  public boolean centralizes(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+    if (mats == null) mats = matrices(S, T);
+    for (IntArray mat : mats.getUniverseList()) {
+      if (delta.isRelated(mat.get(0), mat.get(1)) && !delta.isRelated(mat.get(2), mat.get(3))) return false;
+    }
+    return true;
+  }
+  
   /**
    * The set M(S,T) as in Kearnes-Kiss and other places. Note
    * our correspondence between 2x2 matrices and 4-tuples is (a00, a01, a10, a11),
@@ -706,9 +765,9 @@ public class CongruenceLattice implements Lattice {
    * 
    * @param S    a binary relation but usually a tolerance or congruence
    * @param T
-   * @return
+   * @return     M(S,T)
    */
-  public List<IntArray> matrices(BinaryRelation S, BinaryRelation T) {
+  public SubProductAlgebra matrices(BinaryRelation S, BinaryRelation T) {
     List<IntArray> gens = new ArrayList<IntArray>();
     for (int i = 0; i < algSize; i++) {
       gens.add(new IntArray(new int[] {i, i, i, i}));
@@ -724,8 +783,8 @@ public class CongruenceLattice implements Lattice {
       if (a != b) gens.add(new IntArray(new int[] {a,a,b,b}));
     }
     final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 4);
-    final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens);
-    return alg4.getUniverseList();
+    final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens, true);
+    return alg4;
   }
   
   public Set<Integer> typeSet() {

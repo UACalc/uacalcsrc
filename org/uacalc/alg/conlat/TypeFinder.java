@@ -59,7 +59,7 @@ public final class TypeFinder {
     logger.setLevel(Level.FINER);
   }
 
-  public static final boolean printSubtrace = false;
+  public static final boolean printSubtrace = true;
 
   private final SmallAlgebra A;
   private final int algSize;
@@ -84,7 +84,7 @@ public final class TypeFinder {
   private int diagonalSize = 0;
   private int diagonal4Size = 0;
 
-  private HashSet typeSet;
+  private HashSet<Integer> typeSet;
 
   public TypeFinder(SmallAlgebra alg) {
     this(alg, null);
@@ -140,9 +140,9 @@ public final class TypeFinder {
   public HashSet findTypeSet() {
     if (typeSet != null) return typeSet;   // make sure to null typeSet if
                                            // calculation was interupted.
-    typeSet = new HashSet();
-    for (Iterator it = con.joinIrreducibles().iterator(); it.hasNext(); ) {
-      typeSet.add(new Integer(findType((Partition)it.next())));
+    typeSet = new HashSet<Integer>();
+    for (Partition par : con.joinIrreducibles()) {
+      typeSet.add(new Integer(findType(par)));
     }
     return typeSet;
   }
@@ -327,6 +327,11 @@ public final class TypeFinder {
           logger.fine("orig pair " + pairIA);
           logger.fine("subtr " + new IntArray(pair));
           logUniv(universe);
+
+          System.out.println("subtraces: ");
+          for (Iterator it = universe.iterator(); it.hasNext(); ) {
+            System.out.println(ArrayString.toString(it.next()));
+          }
         }
         return new Subtrace(pair[0], pair[1], 
           genHashSet.contains(new IntArray(new int[] {pair[1], pair[0]})));

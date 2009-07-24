@@ -10,7 +10,7 @@ public class BasicBinaryRelation implements BinaryRelation {
   
   public BasicBinaryRelation(int univSize) {
     this.univSize = univSize;
-    pairs = new TreeSet<IntArray>();
+    pairs = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
   }
   
   public BasicBinaryRelation(Collection<IntArray> collection, int univSize) {

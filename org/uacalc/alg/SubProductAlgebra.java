@@ -34,7 +34,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   protected boolean decompose;
 
   // a map from IntArray's of elements of the 
-  protected HashMap<IntArray,Integer> univHashMap; 
+  protected Map<IntArray,Integer> univHashMap; 
                                  // univ to Integers (the index).
   
   protected Term[] terms; // term[i] is a term for the ith element
@@ -42,6 +42,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   protected Map<IntArray,Term> termMap;
 
   protected List<Variable> variables;
+  
+  protected Map<Variable,IntArray> varsMap;
 
   protected SubProductAlgebra() {
     super(null);
@@ -248,27 +250,41 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
   
   protected Map<IntArray,Term> setupGensToVarsMap(List<IntArray> gens) {
+    varsMap = new HashMap<Variable,IntArray>(gens.size());
     Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
-    if (gens.size() == 1) termMap.put(gens.get(0), Variable.x);
+    if (gens.size() == 1) {
+      termMap.put(gens.get(0), Variable.x);
+      varsMap.put(Variable.x, gens.get(0));
+    }
     if (gens.size() == 2) {
       termMap.put(gens.get(0), Variable.x);
       termMap.put(gens.get(1), Variable.y);
+      varsMap.put(Variable.x, gens.get(0));
+      varsMap.put(Variable.y, gens.get(1));
     }
     if (gens.size() == 3) {
       termMap.put(gens.get(0), Variable.x);
       termMap.put(gens.get(1), Variable.y);
       termMap.put(gens.get(2), Variable.z);
+      varsMap.put(Variable.x, gens.get(0));
+      varsMap.put(Variable.y, gens.get(1));
+      varsMap.put(Variable.z, gens.get(2));
     }
     int k = 0;
     if (gens.size() > 3) {
       for (Iterator<IntArray> it = gens.iterator(); it.hasNext(); k++) {
+        IntArray elt = it.next();
         Variable var = new VariableImp("x_" + k);
-        termMap.put(it.next(), var);
+        termMap.put(elt, var);
+        varsMap.put(var, elt);
       }
     }
     return termMap;
   }
   
+  public Map<Variable,IntArray> getVariableToGeneratorMap() {
+    return varsMap;
+  }
 
   public Term[] getTerms() {
     return terms;

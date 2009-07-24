@@ -2,6 +2,14 @@ package org.uacalc.nbui;
 
 import javax.swing.*;
 
+/**
+ * This is a (java) interface to the GUI, making it
+ * easy to try different GUI's with different layout
+ * managers.
+ * 
+ * @author ralph
+ *
+ */
 public interface UACalc {
   
   public JFrame getFrame();
