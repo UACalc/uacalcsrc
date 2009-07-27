@@ -8,6 +8,7 @@ import org.uacalc.ui.tm.ProgressReport;
 import org.uacalc.util.*;
 import org.uacalc.lat.*;
 import org.uacalc.element.*;
+import org.uacalc.io.*;
 
 import java.util.*;
 import java.util.logging.*;
@@ -699,6 +700,53 @@ public class CongruenceLattice implements Lattice {
     return new BasicBinaryRelation(alg2.getUniverseList(), algSize);
   }
   
+  public Partition strongRectangularityCommutator(BinaryRelation S, BinaryRelation T, 
+      Map<Partition,CentralityData> centralityMap, ProgressReport report) {
+    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+    Partition ans = one();
+    Set<Partition> univ = universe(report);
+    for (Partition par : univ) {
+      if (centralityMap.get(par).getStrongRectangularityFailure() == null) ans = ans.meet(par);
+    }
+    return ans;
+  }
+  
+  public Partition weakCommutator(BinaryRelation S, BinaryRelation T, 
+                      Map<Partition,CentralityData> centralityMap, ProgressReport report) {
+    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+    Partition ans = one();
+    Set<Partition> univ = universe(report);
+    for (Partition par : univ) {
+      if (centralityMap.get(par).getWeakCentralityFailure() == null) ans = ans.meet(par);
+    }
+    return ans;
+  }
+  
+  public Partition commutator(BinaryRelation S, BinaryRelation T, 
+                          Map<Partition,CentralityData> centralityMap, ProgressReport report) {
+    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+    Partition ans = one();
+    Set<Partition> univ = universe(report);
+    for (Partition par : univ) {
+      if (centralityMap.get(par).getCentralityFailure() == null) ans = ans.meet(par);
+    }
+    return ans;
+  }
+  
+  public Map<Partition,CentralityData> calcCentrality(BinaryRelation S, BinaryRelation T, ProgressReport report) {
+    Set<Partition> univ = universe(report);
+    Map<Partition,CentralityData> ans = new HashMap<Partition,CentralityData>(univ.size());
+    SubProductAlgebra mats = matrices(S, T);
+    for (Partition par : univ) {
+      final CentralityData cd = new CentralityData(S, T, par);
+      cd.setCentralityFailure(centralityFailure(S, T, par, mats));
+      cd.setWeakCentralityFailure(weakCentralityFailure(S, T, par, mats));
+      cd.setStrongRectangularityFailure(strongRectangularityFailure(S, T, par, mats));
+      ans.put(par, cd);
+    }
+    return ans;
+  }
+  
   public SubProductElement strongRectangularityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
     return strongRectangularityFailure(S, T, delta, null);
   }
@@ -714,11 +762,11 @@ public class CongruenceLattice implements Lattice {
   }
   
   
-  public SubProductElement weakCentalityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
-    return weakCentalityFailure(S, T, delta, null);
+  public SubProductElement weakCentralityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return weakCentralityFailure(S, T, delta, null);
   }
   
-  public SubProductElement weakCentalityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+  public SubProductElement weakCentralityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
     if (mats == null) mats = matrices(S, T);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(0), mat.get(1))
@@ -731,11 +779,11 @@ public class CongruenceLattice implements Lattice {
   }
   
   
-  public SubProductElement centalityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
-    return centalityFailure(S, T, delta, null);
+  public SubProductElement centralityFailure(BinaryRelation S, BinaryRelation T, Partition delta) {
+    return centralityFailure(S, T, delta, null);
   }
   
-  public SubProductElement centalityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
+  public SubProductElement centralityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
     if (mats == null) mats = matrices(S, T);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(0), mat.get(1)) && !delta.isRelated(mat.get(2), mat.get(3))) {
@@ -1100,5 +1148,21 @@ public class CongruenceLattice implements Lattice {
 
   public boolean isIdempotent() { return true; }
 
+  public static void main(String[] args) throws Exception {
+    SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
+    Partition one = alg.con().one();
+    //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
+    Partition theta = new BasicPartition(new int[] {-1, -2, 1});
+    System.out.println("theta: " + theta);
+    Map<Partition,CentralityData> map = alg.con().calcCentrality(theta, theta, null);
+    System.out.println("map: " + map);
+    Partition comm = alg.con().commutator(theta, theta, map, null);
+    System.out.println("[theta,theta] = " + comm);
+    comm = alg.con().weakCommutator(theta, theta, map, null);
+    System.out.println("[theta,theta]_W = " + comm);
+    comm = alg.con().strongRectangularityCommutator(theta, theta, map, null);
+    System.out.println("[theta,theta]_SR = " + comm);
+  }
 
+  
 }

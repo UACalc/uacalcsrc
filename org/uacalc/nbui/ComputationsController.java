@@ -1030,6 +1030,75 @@ public class ComputationsController {
         report.addStartLine(desc);
         report.setDescription(desc);
         java.util.Set<Partition> ans = alg.con().universe(report);
+        if (Thread.currentThread().isInterrupted()) {
+          report.addEndingLine("cancelled ...");
+          return null;
+        }
+        alg.con().typeSet(report);  // make want to make this optional
+        return ans;
+      }
+      public void onCompletion(java.util.List<Partition> congs, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          //updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (congs == null) {
+            System.out.println("The congs list was null. This should not happen.");
+          }
+          else {
+            report.addEndingLine("Found " + congs.size() + " congruences");
+            //java.util.List<Term> terms = new ArrayList<Term>(1);
+            //terms.add(jis);
+            //ttm.setTerms(terms);
+          }
+          //if (getCurrentTask() == this) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(congTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    //uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(congTask);
+  }
+  
+  public void setupCentralityTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    
+    
+    
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the congruences of " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    uacalcUI.repaint();
+    final BackgroundTask<Set<Partition>>  congTask = new BackgroundTask<Set<Partition>>(report) {
+      public Set<Partition> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        java.util.Set<Partition> ans = alg.con().universe(report);
         alg.con().typeSet(report);  // make want to make this optional
         return ans;
       }
