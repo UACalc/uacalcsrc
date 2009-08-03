@@ -59,13 +59,13 @@ public final class TypeFinder {
     logger.setLevel(Level.FINER);
   }
 
-  public static final boolean printSubtrace = true;
+  public static final boolean printSubtrace = false;
 
   private final SmallAlgebra A;
   private final int algSize;
   private final CongruenceLattice con;
 
-  private final HashSet visited;
+  private final HashSet<IntArray> visited;
   //private boolean hasInvolution = false;
 
   // this will only have the JI's and their lower covers and lookup
@@ -75,10 +75,10 @@ public final class TypeFinder {
   private Partition alpha;
   private int[] roots;
   private int rootsSize;
-  private final HashSet diagonalHS;
+  private final HashSet<IntArray> diagonalHS;
   //private ArrayList diagonal;
   private SimpleList diagonal;
-  private final HashSet diagonal4HS;
+  private final HashSet<IntArray> diagonal4HS;
   //private ArrayList diagonal4;
   private SimpleList diagonal4;
   private int diagonalSize = 0;
@@ -92,13 +92,13 @@ public final class TypeFinder {
 
   public TypeFinder(SmallAlgebra alg, Partition alpha) {
     A = alg;
-    con = (CongruenceLattice)A.con();
+    con = A.con();
     algSize = A.cardinality();
-    visited = new HashSet();
+    visited = new HashSet<IntArray>();
     diagonal = SimpleList.EMPTY_LIST;
-    diagonalHS = new HashSet();
+    diagonalHS = new HashSet<IntArray>();
     diagonal4 = SimpleList.EMPTY_LIST;
-    diagonal4HS = new HashSet();
+    diagonal4HS = new HashSet<IntArray>();
     if (alpha == null) alpha = con.zero();
     setAlpha(alpha);
   }
@@ -137,7 +137,7 @@ public final class TypeFinder {
   /**
    * Find the TCT type set of the algebra A.
    */
-  public HashSet findTypeSet() {
+  public HashSet<Integer> findTypeSet() {
     if (typeSet != null) return typeSet;   // make sure to null typeSet if
                                            // calculation was interupted.
     typeSet = new HashSet<Integer>();
@@ -197,7 +197,7 @@ public final class TypeFinder {
     visited.add(pairIA);
     SimpleList universe = diagonal;
 
-    HashSet genHashSet = (HashSet)diagonalHS.clone();
+    HashSet<IntArray> genHashSet = (HashSet<IntArray>)diagonalHS.clone();
     genHashSet.add(pairIA);
     universe = universe.cons(pair);
     SimpleList newElems = universe;
@@ -333,8 +333,15 @@ public final class TypeFinder {
             System.out.println(ArrayString.toString(it.next()));
           }
         }
-        return new Subtrace(pair[0], pair[1], 
+        Subtrace subtrace = new Subtrace(pair[0], pair[1], 
           genHashSet.contains(new IntArray(new int[] {pair[1], pair[0]})));
+        List<int[]> univ = new ArrayList<int[]>(universe);
+        List<IntArray> subtrUniv = new ArrayList<IntArray>(univ.size());
+        for (int[] arr : univ) {
+          subtrUniv.add(new IntArray(arr));
+        }
+        subtrace.setSubtraceUniverse(subtrUniv);
+        return subtrace;
       }
       oldElems = newElems;
       newElems = universe;
@@ -488,6 +495,7 @@ public final class TypeFinder {
                 if (meet) {
                   logger.info("found 4");
                   logUniv(universe);
+                  printUniv(universe); // maybe delete this
                   subtrace.setType(4);
                   return 4;
                 }
@@ -549,7 +557,17 @@ public final class TypeFinder {
           logUniv(universe);
           logger.info("universe size is " + universe.size());
           logger.info("orig pair c = " + c + ", d = " + d);
+          System.out.println("matrices: ");
+          for (Iterator it = universe.iterator(); it.hasNext(); ) {
+            System.out.println(ArrayString.toString(it.next()));
+          }
         }
+        List<int[]> univ = new ArrayList<int[]>(universe);
+        List<IntArray> mUniv = new ArrayList<IntArray>(univ.size());
+        for (int[] arr : univ) {
+          mUniv.add(new IntArray(arr));
+        }
+        subtrace.setMatrixUniverse(mUniv);
         if (join || meet) {
           logger.info("found 5");
           subtrace.setType(5);
