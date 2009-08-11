@@ -489,13 +489,15 @@ public final class TypeFinder {
                 if (subtrace.hasInvolution()) {
                   logger.info("found 3");
                   logUniv(universe);
+                  subtrace.setMatrixUniverse(convertUniverse(universe));
                   subtrace.setType(3);
                   return 3;
                 }
                 if (meet) {
                   logger.info("found 4");
                   logUniv(universe);
-                  printUniv(universe); // maybe delete this
+                  //printUniv(universe); // maybe delete this
+                  subtrace.setMatrixUniverse(convertUniverse(universe));
                   subtrace.setType(4);
                   return 4;
                 }
@@ -513,6 +515,7 @@ public final class TypeFinder {
                   }
                   if (join) {
                     logger.info("found 4");
+                    subtrace.setMatrixUniverse(convertUniverse(universe));
                     subtrace.setType(4);
                     return 4;
                   }
@@ -562,12 +565,7 @@ public final class TypeFinder {
             System.out.println(ArrayString.toString(it.next()));
           }
         }
-        List<int[]> univ = new ArrayList<int[]>(universe);
-        List<IntArray> mUniv = new ArrayList<IntArray>(univ.size());
-        for (int[] arr : univ) {
-          mUniv.add(new IntArray(arr));
-        }
-        subtrace.setMatrixUniverse(mUniv);
+        subtrace.setMatrixUniverse(convertUniverse(universe));
         if (join || meet) {
           logger.info("found 5");
           subtrace.setType(5);
@@ -577,11 +575,13 @@ public final class TypeFinder {
         else {
           if (oneSnag) {
             logger.info("found 2");
+            subtrace.setMatrixUniverse(convertUniverse(universe));
             subtrace.setType(2);
             return 2;
           }
           else {
             logger.info("found 1");
+            subtrace.setMatrixUniverse(convertUniverse(universe));
             subtrace.setType(1);
             return 1;
           }
@@ -590,6 +590,15 @@ public final class TypeFinder {
       oldElems = newElems;
       newElems = universe;
     }
+  }
+  
+  private List<IntArray> convertUniverse(List universe) {
+    List<int[]> univ = new ArrayList<int[]>(universe);
+    List<IntArray> mUniv = new ArrayList<IntArray>(univ.size());
+    for (int[] arr : univ) {
+      mUniv.add(new IntArray(arr));
+    }
+    return mUniv;
   }
 
   public void logUniv(List universe) {
