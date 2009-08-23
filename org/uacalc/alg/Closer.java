@@ -504,7 +504,7 @@ if (false) {
     final boolean blocksNotNull = blocks == null ? false : true;
     final boolean valuesNotNull = values == null ? false : true;
     
-    
+    System.out.println("got to sgClosePower, reportNotNull: " + reportNotNull);
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]

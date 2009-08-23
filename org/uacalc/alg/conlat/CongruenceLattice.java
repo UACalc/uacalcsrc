@@ -814,6 +814,7 @@ public class CongruenceLattice implements Lattice {
    * @return     M(S,T)
    */
   public SubProductAlgebra matrices(BinaryRelation S, BinaryRelation T, ProgressReport report) {
+    if (report != null) report.addStartLine("Finding M(S,T), S = " + S + ", T = " + T);
     List<IntArray> gens = new ArrayList<IntArray>();
     for (int i = 0; i < algSize; i++) {
       gens.add(new IntArray(new int[] {i, i, i, i}));
@@ -828,8 +829,10 @@ public class CongruenceLattice implements Lattice {
       final int b = ia.get(1);
       if (a != b) gens.add(new IntArray(new int[] {a,b,a,b}));
     }
+    if (report != null) report.addLine("M(S,T) has " + gens.size() + " generators");
     final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 4);
     final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens, true, report);
+    if (report != null) report.addEndingLine("done. |M(S,T)| = " + alg4.cardinality());
     return alg4;
   }
   
