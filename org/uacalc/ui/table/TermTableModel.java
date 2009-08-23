@@ -8,6 +8,8 @@ import org.uacalc.util.*;
 
 public class TermTableModel extends AbstractTableModel {
   
+  public static enum ResultTableType { TERM_LIST, CENTRALITY }
+  
   //private List<Term> terms = new ArrayList<Term>();
   private Term[] terms;
   private Variable[] variables;
@@ -15,19 +17,28 @@ public class TermTableModel extends AbstractTableModel {
   private List<Partition> congrList;
   private List<CentralityData> centralityList;
   private String description;
+  private ResultTableType type;
 
   public TermTableModel() {
     this(new Term[0]);
   }
   
+  public TermTableModel(ResultTableType t){
+    type = t;
+    if (t.equals(ResultTableType.TERM_LIST)) terms = new Term[0];
+  }
+  
   public TermTableModel(Term[] terms) {
     this.terms = terms;
+    type = ResultTableType.TERM_LIST;
   }
   
   public TermTableModel(Term[] terms, Variable[] variables) {
-    this.terms = terms;
+    this(terms);
     this.variables = variables;
   }
+  
+  public ResultTableType getType() { return type; }
   
   public void setTerms(List<Term> termList) {
     final int n = termList.size();
@@ -102,10 +113,10 @@ public class TermTableModel extends AbstractTableModel {
     if (col == 0) return "Index";
     if (centralityList != null) {
       if (col == 1) return "delta";
-      if (col == 2) return "Wk Cent";
-      if (col == 3) return "Cent";
-      if (col == 4) return "Str Rect";
-      if (col == 5) return "Str Cent";
+      if (col == 2) return "WC";
+      if (col == 3) return "C";
+      if (col == 4) return "SR";
+      if (col == 5) return "SC";
       if (col == 6) return "Failure";
     }
     if (col == 1) return "Term";

@@ -14,6 +14,7 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.eq.*;
 import org.uacalc.terms.*;
 import org.uacalc.ui.table.*;
+import org.uacalc.ui.table.TermTableModel.ResultTableType;
 import org.uacalc.ui.tm.*;
 import org.uacalc.ui.util.*;
 import org.uacalc.util.*;
@@ -120,12 +121,26 @@ public class ComputationsController {
     //});
   }
   
+  private void setResultTableColWidths() {
+    setResultTableColWidths(ResultTableType.TERM_LIST);
+  }
+  
   /**
    * This should be called after the TermTableModel has been set.
    */
-  private void setResultTableColWidths() {
+  private void setResultTableColWidths(ResultTableType type) {
     final JTable resultTable = uacalcUI.getResultTable();
     final int cols = resultTable.getColumnCount();
+    if (type.equals(ResultTableType.CENTRALITY)) {
+      for (int i = 0; i < cols; i++) {
+        TableColumn col = resultTable.getColumnModel().getColumn(i);
+        if (i == 0) col.setPreferredWidth(60);
+        else if (i == 1) col.setPreferredWidth(250);  // was 900; TODO: fix
+        else if (i == 6) col.setPreferredWidth(400);
+        else col.setPreferredWidth(40);
+      }
+      return;
+    }
     //System.out.println("col count xxx = " + cols);
     for (int i = 0; i < cols; i++) {
       TableColumn col = resultTable.getColumnModel().getColumn(i);
@@ -998,9 +1013,9 @@ public class ComputationsController {
     final BinaryRelation right = alg.con().one();
     
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
-    final TermTableModel ttm = new TermTableModel();
+    final TermTableModel ttm = new TermTableModel(ResultTableType.CENTRALITY);
     termTableModels.add(ttm);
-    setResultTableColWidths();
+    setResultTableColWidths(ResultTableType.CENTRALITY);
     final String desc = "Finding all centralities of left: " + left + ", right: " + right + " for " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
