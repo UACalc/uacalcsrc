@@ -733,7 +733,7 @@ public class CongruenceLattice implements Lattice {
   public List<CentralityData> calcCentrality(BinaryRelation S, BinaryRelation T, ProgressReport report) {
     Set<Partition> univ = universe(report);
     List<CentralityData> ans = new ArrayList<CentralityData>(univ.size());
-    SubProductAlgebra mats = matrices(S, T);
+    SubProductAlgebra mats = matrices(S, T, report);
     for (Partition par : univ) {
       final CentralityData cd = new CentralityData(S, T, par);
       cd.setCentralityFailure(centralityFailure(S, T, par, mats));
@@ -750,7 +750,7 @@ public class CongruenceLattice implements Lattice {
   }
   
   public SubProductElement strongRectangularityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
-    if (mats == null) mats = matrices(S, T);
+    if (mats == null) mats = matrices(S, T, null);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(1), mat.get(2)) && !delta.isRelated(mat.get(2), mat.get(3))) {
         return new SubProductElement(mat, mats); 
@@ -765,7 +765,7 @@ public class CongruenceLattice implements Lattice {
   }
   
   public SubProductElement weakCentralityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
-    if (mats == null) mats = matrices(S, T);
+    if (mats == null) mats = matrices(S, T, null);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(0), mat.get(1))
             && delta.isRelated(mat.get(1), mat.get(2))
@@ -782,7 +782,7 @@ public class CongruenceLattice implements Lattice {
   }
   
   public SubProductElement centralityFailure(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
-    if (mats == null) mats = matrices(S, T);
+    if (mats == null) mats = matrices(S, T, null);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(0), mat.get(1)) && !delta.isRelated(mat.get(2), mat.get(3))) {
         return new SubProductElement(mat, mats); 
@@ -796,7 +796,7 @@ public class CongruenceLattice implements Lattice {
   }
   
   public boolean centralizes(BinaryRelation S, BinaryRelation T, Partition delta, SubProductAlgebra mats) {
-    if (mats == null) mats = matrices(S, T);
+    if (mats == null) mats = matrices(S, T, null);
     for (IntArray mat : mats.getUniverseList()) {
       if (delta.isRelated(mat.get(0), mat.get(1)) && !delta.isRelated(mat.get(2), mat.get(3))) return false;
     }
@@ -813,7 +813,7 @@ public class CongruenceLattice implements Lattice {
    * @param T
    * @return     M(S,T)
    */
-  public SubProductAlgebra matrices(BinaryRelation S, BinaryRelation T) {
+  public SubProductAlgebra matrices(BinaryRelation S, BinaryRelation T, ProgressReport report) {
     List<IntArray> gens = new ArrayList<IntArray>();
     for (int i = 0; i < algSize; i++) {
       gens.add(new IntArray(new int[] {i, i, i, i}));
@@ -829,7 +829,7 @@ public class CongruenceLattice implements Lattice {
       if (a != b) gens.add(new IntArray(new int[] {a,b,a,b}));
     }
     final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 4);
-    final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens, true);
+    final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens, true, report);
     return alg4;
   }
   
