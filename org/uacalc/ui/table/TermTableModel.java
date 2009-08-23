@@ -106,6 +106,7 @@ public class TermTableModel extends AbstractTableModel {
   
   public int getRowCount() {
     if (centralityList != null) return centralityList.size();
+    if (terms == null) return 0;
     return terms.length;
   }
   
