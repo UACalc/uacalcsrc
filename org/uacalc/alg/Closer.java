@@ -539,6 +539,13 @@ if (false) {
                     SequenceGenerator.sequenceIncrementor(
                                   argIndeces, currentMark - 1, closedMark);
         while (true) {
+          if (Thread.currentThread().isInterrupted()) {
+            if (reportNotNull) {
+              report.setSize(ans.size());
+              report.addEndingLine("cancelled ...");
+            }
+            return null;
+          }
           //for (int i = 0; i < arity; i++) {
           //  arg[i] = rawList.get(argIndeces[i]);
           //}
