@@ -701,49 +701,47 @@ public class CongruenceLattice implements Lattice {
   }
   
   public Partition strongRectangularityCommutator(BinaryRelation S, BinaryRelation T, 
-      Map<Partition,CentralityData> centralityMap, ProgressReport report) {
-    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+      List<CentralityData> centralityList, ProgressReport report) {
+    if (centralityList == null) centralityList = calcCentrality(S, T, report);
     Partition ans = one();
-    Set<Partition> univ = universe(report);
-    for (Partition par : univ) {
-      if (centralityMap.get(par).getStrongRectangularityFailure() == null) ans = ans.meet(par);
+    for (CentralityData cd : centralityList) {
+      if (cd.getStrongRectangularityFailure() == null) ans = ans.meet(cd.getDelta());
     }
     return ans;
   }
   
   public Partition weakCommutator(BinaryRelation S, BinaryRelation T, 
-                      Map<Partition,CentralityData> centralityMap, ProgressReport report) {
-    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+                      List<CentralityData> centralityList, ProgressReport report) {
+    if (centralityList == null) centralityList = calcCentrality(S, T, report);
     Partition ans = one();
-    Set<Partition> univ = universe(report);
-    for (Partition par : univ) {
-      if (centralityMap.get(par).getWeakCentralityFailure() == null) ans = ans.meet(par);
+    for (CentralityData cd : centralityList) {
+      if (cd.getWeakCentralityFailure() == null) ans = ans.meet(cd.getDelta());
     }
     return ans;
   }
   
   public Partition commutator(BinaryRelation S, BinaryRelation T, 
-                          Map<Partition,CentralityData> centralityMap, ProgressReport report) {
-    if (centralityMap == null) centralityMap = calcCentrality(S, T, report);
+                          List<CentralityData> centralityList, ProgressReport report) {
+    if (centralityList == null) centralityList = calcCentrality(S, T, report);
     Partition ans = one();
-    Set<Partition> univ = universe(report);
-    for (Partition par : univ) {
-      if (centralityMap.get(par).getCentralityFailure() == null) ans = ans.meet(par);
+    for (CentralityData cd : centralityList) {
+      if (cd.getCentralityFailure() == null) ans = ans.meet(cd.getDelta());
     }
     return ans;
   }
   
-  public Map<Partition,CentralityData> calcCentrality(BinaryRelation S, BinaryRelation T, ProgressReport report) {
+  public List<CentralityData> calcCentrality(BinaryRelation S, BinaryRelation T, ProgressReport report) {
     Set<Partition> univ = universe(report);
-    Map<Partition,CentralityData> ans = new HashMap<Partition,CentralityData>(univ.size());
+    List<CentralityData> ans = new ArrayList<CentralityData>(univ.size());
     SubProductAlgebra mats = matrices(S, T);
     for (Partition par : univ) {
       final CentralityData cd = new CentralityData(S, T, par);
       cd.setCentralityFailure(centralityFailure(S, T, par, mats));
       cd.setWeakCentralityFailure(weakCentralityFailure(S, T, par, mats));
       cd.setStrongRectangularityFailure(strongRectangularityFailure(S, T, par, mats));
-      ans.put(par, cd);
+      ans.add(cd);
     }
+    Collections.sort(ans);
     return ans;
   }
   
@@ -823,12 +821,12 @@ public class CongruenceLattice implements Lattice {
     for (IntArray ia : S) {
       final int a = ia.get(0);
       final int b = ia.get(1);
-      if (a != b) gens.add(new IntArray(new int[] {a,b,a,b}));
+      if (a != b) gens.add(new IntArray(new int[] {a,a,b,b}));
     }
     for (IntArray ia : T) {
       final int a = ia.get(0);
       final int b = ia.get(1);
-      if (a != b) gens.add(new IntArray(new int[] {a,a,b,b}));
+      if (a != b) gens.add(new IntArray(new int[] {a,b,a,b}));
     }
     final BigProductAlgebra prod = new BigProductAlgebra(getAlgebra(), 4);
     final SubProductAlgebra alg4 = new SubProductAlgebra("", prod, gens, true);
@@ -1154,13 +1152,13 @@ public class CongruenceLattice implements Lattice {
     //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
     Partition theta = new BasicPartition(new int[] {-1, -2, 1});
     System.out.println("theta: " + theta);
-    Map<Partition,CentralityData> map = alg.con().calcCentrality(theta, theta, null);
-    System.out.println("map: " + map);
-    Partition comm = alg.con().commutator(theta, theta, map, null);
+    List<CentralityData> lst = alg.con().calcCentrality(one, theta, null);
+    System.out.println("lst: " + lst);
+    Partition comm = alg.con().commutator(theta, theta, lst, null);
     System.out.println("[theta,theta] = " + comm);
-    comm = alg.con().weakCommutator(theta, theta, map, null);
+    comm = alg.con().weakCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_W = " + comm);
-    comm = alg.con().strongRectangularityCommutator(theta, theta, map, null);
+    comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
   }
 

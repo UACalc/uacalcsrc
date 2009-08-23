@@ -9,6 +9,7 @@ import java.util.*;
 //import java.io.*;
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.op.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.eq.*;
 import org.uacalc.terms.*;
@@ -189,14 +190,7 @@ public class ComputationsController {
   
   public void setupFreeAlgebraTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final int gens = getFreeGensDialog();
     if (!(gens > 0)) return;
@@ -314,14 +308,7 @@ public class ComputationsController {
   
   public void setupSubPowerTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final int pow = getNumberDialog(1, "What is the power?", "Power");
     if (pow == -1) return;
@@ -436,14 +423,7 @@ public class ComputationsController {
   
   public void setupJonssonTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -503,14 +483,7 @@ public class ComputationsController {
   
   public void setupGummTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -566,14 +539,7 @@ public class ComputationsController {
   
   public void setupHagemannMitschkeTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -629,14 +595,7 @@ public class ComputationsController {
   
   public void setupMajorityTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -692,14 +651,7 @@ public class ComputationsController {
   
   public void setupPixleyTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -755,14 +707,7 @@ public class ComputationsController {
   
   public void setupMalcevTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -818,14 +763,7 @@ public class ComputationsController {
   
   public void setupMarkovicMcKenzieSiggersTaylorTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -881,14 +819,7 @@ public class ComputationsController {
   
   public void setupNUTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final int arity = getNumberDialog(3, "What arity (at least 3)?", "Arity");
     if (!(arity > 2)) return;
@@ -946,14 +877,7 @@ public class ComputationsController {
   
   public void setupJICongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -1007,14 +931,7 @@ public class ComputationsController {
   
   public void setupCongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -1073,36 +990,30 @@ public class ComputationsController {
   
   public void setupCentralityTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
-    
-    
+    JOptionPane.showConfirmDialog(uacalcUI.getFrame(), "For now left = right = 1_A", 
+        "Centrality", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+    final BinaryRelation left = alg.con().one();
+    final BinaryRelation right = alg.con().one();
     
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Finding the congruences of " + gAlg.toString(true);
+    final String desc = "Finding all centralities of left: " + left + ", right: " + right + " for " + gAlg.toString(true);
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     uacalcUI.repaint();
-    final BackgroundTask<Set<Partition>>  congTask = new BackgroundTask<Set<Partition>>(report) {
-      public Set<Partition> compute() {
+    final BackgroundTask<List<CentralityData>> centralityTask = new BackgroundTask<List<CentralityData>>(report) {
+      public List<CentralityData> compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        java.util.Set<Partition> ans = alg.con().universe(report);
-        alg.con().typeSet(report);  // make want to make this optional
+        List<CentralityData> ans = alg.con().calcCentrality(left, right, report);
         return ans;
       }
-      public void onCompletion(java.util.List<Partition> congs, Throwable exception, 
+      public void onCompletion(java.util.List<CentralityData> data, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
@@ -1111,11 +1022,21 @@ public class ComputationsController {
           return;
         }
         if (!cancelled) {
-          if (congs == null) {
-            System.out.println("The congs list was null. This should not happen.");
+          if (data == null) {
+            System.out.println("The list of centrality data was null. This should not happen.");
           }
           else {
-            report.addEndingLine("Found " + congs.size() + " congruences");
+            if (exception != null) exception.printStackTrace();
+            report.addEndingLine("Found centrality data");
+            ttm.setCentralityList(data);
+            if (getCurrentTask() == this) {
+              uacalcUI.getResultTable().setModel(ttm);
+              ttm.fireTableStructureChanged();
+              ttm.fireTableDataChanged();
+              //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
+              setResultTableColWidths();
+              uacalcUI.repaint();
+            }
             //java.util.List<Term> terms = new ArrayList<Term>(1);
             //terms.add(jis);
             //ttm.setTerms(terms);
@@ -1130,10 +1051,10 @@ public class ComputationsController {
         }
       }
     };
-    addTask(congTask);
+    addTask(centralityTask);
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     //uacalcUI.getResultTable().setModel(ttm);
-    BackgroundExec.getBackgroundExec().execute(congTask);
+    BackgroundExec.getBackgroundExec().execute(centralityTask);
   }
   
   public void setupBinVATask() {
@@ -1243,14 +1164,7 @@ public class ComputationsController {
   
   public void setupPrimalTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
@@ -1304,20 +1218,35 @@ public class ComputationsController {
   
   public void formPowerAlgebra() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
-    if (gAlg == null) {
-      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>You must have an algebra loaded.<br>"
-          + "Use the file menu or make a new one.</html>",
-          "No algebra error",
-          JOptionPane.ERROR_MESSAGE);
-      return;
-    }
+    if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     int pow = getNumberDialog(2, "power?",  "Power Algebra");
     if (!(pow > 1)) return;
     PowerAlgebra powAlg = new PowerAlgebra(alg, pow);
     MainController mc = uacalcUI.getMainController();
     mc.addAlgebra(powAlg, true);
+  }
+  
+  private boolean isAlgOK(GUIAlgebra gAlg) {
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    for (Operation op : gAlg.getAlgebra().operations()) {
+      if (!op.isTotal()) {
+        JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+            "<html>Op: " + op.symbol() + " is not total.<br>"
+            + "Hint: you must move out of a cell after editing it.</html>",
+            "Non-total operation error",
+            JOptionPane.ERROR_MESSAGE);
+        return false;
+      }
+    }
+    return true;
   }
   
 }

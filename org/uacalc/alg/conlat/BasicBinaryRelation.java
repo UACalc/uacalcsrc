@@ -18,6 +18,13 @@ public class BasicBinaryRelation implements BinaryRelation {
     pairs.addAll(collection);
   }
   
+  public NavigableSet<IntArray> getPairs() { return pairs; }
+  
+  public int compareTo(Object o) {
+    BinaryRelation rel = (BinaryRelation)o;
+    return pairs.size() - rel.getPairs().size();
+  }
+  
   public boolean isRelated(int i, int j) {
     return pairs.contains(new IntArray(new int[]{i, j}));
   }

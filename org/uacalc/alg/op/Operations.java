@@ -26,7 +26,7 @@ public class Operations {
 
   /**
    * This tests if an operation commutes with a unary operation. It can
-   * be use to test if an operation is a endomorphism (or automorphism).
+   * be used to test if an operation is a endomorphism (or automorphism).
    */
   public static boolean commutes(final Operation unaryOp, final Operation op) {
 Logger logger = Logger.getLogger("org.uacalc.alg.Operations");
@@ -560,6 +560,31 @@ logger.setLevel(Level.FINE);
       }
     }
     return new IntOperationImp(symbol, algSize, valueTable);
+  }
+  
+  public static Operation makeConstantIntOperation(final int algSize, final int elt) {
+    return makeConstantIntOperation("c", algSize, elt);
+  }
+  
+  public static Operation makeConstantIntOperation(final String symbolPrefix, final int algSize, final int elt) {
+    OperationSymbol sym = new OperationSymbol(symbolPrefix + elt, 0);
+    final int[] values = new int[] {elt};
+    Operation op = new AbstractOperation(sym, algSize) {
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+      public int[] getTable() { return values; }
+      public int[] getTable(boolean makeTable) { return values; }
+      public int intValueAt(final int[] args) {
+        return elt;
+      }
+      public int intValueAt(int arg) {
+        return values[arg];
+      }
+      
+      public boolean isTableBased() { return true; }
+    };
+    return op;
   }
 
   public static void main(String[] args) throws Exception {

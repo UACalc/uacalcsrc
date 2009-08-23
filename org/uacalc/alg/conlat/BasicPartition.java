@@ -93,23 +93,28 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   public Iterator<IntArray> iterator() {
-    if (pairs == null) {
-      pairs = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
-      int[][] blocks = getBlocks();
-      System.out.println("blocks: " + org.uacalc.util.ArrayString.toString(blocks));
-      for (int i = 0; i < blocks.length; i++) {
-        int[] block = blocks[i];
-        for (int j = 0; j < block.length; j++) {
-          for (int k = j; k < block.length; k++) {
-            pairs.add(new IntArray(new int[] {block[j], block[k]}));
-            if (j != k) pairs.add(new IntArray(new int[] {block[k], block[j]}));
-          }
-        }
-      }
-    }    
-    return pairs.iterator();
+    return getPairs().iterator();
   }
 
+  public NavigableSet getPairs() {
+    if (pairs == null) makePairs();
+    return pairs;
+  }
+  
+  private void makePairs() {
+    pairs = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
+    int[][] blocks = getBlocks();
+    System.out.println("blocks: " + org.uacalc.util.ArrayString.toString(blocks));
+    for (int i = 0; i < blocks.length; i++) {
+      int[] block = blocks[i];
+      for (int j = 0; j < block.length; j++) {
+        for (int k = j; k < block.length; k++) {
+          pairs.add(new IntArray(new int[] {block[j], block[k]}));
+          if (j != k) pairs.add(new IntArray(new int[] {block[k], block[j]}));
+        }
+      }
+    }
+  }
 
   /**
    * Does not need normalized form.

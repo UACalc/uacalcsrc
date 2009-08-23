@@ -12,7 +12,7 @@ import org.uacalc.element.*;
  * @author ralph
  *
  */
-public class CentralityData {
+public class CentralityData implements Comparable<CentralityData> {
   
   private final BinaryRelation left;
   private final BinaryRelation right;
@@ -28,6 +28,14 @@ public class CentralityData {
     this.right = T;
     this.delta = delta;
   }
+  
+  public int compareTo(CentralityData data) {
+    return delta.compareTo(data.getDelta());
+  }
+  
+  public BinaryRelation getLeft() { return left; }
+  public BinaryRelation getRight() { return right; }
+  public Partition getDelta() { return delta; }
   
   public void setCentralityFailure(SubProductElement centralityFailure) {
     this.centralityFailure = centralityFailure;
