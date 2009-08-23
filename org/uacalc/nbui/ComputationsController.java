@@ -137,7 +137,7 @@ public class ComputationsController {
         TableColumn col = resultTable.getColumnModel().getColumn(i);
         if (i == 0) col.setPreferredWidth(60);
         else if (i == 1) col.setPreferredWidth(250);  // was 900; TODO: fix
-        else if (i == 6) col.setPreferredWidth(400);
+        else if (i == 6) col.setPreferredWidth(800);
         else col.setPreferredWidth(40);
       }
       return;
