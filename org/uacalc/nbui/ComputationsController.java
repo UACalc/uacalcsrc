@@ -132,6 +132,7 @@ public class ComputationsController {
     final JTable resultTable = uacalcUI.getResultTable();
     final int cols = resultTable.getColumnCount();
     if (type.equals(ResultTableType.CENTRALITY)) {
+      System.out.println("got to Centrality col wids");
       for (int i = 0; i < cols; i++) {
         TableColumn col = resultTable.getColumnModel().getColumn(i);
         if (i == 0) col.setPreferredWidth(60);
@@ -141,6 +142,8 @@ public class ComputationsController {
       }
       return;
     }
+    System.out.println("got to TERM_LIST col wids");
+
     //System.out.println("col count xxx = " + cols);
     for (int i = 0; i < cols; i++) {
       TableColumn col = resultTable.getColumnModel().getColumn(i);
@@ -1049,7 +1052,7 @@ public class ComputationsController {
               ttm.fireTableStructureChanged();
               ttm.fireTableDataChanged();
               //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
-              setResultTableColWidths();
+              setResultTableColWidths(ResultTableType.CENTRALITY);
               uacalcUI.repaint();
             }
             //java.util.List<Term> terms = new ArrayList<Term>(1);
