@@ -514,9 +514,12 @@ if (false) {
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
     int pass = 0;
+    final CloserTiming timing = reportNotNull ?  new CloserTiming(algebra, report) : null;
+    //vvv;
     while (closedMark < currentMark) {
       String str = "pass: " + pass + ", size: " + ans.size();
       if (reportNotNull) {
+        timing.updatePass(ans.size());
         report.setPass(pass);
         report.setPassSize(ans.size());
         report.addLine(str);
@@ -574,11 +577,12 @@ if (false) {
               vRaw[j] = f.intValueAt(arg);
             }
           }
-
           IntArray v = new IntArray(vRaw);
+          if (reportNotNull) timing.incrementApps();
           if (su.add(v)) {
             ans.add(v);
             rawList.add(vRaw);
+            if (reportNotNull) timing.incrementNextPassSize();
             if (reportNotNull) report.setSize(ans.size());
             if (Thread.currentThread().isInterrupted()) return null;
             if (termMap != null) {

@@ -132,18 +132,15 @@ public class ComputationsController {
     final JTable resultTable = uacalcUI.getResultTable();
     final int cols = resultTable.getColumnCount();
     if (type.equals(ResultTableType.CENTRALITY)) {
-      System.out.println("got to Centrality col wids");
       for (int i = 0; i < cols; i++) {
         TableColumn col = resultTable.getColumnModel().getColumn(i);
         if (i == 0) col.setPreferredWidth(60);
-        else if (i == 1) col.setPreferredWidth(250);  // was 900; TODO: fix
+        else if (i == 1) col.setPreferredWidth(250);
         else if (i == 6) col.setPreferredWidth(800);
         else col.setPreferredWidth(40);
       }
       return;
     }
-    System.out.println("got to TERM_LIST col wids");
-
     //System.out.println("col count xxx = " + cols);
     for (int i = 0; i < cols; i++) {
       TableColumn col = resultTable.getColumnModel().getColumn(i);

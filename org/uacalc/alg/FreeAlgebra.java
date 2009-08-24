@@ -177,9 +177,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       //time = System.currentTimeMillis() - time;
       if (report != null) {
         report.addEndingLine("thinned " + gens.get(0).universeSize() + " coordinates down to " 
-            + lst.get(0).universeSize()
-            // + " (" + time + " ms)"
-            );
+            + lst.get(0).universeSize());
       }
       else {
         //System.out.println("time for thinning = " + time);
