@@ -883,16 +883,23 @@ public class MainController {
     delayer.start();
   }
 
-  public static void tableToCSV(String desc, TableModel model, PrintStream out) {
+  public static void tableToCSV(String desc, TermTableModel model, PrintStream out) {
     final String comma = ",";
+    final String dquote = "\"";
     final String eol = "\n";
-    out.println("," + desc + comma);
+    final boolean central = model.getType().equals(TermTableModel.ResultTableType.CENTRALITY);
+    out.println("," + dquote +  desc + dquote + comma);
     out.println(",,");
+    for (int j = 0 ; j < model.getColumnCount(); j++) {
+      out.print(model.getColumnName(j));
+      out.print(comma);
+    }
+    out.print(eol);
     for (int i = 0; i < model.getRowCount(); i++) {
       for (int j = 0 ; j < model.getColumnCount(); j++) {
-        if (j == 1) out.print("\"");
+        if (j == 1 || (j == 6 && central)) out.print(dquote);
         out.print(model.getValueAt(i, j));
-        if (j == 1) out.print("\"");
+        if (j == 1 || (j == 6 && central)) out.print(dquote);
         out.print(comma);
       }
       out.print(eol);
