@@ -59,14 +59,14 @@ public final class AlgebraReader extends DefaultHandler {
   private int arity;
   private int power;
   private int[] powers;
-  private OperationSymbol opSym;
-  private Operation op;
-  private List ops = new ArrayList();
+  //private OperationSymbol opSym;
+  //private Operation op;
+  private List<Operation> ops = new ArrayList<Operation>();
   private int[] intArray;
   private int intArrayIndex;
-  private List universe = new ArrayList();
-  private List factors = new ArrayList();
-  private List generators = new ArrayList();
+  private List<IntArray> universe = new ArrayList<IntArray>();
+  private List<SmallAlgebra> factors = new ArrayList<SmallAlgebra>();
+  private List<IntArray> generators = new ArrayList<IntArray>();
   private SmallAlgebra superAlgebra;
   private SmallAlgebra rootAlgebra;
   private Algebra bigAlgebra;
@@ -251,6 +251,8 @@ public final class AlgebraReader extends DefaultHandler {
 //System.out.println("cardinality is " + cardinality);
 //System.out.println("ops has length " + ops.size());
       algebra = new BasicAlgebra(algName, cardinality, ops);
+      addDescription();
+      ops = new ArrayList<Operation>();
       algName = null;
     }
     if ("factor".equals(elemName)) {
@@ -268,26 +270,30 @@ public final class AlgebraReader extends DefaultHandler {
       }
       else algebra = new PowerAlgebra(algName, rootAlgebra, power);
       algName = null;
+      addDescription();
     }
       
-    if ("productAlgebra".equals(elemName)) {
+    if ("productAlgebra".equals(elemName)) {      
       if (algName != null) algebra = new ProductAlgebra(algName, factors);
       else  algebra = new ProductAlgebra(factors);
+      addDescription();
       algName = null;
-      factors.clear();
+      factors = new ArrayList<SmallAlgebra>();
     }
     if ("bigProductAlgebra".equals(elemName)) {
       if (algName != null) bigAlgebra = new BigProductAlgebra(algName, 
                                                (List<SmallAlgebra>)factors, powers);
       else  bigAlgebra = new BigProductAlgebra((List<SmallAlgebra>)factors, powers);
+      addDescription();
       algName = null;
-      factors.clear();
+      factors = new ArrayList<SmallAlgebra>();
     }
     if ("subProductAlgebra".equals(elemName)) {
       // we hack around the super tag by just skipping it since
       // the BigProductAlgebra cannot be cast into a SmallAlgebra.
       algebra = new SubProductAlgebra(algName, (BigProductAlgebra)bigAlgebra, 
                            (List<IntArray>)generators, (List<IntArray>)universe);
+      addDescription();      
     }
     if ("subAlgebra".equals(elemName)) {
       if (algName == null) {
@@ -295,17 +301,28 @@ public final class AlgebraReader extends DefaultHandler {
       }
       else algebra = new Subalgebra(algName, superAlgebra, subUniverse);
       algName = null;
+      addDescription();
     }
     if ("quotientAlgebra".equals(elemName)) {
       if (algName == null) {
         algebra = new QuotientAlgebra(superAlgebra, congruence);
       }
       else algebra = new QuotientAlgebra(algName, superAlgebra, congruence);
+      addDescription();
       algName = null;
     }
-    if (algebra != null && !EMPTY_STRING.equals(descString)) algebra.setDescription(descString);
+    //if (algebra != null && !EMPTY_STRING.equals(descString)) {
+    //  algebra.setDescription(descString);
+    //  descString = EMPTY_STRING;
+    //}
   }
 
+  private void addDescription() {
+    if (algebra != null && !EMPTY_STRING.equals(descString)) {
+      algebra.setDescription(descString);
+      descString = EMPTY_STRING;
+    }
+  }
  
   public static void main(String[] args) throws ParserConfigurationException, 
                           SAXException, IOException, BadAlgebraFileException {
