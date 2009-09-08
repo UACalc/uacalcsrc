@@ -307,19 +307,20 @@ public class UACalculator2 extends JFrame implements UACalc {
     
     //add
     add(jScrollPane5, "height 250, grow 18");
-    add(delAlg);
+    add(delAlg, "align center");
     delAlg.setText("Delete");
-    MigLayout allLM = new MigLayout("",
-        "[pref!][grow,fill]",
-        "[]15[]");
+
     //msg area:
+    add(new JLabel("Msg:"), "split 2");
+    add(msgTextField, "grow 100");
+    /*
     JPanel bot = new JPanel();
     bot.setLayout(new MigLayout("fillx","[pref!][grow,fill]","[]15[]"));
     bot.add(new JLabel("Msg:"), "grow 0");
     bot.add(msgTextField, "grow 100");
     //add(msgTextField, "dock south");
     add(bot, "dock south");
-
+    */
   }
   
   
