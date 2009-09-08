@@ -1,5 +1,6 @@
 package org.uacalc.nbui;
 
+import javax.swing.*;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -282,21 +283,42 @@ public class UACalculator2 extends JFrame implements UACalc {
     drawConMI = new javax.swing.JMenuItem();
     drawSubMI = new javax.swing.JMenuItem();
     drawAlgMI = new javax.swing.JMenuItem();
+    
+    jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
 
-    MigLayout layout = new MigLayout("wrap 1");
+    MigLayout layout = new MigLayout("wrap 1, fill, insets 10");
+    //MigLayout layout = new MigLayout("nogrid"); //sucked
     getContentPane().setLayout(layout);
+    
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    int width = (screenSize.width * 9) / 10;
+    int height = (screenSize.height * 9) / 10;
+    setLocation((screenSize.width - width) / 2,
+        (screenSize.height - height) / 2);
+    setSize(width, height);
 
-    //tabbedPane.setPreferredSize(new Dimension(500, 600));
-    //tabbedPane.setPreferredSize(
-    //    new Dimension(2 * frameWidth / 3, 2 * frameHeight / 3));
-    int ht = 4 * algListTable.getRowHeight();
-    //algListTable.setPreferredScrollableViewportSize(new Dimension(500, ht));
 
-
-    add(tabbedPane, "height 550:600:650, grow 75"); //, "grow 75");
-    add(jScrollPane5, "height 250, grow 25");
+    setJMenuBar(jMenuBar1);
+    add(tabbedPane, "height 550:600:, grow 82"); //, "grow 75");
+    //add(tabbedPane, "grow 82");
+    //JLabel algLabel = new JLabel("Algebras");
+    //algLabel.setToolTipText("algebras in the system");
+    //add(algLabel);
+    
+    //add
+    add(jScrollPane5, "height 250, grow 18");
     add(delAlg);
-    add(msgTextField, "dock south");
+    delAlg.setText("Delete");
+    MigLayout allLM = new MigLayout("",
+        "[pref!][grow,fill]",
+        "[]15[]");
+    //msg area:
+    JPanel bot = new JPanel();
+    bot.setLayout(new MigLayout("fillx","[pref!][grow,fill]","[]15[]"));
+    bot.add(new JLabel("Msg:"), "grow 0");
+    bot.add(msgTextField, "grow 100");
+    //add(msgTextField, "dock south");
+    add(bot, "dock south");
 
   }
   
