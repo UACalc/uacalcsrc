@@ -1,15 +1,6 @@
 package org.uacalc.nbui;
 
 import javax.swing.*;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -284,11 +275,462 @@ public class UACalculator2 extends JFrame implements UACalc {
     drawSubMI = new javax.swing.JMenuItem();
     drawAlgMI = new javax.swing.JMenuItem();
     
-    jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
+    
+    // tie components together and setup stuff
+    // skipping the New and Open button for now.
+    
+    jLabel1.setText("Name:");
 
+    jLabel2.setText("Cardinality:");
+
+    jLabel3.setText("Desc:");
+
+    jLabel4.setText("Operations:");
+
+    opsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Op Yet" }));
+    opsComboBox.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            opsComboBoxActionPerformed(evt);
+        }
+    });
+
+    delOpButton.setText("Del");
+    delOpButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            delOpButtonActionPerformed(evt);
+        }
+    });
+
+    addOpButton.setText("Add");
+    addOpButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            addOpButtonActionPerformed(evt);
+        }
+    });
+
+    opTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null}
+        },
+        new String [] {
+            "Op", "Table", "Goes", "Here"
+        }
+    ));
+    opTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    opTable.setCellSelectionEnabled(true);
+    opTableScrollPane.setViewportView(opTable);
+
+    idempotentCB.setText("Idempotent");
+    idempotentCB.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            idempotentCBActionPerformed(evt);
+        }
+    });
+
+    jLabel5.setText("Default element:");
+
+    defaultEltComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Op Yet" }));
+    defaultEltComboBox.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            defaultEltComboBoxActionPerformed(evt);
+        }
+    });
+
+    currentAlgPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Current Algebra Properties"));
+   
+    tabbedPane.addTab("Editor", editorPanel);
+    
+    resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
+
+    resultTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+    resultTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4"
+        }
+    ));
+    resultTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    jScrollPane4.setViewportView(resultTable);
+
+    resultDescLabel.setText("Desc:");
+    
+    computationsLogPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Tasks"));
+
+    computationsTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6"
+        }
+    ));
+    computationsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    jScrollPane2.setViewportView(computationsTable);
+
+    cancelCompButton.setText("Cancel");
+    cancelCompButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            cancelCompButtonActionPerformed(evt);
+        }
+    });
+
+    clearLogButton.setText("Clear");
+    clearLogButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            clearLogButtonActionPerformed(evt);
+        }
+    });
+
+    logTextArea.setColumns(20);
+    logTextArea.setRows(5);
+    jScrollPane3.setViewportView(logTextArea);
+
+    tabbedPane.addTab("Computations", computationsPanel);
+
+    conDiagButton.setText("Diagram");
+    conDiagButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            conDiagButtonActionPerformed(evt);
+        }
+    });
+
+    conTableButton.setText("Table");
+    conTableButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            conTableButtonActionPerformed(evt);
+        }
+    });
+    
+    tabbedPane.addTab("Con", conPanel);
+    
+    tabbedPane.addTab("Sub", subPanel);
+    
+    tabbedPane.addTab("Drawing", drawingPanel);
+    
+    algListTable.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+    algListTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4"
+        }
+    ));
+    algListTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    algListTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    jScrollPane5.setViewportView(algListTable);
+    
+    jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
+    
+    msgTextField.setText("Welcome to the Universal Algebra Calculator!");
+    
+    delAlg.setText("Delete");
+    delAlg.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            delAlgActionPerformed(evt);
+        }
+    });
+
+    fileMenu.setText("File");
+
+    builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+    builtInAlgsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
+    builtInAlgsMI.setText("Built In Algs");
+    builtInAlgsMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            builtInAlgsMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(builtInAlgsMI);
+
+    newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+    newMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
+    newMI.setText("New");
+    newMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            newMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(newMI);
+
+    openMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+    openMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Open16.gif"))); // NOI18N
+    openMI.setText("Open");
+    openMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            openMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(openMI);
+    
+    saveMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+    saveMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
+    saveMI.setText("Save");
+    saveMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            saveMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(saveMI);
+
+    saveAsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/SaveAs16.gif"))); // NOI18N
+    saveAsMenu.setText("Save As");
+
+    uaFileMI.setText("ua file (new format)");
+    uaFileMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            uaFileMIActionPerformed(evt);
+        }
+    });
+    saveAsMenu.add(uaFileMI);
+    
+    algFileMI.setText("alg file (old format)");
+    algFileMI.setToolTipText("not yet implemented");
+    algFileMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            algFileMIActionPerformed(evt);
+        }
+    });
+    saveAsMenu.add(algFileMI);
+
+    fileMenu.add(saveAsMenu);
+    
+    tableCVSMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
+    tableCVSMI.setText("Save Results Table");
+    tableCVSMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            tableCVSMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(tableCVSMI);
+
+    quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+    quitMI.setText("Quit");
+    quitMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            quitMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(quitMI);
+
+    jMenuBar1.add(fileMenu);
+
+    editMenu.setText("Edit");
+    jMenuBar1.add(editMenu);
+
+    hspMenu.setText("HSP");
+
+    quotMI.setText("Quotient");
+    quotMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            quotMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(quotMI);
+
+    subMI.setText("Subalgebra");
+    subMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            subMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(subMI);
+
+    prodMI.setText("Product");
+    prodMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            prodMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(prodMI);
+
+    powMI.setText("Power");
+    powMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            powMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(powMI);
+
+    subpowMI.setText("Sub Power");
+    subpowMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            subpowMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(subpowMI);
+
+    jMenuBar1.add(hspMenu);
+
+    tasksMenu.setText("Tasks");
+
+    freeAlgMI.setText("Free Algebra");
+    freeAlgMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            freeAlgMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(freeAlgMI);
+
+    membershipTestMI.setText("B in V(A) ?");
+    membershipTestMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            membershipTestMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(membershipTestMI);
+
+    subPowerMI.setText("Sub Power");
+    subPowerMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            subPowerMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(subPowerMI);
+
+    primalMI.setText("Primality");
+    primalMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            primalMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(primalMI);
+
+    jMenuBar1.add(tasksMenu);
+    
+    maltsevMenu.setText("Maltsev");
+
+    distributivityMI.setText("Distributivity");
+    distributivityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            distributivityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(distributivityMI);
+
+    modularityMI.setText("Modularity");
+    modularityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            modularityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(modularityMI);
+
+    nPermMI.setText("n-Permutability");
+    nPermMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            nPermMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(nPermMI);
+
+    maltsevMI.setText("Maltsev term");
+    maltsevMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            maltsevMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(maltsevMI);
+
+    majorityMI.setText("Majority term");
+    majorityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            majorityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(majorityMI);
+
+    pixleyMI.setText("Pixley term");
+    pixleyMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            pixleyMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(pixleyMI);
+
+    nuMI.setText("near unanimity term");
+    nuMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            nuMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(nuMI);
+
+    mmstMI.setText("MMS Taylor term");
+    mmstMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            mmstMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(mmstMI);
+
+    jMenuBar1.add(maltsevMenu);
+
+    drawingMenu.setText("Drawing");
+
+    drawConMI.setText("Con");
+    drawConMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            drawConMIActionPerformed(evt);
+        }
+    });
+    drawingMenu.add(drawConMI);
+    
+    drawSubMI.setText("Sub");
+    drawSubMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            drawSubMIActionPerformed(evt);
+        }
+    });
+    drawingMenu.add(drawSubMI);
+
+    drawAlgMI.setText("Algebra");
+    drawAlgMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            drawAlgMIActionPerformed(evt);
+        }
+    });
+    drawingMenu.add(drawAlgMI);
+
+    jMenuBar1.add(drawingMenu);
+
+    setJMenuBar(jMenuBar1);
+
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // Start the layout
+    // Tab pane 75%, Algebras pane, 20%, msg part.
     MigLayout layout = new MigLayout("wrap 1, fill, insets 10");
     //MigLayout layout = new MigLayout("nogrid"); //sucked
     getContentPane().setLayout(layout);
+    
+    
     
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     int width = (screenSize.width * 9) / 10;
@@ -299,16 +741,15 @@ public class UACalculator2 extends JFrame implements UACalc {
 
 
     setJMenuBar(jMenuBar1);
-    add(tabbedPane, "height 550:600:, grow 82"); //, "grow 75");
-    //add(tabbedPane, "grow 82");
-    //JLabel algLabel = new JLabel("Algebras");
-    //algLabel.setToolTipText("algebras in the system");
-    //add(algLabel);
+
+    //JSplitPane mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, jScrollPane5); //too hard
+    
+    add(tabbedPane, "height 400:600:, grow 82"); //, "grow 75");
     
     //add
     add(jScrollPane5, "height 250, grow 18");
     add(delAlg, "align center");
-    delAlg.setText("Delete");
+
 
     //msg area:
     add(new JLabel("Msg:"), "split 2");
@@ -321,6 +762,10 @@ public class UACalculator2 extends JFrame implements UACalc {
     //add(msgTextField, "dock south");
     add(bot, "dock south");
     */
+    
+    
+    // fix this to check for unsaved algebras.
+    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
   }
   
   
@@ -438,6 +883,286 @@ public class UACalculator2 extends JFrame implements UACalc {
   public JTabbedPane getTabbedPane() {
     return tabbedPane;
   }
+  
+  // Actions:
+  private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
+    getComputationsController().cancelOrRemoveCurrentTask();
+  }//GEN-LAST:event_cancelCompButtonActionPerformed
+
+  private void clearLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearLogButtonActionPerformed
+  // TODO add your handling code here:
+  }//GEN-LAST:event_clearLogButtonActionPerformed
+
+  private void quitMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMIActionPerformed
+      getMainController().quit();
+  }//GEN-LAST:event_quitMIActionPerformed
+
+  private void newMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMIActionPerformed
+    getAlgebraEditorController().makeNewAlgebra();
+  }//GEN-LAST:event_newMIActionPerformed
+
+  private void openMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMIActionPerformed
+  // TODO add your handling code here:
+      getMainController().open();
+  }//GEN-LAST:event_openMIActionPerformed
+
+  private void uaFileMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getMainController().saveAs(org.uacalc.io.ExtFileFilter.UA_EXT);
+  }
+
+  private void algFileMIActionPerformed(java.awt.event.ActionEvent evt) {                                       
+    getMainController().saveAs(org.uacalc.io.ExtFileFilter.ALG_EXT);
+  }                                       
+
+  private void newAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    getAlgebraEditorController().makeNewAlgebra();
+  }
+
+  private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    getMainController().open();
+  }
+
+  private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    getAlgebraEditorController().addOp();
+  }
+
+  private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {
+    getAlgebraEditorController().setIdempotent(idempotentCB.isSelected());
+  }
+
+  private void opsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opsComboBoxActionPerformed
+    getAlgebraEditorController().setCurrentOp();  
+  }//GEN-LAST:event_opsComboBoxActionPerformed
+
+  private void delOpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delOpButtonActionPerformed
+    getAlgebraEditorController().deleteOp();
+  }//GEN-LAST:event_delOpButtonActionPerformed
+
+  private void defaultEltComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultEltComboBoxActionPerformed
+    getAlgebraEditorController().defaultEltChangeHandler();
+  }//GEN-LAST:event_defaultEltComboBoxActionPerformed
+
+  private void saveMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMIActionPerformed
+    getMainController().save();
+  }//GEN-LAST:event_saveMIActionPerformed
+
+  private void freeAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freeAlgMIActionPerformed
+    getComputationsController().setupFreeAlgebraTask();
+  }//GEN-LAST:event_freeAlgMIActionPerformed
+
+  private void membershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_membershipTestMIActionPerformed
+    getComputationsController().setupBinVATask();
+  }//GEN-LAST:event_membershipTestMIActionPerformed
+
+  private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
+    getComputationsController().setupJonssonTermsTask();
+  }//GEN-LAST:event_distributivityMIActionPerformed
+
+  private void modularityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modularityMIActionPerformed
+    getComputationsController().setupGummTermsTask();
+  }//GEN-LAST:event_modularityMIActionPerformed
+
+  private void nPermMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nPermMIActionPerformed
+    getComputationsController().setupHagemannMitschkeTermsTask();
+  }//GEN-LAST:event_nPermMIActionPerformed
+
+  private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
+    getComputationsController().setupNUTermTask();
+  }//GEN-LAST:event_nuMIActionPerformed
+
+  private void maltsevMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maltsevMIActionPerformed
+    getComputationsController().setupMalcevTermTask();
+  }//GEN-LAST:event_maltsevMIActionPerformed
+
+  private void majorityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_majorityMIActionPerformed
+    getComputationsController().setupMajorityTermTask();
+  }//GEN-LAST:event_majorityMIActionPerformed
+
+  private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pixleyMIActionPerformed
+    getComputationsController().setupPixleyTermTask();
+  }//GEN-LAST:event_pixleyMIActionPerformed
+
+  private void drawConMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawConMIActionPerformed
+    getConController().drawCon();
+  }//GEN-LAST:event_drawConMIActionPerformed
+
+  private void drawSubMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawSubMIActionPerformed
+    getSubController().drawSub();
+  }//GEN-LAST:event_drawSubMIActionPerformed
+
+  private void drawAlgMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawAlgMIActionPerformed
+    getDrawingController().drawAlg();
+  }//GEN-LAST:event_drawAlgMIActionPerformed
+
+  private void builtInAlgsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_builtInAlgsMIActionPerformed
+    getMainController().loadBuiltIn();
+  }//GEN-LAST:event_builtInAlgsMIActionPerformed
+
+  private void conDiagButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conDiagButtonActionPerformed
+    getConController().setDrawer();
+  }//GEN-LAST:event_conDiagButtonActionPerformed
+
+  private void conTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conTableButtonActionPerformed
+    getConController().setTable();
+  }//GEN-LAST:event_conTableButtonActionPerformed
+
+  private void subPowerMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subPowerMIActionPerformed
+    getComputationsController().setupSubPowerTask();
+  }//GEN-LAST:event_subPowerMIActionPerformed
+
+  private void tableCVSMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCVSMIActionPerformed
+    getMainController().writeCVSTable();
+  }//GEN-LAST:event_tableCVSMIActionPerformed
+
+  private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
+    getComputationsController().setupPrimalTermsTask();
+  }//GEN-LAST:event_primalMIActionPerformed
+
+  private void quotMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotMIActionPerformed
+  // TODO add your handling code here:
+  }//GEN-LAST:event_quotMIActionPerformed
+
+  private void subMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMIActionPerformed
+  // TODO add your handling code here:
+  }//GEN-LAST:event_subMIActionPerformed
+
+  private void prodMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prodMIActionPerformed
+  // TODO add your handling code here:
+  }//GEN-LAST:event_prodMIActionPerformed
+
+  private void powMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powMIActionPerformed
+    getComputationsController().formPowerAlgebra();
+  }//GEN-LAST:event_powMIActionPerformed
+
+  private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subpowMIActionPerformed
+    getComputationsController().setupSubPowerTask();
+  }//GEN-LAST:event_subpowMIActionPerformed
+
+  private void mmstMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mmstMIActionPerformed
+    getComputationsController().setupMarkovicMcKenzieSiggersTaylorTermTask();
+  }//GEN-LAST:event_mmstMIActionPerformed
+
+  private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
+    getMainController().removeCurrentAlgebra();
+  }//GEN-LAST:event_delAlgActionPerformed
+
+  public AlgebraEditorController getAlgebraEditorController() {
+    return getMainController().getAlgebraEditorController();
+  }
+  
+  public ConController getConController() {
+    return getMainController().getConController();
+  }
+  
+  public SubController getSubController() {
+    return getMainController().getSubController();
+  }
+  
+  public DrawingController getDrawingController() {
+    return getMainController().getDrawingController();
+  }
+
+  public javax.swing.JPanel getAlgebrasPanel() {
+    return algebrasPanel;
+  }
+
+  public javax.swing.JPanel getComputationsLogPane() {
+    return computationsLogPane;
+  }
+
+  public javax.swing.JPanel getComputationsPanel() {
+    return computationsPanel;
+  }
+
+  public javax.swing.JPanel getConPanel() {
+    return conPanel;
+  }
+
+  public javax.swing.JPanel getCurrentAlgPanel() {
+    return currentAlgPanel;
+  }
+
+  public javax.swing.JPanel getDrawingPanel() {
+    return drawingPanel;
+  }
+
+  public javax.swing.JPanel getEditorPanel() {
+    return editorPanel;
+  }
+
+  public javax.swing.JMenuItem getNewMI() {
+    return newMI;
+  }
+
+  public javax.swing.JPanel getResultPane() {
+    return resultPane;
+  }
+
+  public javax.swing.JPanel getSubPanel() {
+    return subPanel;
+  }
+
+  public javax.swing.JScrollPane getOpTableScrollPane() {
+    return opTableScrollPane;
+  }
+
+  public void setOpTableScrollPane(javax.swing.JScrollPane opTableScrollPane) {
+    this.opTableScrollPane = opTableScrollPane;
+  }
+
+    public void setAlgListTable(javax.swing.JTable algListTable) {
+        this.algListTable = algListTable;
+    }
+
+
+    public javax.swing.JMenuItem getDistributivityMI() {
+        return distributivityMI;
+    }
+
+    public void setDistributivityMI(javax.swing.JMenuItem distributivityMI) {
+        this.distributivityMI = distributivityMI;
+    }
+
+    public javax.swing.JMenuItem getModularityMI() {
+        return modularityMI;
+    }
+
+    public void setModularityMI(javax.swing.JMenuItem modularityMI) {
+        this.modularityMI = modularityMI;
+    }
+
+    public javax.swing.JMenuItem getNPermMI() {
+        return nPermMI;
+    }
+
+    public void setNPermMI(javax.swing.JMenuItem nPermMI) {
+        this.nPermMI = nPermMI;
+    }
+
+    public void setResultTable(javax.swing.JTable resultTable) {
+        this.resultTable = resultTable;
+    }
+
+    public void setConMainPanel(javax.swing.JPanel conMainPanel) {
+        this.conMainPanel = conMainPanel;
+    }
+
+    public javax.swing.JPanel getSubLeftPanel() {
+        return subLeftPanel;
+    }
+
+    public javax.swing.JPanel getDrawingLeftPanel() {
+        return drawingLeftPanel;
+    }
+
+    public javax.swing.JButton getConDiagButton() {
+        return conDiagButton;
+    }
+
+    public javax.swing.JButton getConTableButton() {
+        return conTableButton;
+    }
+  
   
   /**
    * @param args the command line arguments
