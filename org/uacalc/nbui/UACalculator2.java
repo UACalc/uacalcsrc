@@ -53,12 +53,12 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JLabel jLabel5;
   private javax.swing.JLabel jLabel6;
   private javax.swing.JMenuBar jMenuBar1;
-  private javax.swing.JPanel jPanel1;
-  private javax.swing.JPanel jPanel2;
-  private javax.swing.JPanel jPanel3;
-  private javax.swing.JPanel jPanel4;
-  private javax.swing.JPanel jPanel5;
-  private javax.swing.JPanel jPanel6;
+  //private javax.swing.JPanel jPanel1;
+  //private javax.swing.JPanel jPanel2;
+  //private javax.swing.JPanel jPanel3;
+  //private javax.swing.JPanel jPanel4;
+  //private javax.swing.JPanel jPanel5;
+  //private javax.swing.JPanel jPanel6;
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JScrollPane jScrollPane2;
   private javax.swing.JScrollPane jScrollPane3;
@@ -163,12 +163,12 @@ public class UACalculator2 extends JFrame implements UACalc {
   }
 
   private void initComponents() {
-    jPanel1 = new javax.swing.JPanel();//panel for editor tab
-    jPanel2 = new javax.swing.JPanel();//panel for algebras tab
-    jPanel3 = new javax.swing.JPanel();//panel for computations tab
-    jPanel4 = new javax.swing.JPanel();//panel for con
-    jPanel5 = new javax.swing.JPanel();//panel for sub tab
-    jPanel6 = new javax.swing.JPanel();//panel for drawing tab
+    //jPanel1 = new javax.swing.JPanel();//panel for editor tab
+    //jPanel2 = new javax.swing.JPanel();//panel for algebras tab
+    //jPanel3 = new javax.swing.JPanel();//panel for computations tab
+    //jPanel4 = new javax.swing.JPanel();//panel for con
+    //jPanel5 = new javax.swing.JPanel();//panel for sub tab
+    //jPanel6 = new javax.swing.JPanel();//panel for drawing tab
     jScrollPane1 = new javax.swing.JScrollPane();
     jTable1 = new javax.swing.JTable();
     tabbedPane = new javax.swing.JTabbedPane();
@@ -341,6 +341,7 @@ public class UACalculator2 extends JFrame implements UACalc {
 
     currentAlgPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Current Algebra Properties"));
    
+    initEditor();
     tabbedPane.addTab("Editor", editorPanel);
     
     resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
@@ -766,6 +767,27 @@ public class UACalculator2 extends JFrame implements UACalc {
     
     // fix this to check for unsaved algebras.
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+  }
+  
+  private void initEditor() {
+    MigLayout uLM = new MigLayout("nogrid");
+    JPanel upper = new JPanel(uLM);
+    JPanel lower = new JPanel();
+    Dimension minimumSize = new Dimension(0, 0);
+    upper.setMinimumSize(minimumSize);
+    lower.setMinimumSize(minimumSize);
+    upper.add(new JLabel("Name:"));
+    upper.add(algNameTextField, "width 100:120:");
+    upper.add(new JLabel("Cardinality:"));
+    upper.add(cardTextField, "width 30::");
+    upper.add(new JLabel("Desc:"));
+    upper.add(descTextField, "width 40::, grow 200, wrap");
+    upper.add(opTableScrollPane, "width 300:2000:, span, wrap");
+    
+    JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
+    edSplitPane.setBorder(null);
+    editorPanel.setLayout(new BorderLayout());
+    editorPanel.add(edSplitPane, BorderLayout.CENTER);
   }
   
   
