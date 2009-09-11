@@ -341,7 +341,7 @@ public class UACalculator2 extends JFrame implements UACalc {
 
     currentAlgPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Current Algebra Properties"));
    
-    initEditor();
+    initEditorPanel();
     tabbedPane.addTab("Editor", editorPanel);
     
     resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
@@ -748,13 +748,13 @@ public class UACalculator2 extends JFrame implements UACalc {
     add(tabbedPane, "height 400:600:, grow 82"); //, "grow 75");
     
     //add
-    add(jScrollPane5, "height 250, grow 18");
+    add(jScrollPane5, "height 100:150:250, grow 18, split 2");
     add(delAlg, "align center");
 
 
     //msg area:
     add(new JLabel("Msg:"), "split 2");
-    add(msgTextField, "grow 100");
+    add(msgTextField, "growx 100");
     /*
     JPanel bot = new JPanel();
     bot.setLayout(new MigLayout("fillx","[pref!][grow,fill]","[]15[]"));
@@ -769,25 +769,40 @@ public class UACalculator2 extends JFrame implements UACalc {
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
   }
   
-  private void initEditor() {
+  private void initEditorPanel() {
     MigLayout uLM = new MigLayout("nogrid");
     JPanel upper = new JPanel(uLM);
     JPanel lower = new JPanel();
-    Dimension minimumSize = new Dimension(0, 0);
-    upper.setMinimumSize(minimumSize);
-    lower.setMinimumSize(minimumSize);
+    Dimension zeroSize = new Dimension(0, 0);
+    Dimension minSize = new Dimension(100, 100);
+    upper.setMinimumSize(minSize);
+    upper.setPreferredSize(new Dimension(300, 300));
+    lower.setMinimumSize(zeroSize);
     upper.add(new JLabel("Name:"));
-    upper.add(algNameTextField, "width 100:120:");
+    upper.add(algNameTextField, "width 100:120:200, grow 75");
     upper.add(new JLabel("Cardinality:"));
-    upper.add(cardTextField, "width 30::");
+    upper.add(cardTextField, "width 30:60:");
     upper.add(new JLabel("Desc:"));
-    upper.add(descTextField, "width 40::, grow 200, wrap");
+    upper.add(descTextField, "width 40::, grow 200, wrap 15");
+    upper.add(new JLabel("Operations:"));
+    upper.add(opsComboBox);
+    upper.add(delOpButton);
+    upper.add(addOpButton, "wrap 15");
     upper.add(opTableScrollPane, "width 300:2000:, span, wrap");
+    upper.add(idempotentCB, "gapx 50");
+    upper.add(new JLabel("Default Element:"), "gapx 50");
+    upper.add(defaultEltComboBox, "wrap");
+    lower.add(new JLabel("An element table will be here"), "align center");
     
     JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
+    edSplitPane.setDividerLocation(0.5);
     edSplitPane.setBorder(null);
     editorPanel.setLayout(new BorderLayout());
     editorPanel.add(edSplitPane, BorderLayout.CENTER);
+  }
+  
+  private void initCompPane() {
+    
   }
   
   
