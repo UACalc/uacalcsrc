@@ -394,6 +394,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     logTextArea.setRows(5);
     jScrollPane3.setViewportView(logTextArea);
 
+    initComputationPanel();
     tabbedPane.addTab("Computations", computationsPanel);
 
     conDiagButton.setText("Diagram");
@@ -801,8 +802,18 @@ public class UACalculator2 extends JFrame implements UACalc {
     editorPanel.add(edSplitPane, BorderLayout.CENTER);
   }
   
-  private void initCompPane() {
+  private void initComputationPanel() {
+    Dimension minSize = new Dimension(100, 100);
+    Dimension midSize = new Dimension(300, 300);
+    resultPane.setMinimumSize(minSize);
+    resultPane.setPreferredSize(midSize);
+    computationsLogPane.setMinimumSize(minSize);
+    computationsLogPane.setPreferredSize(midSize);
     
+    
+    computationsPanel.setLayout(new MigLayout("nogrid"));
+    computationsPanel.add(resultPane, "wrap 15");
+    computationsPanel.add(computationsLogPane, "wrap");    
   }
   
   
