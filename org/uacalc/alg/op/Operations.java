@@ -658,6 +658,32 @@ logger.setLevel(Level.FINE);
     };
     return op;
   }
+  
+  public static void tableToCSV(String desc, Operation binop, java.io.PrintStream out) {
+    if (binop.arity() != 2) throw new IllegalArgumentException();
+    final int size = binop.getSetSize();
+    final String comma = ",";
+    final String dquote = "\"";
+    final String eol = "\n";
+    out.println("," + dquote +  desc + dquote + comma);
+    out.println(",,");
+    out.print(",,");
+    for (int i = 0; i < size; i++) {
+      out.print(i);
+      out.print(comma);
+    }
+    out.println("\n,,");
+    for (int i = 0; i < size; i++) {
+      out.print(i);
+      out.print(",,");
+      for (int j = 0; j < size; j++) {
+        out.print(binop.intValueAt(new int[] {i,j}));
+        out.print(comma);
+      }
+      out.print("\n,,");
+    }
+    out.println(eol);
+  }
 
   public static void main(String[] args) throws Exception {
     String[] sc = new String[] {"def n = Math.min(x,y) + args[0] / 2", "n+10"};

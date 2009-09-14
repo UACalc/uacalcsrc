@@ -577,7 +577,7 @@ public class MainController {
     return false;
   }
 
-  public boolean writeCVSTable() {
+  public boolean writeCSVTable() {
     TermTableModel model = uacalcUI.getComputationsController().getCurrentTermTableModel();
     System.out.println("model = " + model);
     if (model == null) return false;

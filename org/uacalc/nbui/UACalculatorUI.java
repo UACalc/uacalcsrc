@@ -140,7 +140,7 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
         saveAsMenu = new javax.swing.JMenu();
         uaFileMI = new javax.swing.JMenuItem();
         algFileMI = new javax.swing.JMenuItem();
-        tableCVSMI = new javax.swing.JMenuItem();
+        tableCSVMI = new javax.swing.JMenuItem();
         quitMI = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         hspMenu = new javax.swing.JMenu();
@@ -832,14 +832,14 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
 
         fileMenu.add(saveAsMenu);
 
-        tableCVSMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
-        tableCVSMI.setText("Save Results Table");
-        tableCVSMI.addActionListener(new java.awt.event.ActionListener() {
+        tableCSVMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
+        tableCSVMI.setText("Save Results Table");
+        tableCSVMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tableCVSMIActionPerformed(evt);
+                tableCSVMIActionPerformed(evt);
             }
         });
-        fileMenu.add(tableCVSMI);
+        fileMenu.add(tableCSVMI);
 
         quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         quitMI.setText("Quit");
@@ -1151,7 +1151,7 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
         saveAsMenu = new javax.swing.JMenu();
         uaFileMI = new javax.swing.JMenuItem();
         algFileMI = new javax.swing.JMenuItem();
-        tableCVSMI = new javax.swing.JMenuItem();
+        tableCSVMI = new javax.swing.JMenuItem();
         quitMI = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         hspMenu = new javax.swing.JMenu();
@@ -1843,14 +1843,14 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
 
         fileMenu.add(saveAsMenu);
 
-        tableCVSMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
-        tableCVSMI.setText("Save Results Table");
-        tableCVSMI.addActionListener(new java.awt.event.ActionListener() {
+        tableCSVMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
+        tableCSVMI.setText("Save Results Table");
+        tableCSVMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tableCVSMIActionPerformed(evt);
+                tableCSVMIActionPerformed(evt);
             }
         });
-        fileMenu.add(tableCVSMI);
+        fileMenu.add(tableCSVMI);
 
         quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         quitMI.setText("Quit");
@@ -2212,9 +2212,9 @@ private void subPowerMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
   getComputationsController().setupSubPowerTask();
 }//GEN-LAST:event_subPowerMIActionPerformed
 
-private void tableCVSMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCVSMIActionPerformed
-  getMainController().writeCVSTable();
-}//GEN-LAST:event_tableCVSMIActionPerformed
+private void tableCSVMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCSVMIActionPerformed
+  getMainController().writeCSVTable();
+}//GEN-LAST:event_tableCSVMIActionPerformed
 
 private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
   getComputationsController().setupPrimalTermsTask();
@@ -2354,7 +2354,7 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JMenuItem subPowerMI;
     private javax.swing.JMenuItem subpowMI;
     private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JMenuItem tableCVSMI;
+    private javax.swing.JMenuItem tableCSVMI;
     private javax.swing.JMenu tasksMenu;
     private javax.swing.JMenuItem uaFileMI;
     // End of variables declaration//GEN-END:variables
