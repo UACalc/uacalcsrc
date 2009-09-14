@@ -344,6 +344,9 @@ public class UACalculator2 extends JFrame implements UACalc {
     initEditorPanel();
     tabbedPane.addTab("Editor", editorPanel);
     
+    initAlgebrasPanel();
+    tabbedPane.addTab("Algebras", algebrasPanel);
+    
     resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
 
     resultTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -800,6 +803,11 @@ public class UACalculator2 extends JFrame implements UACalc {
     edSplitPane.setBorder(null);
     editorPanel.setLayout(new BorderLayout());
     editorPanel.add(edSplitPane, BorderLayout.CENTER);
+  }
+  
+  private void initAlgebrasPanel() {
+    algebrasPanel.setLayout(new MigLayout());
+    algebrasPanel.add(new JLabel("Coming soon"), "align center, width 100:800:, wrap");
   }
   
   private void initComputationPanel() {

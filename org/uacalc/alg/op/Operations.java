@@ -427,7 +427,79 @@ logger.setLevel(Level.FINE);
     }
     return ans;
   }
+  
+  public static final int power(int base, int pow) {
+    int ans = 1;
+    for (int i = 0; i < pow; i++) {
+      ans = ans * base;
+    }
+    return ans;
+  }
  
+  /**
+   * The unary operation that cyclically shifts a vector left.
+   * 
+   */
+  public static Operation makeLeftShift(final int vecSize, final int rootSize) {
+ 
+    final int algSize = power(rootSize, vecSize);
+    
+    Operation shift = new AbstractOperation("shift", 1, algSize) {
+      
+      private int[] shiftArray(int[] arr) {
+        final int size = arr.length;
+        int[] ans = new int[size];
+        for (int i = 1; i < size; i++) {
+          ans[i-1] = arr[i];
+        }
+        ans[size-1] = arr[0];
+        return ans;
+      }
+      // do we need a getTable() ? 
+      public Object valueAt(List args) {
+        final int[] arg = ((IntArray)args.get(0)).getArray();
+        return new IntArray(shiftArray(arg));
+      }
+      
+      public int intValueAt(int[] args) {
+        final int arg = args[0];
+        final int[] arr = Horner.hornerInv(arg, rootSize, vecSize);
+        return Horner.horner(shiftArray(arr), rootSize);
+      }
+    };
+    return shift;
+  }
+  
+  public static Operation makeMatrixDiagonalOp(final int vecSize, final int rootSize) {
+    final int algSize = power(rootSize, vecSize);
+    
+    Operation op = new AbstractOperation("diagonal", vecSize, algSize) {
+      
+      int[] diag(List args) {
+        final int size = args.size();
+        int[] ans = new int[size];
+        for (int i = 0; i < size; i++) {
+          ans[i] = ((IntArray)args.get(i)).get(i);
+        }
+        return ans;
+      }
+      
+      public Object valueAt(List args) {
+        return new IntArray(diag(args));
+      }
+      // add getTable later  ??
+      public int intValueAt(int[] args) {
+        List<IntArray> argList = new ArrayList<IntArray>(args.length);
+        for (int i = 0; i < args.length; i++) {
+          argList.add(new IntArray(Horner.hornerInv(args[i], rootSize, vecSize)));
+        }
+        return Horner.horner(diag(argList), rootSize);
+      }
+      
+    };
+    return op;
+  }
+  
   /**
    * The <code>script</code> should be the body of the definition
    * of intValueAt(int[] args).

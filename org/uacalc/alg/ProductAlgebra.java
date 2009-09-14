@@ -210,7 +210,7 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
   // do something ??
-  public List getUniverseList() { return null; }
+  public List getUniverseList() { return new ArrayList<IntArray>(universe()); }
   public Map getUniverseOrder() { return null; }
 
   protected Set makeCartesianProduct(final List algs) {

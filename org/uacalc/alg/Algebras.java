@@ -84,6 +84,21 @@ public class Algebras {
     }
     return true;
   }
+  
+  /**
+   * The matrix power algebra as defined in Hobby-McKenzie.
+   * 
+   * @param alg
+   * @param k
+   * @return
+   */
+  public static SmallAlgebra matrixPower(final SmallAlgebra alg, final int k) {
+    PowerAlgebra pow = new PowerAlgebra(alg, k);
+    List<Operation> ops = pow.operations();
+    ops.add(Operations.makeLeftShift(k, alg.cardinality()));
+    ops.add(Operations.makeMatrixDiagonalOp(k, alg.cardinality()));
+    return new BasicAlgebra("matrixPower", Operations.power(alg.cardinality(), k), ops);
+  }
 
   /**
    * Make a random algebra of a given similarity type.
