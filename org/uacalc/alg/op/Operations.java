@@ -659,7 +659,7 @@ logger.setLevel(Level.FINE);
     return op;
   }
   
-  public static void tableToCSV(String desc, Operation binop, java.io.PrintStream out) {
+  public static void binaryOpToCSV(String desc, Operation binop, java.io.PrintStream out) {
     if (binop.arity() != 2) throw new IllegalArgumentException();
     final int size = binop.getSetSize();
     final String comma = ",";
@@ -680,7 +680,7 @@ logger.setLevel(Level.FINE);
         out.print(binop.intValueAt(new int[] {i,j}));
         out.print(comma);
       }
-      out.print("\n,,");
+      out.print(eol);
     }
     out.println(eol);
   }
