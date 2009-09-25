@@ -2359,6 +2359,7 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JMenuItem uaFileMI;
     // End of variables declaration//GEN-END:variables
 
+    
 
   public javax.swing.JFrame getFrame() {
     return this;
