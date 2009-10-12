@@ -500,6 +500,48 @@ logger.setLevel(Level.FINE);
     return op;
   }
   
+  public static Operation makeCompositionOp(final int n, final int pow) {
+    Operation op = new AbstractOperation("comp", 2, pow) {
+      
+      int[] comp(final int[] f, final int[] g) {
+        int[] ans = new int[n];
+        for (int i = 0; i < n; i++) {
+          ans[i] = f[g[i]];
+        }
+        return ans;
+      }
+      
+      public Object valueAt(List args) {
+        final int[] comp = comp(((IntArray)args.get(0)).getArray(),  
+                                ((IntArray)args.get(1)).getArray());
+        return new IntArray(comp);
+      }
+      // add getTable later  ??
+      public int intValueAt(int[] args) {
+        final int[] f = Horner.hornerInv(args[0], n, n);
+        final int[] g = Horner.hornerInv(args[1], n, n);
+        final int[] comp = comp(f,g);
+        return Horner.horner(comp, n);
+      }
+      
+      
+      
+      public void makeTable() {
+        if (n > 4) return;  // too big to hold the table
+        for (int i = 0; i < pow; i++) {
+          for (int j = 0; j < pow; j++) {
+            final int[] args = new int[] {i, j};
+            final int ans = intValueAt(args);
+            valueTable[Horner.horner(args, 2)] = ans;
+          }
+        }
+        
+      }
+    };
+    return op;
+    
+  }
+  
   /**
    * The <code>script</code> should be the body of the definition
    * of intValueAt(int[] args).

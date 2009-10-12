@@ -99,6 +99,30 @@ public class Algebras {
     ops.add(Operations.makeMatrixDiagonalOp(k, alg.cardinality()));
     return new BasicAlgebra("matrixPower", Operations.power(alg.cardinality(), k), ops);
   }
+  
+  public static SmallAlgebra fullTransformationSemigroup(final int n, boolean includeConstants) {
+    if (n > 9) throw new IllegalArgumentException("n can be at most 9");
+    
+    System.out.println(Horner.horner(new int[] {1,0,0}, 3));
+    
+    int pow = n;
+    for (int i = 1; i < n; i++) {
+      pow = pow * n;
+    }
+    List<Operation> ops = new ArrayList<Operation>(4);
+    ops.add(Operations.makeCompositionOp(n, pow));
+    if (includeConstants) {
+      for (int i = 0; i < n; i++) {
+        final int[] ci = new int[n];
+        for (int j = 0; j < n; j++) {
+          ci[j] = i;
+        }
+        final int c = Horner.horner(ci, n);
+        ops.add(Operations.makeConstantIntOperation(pow, c));
+      }
+    }
+    return new BasicAlgebra("Trans" + n, pow, ops);
+  }
 
   /**
    * Make a random algebra of a given similarity type.
@@ -142,9 +166,23 @@ public class Algebras {
   }
 
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
+    SmallAlgebra alg0 = fullTransformationSemigroup(3, true);
+    org.uacalc.io.AlgebraIO.writeAlgebraFile(alg0, "/home/ralph/Java/Algebra/algebras/trans3.ua");
+    for (int i = 0; i < 27; i++) {
+      System.out.println("" + i + ": " + ArrayString.toString(Horner.hornerInv(i, 3, 3)));
+    }
+    org.uacalc.alg.sublat.SubalgebraLattice sub = alg0.sub();
+    Set univ = sub.universe();
+    List<org.uacalc.alg.sublat.BasicSet> univList = new ArrayList<org.uacalc.alg.sublat.BasicSet>(univ);
+    Collections.sort(univList);
+    System.out.println("number of subs with constants: " + univ.size());
+    for (int i = 0; i < univList.size(); i++) {
+      org.uacalc.alg.sublat.BasicSet s = (org.uacalc.alg.sublat.BasicSet)univList.get(i);
+      System.out.println(i + ": " + s);
+    }
+    
     if (args.length == 0) return;
-    SmallAlgebra alg0 = null;
     int arity = 3;
     try {
       alg0 = (SmallAlgebra)org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);

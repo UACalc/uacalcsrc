@@ -287,17 +287,29 @@ public class AlgebraEditorController {
   }
   
   public void removeCurrentOperation() {
-    uacalc.getOpsComboBox().remove(uacalc.getOpsComboBox().getSelectedIndex());
+    //JComboBox opsComboBox = uacalc.getOpsComboBox();
+    //System.out.println("selected index = " + opsComboBox.getSelectedIndex() + ", item count = " + opsComboBox.getItemCount());
+    //opsComboBox.removeItemAt(opsComboBox.getSelectedIndex());
     OperationSymbol sym = getCurrentSymbol();
     if (sym == null) return;
     Operation op = getCurrentOperation();
-    System.out.println("opList = " + opList);
+    //System.out.println("opList = " + opList);
     opList.remove(op);
     symbolList.remove(sym);
     opMap.remove(sym);
     setOpsCB();
     // TODO: check this
-    //if (opList.size() == 0 && opTablePanel != null) main.remove(opTablePanel);
+    if (opList.size() == 0 && uacalc.getOpTable() != null) {
+      uacalc.getOpTable().setModel(new javax.swing.table.DefaultTableModel(
+          new Object [][] {
+              {null, null, null, null},
+              {null, null, null, null},
+              {null, null, null, null},
+              {null, null, null, null}
+          },
+          new String [] {"No", "Op", "Yet", ""}
+      ));
+    }
     uacalc.repaint();
     final MainController mc = getMainController();
     mc.getPropertyChangeSupport().firePropertyChange(MainController.ALGEBRA_CHANGED, null, null);
