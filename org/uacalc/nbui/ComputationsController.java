@@ -329,7 +329,14 @@ public class ComputationsController {
     if (pow == -1) return;
     final int numGens = getNumberDialog(1, "Number of generators?", "Generators");
     if (!(numGens > 0)  || !(pow > 0)) return;
-    //System.out.println("gens = " + numGens + ", pow = " + pow);
+    final int constants = JOptionPane.showConfirmDialog(
+        uacalcUI.getFrame(),
+        "Include all constant vectors in this subpower?",
+        "Include Diagonal",
+        JOptionPane.YES_NO_CANCEL_OPTION);
+    //System.out.println("includeConstants = " + constants);
+    if (constants == 2) return;  // this is cancel
+    final boolean includeConstants = constants == 0 ? true : false;
     final BigProductAlgebra prodAlg = new BigProductAlgebra(alg, pow);
     final List<IntArray> gens = getSubPowerGens(pow, numGens);
     if (gens == null) {
@@ -348,16 +355,17 @@ public class ComputationsController {
     termTableModels.add(ttm);
     //System.out.println("first");
     setResultTableColWidths();
-    final String desc =  "" + numGens + " generated sub of " + gAlg.toString(true) + " ^" + pow;
+    final String extra = includeConstants ? " (including diagonal)" : "";
+    final String desc =  "" + numGens + " generated sub of " + gAlg.toString(true) + " ^" + pow + extra;
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<SubProductAlgebra>  subPowerTask = new BackgroundTask<SubProductAlgebra>(report) {
       public SubProductAlgebra compute() {
         //monitorPanel.getProgressMonitor().reset();
-        report.addStartLine("Computing a sub power of " + gAlg.toString(true));
+        report.addStartLine("Computing a sub power of " + gAlg.toString(true) + extra);
         report.setDescription(desc);
         SubProductAlgebra ans = new SubProductAlgebra("sub of " + alg.getName() + "^" + pow, prodAlg, 
-            gens, true, report);  // here
+            gens, true, includeConstants, report);  // here
         return ans;
       }
       public void onCompletion(SubProductAlgebra subPow, Throwable exception, 

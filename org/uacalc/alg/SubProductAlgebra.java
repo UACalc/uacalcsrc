@@ -72,9 +72,33 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * gens is a list of IntArray's.
    */
   public SubProductAlgebra(String name, BigProductAlgebra prod, 
-                           List<IntArray> gens, boolean findTerms, ProgressReport report) {
+      List<IntArray> gens, boolean findTerms, ProgressReport report) {
+    this(name, prod, gens, findTerms, false, report);
+  }
+  
+  /**
+   * Construct the direct product of a List of SmallAlgebra's.
+   * gens is a list of IntArray's.
+   */
+  public SubProductAlgebra(String name, BigProductAlgebra prod, 
+                           List<IntArray> gens, boolean findTerms, 
+                           boolean includeConstants, ProgressReport report) {
+    // TODO: use includeConstants
     super(name);
     productAlgebra = prod;
+    int rootSize = prod.rootFactors().get(0).cardinality();
+    
+    if (includeConstants && prod.isPower()) {
+      final int factors = prod.getNumberOfFactors();
+      for (int i = 0; i < rootSize; i++) {
+        final int[] arr = new int[factors];
+        for (int j = 0; j < factors; j++) {
+          arr[j] = i;
+        }
+        gens.add(new IntArray(arr));
+      }
+    }
+    
     // some gyrations to eliminate duplicates but keep the order the same.
     HashSet<IntArray> hs = new HashSet<IntArray>(gens.size());
     List<IntArray> gens2 = new ArrayList<IntArray>(gens.size());
@@ -86,6 +110,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     }
     gens = gens2;
     this.gens = gens2;
+    
     if (findTerms) {
       termMap = setupGensToVarsMap(gens);
       univ = productAlgebra.sgClose(gens, termMap, null, report);

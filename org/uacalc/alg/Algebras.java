@@ -100,10 +100,10 @@ public class Algebras {
     return new BasicAlgebra("matrixPower", Operations.power(alg.cardinality(), k), ops);
   }
   
-  public static SmallAlgebra fullTransformationSemigroup(final int n, boolean includeConstants) {
+  public static SmallAlgebra fullTransformationSemigroup(final int n, boolean includeConstants, boolean includeId) {
     if (n > 9) throw new IllegalArgumentException("n can be at most 9");
     
-    System.out.println(Horner.horner(new int[] {1,0,0}, 3));
+    //System.out.println(Horner.horner(new int[] {1,0,0}, 3));
     
     int pow = n;
     for (int i = 1; i < n; i++) {
@@ -120,6 +120,14 @@ public class Algebras {
         final int c = Horner.horner(ci, n);
         ops.add(Operations.makeConstantIntOperation(pow, c));
       }
+    }
+    if (includeId) {
+      final int[] id = new int[n];
+      for (int i = 0; i < n; i++) {
+        id[i] = i;
+      }
+      final int idx = Horner.horner(id, n);
+      ops.add(Operations.makeConstantIntOperation(pow, idx));
     }
     return new BasicAlgebra("Trans" + n, pow, ops);
   }
@@ -167,7 +175,12 @@ public class Algebras {
 
 
   public static void main(String[] args) throws Exception {
-    SmallAlgebra alg0 = fullTransformationSemigroup(3, true);
+    SmallAlgebra alg0 = fullTransformationSemigroup(3, true, true);
+    List<Operation> ops = alg0.operations();
+    //int[] inv = new int[] {2,1,0};
+    int[] inv = new int[] {1,2,0};
+    final int invx = Horner.horner(inv, 3);
+    ops.add(Operations.makeConstantIntOperation(alg0.cardinality(), invx));
     org.uacalc.io.AlgebraIO.writeAlgebraFile(alg0, "/home/ralph/Java/Algebra/algebras/trans3.ua");
     for (int i = 0; i < 27; i++) {
       System.out.println("" + i + ": " + ArrayString.toString(Horner.hornerInv(i, 3, 3)));
