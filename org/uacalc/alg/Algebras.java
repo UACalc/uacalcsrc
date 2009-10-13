@@ -180,7 +180,7 @@ public class Algebras {
     //int[] inv = new int[] {2,1,0};
     int[] inv = new int[] {1,2,0};
     final int invx = Horner.horner(inv, 3);
-    ops.add(Operations.makeConstantIntOperation(alg0.cardinality(), invx));
+    //ops.add(Operations.makeConstantIntOperation(alg0.cardinality(), invx));
     org.uacalc.io.AlgebraIO.writeAlgebraFile(alg0, "/home/ralph/Java/Algebra/algebras/trans3.ua");
     for (int i = 0; i < 27; i++) {
       System.out.println("" + i + ": " + ArrayString.toString(Horner.hornerInv(i, 3, 3)));
