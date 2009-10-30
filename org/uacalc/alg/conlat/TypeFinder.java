@@ -59,7 +59,7 @@ public final class TypeFinder {
     logger.setLevel(Level.FINER);
   }
 
-  public static final boolean printSubtrace = false;
+  public static final boolean printSubtrace = true;
 
   private final SmallAlgebra A;
   private final int algSize;

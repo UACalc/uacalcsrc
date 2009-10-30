@@ -1015,8 +1015,19 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition dw2 = new BasicPartition(new int[] {-4, -2, 1, 0, -2, 4, 0, 0, -2, 8}); // |014|23|569|78|
     BasicPartition dw3 = new BasicPartition(new int[] {-4, -4, 1, 0, -2, 4, 0, 0, 1, 1}); // |014|23|569|78|
 
-
     
+    // See message of 1029/09
+    //L1 = (0,1,2|3,4|5,6) (0,3,5|1,6|2,4) (0,4,6|1,5|2,3) 
+
+    BasicPartition L10 = new BasicPartition(new int[] {-3, 0, 0, -2, 3, -2, 5}); 
+    BasicPartition L11 = new BasicPartition(new int[] {-3, -2, -2, 0, 2, 0, 1}); 
+    BasicPartition L12 = new BasicPartition(new int[] {-3, -2, -2, 2, 0, 1, 0});
+    
+    //L2 = (0,1,2|3,4|5,6) (0,3,5|1,4|2,6) (0,4,6|1,5|2,3)
+    
+    BasicPartition L20 = new BasicPartition(new int[] {-3, 0, 0, -2, 3, -2, 5}); 
+    BasicPartition L21 = new BasicPartition(new int[] {-3, -2, -2, 0, 1, 0, 2}); 
+    BasicPartition L22 = new BasicPartition(new int[] {-3, -2, -2, 2, 0, 1, 0});
     
     
     List<BasicPartition> gens = new ArrayList<BasicPartition>();
@@ -1050,16 +1061,20 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(vs1);
     //gens.add(vs2);
 
-    gens.add(dw0);
-    gens.add(dw1);
-    gens.add(dw2);
-    gens.add(dw3);
+    //gens.add(dw0);
+   // gens.add(dw1);
+   // gens.add(dw2);
+   // gens.add(dw3);
     
     //gens.add(swh0);
     //gens.add(swh1);
     //gens.add(swh2);
     //gens.add(swh3);
     //gens.add(swh4);
+    
+    gens.add(L20);
+    gens.add(L21);
+    gens.add(L22);
 
     
     System.out.println("gens: " + gens);
