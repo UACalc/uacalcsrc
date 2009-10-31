@@ -444,7 +444,7 @@ logger.setLevel(Level.FINE);
  
     final int algSize = power(rootSize, vecSize);
     
-    Operation shift = new AbstractOperation("shift", 1, algSize) {
+    Operation shift = new AbstractOperation("leftshift", 1, algSize) {
       
       private int[] shiftArray(int[] arr) {
         final int size = arr.length;

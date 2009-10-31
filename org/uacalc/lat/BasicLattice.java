@@ -398,7 +398,7 @@ public class  BasicLattice extends GeneralAlgebra
   }
 
   // do something ??
-  public List getUniverseList() { return null; }
+  public List getUniverseList() { return univList; }
   public Map getUniverseOrder() { return null; }
 
 
