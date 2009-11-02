@@ -538,6 +538,13 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     return ans;
   }
+
+  public static Partition directProduct(Partition alpha, Partition beta) {
+    final int n = alpha.universeSize();
+    final int m = beta.universeSize();
+    
+    return null;
+  }
   
   /**
    * True if all 0-1 sublattices of the closure of the
@@ -561,6 +568,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return true;
   }
   
+
   public static SmallAlgebra unaryCloneAlgebra(List<Partition> pars) {
     String f = "f_";
     final int size = pars.get(0).universeSize();
