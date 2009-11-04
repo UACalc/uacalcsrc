@@ -3,6 +3,7 @@
 package org.uacalc.alg.conlat;
 
 import org.uacalc.util.IntArray;
+import org.uacalc.util.Horner;
 import org.uacalc.lat.*;
 import org.latdraw.orderedset.POElem;
 
@@ -542,8 +543,24 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public static Partition directProduct(Partition alpha, Partition beta) {
     final int n = alpha.universeSize();
     final int m = beta.universeSize();
+    final int[] univSizes = new int[] {n, m}; 
+    final int size = n * m;
+    final int[][] aBlocks = alpha.getBlocks();
+    final int[][] bBlocks = beta.getBlocks();
+    final Partition ans = zero(size);
+    for (int r = 0; r < aBlocks.length; r++) {
+      for (int s = 0; s < bBlocks.length; s++) {
+        final int root = Horner.horner(new int[] {aBlocks[r][0], bBlocks[s][0]}, univSizes);
+        for (int i = 0; i < aBlocks[r].length; i++) {
+          for (int j = 0; j < bBlocks[s].length; j++) {
+            if (i != 0 || j != 0) ans.joinBlocks(root, Horner.horner(new int[] {aBlocks[r][i], bBlocks[s][j]}, univSizes));
+          }
+        }
+        
+      }
+    }
     
-    return null;
+    return ans;
   }
   
   /**
@@ -1167,6 +1184,31 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       boolean idem = f.isIdempotent();
       System.out.println(f + (idem ? " *" : ""));
     }
+    
+    System.out.println("gens: " + gens);
+    List<Partition> prod = new ArrayList<Partition>(3);
+    //Partition first = directProduct(gens.get(0), gens.get(0)); // this pattern gave just an M_3
+    //Partition second = directProduct(gens.get(1), gens.get(2));
+    //Partition third = directProduct(gens.get(2), gens.get(1));
+    
+    Partition first = directProduct(gens.get(0), gens.get(1)); // this pattern gave just an M_3
+    Partition second = directProduct(gens.get(1), gens.get(2));
+    Partition third = directProduct(gens.get(2), gens.get(0));
+    
+    prod.add(first);
+    prod.add(second);
+    prod.add(third);
+    alg = unaryCloneAlgebra(prod);
+    System.out.println("|Con(A)| = " + alg.con().universe().size());
+    for (Partition par : alg.con().universe()) {
+      System.out.println(par);
+    }
+    
+    
+    //System.out.println("prod: " + prod);
+    
+    
+    
     
     //isHereditary(pars);
     
