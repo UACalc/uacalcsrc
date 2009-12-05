@@ -502,9 +502,8 @@ public class SubalgebraLattice implements Lattice {
       throw new IllegalArgumentException(
           "generating sets must have the same size");
     final int g = gens.length;
-    final Map<Integer,Integer> homo 
-              = new HashMap<Integer,Integer>(g);
-    for (int i = 0; i < gens.length; i++) {
+    final Map<Integer,Integer> homo = new HashMap<Integer,Integer>(g);
+    for (int i = 0; i < g; i++) {
       if (homo.containsKey(gens[i]) 
           && homo.get(gens[i]).intValue() != gensB[i]) return null;
       homo.put(gens[i], gensB[i]);
@@ -530,10 +529,11 @@ public class SubalgebraLattice implements Lattice {
     int currentMark = lst.size();
     while (closedMark < currentMark) {
       // close the elements in current
-      for (Iterator<Operation> it = A.operations().iterator(); it.hasNext(); ) {
-        Operation f = it.next();
+      //for (Iterator<Operation> it = A.operations().iterator(); it.hasNext(); ) {
+      for (Operation f : A.operations()) {
+        //Operation f = it.next();
         final int arity = f.arity();
-        if (arity == 0) continue;  // constansts are already there
+        if (arity == 0) continue;  // constants are already there
         Operation g = B.getOperation(f.symbol());
         int[] argIndeces = new int[arity];
         for (int i = 0; i < arity - 1; i++) {
@@ -550,7 +550,6 @@ public class SubalgebraLattice implements Lattice {
             arg[i] = lst.get(argIndeces[i]).intValue();
             argB[i] = homo.get(lst.get(argIndeces[i])).intValue();
           }
-          //ArrayIncrementor permInc = PermutationGenerator.arrayIncrementor(arg);  // stu
           Integer v = new Integer(f.intValueAt(arg));
           Integer w = new Integer(g.intValueAt(argB));
           if (homo.containsKey(v)) {
