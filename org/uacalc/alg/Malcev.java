@@ -796,7 +796,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       }
     }
     if (report != null) {
-      report.addLine("There are no Day quadruples in the subalgebra of A^2.");
+      report.addLine("There are no Day quadruples in the subalgebras of A^2.");
       report.addLine("So this algebra lies in a CM variety.");
     }
     return null;
