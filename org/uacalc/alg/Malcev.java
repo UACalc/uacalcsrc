@@ -739,6 +739,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    */
   public static IntArray findDayQuadrupleInSquare(final SmallAlgebra alg,
                                                   final ProgressReport report) {
+    if (report != null) report.addStartLine("Looking for a Day quadruple in A^2");
     final int n = alg.cardinality();
     final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
     final IntArray a = new IntArray(2);
@@ -786,7 +787,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
                                + x0 + "," + y1 + "), c = ("
                                + y0 + "," + x1 + "), d = ("
                                + y0 + "," + y1 + ")");
-                report.addLine("the congruences Cg(c,d), Cg(a,b)(c,d) and Cg(a,c)(b,d) generate " 
+                report.addEndingLine("the congruences Cg(c,d), Cg(a,b)(c,d) and Cg(a,c)(b,d) generate " 
                                + " a nonmodular lattice");
               }
               return new IntArray(new int[] {x0, x1, y0, y1});
@@ -797,7 +798,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     }
     if (report != null) {
       report.addLine("There are no Day quadruples in the subalgebras of A^2.");
-      report.addLine("So this algebra lies in a CM variety.");
+      report.addEndingLine("So this algebra lies in a CM variety.");
     }
     return null;
   }
