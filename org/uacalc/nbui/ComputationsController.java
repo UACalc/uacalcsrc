@@ -799,6 +799,8 @@ public class ComputationsController {
       public Term compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
+        report.addLine("that is, a term satisfying t(y,x,x,x) = t(x, x, y, y)");
+        report.addLine("and t(x,x,y,x) = t(x,y,x,x)");
         report.setDescription(desc);
         Term mmstTerm = Malcev.markovicMcKenzieSiggersTaylorTerm(alg, report);
         return mmstTerm;
