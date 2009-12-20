@@ -258,7 +258,7 @@ public class ComputationsController {
           MainController mc = uacalcUI.getMainController();
           //mc.setCurrentAlgebra(mc.addAlgebra(fr));
           mc.addAlgebra(fr, false);
-          if (getCurrentTask() == this) {
+          if (this.equals(getCurrentTask())) {
             uacalcUI.getResultTable().setModel(ttm);
             ttm.fireTableStructureChanged();
             ttm.fireTableDataChanged();
@@ -390,7 +390,7 @@ public class ComputationsController {
           MainController mc = uacalcUI.getMainController();
           //mc.setCurrentAlgebra(mc.addAlgebra(fr));
           mc.addAlgebra(subPow, false);
-          if (getCurrentTask() == this) {
+          if ( this.equals(getCurrentTask())) {
             uacalcUI.getResultTable().setModel(ttm);
             ttm.fireTableStructureChanged();
             ttm.fireTableDataChanged();
@@ -488,7 +488,7 @@ public class ComputationsController {
             ttm.setTerms(terms);
           }
           //ttm.setVariables(fr.getVariables());
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -544,7 +544,7 @@ public class ComputationsController {
             ttm.setTerms(terms);
           }
           //ttm.setVariables(fr.getVariables());
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -600,7 +600,7 @@ public class ComputationsController {
             ttm.setTerms(terms);
           }
           //ttm.setVariables(fr.getVariables());
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -656,7 +656,7 @@ public class ComputationsController {
             terms.add(nu);
             ttm.setTerms(terms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -712,7 +712,7 @@ public class ComputationsController {
             terms.add(nu);
             ttm.setTerms(terms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -768,7 +768,7 @@ public class ComputationsController {
             terms.add(mal);
             ttm.setTerms(terms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -826,7 +826,7 @@ public class ComputationsController {
             terms.add(mmstTerm);
             ttm.setTerms(terms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -884,7 +884,7 @@ public class ComputationsController {
             terms.add(nu);
             ttm.setTerms(terms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -938,7 +938,7 @@ public class ComputationsController {
             //terms.add(jis);
             //ttm.setTerms(terms);
           }
-          //if (getCurrentTask() == this) setResultTableColWidths();
+          //if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -997,7 +997,7 @@ public class ComputationsController {
             //terms.add(jis);
             //ttm.setTerms(terms);
           }
-          //if (getCurrentTask() == this) setResultTableColWidths();
+          //if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -1054,7 +1054,7 @@ public class ComputationsController {
             if (exception != null) exception.printStackTrace();
             report.addEndingLine("Found centrality data");
             ttm.setCentralityList(data);
-            if (getCurrentTask() == this) {
+            if ( this.equals(getCurrentTask())) {
               uacalcUI.getResultTable().setModel(ttm);
               ttm.fireTableStructureChanged();
               ttm.fireTableDataChanged();
@@ -1066,7 +1066,7 @@ public class ComputationsController {
             //terms.add(jis);
             //ttm.setTerms(terms);
           }
-          //if (getCurrentTask() == this) setResultTableColWidths();
+          //if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -1171,7 +1171,7 @@ public class ComputationsController {
             ttm.setTerms(terms);
             uacalcUI.repaint();
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");
@@ -1225,7 +1225,7 @@ public class ComputationsController {
             report.addEndingLine("Found terms showing primality; see <a link here>.");
             ttm.setTerms(pTerms);
           }
-          if (getCurrentTask() == this) setResultTableColWidths();
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
         else {
           report.addEndingLine("Computation cancelled");

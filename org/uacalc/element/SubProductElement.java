@@ -34,29 +34,29 @@ public class SubProductElement implements Element {
     return ans;
   }
 
-  @Override
+   
   public Algebra getAlgebra() {
     return algebra;
   }
 
-  @Override
+   
   public Element getParent() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
+   
   public Element[] getParentArray() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
+   
   public int index() {
     return algebra.elementIndex(element);
   }
 
-  @Override
+   
   public int[] parentIndexArray() {
     // TODO Auto-generated method stub
     return null;

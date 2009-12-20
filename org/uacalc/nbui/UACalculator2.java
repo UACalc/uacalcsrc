@@ -825,117 +825,117 @@ public class UACalculator2 extends JFrame implements UACalc {
   }
   
   
-  @Override
+  
   public void beep() {
     Toolkit.getDefaultToolkit().beep();
   }
 
-  @Override
+  
   public JTable getAlgListTable() {
     return algListTable;
   }
 
-  @Override
+  
   public JTextField getAlgNameTextField() {
     return algNameTextField;
   }
 
-  @Override
+   
   public JButton getCancelCompButton() {
     return cancelCompButton;
   }
 
-  @Override
+   
   public JTextField getCardTextField() {
     return cardTextField;
   }
 
-  @Override
+   
   public ComputationsController getComputationsController() {
     return getMainController().getComputationsController();
   }
 
-  @Override
+   
   public JTable getComputationsTable() {
     return computationsTable;
   }
 
-  @Override
+   
   public JPanel getConLeftPanel() {
     return conLeftPanel;
   }
 
-  @Override
+   
   public JPanel getConMainPanel() {
     return conMainPanel;
   }
 
-  @Override
+   
   public JComboBox getDefaultEltComboBox() {
     return defaultEltComboBox;
   }
 
-  @Override
+   
   public JTextField getDescTextField() {
     return descTextField;
   }
 
-  @Override
+   
   public JPanel getDrawingMainPanel() {
     return drawingMainPanel;
   }
 
-  @Override
+   
   public JFrame getFrame() {
     return this;
   }
 
-  @Override
+   
   public JCheckBox getIdempotentCB() {
     return idempotentCB;
   }
 
-  @Override
+   
   public JTextArea getLogTextArea() {
     return logTextArea;
   }
 
-  @Override
+   
   public MainController getMainController() {
     return actions;
   }
 
-  @Override
+   
   public JTextField getMsgTextField() {
     return msgTextField;
   }
 
-  @Override
+   
   public JTable getOpTable() {
     return opTable;
   }
 
-  @Override
+   
   public JComboBox getOpsComboBox() {
     return opsComboBox;
   }
 
-  @Override
+   
   public JTable getResultTable() {
     return resultTable;
   }
 
-  @Override
+   
   public JTextField getResultTextField() {
     return resultTextField;
   }
 
-  @Override
+   
   public JPanel getSubMainPanel() {
     return subMainPanel;
   }
 
-  @Override
+   
   public JTabbedPane getTabbedPane() {
     return tabbedPane;
   }
