@@ -896,7 +896,16 @@ System.out.println("got to idempotent");
    * the algebra does generate a congruence modular variety.
    * It is guarenteed to be the least number of terms possible.
    */
-  public static List gummTerms(SmallAlgebra alg, ProgressReport report) { 
+  public static List<Term> gummTerms(SmallAlgebra alg,  ProgressReport report) {
+    return gummTerms(alg, null, report);
+  }
+  
+  /**
+   * This returns a list of Gumm terms witnessing modularity, or null if 
+   * the algebra does generate a congruence modular variety.
+   * It is guarenteed to be the least number of terms possible.
+   */
+  public static List<Term> gummTerms(SmallAlgebra alg, FreeAlgebra free2, ProgressReport report) { 
     if (report != null) report.addStartLine("Finding Gumm terms.");
     if (alg.isIdempotent()) {
       if (findDayQuadrupleInSquare(alg, report) != null) {
@@ -906,24 +915,25 @@ System.out.println("got to idempotent");
         return null;
       }
     }
-    List ans = new ArrayList();
+    List<Term> ans = new ArrayList<Term>();
     if (alg.cardinality() == 1) {
       ans.add(Variable.x);
       ans.add(Variable.z);
       return ans;
     }
-    FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
-    // ** Need to put in a test if the tables will fit in memory. **
+    FreeAlgebra f2 = free2;
+    if (f2 == null) f2 = new FreeAlgebra(alg, 2, report);
+    // ** If the tables don't fit in memory, this just doesn't do anything. **
     f2.makeOperationTables();
     logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
     IntArray g1 = new IntArray(new int[] {0,1,0});
     IntArray g2 = new IntArray(new int[] {1,0,0});
-    List gens = new ArrayList(3);
+    List<IntArray> gens = new ArrayList<IntArray>(3);
     gens.add(g0);
     gens.add(g1);
     gens.add(g2);
-    final HashMap termMap = new HashMap(3);
+    final HashMap<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
     termMap.put(g0, Variable.x);
     termMap.put(g1, Variable.y);
     termMap.put(g2, Variable.z);

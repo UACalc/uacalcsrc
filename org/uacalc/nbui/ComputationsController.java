@@ -202,8 +202,22 @@ public class ComputationsController {
       uacalcUI.repaint();
     }
   }
+
+  /////////////////////////////////////////////////////////////////
+  // Matt had this weird complaint (mine didn't). I fixed it by 
+  // using equals instead of ==, but still don't fully understand it.
+  //
+  //[javac] C:\Program
+  //Files ComputationsController.java:603:
+  //incomparable types: org.uacalc.ui.tm.BackgroundTask<capture of ?> and
+  //<anonymous
+  //org.uacalc.ui.tm.BackgroundTask<java.util.List<org.uacalc.terms.Term>>>
+  //    [javac]           if (getCurrentTask() == this)
+  //setResultTableColWidths();
+  //////////////////////////////////////////////////////////////////
+
   
-  public void setupFreeAlgebraTask() {
+  public void setupFreeAlgebraTaskOld() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
@@ -279,6 +293,95 @@ public class ComputationsController {
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(freeAlgTask);
+  }
+  
+  public void setupFreeAlgebraTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int gens = getFreeGensDialog();
+    if (!(gens > 0)) return;
+    System.out.println("gens = " + gens);
+    final String thinOpt = getThinGens();
+    if (thinOpt == null) return;
+    int optIndex = 0;
+    if (thinOpt == thinningOptions[1]) optIndex = 1;
+    if (thinOpt == thinningOptions[2]) optIndex = 2;
+    final boolean decompose = optIndex == 2 ? true : false;
+    final boolean thin = decompose || optIndex == 1;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    //System.out.println("first");
+    setResultTableColWidths();
+    final String desc = "F(" + gens + ") over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<FreeAlgebra>  freeAlgTask = freeAlgebraTask(alg, report, desc, gens, thin, decompose, ttm);
+    addTask(freeAlgTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(freeAlgTask);
+  }
+  
+  public BackgroundTask<FreeAlgebra> freeAlgebraTask(final SmallAlgebra alg, 
+                                                     final ProgressReport report,
+                                                     final String desc,
+                                                     final int gens,
+                                                     final boolean thin,
+                                                     final boolean decompose,
+                                                     final TermTableModel ttm) {
+    final BackgroundTask<FreeAlgebra>  freeAlgTask = new BackgroundTask<FreeAlgebra>(report) {
+      public FreeAlgebra compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Computing the free algebra");
+        report.setDescription(desc);
+        FreeAlgebra freeAlg = new FreeAlgebra("F(" + gens + ") over " + alg.getName(),
+            alg, gens, true, thin, decompose, null, report);
+        return freeAlg;
+      }
+      public void onCompletion(FreeAlgebra fr, Throwable exception, 
+          boolean cancelled, boolean outOfMemory) {
+        resetCancelDelButton();
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done computing the free algebra");
+          report.setTimeLeft("");
+          System.out.println("ttm = " + ttm);
+          System.out.println("fr = " + fr);
+          System.out.println("exception: " + exception);
+          if (exception != null) exception.printStackTrace();
+          ttm.setTerms(fr.getTerms());
+          ttm.setVariables(fr.getVariables());
+          if (!decompose) {
+            ttm.setUniverse(fr.getUniverseList());
+          }
+          MainController mc = uacalcUI.getMainController();
+          //mc.setCurrentAlgebra(mc.addAlgebra(fr));
+          mc.addAlgebra(fr, false);
+          if (this.equals(getCurrentTask())) {
+            uacalcUI.getResultTable().setModel(ttm);
+            ttm.fireTableStructureChanged();
+            ttm.fireTableDataChanged();
+            //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
+            setResultTableColWidths();
+            uacalcUI.repaint();
+          }
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    return freeAlgTask;
   }
   
   public int getNumberDialog(int min, String message, String title) {
@@ -521,7 +624,33 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine("Finding Gumm modularity terms.");
         report.setDescription(desc);
-        java.util.List<Term> terms = Malcev.gummTerms(alg, report);
+        java.util.List<Term> terms = null;
+        if (alg.isIdempotent()) {
+          terms = Malcev.gummTerms(alg, report);
+        }
+        else {
+          final TermTableModel ttm2 = new TermTableModel();
+          final ProgressReport reportF2 = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+          termTableModels.add(ttm2);
+          setResultTableColWidths();
+          String desc2 = "F(2) over "  + gAlg.toString(true);
+          ttm2.setDescription(desc2);
+          BackgroundTask<FreeAlgebra> f2Task = freeAlgebraTask(alg, reportF2, 
+              desc2, 2, true, true, ttm2);
+          addTask(f2Task);
+          MainController.scrollToBottom(uacalcUI.getComputationsTable());
+          uacalcUI.getResultTable().setModel(ttm2);
+          BackgroundExec.getBackgroundExec().execute(f2Task);
+          FreeAlgebra f2 = null;
+          try {
+            f2 = f2Task.get();
+          }
+          catch (InterruptedException e) { }   // TODO: handle both of these
+          catch (java.util.concurrent.ExecutionException e) {}
+          //taskTableModel.setCurrentTask(this);
+          terms =  Malcev.gummTerms(alg, f2, report);
+          
+        }
         return terms;
       }
       public void onCompletion(java.util.List<Term> terms, Throwable exception, 
@@ -537,12 +666,13 @@ public class ComputationsController {
             report.addEndingLine("The variety is not congruence modular.");
             ttm.setDescription(desc + ": there are none.");
             updateResultTextField(this, ttm);
-            uacalcUI.repaint();
           }
           else {
             report.addEndingLine("Done finding Gumm terms.");
             ttm.setTerms(terms);
+            updateResultTextField(this, ttm);
           }
+          uacalcUI.repaint();
           //ttm.setVariables(fr.getVariables());
           if ( this.equals(getCurrentTask())) setResultTableColWidths();
         }
