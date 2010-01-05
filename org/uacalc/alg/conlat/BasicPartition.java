@@ -99,7 +99,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return getPairs().iterator();
   }
 
-  public NavigableSet getPairs() {
+  public NavigableSet<IntArray> getPairs() {
     if (pairs == null) makePairs();
     return pairs;
   }
@@ -539,6 +539,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     return ans;
   }
+  
+  // Work on the concrete representation problem
 
   public static Partition directProduct(Partition alpha, Partition beta) {
     final int n = alpha.universeSize();
@@ -882,6 +884,46 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       if (ans.size() == k) return ans;
       k = ans.size();
     }
+  }
+  
+  /**
+   * If matrix has r rows and s columns whose entries lie in
+   * the set 0, ..., rs - 1, this returns a partition exxentially
+   * on the product of {0,...,r-1} and {0,...,s-1} such that 
+   * (x,y) is related to (u,v) if the (x,y) entry of the matrix
+   * equals to (u,v) entry.
+   * 
+   * @param matrix
+   * @return
+   */
+  public static Partition partitionFromMatrix(int[][] matrix) {
+    final int rows = matrix.length;
+    final int cols = matrix[0].length;
+    int max = 0;
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        max = Math.max(max, matrix[i][j]);
+      }
+    }
+    Map<Integer,List<Integer>> map = new TreeMap<Integer,List<Integer>>();
+    final int[] sizes = new int[] {rows, cols};
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        int key = matrix[i][j];
+        List<Integer> lst = map.get(key);
+        if (lst == null) {
+          lst = new ArrayList<Integer>();
+          map.put(key, lst);
+        }
+        lst.add(Horner.horner(new int[] {i,j}, sizes));
+      }
+    }
+    for (Integer key : map.keySet()) {
+      if (map.get(key) != null) {
+        // here
+      }
+    }
+    return null;
   }
 
   public static void main(String[] args) {
