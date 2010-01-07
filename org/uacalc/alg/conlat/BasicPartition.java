@@ -640,7 +640,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   /**
-   * Find all functions repecting the partition and extending the 
+   * Find all functions respecting the partition and extending the 
    * partial function arr and add them to the answer.
    * 
    * @param arr     a vector representing the partial function f defined for i < k
@@ -654,10 +654,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
                                        final int n,
                                        final NavigableSet<IntArray> ans,
                                        final List<Partition> pars) {
+    //System.out.println("k = " + k);
     if (k == n) {
       IntArray copy = new IntArray(n);
       System.arraycopy(arr.getArray(), 0, copy.getArray(), 0, n);
       ans.add(copy);
+      //System.out.println(copy);
       return;
     }
     for (int value = 0; value < n; value++) {
@@ -888,7 +890,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   /**
    * If matrix has r rows and s columns whose entries lie in
-   * the set 0, ..., rs - 1, this returns a partition exxentially
+   * the set 0, ..., rs - 1, this returns a partition essentially
    * on the product of {0,...,r-1} and {0,...,s-1} such that 
    * (x,y) is related to (u,v) if the (x,y) entry of the matrix
    * equals to (u,v) entry.
@@ -918,15 +920,100 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
         lst.add(Horner.horner(new int[] {i,j}, sizes));
       }
     }
+    final int[] arr = new int[rows * cols];
     for (Integer key : map.keySet()) {
       if (map.get(key) != null) {
-        // here
+        final List<Integer> lst = map.get(key);
+        final int s = lst.size();
+        final int first = lst.get(0);
+        arr[first] = - s;
+        for (int i = 1; i < s; i++) {
+          arr[lst.get(i)] = first;          
+        }
       }
     }
-    return null;
+    Partition ans = new BasicPartition(arr);
+    ans.normalize();
+    return ans;
   }
 
   public static void main(String[] args) {
+    
+    int[][] firstProj = {
+        {0,0,0,0,0,0,0,0,0,0},
+        {1,1,1,1,1,1,1,1,1,1},
+        {2,2,2,2,2,2,2,2,2,2},
+        {3,3,3,3,3,3,3,3,3,3},
+        {4,4,4,4,4,4,4,4,4,4},
+        {5,5,5,5,5,5,5,5,5,5},
+        {6,6,6,6,6,6,6,6,6,6},
+        {7,7,7,7,7,7,7,7,7,7},
+        {8,8,8,8,8,8,8,8,8,8},
+        {9,9,9,9,9,9,9,9,9,9}
+    };
+    
+    int[][] secondProj = {
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},        
+    };
+    
+    int[][] mat = new int[][] {
+        {0,6,5,4,7,8,9,1,2,3},
+        {9,1,0,6,5,7,8,2,3,4},
+        {8,9,2,1,0,6,7,3,4,5},
+        {7,8,9,3,2,1,0,4,5,6},
+        {1,7,8,9,4,3,2,5,6,0},
+        {3,2,7,8,9,5,4,6,0,1},
+        {5,4,3,7,8,9,6,0,1,2},
+        {2,3,4,5,6,0,1,7,8,9},
+        {4,5,6,0,1,2,3,9,7,8},
+        {6,0,1,2,3,4,5,8,9,7}        
+    };
+    
+    int[][] mat2 = new int[][] {
+        {0,9,8,7,1,3,5,2,4,6},
+        {6,1,9,8,7,2,4,3,5,0},
+        {5,0,2,9,8,7,3,4,6,1},
+        {4,6,1,3,9,8,7,5,0,2},
+        {7,5,0,2,4,9,8,6,1,3},
+        {8,7,6,1,3,5,9,0,2,4},
+        {9,8,7,0,2,4,6,1,3,5},
+        {1,2,3,4,5,6,0,7,8,9},
+        {2,3,4,5,6,0,1,8,9,7},
+        {3,4,5,6,0,1,2,9,7,8}        
+    };
+    
+    List<BasicPartition> genset = new ArrayList<BasicPartition>(3);
+    
+    genset.add((BasicPartition)partitionFromMatrix(firstProj));
+    genset.add((BasicPartition)partitionFromMatrix(secondProj));
+    genset.add((BasicPartition)partitionFromMatrix(mat));
+    genset.add((BasicPartition)partitionFromMatrix(mat2));
+    List<Partition> closure = closureAt(genset);
+    for (Partition par : closure) {
+      System.out.print(par);
+      if (par.equals(genset.get(0))) System.out.println(" **");
+      else if (genset.contains(par)) System.out.println(" *");
+      else System.out.println("");
+    }
+    System.out.println("closure size: " + closure.size());
+    
+    List<Partition> genset2 = new ArrayList<Partition>();
+    for (Partition p : genset) {
+      genset2.add(p);
+    }
+    Set<IntArray> unaryClo = unaryClone(genset2);
+    System.out.println("|Pol_1| = " + unaryClo.size());
+    Partition parMatrix = partitionFromMatrix(mat);
+    System.out.println("parMatrix = " + parMatrix);
     
     // Using any of these as theta gives the full 7 element closure.
     // |L(\theta)| = 31 for the first one, and 164 for other two.
