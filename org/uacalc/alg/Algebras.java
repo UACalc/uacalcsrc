@@ -9,6 +9,7 @@ import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.terms.*;
+import org.uacalc.alg.conlat.*;
 //import org.apache.log4j.*;
 import java.util.logging.*;
 
@@ -29,6 +30,38 @@ public class Algebras {
   // make sure the class cannot be instantiated.
   private Algebras() {}
 
+  /**
+   * Make an algebra from the unary operations respecting a list pars
+   * of partitions.
+   * 
+   * @param pars      a list of partitions
+   * @param decomp    a sublist whose meet is 0
+   * @return          the algebra
+   */
+  public static SmallAlgebra unaryCloneAlgFromPartitions(List<Partition> pars, List<Partition> decomp) {
+    final int size = pars.get(0).universeSize();
+    final int k = decomp.size();
+    final int[] sizes = new int[k];
+    int index = 0;
+    for (Partition par : decomp) {
+      sizes[index++] = par.representatives().length;
+    }
+    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    for (int i = 0; i < size; i++) {
+      final int[] vec = new int[k];
+      for (int j = 0; j < k; j++) {
+        vec[j] = decomp.get(j).representative(i);
+      }
+      final IntArray ia = new IntArray(vec);
+      int2vec.put(i, ia);
+      vec2int.put(ia, i);
+    }
+    // here
+    return null;
+  }
+  
+  
   /**
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
