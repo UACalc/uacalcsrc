@@ -31,7 +31,7 @@ public class Algebras {
   private Algebras() {}
 
   /**
-   * Make an algebra from the unary operations respecting a list pars
+   * WARNING: this is not complete. Make an algebra from the unary operations respecting a list pars
    * of partitions.
    * 
    * @param pars      a list of partitions
@@ -58,6 +58,22 @@ public class Algebras {
       vec2int.put(ia, i);
     }
     // here
+    return null;
+  }
+  
+  /**
+   * Make the unary algebra whose operations are the clone of unary
+   * operation respecting every partition in pars and also eta0 and
+   * eta1, which meet and join to 0 and 1 and permute. 
+   *  
+   * @param pars
+   * @param eta0
+   * @param eta1
+   * @return
+   */
+  public static SmallAlgebra unaryCloneAlgFromPartitions(List<Partition> pars, Partition eta0, Partition eta1) {
+    final int size = pars.get(0).universeSize();
+    
     return null;
   }
   
