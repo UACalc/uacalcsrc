@@ -73,8 +73,142 @@ public class Algebras {
    */
   public static SmallAlgebra unaryCloneAlgFromPartitions(List<Partition> pars, Partition eta0, Partition eta1) {
     final int size = pars.get(0).universeSize();
-    
+    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    for (int i = 0; i < size; i++) {
+      final int[] vec = new int[2];
+      vec[0] = eta0.representative(i);
+      vec[1] = eta1.representative(i);
+      final IntArray ia = new IntArray(vec);
+      int2vec.put(i, ia);
+      vec2int.put(ia, i);
+    }
     return null;
+  }
+  
+  public static List<IntArray> unaryClone(final List<Partition> pars, 
+                                                   final Partition eta0, final Partition eta1) {
+    final int size = pars.get(0).universeSize();
+    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    for (int i = 0; i < size; i++) {
+      final int[] vec = new int[2];
+      vec[0] = eta0.representative(i);
+      vec[1] = eta1.representative(i);
+      final IntArray ia = new IntArray(vec);
+      int2vec.put(i, ia);
+      vec2int.put(ia, i);
+    }
+    final int size0 = eta0.numberOfBlocks();
+    final int size1 = eta1.numberOfBlocks();
+    final IntArray f0 = new IntArray(size0);
+    final IntArray f1 = new IntArray(size1);
+    final int n = eta0.universeSize();
+    final List<IntArray> ans = new ArrayList<IntArray>();
+    unaryCloneAux(f0, f1, size0, size1, 0, 0, n, true, ans, int2vec, vec2int, pars);
+    return ans;
+  }
+  
+  private static void unaryCloneAux(final IntArray f0, final IntArray f1,
+                                                  final int size0, final int size1,
+                                                  final int k0, final int k1, final int n,
+                                                  final boolean zeroFirst,
+                                                  //IntArray partialFn,
+                                                  final List<IntArray> ans,
+                                                  final Map<Integer,IntArray> int2vec,
+                                                  final Map<IntArray,Integer> vec2int,
+                                                  final List<Partition> pars) {
+    //if (partialFn == null) {
+    //  partialFn = new IntArray(n);
+    //  for (int i = 0; i < n; i++) {
+    //    partialFn.set(i, -1);
+    //  }
+    //}
+    if (k0 * k1 == n) {
+      IntArray copy = new IntArray(n);
+      final IntArray scratch = new IntArray(2);
+      for (int i = 0; i < n; i++) {
+        final IntArray argv = int2vec.get(i);
+        scratch.set(0, f0.get(argv.get(0)));
+        scratch.set(1, f1.get(argv.get(1)));
+        copy.set(i, vec2int.get(scratch));
+      }
+      ans.add(copy);
+      //System.out.println(copy);
+      return;
+    }
+    
+    final int size = zeroFirst ? size0 : size1;
+    //final int k = zeroFirst ? k0 : k1;
+    //final int otherK = zeroFirst ? k1 : k0;
+    for (int value = 0; value < size; value++) {
+      if (respects(value, f0, f1, size0, size1, k0, k1, n, zeroFirst, int2vec, vec2int, pars)) {
+        
+      }
+      //if (respects(partialFunct, k, value, pars)) {
+        //arr.set(k, value);
+        //unaryCloneAux(arr, k + 1, n, ans, pars);
+      //}
+    }
+    
+    return;
+  }
+  
+  private static boolean respects(final int value,
+                                  final IntArray f0, final IntArray f1,
+                                  final int size0, final int size1,
+                                  final int k0, final int k1, final int n,
+                                  final boolean zeroFirst,
+                                  final Map<Integer,IntArray> int2vec,
+                                  final Map<IntArray,Integer> vec2int,
+                                  final List<Partition> pars) {
+    final IntArray scratch = new IntArray(2);
+    if (zeroFirst) {
+      for (int j = 0; j < k1; j++) {
+        final int m = getScratchValue(scratch, k0, j, vec2int);
+        final int image = getScratchValue(scratch, value, f1.get(j), vec2int);
+        for (int u = 0; u < k0; u++) {
+          for (int v = 0; v < k1; v++) {
+            final int uv = getScratchValue(scratch, u, v, vec2int);
+            int uvImg = -1;
+            for (Partition par : pars) {
+              final int r = par.representative(m);
+              if (r == par.representative(uv)) {
+                if (uvImg == -1) uvImg = getScratchValue(scratch, f0.get(u), f1.get(v), vec2int);
+                if (!par.isRelated(image, uvImg)) return false;
+              }
+            }
+          }
+        } 
+      }
+    }
+    else {
+      for (int i = 0; i < k1; i++) {
+        final int m = getScratchValue(scratch, i, k1, vec2int);
+        final int image = getScratchValue(scratch, f0.get(i), value, vec2int);
+        for (int u = 0; u < k0; u++) {
+          for (int v = 0; v < k1; v++) {
+            final int uv = getScratchValue(scratch, u, v, vec2int);
+            int uvImg = -1;
+            for (Partition par : pars) {
+              final int r = par.representative(m);
+              if (r == par.representative(uv)) {
+                if (uvImg == -1) uvImg = getScratchValue(scratch, f0.get(u), f1.get(v), vec2int);
+                if (!par.isRelated(image, uvImg)) return false;
+              }
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  private static int getScratchValue(final IntArray scratch, final int i, final int j, 
+                                     final Map<IntArray,Integer> vec2int) {
+    scratch.set(0, i);
+    scratch.set(1, j);
+    return vec2int.get(scratch);
   }
   
   
