@@ -143,7 +143,9 @@ public class Algebras {
     //final int otherK = zeroFirst ? k1 : k0;
     for (int value = 0; value < size; value++) {
       if (respects(value, f0, f1, size0, size1, k0, k1, n, zeroFirst, int2vec, vec2int, pars)) {
-        
+        if (zeroFirst) f0.set(k0, value);
+        else f1.set(k1, value);
+        unaryCloneAux(f0, f1, size0, size1, k0, k1, n, !zeroFirst, ans, int2vec, vec2int, pars);
       }
       //if (respects(partialFunct, k, value, pars)) {
         //arr.set(k, value);
