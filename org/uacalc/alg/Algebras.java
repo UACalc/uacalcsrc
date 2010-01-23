@@ -46,8 +46,8 @@ public class Algebras {
     for (Partition par : decomp) {
       sizes[index++] = par.representatives().length;
     }
-    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
-    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    Map<Integer,IntArray> int2vec = new HashMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new HashMap<IntArray,Integer>();
     for (int i = 0; i < size; i++) {
       final int[] vec = new int[k];
       for (int j = 0; j < k; j++) {
@@ -73,8 +73,8 @@ public class Algebras {
    */
   public static SmallAlgebra unaryCloneAlgFromPartitions(List<Partition> pars, Partition eta0, Partition eta1) {
     final int size = pars.get(0).universeSize();
-    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
-    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    Map<Integer,IntArray> int2vec = new HashMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new HashMap<IntArray,Integer>();
     for (int i = 0; i < size; i++) {
       final int[] vec = new int[2];
       vec[0] = eta0.representative(i);
@@ -89,8 +89,8 @@ public class Algebras {
   public static List<IntArray> unaryClone(final List<Partition> pars, 
                                                    final Partition eta0, final Partition eta1) {
     final int size = pars.get(0).universeSize();
-    Map<Integer,IntArray> int2vec = new TreeMap<Integer,IntArray>();
-    Map<IntArray,Integer> vec2int = new TreeMap<IntArray,Integer>();
+    Map<Integer,IntArray> int2vec = new HashMap<Integer,IntArray>();
+    Map<IntArray,Integer> vec2int = new HashMap<IntArray,Integer>();
     for (int i = 0; i < size; i++) {
       final int[] vec = new int[2];
       vec[0] = eta0.representative(i);
@@ -99,6 +99,8 @@ public class Algebras {
       int2vec.put(i, ia);
       vec2int.put(ia, i);
     }
+    System.out.println("v2i: " + vec2int);
+    System.out.println("i2v: " + int2vec);
     final int size0 = eta0.numberOfBlocks();
     final int size1 = eta1.numberOfBlocks();
     final IntArray f0 = new IntArray(size0);
@@ -111,13 +113,14 @@ public class Algebras {
   
   private static void unaryCloneAux(final IntArray f0, final IntArray f1,
                                                   final int size0, final int size1,
-                                                  final int k0, final int k1, final int n,
-                                                  final boolean zeroFirst,
+                                                  int k0, int k1, final int n,
+                                                  boolean zeroFirst,
                                                   //IntArray partialFn,
                                                   final List<IntArray> ans,
                                                   final Map<Integer,IntArray> int2vec,
                                                   final Map<IntArray,Integer> vec2int,
                                                   final List<Partition> pars) {
+    System.out.println("f0: " + f0 + " f1: " + f1 + " k0: " + k0 + " k1: " + k1 + " zeroFirst: " + zeroFirst);
     //if (partialFn == null) {
     //  partialFn = new IntArray(n);
     //  for (int i = 0; i < n; i++) {
@@ -143,9 +146,19 @@ public class Algebras {
     //final int otherK = zeroFirst ? k1 : k0;
     for (int value = 0; value < size; value++) {
       if (respects(value, f0, f1, size0, size1, k0, k1, n, zeroFirst, int2vec, vec2int, pars)) {
-        if (zeroFirst) f0.set(k0, value);
-        else f1.set(k1, value);
-        unaryCloneAux(f0, f1, size0, size1, k0, k1, n, !zeroFirst, ans, int2vec, vec2int, pars);
+        if (zeroFirst) {
+          f0.set(k0++, value);
+          //if (k0 < size0) k0++;
+          //else k1++;
+          if (k1 < size1) zeroFirst = false;
+        }
+        else {
+          f1.set(k1++, value);
+          //if (k1 < size1) k1++;
+          //else k0++;
+          if (k0 < size0) zeroFirst = true;
+        }
+        unaryCloneAux(f0, f1, size0, size1, k0, k1, n, zeroFirst, ans, int2vec, vec2int, pars);
       }
       //if (respects(partialFunct, k, value, pars)) {
         //arr.set(k, value);
@@ -164,6 +177,7 @@ public class Algebras {
                                   final Map<Integer,IntArray> int2vec,
                                   final Map<IntArray,Integer> vec2int,
                                   final List<Partition> pars) {
+    //System.out.println("f0: " + f0 + " f1: " + f1 + " k0: " + k0 + " k1: " + k1);
     final IntArray scratch = new IntArray(2);
     if (zeroFirst) {
       for (int j = 0; j < k1; j++) {
@@ -185,7 +199,7 @@ public class Algebras {
       }
     }
     else {
-      for (int i = 0; i < k1; i++) {
+      for (int i = 0; i < k0; i++) {
         final int m = getScratchValue(scratch, i, k1, vec2int);
         final int image = getScratchValue(scratch, f0.get(i), value, vec2int);
         for (int u = 0; u < k0; u++) {
