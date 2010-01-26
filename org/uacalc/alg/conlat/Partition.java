@@ -70,6 +70,8 @@ public interface Partition extends BinaryRelation {
   public boolean isRepresentative(int i);
  
   public int[] representatives();
+  
+  public int blockIndex(int i);
 
   public int[][] getBlocks();
 

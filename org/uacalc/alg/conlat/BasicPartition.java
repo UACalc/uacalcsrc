@@ -44,6 +44,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   private int blockCount = -1;
   
   private NavigableSet<IntArray> pairs;
+  
+  private int[] representatives;
 
   public BasicPartition(int[] part) {
     this.array = part;
@@ -528,16 +530,27 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
 
   public int[] representatives() {
-    int c = 0;
-    for (int i = 0; i < size; i++) {
-      if (isRoot(i)) c++;
+    if (representatives == null) {
+      int c = 0;
+      for (int i = 0; i < size; i++) {
+        if (isRoot(i)) c++;
+      }
+      representatives = new int[c];
+      c = 0;
+      for (int i = 0; i < size; i++) {
+        if (isRoot(i)) representatives[c++] = i;
+      }
     }
-    int[] ans = new int[c];
-    c = 0;
-    for (int i = 0; i < size; i++) {
-      if (isRoot(i)) ans[c++] = i;
-    }
-    return ans;
+    return representatives;
+  }
+  
+  /**
+   * The index of the block containing <i>i</i>.
+   * This will be the index in the quotient structure of
+   * <i>i</i> modulo this partition.
+   */
+  public int blockIndex(int i) {
+    return Arrays.binarySearch(representatives(), representative(i));
   }
   
   // Work on the concrete representation problem

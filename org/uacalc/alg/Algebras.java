@@ -72,29 +72,33 @@ public class Algebras {
    * @return
    */
   public static SmallAlgebra unaryCloneAlgFromPartitions(List<Partition> pars, Partition eta0, Partition eta1) {
+    String f = "f_";
     final int size = pars.get(0).universeSize();
-    Map<Integer,IntArray> int2vec = new HashMap<Integer,IntArray>();
-    Map<IntArray,Integer> vec2int = new HashMap<IntArray,Integer>();
-    for (int i = 0; i < size; i++) {
-      final int[] vec = new int[2];
-      vec[0] = eta0.representative(i);
-      vec[1] = eta1.representative(i);
-      final IntArray ia = new IntArray(vec);
-      int2vec.put(i, ia);
-      vec2int.put(ia, i);
+    final NavigableSet<IntArray> lst = unaryClone(pars, eta0, eta1);
+    //System.out.println("TreeSet: " + lst);
+    //IntArray ia0 = new IntArray(new int[] {0, 0, 4, 0, 0, 0, 0});
+    //System.out.println("ceiling 0 0 4 0 ... = " + lst.ceiling(ia0));
+    System.out.println("number of ops in the unary clone is " + lst.size());
+    final List<Operation> ops = new ArrayList<Operation>(lst.size());
+    int i = 0;
+    for (IntArray ia : lst) {
+      ops.add(Operations.makeIntOperation(f + i, 1, size, ia.getArray()));
+      i++;
     }
-    return null;
+    return new BasicAlgebra("", size, ops);
   }
   
-  public static List<IntArray> unaryClone(final List<Partition> pars, 
+  public static NavigableSet<IntArray> unaryClone(final List<Partition> pars, 
                                                    final Partition eta0, final Partition eta1) {
     final int size = pars.get(0).universeSize();
     Map<Integer,IntArray> int2vec = new HashMap<Integer,IntArray>();
     Map<IntArray,Integer> vec2int = new HashMap<IntArray,Integer>();
     for (int i = 0; i < size; i++) {
       final int[] vec = new int[2];
-      vec[0] = eta0.representative(i);
-      vec[1] = eta1.representative(i);
+      vec[0] = eta0.blockIndex(i);
+      vec[1] = eta1.blockIndex(i);
+      //vec[0] = eta0.representative(i);
+      //vec[1] = eta1.representative(i);
       final IntArray ia = new IntArray(vec);
       int2vec.put(i, ia);
       vec2int.put(ia, i);
@@ -106,27 +110,21 @@ public class Algebras {
     final IntArray f0 = new IntArray(size0);
     final IntArray f1 = new IntArray(size1);
     final int n = eta0.universeSize();
-    final List<IntArray> ans = new ArrayList<IntArray>();
+    final NavigableSet<IntArray> ans = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     unaryCloneAux(f0, f1, size0, size1, 0, 0, n, true, ans, int2vec, vec2int, pars);
     return ans;
   }
   
   private static void unaryCloneAux(final IntArray f0, final IntArray f1,
                                                   final int size0, final int size1,
-                                                  int k0, int k1, final int n,
-                                                  boolean zeroFirst,
+                                                  final int k0, final int k1, final int n,
+                                                  final boolean zeroFirst,
                                                   //IntArray partialFn,
-                                                  final List<IntArray> ans,
+                                                  final NavigableSet<IntArray> ans,
                                                   final Map<Integer,IntArray> int2vec,
                                                   final Map<IntArray,Integer> vec2int,
                                                   final List<Partition> pars) {
-    System.out.println("f0: " + f0 + " f1: " + f1 + " k0: " + k0 + " k1: " + k1 + " zeroFirst: " + zeroFirst);
-    //if (partialFn == null) {
-    //  partialFn = new IntArray(n);
-    //  for (int i = 0; i < n; i++) {
-    //    partialFn.set(i, -1);
-    //  }
-    //}
+    //System.out.println("f0: " + f0 + " f1: " + f1 + " k0: " + k0 + " k1: " + k1 + " zeroFirst: " + zeroFirst);
     if (k0 * k1 == n) {
       IntArray copy = new IntArray(n);
       final IntArray scratch = new IntArray(2);
@@ -140,32 +138,24 @@ public class Algebras {
       //System.out.println(copy);
       return;
     }
-    
     final int size = zeroFirst ? size0 : size1;
-    //final int k = zeroFirst ? k0 : k1;
-    //final int otherK = zeroFirst ? k1 : k0;
     for (int value = 0; value < size; value++) {
       if (respects(value, f0, f1, size0, size1, k0, k1, n, zeroFirst, int2vec, vec2int, pars)) {
+        boolean newZeroFirst = zeroFirst;
         if (zeroFirst) {
-          f0.set(k0++, value);
-          //if (k0 < size0) k0++;
-          //else k1++;
-          if (k1 < size1) zeroFirst = false;
+          f0.set(k0, value);
+          if (k1 < size1) newZeroFirst = false;
         }
         else {
-          f1.set(k1++, value);
-          //if (k1 < size1) k1++;
-          //else k0++;
-          if (k0 < size0) zeroFirst = true;
+          f1.set(k1, value);
+          if (k0 < size0) newZeroFirst = true;
         }
-        unaryCloneAux(f0, f1, size0, size1, k0, k1, n, zeroFirst, ans, int2vec, vec2int, pars);
+        unaryCloneAux(f0, f1, size0, size1, 
+                      zeroFirst ? k0 + 1: k0, 
+                      zeroFirst ? k1 : k1 + 1, 
+                      n, newZeroFirst, ans, int2vec, vec2int, pars);
       }
-      //if (respects(partialFunct, k, value, pars)) {
-        //arr.set(k, value);
-        //unaryCloneAux(arr, k + 1, n, ans, pars);
-      //}
     }
-    
     return;
   }
   
@@ -183,6 +173,17 @@ public class Algebras {
       for (int j = 0; j < k1; j++) {
         final int m = getScratchValue(scratch, k0, j, vec2int);
         final int image = getScratchValue(scratch, value, f1.get(j), vec2int);
+        for (int w = 0; w < j; w++) {
+          final int k = getScratchValue(scratch, k0, w, vec2int);
+          int kImg = -1;
+          for (Partition par : pars) {
+            final int r = par.representative(m);
+            if (r == par.representative(k)) {
+              if (kImg == -1) kImg = getScratchValue(scratch, value, f1.get(w), vec2int);
+              if (!par.isRelated(image, kImg)) return false;
+            }
+          }
+        }
         for (int u = 0; u < k0; u++) {
           for (int v = 0; v < k1; v++) {
             final int uv = getScratchValue(scratch, u, v, vec2int);
@@ -200,8 +201,20 @@ public class Algebras {
     }
     else {
       for (int i = 0; i < k0; i++) {
+        //System.out.println("i: " + i + " k1: " + k1);
         final int m = getScratchValue(scratch, i, k1, vec2int);
         final int image = getScratchValue(scratch, f0.get(i), value, vec2int);
+        for (int w = 0; w < i; w++) {
+          final int k = getScratchValue(scratch, w, k1, vec2int);
+          int kImg = -1;
+          for (Partition par : pars) {
+            final int r = par.representative(m);
+            if (r == par.representative(k)) {
+              if (kImg == -1) kImg = getScratchValue(scratch, f0.get(w), value, vec2int);
+              if (!par.isRelated(image, kImg)) return false;
+            }
+          }
+        }
         for (int u = 0; u < k0; u++) {
           for (int v = 0; v < k1; v++) {
             final int uv = getScratchValue(scratch, u, v, vec2int);
@@ -273,8 +286,7 @@ public class Algebras {
   public static boolean isHomomorphism(final int[] map, 
                                        final SmallAlgebra alg0, 
                                        final SmallAlgebra alg1) {
-    for (Iterator it = alg0.operations().iterator(); it.hasNext(); ) {
-      Operation op0 = (Operation)it.next();
+    for (Operation op0 : alg0.operations()) {
       Operation op1 = alg1.getOperation(op0.symbol());
       if (! Operations.commutes(map, op0, op1)) {
         logger.finer(op0 + " failed to commute with " + map);
@@ -345,7 +357,7 @@ public class Algebras {
    */
   public static SmallAlgebra makeRandomAlgebra(int n, 
                                       SimilarityType simType, long seed) {
-    List ops = Operations.makeRandomOperations(n, simType, seed);
+    List<Operation> ops = Operations.makeRandomOperations(n, simType, seed);
     // the second argument is the size of the algebra.
     return new BasicAlgebra("RAlg" + n, n, ops);
   }
@@ -374,6 +386,106 @@ public class Algebras {
 
 
   public static void main(String[] args) throws Exception {
+    
+    int[][] firstProj = {
+        {0,0,0,0,0,0,0,0,0,0},
+        {1,1,1,1,1,1,1,1,1,1},
+        {2,2,2,2,2,2,2,2,2,2},
+        {3,3,3,3,3,3,3,3,3,3},
+        {4,4,4,4,4,4,4,4,4,4},
+        {5,5,5,5,5,5,5,5,5,5},
+        {6,6,6,6,6,6,6,6,6,6},
+        {7,7,7,7,7,7,7,7,7,7},
+        {8,8,8,8,8,8,8,8,8,8},
+        {9,9,9,9,9,9,9,9,9,9}
+    };
+    
+    int[][] secondProj = {
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},
+        {0,1,2,3,4,5,6,7,8,9},        
+    };
+    
+    int[][] mat = new int[][] {
+        {0,6,5,4,7,8,9,1,2,3},
+        {9,1,0,6,5,7,8,2,3,4},
+        {8,9,2,1,0,6,7,3,4,5},
+        {7,8,9,3,2,1,0,4,5,6},
+        {1,7,8,9,4,3,2,5,6,0},
+        {3,2,7,8,9,5,4,6,0,1},
+        {5,4,3,7,8,9,6,0,1,2},
+        {2,3,4,5,6,0,1,7,8,9},
+        {4,5,6,0,1,2,3,9,7,8},
+        {6,0,1,2,3,4,5,8,9,7}        
+    };
+    
+    int[][] mat2 = new int[][] {
+        {0,9,8,7,1,3,5,2,4,6},
+        {6,1,9,8,7,2,4,3,5,0},
+        {5,0,2,9,8,7,3,4,6,1},
+        {4,6,1,3,9,8,7,5,0,2},
+        {7,5,0,2,4,9,8,6,1,3},
+        {8,7,6,1,3,5,9,0,2,4},
+        {9,8,7,0,2,4,6,1,3,5},
+        {1,2,3,4,5,6,0,7,8,9},
+        {2,3,4,5,6,0,1,8,9,7},
+        {3,4,5,6,0,1,2,9,7,8}        
+    };
+    
+    List<Partition> genset = new ArrayList<Partition>(2);
+    genset.add(BasicPartition.partitionFromMatrix(mat));
+    //genset.add(BasicPartition.partitionFromMatrix(mat2));
+    Partition eta0 = BasicPartition.partitionFromMatrix(firstProj);
+    Partition eta1 = BasicPartition.partitionFromMatrix(secondProj);
+    //NavigableSet<IntArray> lst = Algebras.unaryClone(genset, eta0, eta1);
+    SmallAlgebra alg = unaryCloneAlgFromPartitions(genset, eta0, eta1);
+    System.out.println("|J(Con(A))| = " + alg.con().joinIrreducibles().size());
+
+    //System.out.println("");
+    //for (IntArray ia : lst) {
+    //  System.out.println(ia);
+    //}
+    //System.out.println("clone size = " + lst.size());
+    
+ 
+    /*
+    BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
+    BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
+    BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0});
+
+    System.out.println("rfz0: " + rfz0);
+    System.out.println("rfz1: " + rfz1);
+    System.out.println("rfz2: " + rfz2);
+        
+        
+    List<Partition> pars2 = new ArrayList<Partition>();
+    pars2.add(rfz1);
+    List<IntArray> lst = Algebras.unaryClone(pars2, rfz0, rfz2);
+    Collections.sort(lst, IntArray.lexicographicComparitor());
+    System.out.println("");
+    for (IntArray ia : lst) {
+      System.out.println(ia);
+    }
+    System.out.println("clone size = " + lst.size());
+    
+    pars2.add(rfz0);
+    pars2.add(rfz2);
+    Set<IntArray> set = BasicPartition.unaryClone(pars2);
+    for (IntArray ia : set) {
+      System.out.println(ia);
+    }
+    System.out.println("BasicPartition size is " + set.size());
+    */
+
+    if (true) return;
+    
     SmallAlgebra alg0 = fullTransformationSemigroup(3, true, true);
     List<Operation> ops = alg0.operations();
     //int[] inv = new int[] {2,1,0};
