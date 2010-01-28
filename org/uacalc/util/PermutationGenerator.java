@@ -183,10 +183,14 @@ public class PermutationGenerator {
       System.out.println("perm " + k + " = " + ArrayString.toString(g.a));
       System.out.println("nextIndex " + k + " = " + g.nextIndex());
     }
+    long time = System.currentTimeMillis();
     k = 0;
-    for (Iterator it = PermutationGenerator.iterator(4); it.hasNext(); k++) {
+    for (Iterator it = PermutationGenerator.iterator(12); it.hasNext(); k++) {
        System.out.println("" + k + ": " + ArrayString.toString(it.next()));
+      //it.next();
     }
+    time = System.currentTimeMillis() - time;
+    System.out.println("time: " + time);
     /*
     k = 0;
     int n = Integer.parseInt(args[0]);

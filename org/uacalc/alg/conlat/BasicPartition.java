@@ -952,6 +952,18 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
 
   public static void main(String[] args) {
     
+    BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
+    BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
+    BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0}); 
+    
+    List<Partition> pars2 = new ArrayList<Partition>();
+    pars2.add(rfz1);
+    NavigableSet<IntArray> lst = Algebras.unaryClone(pars2, rfz0, rfz2);
+    for (IntArray ia : lst) {
+      System.out.println(ia);
+    }
+    System.out.println(":clone size = " + lst.size());
+    
     int[][] firstProj = {
         {0,0,0,0,0,0,0,0,0,0},
         {1,1,1,1,1,1,1,1,1,1},
@@ -1079,9 +1091,9 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     // |0|12|34|5|
     // |05|12|34|
     // This one is complete
-    BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
-    BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
-    BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0}); 
+    //BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
+    //BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
+    //BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0}); 
     
     // |012|345|6|7|
     // |012|345|67|
@@ -1263,10 +1275,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(swh3);
     //gens.add(swh4);
     
-    gens.add(L10);
-    gens.add(L11);
-    gens.add(L12);
+    //gens.add(L10);
+    //gens.add(L11);
+    //gens.add(L12);
 
+    gens.add(rfz1);
     
     System.out.println("gens: " + gens);
     
@@ -1295,6 +1308,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (BasicPartition gen : gens) {
       pars.add((Partition)gen);
     }
+    
     
     //long t = System.currentTimeMillis();
     //List<IntArray> lst = unaryClone(pars);
