@@ -1,9 +1,15 @@
 package org.uacalc.ui.table;
 
+import org.uacalc.alg.*;
+
 public class ConLatticeTableModel extends LatticeTableModel {
 
   public static enum dataType { 
-    ALL, PRINCIPALS, JOIN_IRREDUCIBLES
+    ALL, JOIN_IRREDUCIBLES, PRINCIPALS
+  }
+  
+  public ConLatticeTableModel(SmallAlgebra alg) {
+    super(alg);
   }
   
   @Override

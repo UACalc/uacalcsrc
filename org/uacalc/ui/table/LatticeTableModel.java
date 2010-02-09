@@ -1,6 +1,7 @@
 package org.uacalc.ui.table;
 
 import javax.swing.table.AbstractTableModel;
+import org.uacalc.alg.*;
 
 /**
  * The super class for congruence, sublattice, and algebra as a lattice tables.
@@ -31,6 +32,12 @@ public abstract class LatticeTableModel extends AbstractTableModel {
   
   private String[] colNames;
   
+  private SmallAlgebra algebra;
+  
+  public LatticeTableModel(SmallAlgebra alg) {
+    this.algebra = alg;
+  }
+  
   public String[] getColNames() { return colNames; }
   
   public void setToAllNoTypColNames() { colNames = allNoTypColNames; }
@@ -41,7 +48,7 @@ public abstract class LatticeTableModel extends AbstractTableModel {
   
   public void setToAllColNames() { colNames = allColNames; }
   
-  
+ 
   
   
   @Override
@@ -64,6 +71,14 @@ public abstract class LatticeTableModel extends AbstractTableModel {
 
   public static String[] getJINoTypColNames() {
     return jiNoTypColNames;
+  }
+
+  public void setAlgebra(SmallAlgebra algebra) {
+    this.algebra = algebra;
+  }
+
+  public SmallAlgebra getAlgebra() {
+    return algebra;
   }
 
 }
