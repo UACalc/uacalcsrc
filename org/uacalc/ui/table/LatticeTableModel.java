@@ -30,7 +30,7 @@ public abstract class LatticeTableModel extends AbstractTableModel {
     "idx", "elem"
   };
   
-  private String[] colNames;
+  protected String[] colNames;
   
   private SmallAlgebra algebra;
   
