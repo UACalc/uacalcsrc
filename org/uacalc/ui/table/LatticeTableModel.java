@@ -30,7 +30,7 @@ public abstract class LatticeTableModel extends AbstractTableModel {
     "idx", "elem"
   };
   
-  protected String[] colNames;
+  private String[] colNames = allColNames;  // fix this
   
   private SmallAlgebra algebra;
   
@@ -40,20 +40,24 @@ public abstract class LatticeTableModel extends AbstractTableModel {
   
   public String[] getColNames() { return colNames; }
   
-  public void setToAllNoTypColNames() { colNames = allNoTypColNames; }
+  protected void setColNames(String[] colNames) {
+    this.colNames = colNames;
+  }
   
-  public void setToJIColNames() { colNames = jiColNames; }
+  public void setToAllNoTypColNames() { setColNames(allNoTypColNames); }
   
-  public void setToJINoTypColNames() { colNames = jiNoTypColNames; }
+  public void setToJIColNames() { setColNames(jiColNames); }
   
-  public void setToAllColNames() { colNames = allColNames; }
+  public void setToJINoTypColNames() { setColNames(jiNoTypColNames); }
+  
+  public void setToAllColNames() { setColNames(allColNames); }
   
  
   
   
   @Override
   public int getColumnCount() {
-    return colNames.length;
+    return getColNames().length;
   }
 
 
@@ -80,5 +84,7 @@ public abstract class LatticeTableModel extends AbstractTableModel {
   public SmallAlgebra getAlgebra() {
     return algebra;
   }
+
+  
 
 }

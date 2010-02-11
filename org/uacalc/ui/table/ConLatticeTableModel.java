@@ -37,6 +37,17 @@ public final class ConLatticeTableModel extends LatticeTableModel {
     Collections.sort(elems);
   }
   
+  public String getColumnName(int col) {
+    return getColNames()[col];
+  }
+  
+  public Class getColumnClass(int c) {
+    if (c == 1 || c == 2) return Boolean.class;
+    if (c == 3) return Integer.class;
+    return String.class;
+  }
+
+  
   @Override
   public int getRowCount() {
     return rowCount;
@@ -44,14 +55,19 @@ public final class ConLatticeTableModel extends LatticeTableModel {
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    if (colNames[columnIndex].equals("idx")) return rowIndex;
-    Partition elem = elems.get(rowIndex);
-    if (colNames[columnIndex].equals("elem")) return elem;
-    if (colNames[columnIndex].equals("JI?")) {
+    if (getColNames()[columnIndex].equals("idx")) return rowIndex;
+    final Partition elem = elems.get(rowIndex);
+    final CongruenceLattice con = getAlgebra().con();
+    if (getColNames()[columnIndex].equals("elem")) return elem;
+    if (getColNames()[columnIndex].equals("JI?")) {
       if (dType == DataType.JOIN_IRREDUCIBLES)return true;
-      return getAlgebra().con().joinIrreducible(elem);
+      return con.joinIrreducible(elem);
     }
-    
+    if (getColNames()[columnIndex].equals("MI?")) return con.meetIrreducible(elem);
+    if (getColNames()[columnIndex].equals("Typ\u2193")) {
+      if (!con.joinIrreducible(elem)) return null;
+      return con.type(elem); 
+    }
     return null;
   }
 

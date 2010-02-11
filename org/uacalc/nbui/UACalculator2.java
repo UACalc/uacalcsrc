@@ -8,6 +8,11 @@ import java.awt.event.*;
 import java.io.*;
 import net.miginfocom.swing.MigLayout;
 
+import org.uacalc.ui.table.*;
+import org.uacalc.alg.*;
+import org.uacalc.alg.conlat.*;
+import org.uacalc.io.*;
+
 public class UACalculator2 extends JFrame implements UACalc {
   
   private javax.swing.JButton addOpButton;
@@ -713,6 +718,18 @@ public class UACalculator2 extends JFrame implements UACalc {
     setJMenuBar(jMenuBar1);
 
     
+    // test con table
+    SmallAlgebra polin = null;
+    try {
+      polin = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin.alg");
+    } 
+    catch (Exception e) { e.printStackTrace(); }
+    
+    ConLatticeTableModel model = new ConLatticeTableModel(polin, ConLatticeTableModel.DataType.ALL);
+    JTable conTable = new JTable(model);
+    JScrollPane xxx = new JScrollPane();
+    xxx.setViewportView(conTable);
+    conPanel.add(xxx);
     
     
 

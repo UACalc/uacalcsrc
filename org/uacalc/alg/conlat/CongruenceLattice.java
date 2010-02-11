@@ -258,6 +258,11 @@ public class CongruenceLattice implements Lattice {
     return meetIrreducibles;
   }
   
+  public boolean meetIrreducible(Partition part) {
+    List<Partition> uc = upperCoversMap().get(part);
+    return uc != null && uc.size() == 1;
+  }
+  
   public List<Partition> atoms() {
     if (atoms == null) makeAtoms();
     return atoms;
