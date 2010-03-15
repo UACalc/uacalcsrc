@@ -13,6 +13,7 @@ import org.uacalc.io.*;
 import java.util.*;
 import java.util.logging.*;
 
+
 /* CongruenceLattice.java 2001/06/04 Ralph Freese */
 /* 
  * Changes by RSF: 2001/06/18
@@ -69,6 +70,8 @@ public class CongruenceLattice implements Lattice {
    * in turn holds the diagram.
    */
   private BasicLattice basicLat;
+  
+  private javax.swing.JTable conTable;
 
   /** 
    * A map from pairs [i,j] to the array representing Cg(i, j).
@@ -181,6 +184,12 @@ public class CongruenceLattice implements Lattice {
     if (!isDrawable()) return null;
     return getBasicLattice().getDiagram();
   }
+  
+  // hold data for the congruence table
+  // we may replace this JTable with a customized component.  
+  public javax.swing.JTable getConTable() { return conTable; }
+  
+  public void setConTable(javax.swing.JTable table) { conTable = table; }
   
   public List<Partition> principals() {
     return principals(null);

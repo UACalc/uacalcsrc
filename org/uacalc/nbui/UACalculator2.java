@@ -1,6 +1,7 @@
 package org.uacalc.nbui;
 
 import javax.swing.*;
+import javax.swing.table.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -716,32 +717,17 @@ public class UACalculator2 extends JFrame implements UACalc {
     jMenuBar1.add(drawingMenu);
 
     setJMenuBar(jMenuBar1);
-
     
-    // test con table
-    SmallAlgebra polin = null;
-    try {
-      polin = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin.alg");
-    } 
-    catch (Exception e) { e.printStackTrace(); }
-    
-    ConLatticeTableModel model = new ConLatticeTableModel(polin, ConLatticeTableModel.DataType.ALL);
-    JTable conTable = new JTable(model);
-    JScrollPane xxx = new JScrollPane();
-    xxx.setViewportView(conTable);
-    conPanel.add(xxx);
+    // Con Tab
+    MigLayout conLayout = new MigLayout("wrap 2, fill, insets 10");
+    getConPanel().setLayout(conLayout);
+    getConPanel().add(getConLeftPanel(), "grow");
+    getConPanel().add(getConMainPanel(), "grow");
+    MigLayout lay = new MigLayout("wrap, fill, insets 10");
+    getConLeftPanel().setLayout(lay);
     
     
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

@@ -24,18 +24,27 @@ public final class ConLatticeTableModel extends LatticeTableModel {
   public ConLatticeTableModel(SmallAlgebra alg, DataType t) {
     super(alg);
     dType = t;
-    joinIrreds = alg.con().joinIrreducibles();
-    joinIrredsSet = new HashSet<Partition>(joinIrreds);
-    switch (t) {
-      case ALL: elems = new ArrayList<Partition>(alg.con().universe());
-                break;
-      case PRINCIPALS: elems = alg.con().principals();  
-                break;
-      default: elems = alg.con().joinIrreducibles();
+    if (alg != null) {
+      joinIrreds = alg.con().joinIrreducibles();
+      joinIrredsSet = new HashSet<Partition>(joinIrreds);
+      switch (t) {
+        case ALL: elems = new ArrayList<Partition>(alg.con().universe());
+        break;
+        case PRINCIPALS: elems = alg.con().principals();  
+        break;
+        default: elems = alg.con().joinIrreducibles();
+      }
+      rowCount = elems.size();
+      Collections.sort(elems);
     }
-    rowCount = elems.size();
-    Collections.sort(elems);
+    else {
+      rowCount = 0;
+      elems = null;
+      joinIrreds = null;
+      joinIrredsSet = null;
+    }
   }
+  
   
   public String getColumnName(int col) {
     return getColNames()[col];
@@ -59,11 +68,11 @@ public final class ConLatticeTableModel extends LatticeTableModel {
     final Partition elem = elems.get(rowIndex);
     final CongruenceLattice con = getAlgebra().con();
     if (getColNames()[columnIndex].equals("elem")) return elem;
-    if (getColNames()[columnIndex].equals("JI?")) {
+    if (getColNames()[columnIndex].equals("JI")) {
       if (dType == DataType.JOIN_IRREDUCIBLES)return true;
       return con.joinIrreducible(elem);
     }
-    if (getColNames()[columnIndex].equals("MI?")) return con.meetIrreducible(elem);
+    if (getColNames()[columnIndex].equals("MI")) return con.meetIrreducible(elem);
     if (getColNames()[columnIndex].equals("Typ\u2193")) {
       if (!con.joinIrreducible(elem)) return null;
       return con.type(elem); 

@@ -14,12 +14,12 @@ public abstract class LatticeTableModel extends AbstractTableModel {
   // \u2191 is the up arrow and \u2193 is the down arrow;
   // see http://www.alanwood.net/unicode/arrows.html
   private static final String[] allColNames = {
-    "idx", "JI?", "MI?", "Typ\u2193", "Typ\u2191",
+    "idx", "JI", "MI", "Typ\u2193", "Typ\u2191",
     "cov\u2193", "cov\u2191", "elem"
   };
   
   private static final String[] allNoTypColNames = {
-    "idx", "JI?", "MI?", "cov\u2193", "cov\u2191", "elem"
+    "idx", "JI", "MI", "cov\u2193", "cov\u2191", "elem"
   };
   
   private static final String[] jiColNames = {
