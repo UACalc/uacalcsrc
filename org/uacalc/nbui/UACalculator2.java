@@ -353,6 +353,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     initAlgebrasPanel();
     tabbedPane.addTab("Algebras", algebrasPanel);
     
+    /*
     resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
 
     resultTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -391,7 +392,7 @@ public class UACalculator2 extends JFrame implements UACalc {
             cancelCompButtonActionPerformed(evt);
         }
     });
-
+xxx;
     clearLogButton.setText("Clear");
     clearLogButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -402,6 +403,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     logTextArea.setColumns(20);
     logTextArea.setRows(5);
     jScrollPane3.setViewportView(logTextArea);
+    */
 
     initComputationPanel();
     tabbedPane.addTab("Computations", computationsPanel);
@@ -803,6 +805,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     
     JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
     edSplitPane.setDividerLocation(0.5);
+    //edSplitPane.setResizeWeight(0.6);
     edSplitPane.setBorder(null);
     editorPanel.setLayout(new BorderLayout());
     editorPanel.add(edSplitPane, BorderLayout.CENTER);
@@ -814,17 +817,86 @@ public class UACalculator2 extends JFrame implements UACalc {
   }
   
   private void initComputationPanel() {
+    resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
+
+    resultTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+    resultTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4"
+        }
+    ));
+    resultTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    jScrollPane4.setViewportView(resultTable);
+
+    resultDescLabel.setText("Desc:");
+    MigLayout resultLM = new MigLayout("nogrid","[grow,fill]");
+    resultPane.setLayout(resultLM);
+    resultPane.add(resultDescLabel);
+    resultPane.add(resultTextField, "width 40::, grow 200, wrap 5");
+    resultPane.add(jScrollPane4, "width 100:4000:, height 100::, growx 200, wrap");
+    //resultPane.add(jScrollPane4, "growx 100, wrap");
+    
+    computationsLogPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Tasks"));
+
+    computationsTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6"
+        }
+    ));
+    computationsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    jScrollPane2.setViewportView(computationsTable);
+
+    cancelCompButton.setText("Cancel");
+    cancelCompButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            cancelCompButtonActionPerformed(evt);
+        }
+    });
+//yyy;
+    clearLogButton.setText("Clear");
+    clearLogButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            clearLogButtonActionPerformed(evt);
+        }
+    });
+
+    logTextArea.setColumns(20);
+    logTextArea.setRows(5);
+    jScrollPane3.setViewportView(logTextArea);
+
+    
+    
     Dimension minSize = new Dimension(100, 100);
     Dimension midSize = new Dimension(300, 300);
-    resultPane.setMinimumSize(minSize);
-    resultPane.setPreferredSize(midSize);
-    computationsLogPane.setMinimumSize(minSize);
-    computationsLogPane.setPreferredSize(midSize);
+    //resultPane.setMinimumSize(minSize);
+    //resultPane.setPreferredSize(midSize);
+    //computationsLogPane.setMinimumSize(minSize);
+    //computationsLogPane.setPreferredSize(midSize);
+    computationsLogPane.setLayout(new MigLayout("", "[grow,fill][]",""));
+    computationsLogPane.add(jScrollPane2, "width 100:4000:, height 100:120:, growy 50");
+    computationsLogPane.add(cancelCompButton, "wrap 5");
+    computationsLogPane.add(jScrollPane3,"height 100:300:, growy 70");
     
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, resultPane, computationsLogPane);
+    splitPane.setDividerLocation(0.5);
+    splitPane.setBorder(null);
+    splitPane.setResizeWeight(0.5);
+    computationsPanel.setLayout(new BorderLayout());
+    computationsPanel.add(splitPane, BorderLayout.CENTER);
     
-    computationsPanel.setLayout(new MigLayout("nogrid"));
-    computationsPanel.add(resultPane, "wrap 15");
-    computationsPanel.add(computationsLogPane, "wrap");    
+    //computationsPanel.setLayout(new MigLayout("nogrid"));
+    //computationsPanel.add(resultPane, "width 200:1000: , growx 200, wrap 5");
+    //computationsPanel.add(resultPane, "growx, wrap 5");
+    //computationsPanel.add(computationsLogPane, "wrap");    
   }
   
   
