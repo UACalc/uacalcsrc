@@ -133,6 +133,7 @@ public class UACalculator2 extends JFrame implements UACalc {
 
     actions = new MainController(this);
 
+    /*  Screws up macs
     try {
       javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
     }
@@ -140,6 +141,8 @@ public class UACalculator2 extends JFrame implements UACalc {
       ex.printStackTrace();
       // go with the default L&F
     }
+    */
+    
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     //closes from title bar and from menu
     addWindowListener(new WindowAdapter() {
