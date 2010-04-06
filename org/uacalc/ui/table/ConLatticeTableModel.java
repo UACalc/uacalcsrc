@@ -2,6 +2,7 @@ package org.uacalc.ui.table;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.nbui.LatDrawer;
 import java.util.*;
 
 public final class ConLatticeTableModel extends LatticeTableModel {
@@ -20,6 +21,11 @@ public final class ConLatticeTableModel extends LatticeTableModel {
   List<Partition> principals = null;
   private final List<Partition> joinIrreds;
   private final Set<Partition> joinIrredsSet;
+  
+  public ConLatticeTableModel(SmallAlgebra alg, DataType t, org.latdraw.diagram.Diagram diagram) {
+    this(alg, t);
+    sortElemsByDiagram(diagram);
+  }
   
   public ConLatticeTableModel(SmallAlgebra alg, DataType t) {
     super(alg);
@@ -45,6 +51,34 @@ public final class ConLatticeTableModel extends LatticeTableModel {
     }
   }
   
+  public void sortElemsByDiagram(final org.latdraw.diagram.Diagram diagram) {
+    if (diagram == null) return;
+    final org.latdraw.diagram.Vertex[] verts = diagram.getVertices();
+    if (verts == null || !(verts.length == elems.size())) return;
+    System.out.println("before: " + elems);
+    Collections.sort(elems, new Comparator<Partition>() {
+        public int compare(Partition p0, Partition p1) {
+          final int i0 = findIndex(p0, verts);
+          final int i1 = findIndex(p1, verts);
+          return i0 - i1;
+        }
+    });
+    System.out.println("after : " + elems);
+    List vertsPar = new ArrayList();
+    for (int i = 0; i < verts.length; i++) {
+      vertsPar.add(verts[i].getUnderlyingObject());
+    }
+    System.out.println("verts : " + vertsPar);
+  }
+  
+  public int findIndex(Partition par, final org.latdraw.diagram.Vertex[] verts) {
+    for (int i = 0; i < verts.length; i++) {
+      if (verts[i].getUnderlyingObject().equals(par)) return i;
+    }
+    return -1;
+  }
+  
+  public List<Partition> getElementList() { return elems; }
   
   public String getColumnName(int col) {
     return getColNames()[col];
@@ -56,6 +90,15 @@ public final class ConLatticeTableModel extends LatticeTableModel {
     return String.class;
   }
 
+  public int rowOfPartition(Partition part) {
+    if (part == null || elems == null) return -1;
+    int k = 0;
+    for (Partition elem : elems) {
+      if (part.equals(elem)) return k;
+      k++;
+    }
+    return -1;
+  }
   
   @Override
   public int getRowCount() {

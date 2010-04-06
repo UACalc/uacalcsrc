@@ -3,6 +3,7 @@ package org.uacalc.nbui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.TableColumn;
 
 import java.beans.PropertyChangeSupport;
@@ -42,6 +43,14 @@ public class ConController {
             if (e.getPropertyName().equals(ChangeSupport.VERTEX_RIGHT_PRESSED)) {
               Vertex v = (Vertex)e.getNewValue();
               System.out.println("underlyingObj = " + v.getUnderlyingObject());
+            }
+            if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
+              Vertex v = (Vertex)e.getNewValue();
+              System.out.println("underlyingObj = " + v.getUnderlyingObject());
+              final int index = conTableModel.rowOfPartition((Partition)v.getUnderlyingObject());
+              conTable.setRowSelectionInterval(index, index);
+              TableUtils.scrollToVisible(conTable, index, 0);
+              conTable.repaint();
             }
           }
       
@@ -152,7 +161,7 @@ public class ConController {
   
   public void drawCon(SmallAlgebra alg, boolean makeIfNull) {
     ////////////////////// temporary //////////////
-    setConTable(makeIfNull);
+    
     System.out.println("univ made: " + alg.con().universeFound());
     if (makeIfNull) {
       if (!alg.isTotal()) {
@@ -171,12 +180,15 @@ public class ConController {
         uacalcUI.getMainController().setUserWarning(
             "Too many elements in the congruence lattice. More than " + maxSize + ".", false);
         getConLatDrawer().setBasicLattice(null);
+        setConTable(makeIfNull);
+        getConLatDrawer().repaint();
         return;
       }
       
     }
     getConLatDrawer().setBasicLattice(alg.con().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
+    setConTable(makeIfNull);
     getConLatDrawer().repaint();
   }
   
@@ -221,8 +233,31 @@ public class ConController {
   }
   
   public void setConTable(SmallAlgebra alg) {
-    conTableModel = new ConLatticeTableModel(alg, ConLatticeTableModel.DataType.ALL);
+    conTableModel = new ConLatticeTableModel(alg, ConLatticeTableModel.DataType.ALL, getConLatDrawer().getDiagram());
+    System.out.println("elems size: " + conTableModel.getElementList().size());
     conTable = new JTable(conTableModel);
+    
+    // row selections transfered to the diagram.
+    final ListSelectionModel listSelectionModel = conTable.getSelectionModel();
+    final java.util.List<Integer> orderedIndeces = new java.util.ArrayList<Integer>();
+    listSelectionModel.addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent e) {
+        if (getConLatDrawer() == null || getConLatDrawer().getDiagram() == null) return;
+        final ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+        TableUtils.updateOrderedSelection(conTable, orderedIndeces);
+        System.out.println("orderedList: " + orderedIndeces);
+        getConLatDrawer().resetSelectedElemList();
+        java.util.List<Partition> elems = conTableModel.getElementList();
+        for (int i = 0; i < orderedIndeces.size(); i++) {
+          Vertex v = getConLatDrawer().vertexOfObject(elems.get(orderedIndeces.get(i)));
+          if (i == 0) getConLatDrawer().setSelectedElem(v);
+          else getConLatDrawer().addToSelectedElemList(v);
+        }
+        getConLatDrawer().repaint();
+      }
+    });
+        
+        
     setColWidths();
     alg.con().setConTable(conTable);
     conTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);

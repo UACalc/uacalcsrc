@@ -62,6 +62,7 @@ public class LatDrawer extends JPanel {
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
             Vertex v = (Vertex)e.getNewValue();
             setSelectedElem(v);
+            System.out.println("v: " + v);
             return;
           }
           if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED_CTRL)) {
@@ -530,20 +531,39 @@ public class LatDrawer extends JPanel {
     return opt;
   }
   
-  private void addToSelectedElemList(Vertex v) {
+  /**
+   * Find the Vertex which has obj as its underlying object.
+   * This assumes getDiagram() is not null.
+   * 
+   * @param obj
+   * @return
+   */
+  public Vertex vertexOfObject(Object obj) {
+    final Vertex[] verts = getDiagram().getVertices();
+    for (int i = 0; i < verts.length; i++) {
+      if (obj.equals(verts[i].getUnderlyingObject())) return verts[i];
+    }
+    return null;
+  }
+  
+  public void addToSelectedElemList(Vertex v) {
     if (selectedElemList == null) selectedElemList = new ArrayList<Vertex>();
     selectedElemList.add(v);
     v.setColor(SELECTED_LIST_COLOR);
     v.setFilled(true);
   }
   
-  private void resetSelectedElemList() {
+  public void resetSelectedElemList() {
     selectedElemList = null;
     resetVertexColors();
   }
   
   public List<Vertex> getSelectedElemList() {
     return selectedElemList;
+  }
+  
+  public void setSelectedElemList(List<Vertex> vertexList) {
+    selectedElemList = vertexList;
   }
   
   public void setSelectedElem(Vertex selectedElem) {
