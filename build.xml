@@ -122,6 +122,8 @@
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/groovy-engine.jar"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
+    <signjar jar="${dist.dir}/lib/miglayout-3.7-swing.jar"
+             alias="${signjar.alias}" storepass="${signjar.storepass}" />
   </target>
 
   <target name="dist-jar" depends="clean,dist-files,compile-dist-src">
