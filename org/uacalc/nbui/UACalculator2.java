@@ -731,9 +731,21 @@ xxx;
     MigLayout lay = new MigLayout("wrap, fill, insets 10");
     getConLeftPanel().setLayout(lay);
     
-    
+    // Sub Tab
+    MigLayout subLayout = new MigLayout("wrap 2, fill, insets 10");
+    getSubPanel().setLayout(subLayout);
+    getSubPanel().add(getSubLeftPanel(), "grow");
+    getSubPanel().add(getSubMainPanel(), "grow");
+    MigLayout lay2 = new MigLayout("wrap, fill, insets 10");
+    getSubLeftPanel().setLayout(lay2);
 
-    
+ // Sub Tab
+    MigLayout drawLayout = new MigLayout("wrap 2, fill, insets 10");
+    getDrawingPanel().setLayout(drawLayout);
+    getDrawingPanel().add(getDrawingLeftPanel(), "grow");
+    getDrawingPanel().add(getDrawingMainPanel(), "grow");
+    MigLayout lay3 = new MigLayout("wrap, fill, insets 10");
+    getDrawingLeftPanel().setLayout(lay2);
     
     
     

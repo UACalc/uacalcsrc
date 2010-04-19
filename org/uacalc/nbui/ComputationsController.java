@@ -1346,13 +1346,19 @@ public class ComputationsController {
         }
         if (!cancelled) {
           if (pTerms == null) {
-            report.addEndingLine("This algebra is not primal");
+            report.addEndingLine("This algebra is not primal;");
+            report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+                + "the semi-primal, and the dualizable,\" Algebra Universalis, to appear.");
             ttm.setDescription(desc + ": there are none.");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine("Found terms showing primality; see <a link here>.");
+            report.addEndingLine("Found terms showing primality;");
+            report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+                + "the semi-primal, and the dualizable,\" Algebra Universalis, to appear,");
+            report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+                + gAlg.toString(true));
             ttm.setTerms(pTerms);
           }
           if ( this.equals(getCurrentTask())) setResultTableColWidths();
