@@ -1,3 +1,3 @@
-Main-Class: org/uacalc/nbui/UACalculatorUI
+Main-Class: org/uacalc/nbui/UACalculator2
 Class-Path: LatDraw.jar groovy-all-1.0.jar groovy-engine.jar designgridlayout-1.1p1.jar swing-layout-1.0.2.jar miglayout-3.7-swing.jar
 
