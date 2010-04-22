@@ -10,6 +10,7 @@ import java.io.*;
 import net.miginfocom.swing.MigLayout;
 
 import org.uacalc.ui.table.*;
+import org.uacalc.ui.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.io.*;
@@ -46,6 +47,10 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JPanel drawingMainPanel;
   private javax.swing.JMenu drawingMenu;
   private javax.swing.JPanel drawingPanel;
+  private javax.swing.JMenu helpMenu;
+  private javax.swing.JMenuItem helpInstructionsMI;
+  private javax.swing.JMenuItem helpAlgorithmsMI;
+  private javax.swing.JMenuItem helpDescriptionMI;
   private javax.swing.JMenu editMenu;
   private javax.swing.JPanel editorPanel;
   private javax.swing.JMenu fileMenu;
@@ -283,6 +288,10 @@ public class UACalculator2 extends JFrame implements UACalc {
     drawConMI = new javax.swing.JMenuItem();
     drawSubMI = new javax.swing.JMenuItem();
     drawAlgMI = new javax.swing.JMenuItem();
+    helpMenu = new javax.swing.JMenu();
+    helpInstructionsMI = new javax.swing.JMenuItem();
+    helpAlgorithmsMI = new javax.swing.JMenuItem();
+    helpDescriptionMI = new javax.swing.JMenuItem();
     
     
     // tie components together and setup stuff
@@ -720,6 +729,40 @@ xxx;
     drawingMenu.add(drawAlgMI);
 
     jMenuBar1.add(drawingMenu);
+    
+    helpMenu.setText("Help");
+    
+    helpInstructionsMI.setText("Instructions");
+    helpInstructionsMI.setToolTipText("on line instructions");
+    helpInstructionsMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          WebBrowser.openURL("http://uacalc.org/algorithms.html");
+      }
+    });
+    // TODO: put this back when there is a page !!!!!!
+    //helpMenu.add(helpInstructionsMI);
+    
+    helpAlgorithmsMI.setText("Algorithms");
+    helpAlgorithmsMI.setToolTipText("on line descriptions of the algorithm and the meaning of the results");
+    helpAlgorithmsMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          WebBrowser.openURL("http://uacalc.org/algorithms.html");
+      }
+    });
+    helpMenu.add(helpAlgorithmsMI);
+    
+    helpDescriptionMI.setText("Description");
+    helpDescriptionMI.setToolTipText("semi-technical description");
+    helpDescriptionMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          WebBrowser.openURL("http://uacalc.org/description.html");
+      }
+    });
+    helpMenu.add(helpDescriptionMI);
+    
+    
+    jMenuBar1.add(helpMenu);
+    
 
     setJMenuBar(jMenuBar1);
     
@@ -739,7 +782,7 @@ xxx;
     MigLayout lay2 = new MigLayout("wrap, fill, insets 10");
     getSubLeftPanel().setLayout(lay2);
 
- // Sub Tab
+    // Draw Tab
     MigLayout drawLayout = new MigLayout("wrap 2, fill, insets 10");
     getDrawingPanel().setLayout(drawLayout);
     getDrawingPanel().add(getDrawingLeftPanel(), "grow");

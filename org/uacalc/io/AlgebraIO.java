@@ -94,6 +94,10 @@ public final class AlgebraIO {
     return Operations.makeIntOperation(
                 OperationSymbol.getOperationSymbol(arity), size, values);
   }
+  
+  public static List<List<Integer>> readDepth2List(BufferedReader in, String start, String end) {
+    return null;
+  }
 
   /**
    * Read in a file like foo.alg file and output foo.xml. 
