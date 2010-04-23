@@ -760,6 +760,7 @@ public class MainController {
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
     getConController().drawCon(alg.getAlgebra(), false);
+    uacalcUI.setEmptyOpTableModel();
     getAlgebraEditorController().setAlgebra(alg);
     getSubController().drawSub(alg.getAlgebra(), false);
     getDrawingController().drawAlg(alg, false);

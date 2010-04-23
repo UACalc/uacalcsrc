@@ -91,6 +91,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem newMI;
   private javax.swing.JMenuItem nuMI;
   private javax.swing.JTable opTable;
+  private TableModel emptyOpTableModel;
   private javax.swing.JScrollPane opTableScrollPane;
   private javax.swing.JButton openButton;
   private javax.swing.JMenuItem openMI;
@@ -202,6 +203,16 @@ public class UACalculator2 extends JFrame implements UACalc {
     addOpButton = new javax.swing.JButton();
     opTableScrollPane = new javax.swing.JScrollPane();
     opTable = new javax.swing.JTable();
+    emptyOpTableModel = new javax.swing.table.DefaultTableModel(
+          new Object [][] {
+              {null, null, null, null},
+              {null, null, null, null},
+              {null, null, null, null},
+              {null, null, null, null}
+          },
+          new String [] {
+              "Op", "Table", "Goes", "Here"
+          });
     idempotentCB = new javax.swing.JCheckBox();
     jLabel5 = new javax.swing.JLabel();
     defaultEltComboBox = new javax.swing.JComboBox();
@@ -326,17 +337,8 @@ public class UACalculator2 extends JFrame implements UACalc {
         }
     });
 
-    opTable.setModel(new javax.swing.table.DefaultTableModel(
-        new Object [][] {
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null}
-        },
-        new String [] {
-            "Op", "Table", "Goes", "Here"
-        }
-    ));
+    setEmptyOpTableModel();
+    //opTable.setModel(emptyOpTableModel);
     opTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     opTable.setCellSelectionEnabled(true);
     opTableScrollPane.setViewportView(opTable);
@@ -736,11 +738,10 @@ xxx;
     helpInstructionsMI.setToolTipText("on line instructions");
     helpInstructionsMI.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-          WebBrowser.openURL("http://uacalc.org/algorithms.html");
+          WebBrowser.openURL("http://uacalc.org/instructions.html");
       }
     });
-    // TODO: put this back when there is a page !!!!!!
-    //helpMenu.add(helpInstructionsMI);
+    helpMenu.add(helpInstructionsMI);
     
     helpAlgorithmsMI.setText("Algorithms");
     helpAlgorithmsMI.setToolTipText("on line descriptions of the algorithm and the meaning of the results");
@@ -1293,6 +1294,10 @@ xxx;
 
   public javax.swing.JScrollPane getOpTableScrollPane() {
     return opTableScrollPane;
+  }
+  
+  public void setEmptyOpTableModel() {
+    opTable.setModel(emptyOpTableModel);
   }
 
   public void setOpTableScrollPane(javax.swing.JScrollPane opTableScrollPane) {

@@ -2568,5 +2568,10 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     public javax.swing.JButton getConTableButton() {
         return conTableButton;
     }
+    
+    // only on the miglayout version
+    public void setEmptyOpTableModel() {
+      
+    }
   
 }

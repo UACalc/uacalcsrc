@@ -64,5 +64,7 @@ public interface UACalc {
   
   public JPanel getDrawingMainPanel();
   
+  public void setEmptyOpTableModel();
+  
   
 }
