@@ -19,7 +19,7 @@ public class Jipsen {
     }
     SmallAlgebra alg = null;
     try {
-      AlgebraIO.readAlgebraFile(args[0]);
+      alg = AlgebraIO.readAlgebraFile(args[0]);
     }
     catch (IOException e) {}             // put an error message here.
     catch (BadAlgebraFileException e) {}
