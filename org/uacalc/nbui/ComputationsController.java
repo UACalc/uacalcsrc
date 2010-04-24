@@ -1382,10 +1382,30 @@ public class ComputationsController {
     if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
     int pow = getNumberDialog(2, "power?",  "Power Algebra");
-    if (!(pow > 1)) return;
+    if (!(pow > 1)) {
+      uacalcUI.getMainController().beep();
+      uacalcUI.getMainController().setUserWarning("power should be at least 2", false);
+      return;
+    }
     PowerAlgebra powAlg = new PowerAlgebra(alg, pow);
     MainController mc = uacalcUI.getMainController();
     mc.addAlgebra(powAlg, true);
+  }
+  
+  public void formMatrixPowerAlgebra() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    int pow = getNumberDialog(2, "power?",  "Matrix Power Algebra");
+    if (!(pow > 1)) {
+      uacalcUI.getMainController().beep();
+      uacalcUI.getMainController().setUserWarning("power should be at least 2", false);
+      return;
+    }
+    SmallAlgebra matPowAlg = Algebras.matrixPower(alg, pow);
+    matPowAlg.convertToDefaultValueOps();
+    MainController mc = uacalcUI.getMainController();
+    mc.addAlgebra(matPowAlg, true);
   }
   
   private boolean isAlgOK(GUIAlgebra gAlg) {

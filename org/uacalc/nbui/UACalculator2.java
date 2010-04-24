@@ -98,6 +98,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JComboBox opsComboBox;
   private javax.swing.JMenuItem pixleyMI;
   private javax.swing.JMenuItem powMI;
+  private javax.swing.JMenuItem matrixPowMI;
   private javax.swing.JMenuItem primalMI;
   private javax.swing.JMenuItem prodMI;
   private javax.swing.JMenuItem quitMI;
@@ -280,6 +281,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     subMI = new javax.swing.JMenuItem();
     prodMI = new javax.swing.JMenuItem();
     powMI = new javax.swing.JMenuItem();
+    matrixPowMI = new javax.swing.JMenuItem();
     subpowMI = new javax.swing.JMenuItem();
     tasksMenu = new javax.swing.JMenu();
     freeAlgMI = new javax.swing.JMenuItem();
@@ -589,6 +591,14 @@ xxx;
         }
     });
     hspMenu.add(powMI);
+    
+    matrixPowMI.setText("Matrix Power");
+    matrixPowMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            matrixPowMIActionPerformed(evt);
+        }
+    });
+    hspMenu.add(matrixPowMI);
 
     subpowMI.setText("Sub Power");
     subpowMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1223,6 +1233,10 @@ xxx;
   private void powMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powMIActionPerformed
     getComputationsController().formPowerAlgebra();
   }//GEN-LAST:event_powMIActionPerformed
+  
+  private void matrixPowMIActionPerformed(ActionEvent evt) {
+    getComputationsController().formMatrixPowerAlgebra();
+  }
 
   private void subpowMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subpowMIActionPerformed
     getComputationsController().setupSubPowerTask();
