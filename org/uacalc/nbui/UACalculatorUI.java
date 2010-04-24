@@ -27,6 +27,7 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
       initComponents();
       actions = new MainController(this);
 
+/*
       try {
         javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
       }
@@ -34,6 +35,7 @@ public class UACalculatorUI extends javax.swing.JFrame implements UACalc {
         ex.printStackTrace();
         // go with the default L&F
       }
+*/
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       //closes from title bar and from menu
       addWindowListener(new WindowAdapter() {
