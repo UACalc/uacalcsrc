@@ -9,6 +9,7 @@ import org.uacalc.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.alg.op.*;
 //import org.apache.log4j.*;
 import java.util.logging.*;
 
@@ -82,6 +83,118 @@ public class Malcev {
     return taylor.substitute(map);
   }
   
+  public List<Term> findWNUTerms(SmallAlgebra alg, int arity, ProgressReport report) {
+    // TODO: write code
+    return null;
+  }
+  
+  private static int involutionAuto(int i, FreeAlgebra f2, Map<Integer,Integer> auto) {
+    if (auto.get(i) == null) {
+      Map<Term,Integer> substMap = new HashMap<Term,Integer>(2);
+      substMap.put(Variable.x, 1); // 1 is the y generator
+      substMap.put(Variable.y, 0);
+      Term t = f2.getTerm((IntArray)f2.getElement(i));
+      auto.put(i, t.intEval(f2, substMap));
+    }
+    return auto.get(i); 
+  }
+  
+  public static List<Term> sdmeetTerms(SmallAlgebra alg) {
+    return  sdmeetTerms(alg, null);
+  }
+  
+  public static List<Term> sdmeetTerms(SmallAlgebra alg, ProgressReport report) {
+    if (alg.cardinality() == 1) {
+      List<Term> ans = new ArrayList<Term>(3);
+      ans.add(Variable.x);
+      ans.add(Variable.x);
+      ans.add(Variable.x);
+      return ans;
+    }
+    List<Term> ans = new ArrayList<Term>(3);
+    final boolean isIdempotent = alg.isIdempotent();
+    // if idempotent add the polynomial times test.
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    Operation autoXY = f2.switchXandYAutomorphism();
+    // ** Need to put in a test if the tables will fit in memory. **
+    f2.makeOperationTables();
+    IntArray g0 = new IntArray(new int[] {0,0,1,0});
+    IntArray g1 = new IntArray(new int[] {0,1,0,0});
+    IntArray g2 = new IntArray(new int[] {1,0,0,0});
+    List<IntArray> gens = new ArrayList<IntArray>(3);
+    gens.add(g0);
+    gens.add(g1);
+    gens.add(g2);
+    final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
+    termMap.put(g0, new VariableImp("x"));
+    termMap.put(g1, new VariableImp("y"));
+    termMap.put(g2, new VariableImp("z"));
+    BigProductAlgebra f2pow = new BigProductAlgebra(f2, 4);
+    Closer closer = new Closer(f2pow, gens, termMap);
+    closer.setProgressReport(report);  
+    List<IntArray> univ = closer.sgClosePower();
+    List<IntArray> univX; // members of univ with last coordinate x
+    if (isIdempotent) {
+      univX = univ;
+    }
+    else {
+      univX = new ArrayList<IntArray>();
+      for (IntArray ia : univ) {
+        if (ia.get(3) == 0) univX.add(ia);  // 0 means it's x
+      }
+    }
+    // a TreeMap might be a better choice
+    Map<Integer,IntArray> aaaMap = new HashMap<Integer,IntArray>();
+    Map<Integer,Map<Integer,IntArray>> aabMap = new HashMap<Integer,Map<Integer,IntArray>>();
+    Map<Integer,Map<Integer,IntArray>> caaMap = new HashMap<Integer,Map<Integer,IntArray>>();
+    for (IntArray ia : univX) {
+      if (ia.get(0) == ia.get(1)) {
+        if (ia.get(1) == ia.get(2)) { // so ia looks like aaax
+          if (ia.get(0) == autoXY.intValueAt(ia.get(0))) { // if a is invariant under x <--> y on F(x,y)
+            ans.add(termMap.get(ia));
+            return ans; 
+          }
+          aaaMap.put(ia.get(0), ia);
+        }
+        Map<Integer,IntArray> bMap = aabMap.get(ia.get(0));
+        if (bMap == null) {
+          bMap = new HashMap<Integer,IntArray>();
+          aabMap.put(ia.get(0), bMap);
+        }
+        bMap.put(ia.get(2), ia);
+      }
+      if (ia.get(1) == ia.get(2)) {
+        Map<Integer,IntArray> cMap = caaMap.get(ia.get(2));
+        if (cMap == null) {
+          cMap = new HashMap<Integer,IntArray>();
+          caaMap.put(ia.get(2), cMap);
+        }
+        cMap.put(ia.get(0), ia);
+      }
+    }
+    for (Integer a : aaaMap.keySet()) {
+      for (int b : aabMap.get(a).keySet()) {
+        int c = autoXY.intValueAt(b);  // do we need to use an array [b] ?
+        if (caaMap.get(a) != null && caaMap.get(a).get(c) != null) {
+          System.out.println("a: " + a + " b: " + b + " c: " + c);
+          Map<IntArray,Term> f2TM = f2.getTermMap();
+          System.out.println("a: " + f2TM.get(f2.getElement(a)));
+          System.out.println("b: " + f2TM.get(f2.getElement(b)));
+          System.out.println("c: " + f2TM.get(f2.getElement(c)));
+          System.out.println("a: " + aaaMap.get(a));
+          System.out.println("aab: " + aabMap.get(a).get(b));
+          System.out.println("caa: " + caaMap.get(a).get(c));
+          ans.add(termMap.get(aabMap.get(a).get(b)));
+          ans.add(termMap.get(aaaMap.get(a)));
+          ans.add(termMap.get(caaMap.get(a).get(c)));
+          return ans;
+        }
+      }
+    }
+    return null;
+  }
+  
+  
   /**
    * Gives a term t(x,y,z,u) satisfying t(y,x,x,x) = t(x,x,y,y) and
    * t(x,x,y,x) = t(x,y,x,x).
@@ -123,12 +236,12 @@ public class Malcev {
       g2 = new IntArray(new int[] {0,1,1,0,0});
       g3 = new IntArray(new int[] {0,1,0,0,0});
     }
-    List<IntArray> gens = new ArrayList<IntArray>(3);
+    List<IntArray> gens = new ArrayList<IntArray>(4);
     gens.add(g0);
     gens.add(g1);
     gens.add(g2);
     gens.add(g3);
-    final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
+    final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>(4);
     termMap.put(g0, new VariableImp("x0"));
     termMap.put(g1, new VariableImp("x1"));
     termMap.put(g2, new VariableImp("x2"));
@@ -1515,16 +1628,20 @@ System.out.println("got to idempotent");
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
       else 
         alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-            "/home/ralph/Java/Algebra/algebras/wm3.ua"
+            //"/home/ralph/Java/Algebra/algebras/wm3.ua"
             //"/home/ralph/Java/Algebra/algebras/n5.ua"
+            //"/home/ralph/Java/Algebra/algebras/forkprime.ua"
+            "/home/ralph/Java/Algebra/algebras/directoidNonCom7.ua"
             );
     }
     catch (Exception e) { 
       e.printStackTrace();
       return;
     }
-    Term term = markovicMcKenzieSiggersTaylorTerm(alg, null);
-    System.out.println("term = " + term);
+    //Term term = markovicMcKenzieSiggersTaylorTerm(alg, null);
+    //System.out.println("term = " + term);
+    List<Term> sdm = sdmeetTerms(alg, null);
+    System.out.println("terms = " + sdm);
     
     //IntArray ia = findDayQuadrupleInSquare(alg, null);
     //System.out.println("day quad is " + ia);

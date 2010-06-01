@@ -2,6 +2,7 @@ package org.uacalc.alg;
 
 import java.util.*;
 import java.util.logging.*;
+import java.util.concurrent.*;
 import java.math.BigInteger;
 
 import org.uacalc.ui.tm.ProgressReport;
@@ -54,6 +55,8 @@ public class Closer {
   int[][] values;
   
   ProgressReport report;
+  
+  static final int nCPUs = Runtime.getRuntime().availableProcessors(); 
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
     this.algebra = alg;
@@ -198,8 +201,9 @@ public class Closer {
   }
   
   public List<IntArray> sgClose() {
-    //System.out.println("gens = " + generators);
+    System.out.println("nCPU = " + nCPUs);
     //System.out.println("termMap = " + termMap);
+    //return sgCloseParallel(generators, 0, termMap);
     return sgClose(generators, 0, termMap);
   }
   
@@ -438,6 +442,113 @@ if (false) {
     return ans;
   }
   
+  /**
+   * Closure of <tt>elems</tt> under the operations. (Worry about
+   * nullary ops later.)
+   *
+   * @param elems a List of IntArray's
+   *
+   * @param termMap a Map from the element to the corresponding term
+   *                used to generated it. The generators should be 
+   *                already in the Map. In other words the termMap
+   *                should have the same number of entries as elems.
+   *
+   * @return a List of IntArray's.
+   */
+  public List<IntArray> sgCloseParallel(List<IntArray> elems, int closedMark, 
+                                        Map<IntArray,Term> termMap) {
+    
+    if (algebra.isPower()) {
+      SmallAlgebra alg = algebra.rootFactors().get(0);
+      alg.makeOperationTables();
+      return sgClosePower(elems, closedMark, termMap);
+    }
+    
+    if (report != null) report.addStartLine("parallel subpower closing ...");
+
+    final int numOfOps = algebra.operations().size();  
+    List<Operation> imgOps = null;
+    if (homomorphism != null) {
+      imgOps = new ArrayList<Operation>(numOfOps);
+      for (Operation op : algebra.operations()) {
+        imgOps.add(imageAlgebra.getOperation(op.symbol()));
+      }
+    }
+    
+    // these final boolean are meant to help the jit compiler.
+    final boolean reportNotNull = report == null ? false : true;
+    final boolean imgAlgNull = imgOps == null ? true : false;
+    final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
+    final boolean operationNotNull = operation == null ? false : true;
+
+    elems = Collections.synchronizedList(elems);
+    ans = Collections.synchronizedList(new ArrayList<IntArray>(elems));// IntArrays
+    final List<int[]> rawList = Collections.synchronizedList(new ArrayList<int[]>()); // the corr raw int[]
+    synchronized(elems) {
+      for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
+        rawList.add(it.next().getArray());
+      }
+    }
+    termMap = new ConcurrentHashMap<IntArray,Term>(termMap);
+    //final HashSet<IntArray> su = new HashSet<IntArray>(ans);
+    int currentMark = ans.size();
+    int pass = 0;
+    CloserTiming timing = null; 
+    if (reportNotNull) timing = new CloserTiming(algebra, report);
+    //int currPassSize = 0; // for time left
+    //int lastPassSize = 0; // for time left
+    //final int numberProjs = algebra.getNumberOfFactors(); // for time left
+    while (closedMark < currentMark) {
+      if (reportNotNull) timing.updatePass(ans.size());
+      //lastPassSize = currPassSize;
+      //currPassSize = ans.size();
+      //long funcAppsNeeded = countFuncApplications(lastPassSize, currPassSize);
+      //long appsSoFar = 0;
+      String str = "pass: " + pass + ", size: " + ans.size();
+      if (reportNotNull) {
+        report.setPass(pass);
+        report.setPassSize(ans.size());
+        report.addLine(str);
+      }
+      else {
+        System.out.println(str);
+      }
+      pass++;
+      if (Thread.currentThread().isInterrupted()) {
+        if (reportNotNull) report.addEndingLine("cancelled ...");
+        return null;
+      }
+      CountDownLatch latch = new CountDownLatch(nCPUs);
+      ConcurrentHashMap<IntArray,Term> map = new ConcurrentHashMap<IntArray,Term>();
+      for (int i = 0; i < nCPUs; ++i) {// create and start threads
+        new Thread(new ParallelWorker(latch, i, map, numOfOps, closedMark, currentMark, reportNotNull, rawList, timing)).start();
+      }
+      try {
+        latch.await();
+      }
+      catch (InterruptedException e) { return null; }  // also write to the report.
+      
+      
+      System.out.println("map: " + map);
+      for (IntArray ia : map.keySet()) {
+        System.out.println("ia: " + ia + ", term: " + map.get(ia));
+        ans.add(ia);
+        rawList.add(ia.getArray());
+        termMap.put(ia, map.get(ia));
+      }
+      
+      
+      
+      closedMark = currentMark;
+      currentMark = ans.size();
+      if (imgAlgNull && algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
+    }
+    if (reportNotNull) report.addEndingLine("closing done, size = " + ans.size());
+    completed = true;
+    return ans;
+  }
+  
   public List<IntArray> sgClosePower() {
     //System.out.println("gens = " + generators);
     //System.out.println("termMap = " + termMap);
@@ -630,7 +741,7 @@ if (false) {
                 return ans;
               }
             }
-            if (blocksNotNull) {  // not this assumes that if values != null then so is blocks
+            if (blocksNotNull) {  // this assumes that if values != null then so is blocks
               boolean found = false;
               if (valuesNotNull) {  
                 if (v.satisfiesConstraint(blocks, values)) found = true;
@@ -735,7 +846,7 @@ System.out.println("so far: " + currentMark);
     completed = true;
     return ans;
   }
-
+  
   public long countFuncApplications(int size0, int size1) {
     BigInteger ans = BigInteger.ZERO;
     final BigInteger s0 = BigInteger.valueOf(size0);
@@ -747,5 +858,123 @@ System.out.println("so far: " + currentMark);
     if (ans.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) return -1;
     return ans.longValue() * algebra.getNumberOfFactors();
   }
+  
+  /**
+   * Note this assumes termMap is not null !!!!!!!!
+   * 
+   * @param map
+   * @param indexInCPUs
+   * @param numOfOps
+   * @param closedMark
+   * @param currentMark
+   * @param reportNotNull
+   * @param rawList
+   * @param timing
+   */
+  public void doOneStagePartialClosure(final ConcurrentHashMap<IntArray,Term> map, 
+                                       final int indexInCPUs,
+                                       final int numOfOps, 
+                                       final int closedMark, final int currentMark,
+                                       final boolean reportNotNull,
+                                       final List<int[]> rawList,
+                                       final CloserTiming timing
+                                       ) {
+    for (int i = 0; i < numOfOps; i++) {
+      //for (Iterator<Operation> it = algebra.operations().iterator(); it.hasNext(); ) {
+      //Operation f = it.next();
+      Operation f = algebra.operations().get(i);
+      final int arity = f.arity();
+      if (arity == 0) continue;  // worry about constansts later
+      int[] argIndeces = new int[arity];
+      for (int j = 0; j < arity - 1; j++) {
+        argIndeces[j] = 0;
+      }
+      argIndeces[arity - 1] = closedMark;
+      ArrayIncrementor inc =
+        SequenceGenerator.sequenceIncrementor(
+            argIndeces, currentMark - 1, closedMark, nCPUs);
+      for (int j = 1; j < indexInCPUs; j++) {
+        if (!inc.increment()) continue;
+      }
+
+      final int[][] arg = new int[arity][];
+      while (true) {
+        if (Thread.currentThread().isInterrupted()) {
+          if (reportNotNull) {
+            report.addEndingLine("cancelled ...");
+            report.setSize(ans.size());
+          }
+          return;
+        }
+        for (int j = 0; j < arity; j++) {
+          arg[j] = rawList.get(argIndeces[j]);
+        }
+
+        int[] vRaw = f.valueAt(arg);
+        //int[] test = f.valueAt(arg);
+        IntArray v = new IntArray(vRaw);
+        //IntArray testV = new IntArray(test);
+
+        //System.out.println("vRaw == test is " + v.equals(new IntArray(test)));
+        if (reportNotNull) timing.incrementApps();
+        //appsSoFar = appsSoFar + numberProjs;
+        if (!termMap.containsKey(v) && !map.containsKey(v)) {
+          List<Term> children = new ArrayList<Term>(arity);
+          for (int j = 0; j < arity; j++) {
+            //children.set(i, termMap.get(arg.get(i)));
+            children.add(termMap.get(ans.get(argIndeces[j])));
+          }
+          Term term = new NonVariableTerm(f.symbol(), children);
+          
+          Term old = map.putIfAbsent(v, term);  // make sure it is still not there
+          //System.out.println("v: " + v + ", term: " + term + ", old term:" + old + ", thread: " + indexInCPUs);
+          System.out.println("v: " + v  + ", old term:" + old + ", thread: " + indexInCPUs);
+        }
+        if (reportNotNull) timing.incrementNextPassSize();
+        if (reportNotNull) report.setSize(ans.size() + map.size());
+        if (Thread.currentThread().isInterrupted()) return;
+
+        if (!inc.increment()) break;
+      }
+    }
+  }
+
+ 
+  
+  class ParallelWorker implements Runnable {
+    
+    CountDownLatch latch;
+    int indexInCPUs;
+    ConcurrentHashMap<IntArray,Term> map;
+    final int numOfOps;
+    final int closedMark; 
+    final int currentMark;
+    final boolean reportNotNull;
+    final List<int[]> rawList;
+    final CloserTiming timing;
+    
+    public ParallelWorker(CountDownLatch latch, int indexInCPUs, 
+                          ConcurrentHashMap<IntArray,Term> map,
+                          int numOfOps, int closedMark, int currentMark, boolean reportNotNull,
+                          final List<int[]> rawList,
+                          final CloserTiming timing) {
+      this.latch =  latch;
+      this.indexInCPUs = indexInCPUs;
+      this.map = map;
+      this.numOfOps = numOfOps;
+      this.closedMark = closedMark;
+      this.currentMark = currentMark;
+      this.rawList = rawList;
+      this.timing = timing;
+      this.reportNotNull = reportNotNull;
+    }
+    
+    public void run() {
+      doOneStagePartialClosure(map, indexInCPUs, numOfOps, closedMark, currentMark, reportNotNull, rawList, timing);
+      latch.countDown();
+    }
+    
+  }
+  
   
 }

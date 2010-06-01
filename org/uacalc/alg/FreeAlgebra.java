@@ -389,17 +389,53 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   public AlgebraType algebraType() {
     return AlgebraType.FREE;
   }
+  
+  /**
+   * This returns the map which given the index of an
+   * element, returns the index of the element obtained from
+   * the first by applying the automorphisn interchanging the
+   * first two generators.
+   * 
+   * 
+   * @return
+   */
+  public Operation switchXandYAutomorphism() {
+    final int k = generators().size();
+    if (k < 2) return null;  // TODO: give an error
+    final int n = cardinality();
+    Map<Term,Integer> substMap = new HashMap<Term,Integer>(k);
+    substMap.put(getVariables().get(0), 1);
+    substMap.put(getVariables().get(1), 0);
+    for (int i = 2; i < k; i++) {
+      substMap.put(getVariables().get(i), i);
+    }
+    int[] arr = new int[n];
+    arr[0] = 1;
+    arr[1] = 0;
+    for (int i = 2; i < n; i++) {
+      final IntArray ia = (IntArray)getElement(i);
+      final Term t = getTerm(ia);
+      arr[i] = t.intEval(this, substMap);
+    }
+    return Operations.makeIntOperation("autoXY", 1, n, arr);
+  }
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
     if (args.length == 0) {
-      SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.xml");
+      SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.ua");
       SmallAlgebra m3 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/m3.ua");
       SmallAlgebra n5 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/n5.ua");
       SmallAlgebra lyndon = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lyndon.ua");
       SmallAlgebra d16 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/D16.ua");
       //Equation eq = findEquationOfAnotB(alg0, alg1, new int[] {1, 2, 3});
       //System.out.println("eq is\n" + eq);
+      
+      FreeAlgebra f3 = new FreeAlgebra(m3, 3);
+      Operation auto = f3.switchXandYAutomorphism();
+      System.out.println(ArrayString.toString(auto.getTable()));
+      if (true) return;
+      
       int n = 6; 
       long t = System.currentTimeMillis();
       FreeAlgebra f = null;
