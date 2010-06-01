@@ -141,6 +141,51 @@ public final class SequenceGenerator {
         }
       };
   }
+  
+  /**
+   * This just increments the array through all possible tuples
+   * with entries between 0 and <code>max</code> and having at 
+   * least one entry at least as large as <code>min</code>.
+   * This increments from the right: * [0,0,0], [0,0,1], ...,[max,max,max]. 
+   * Of course <code>min</code> should be at most <code>max</code>.
+   * 
+   * <code>jump</code> indicates how many times the array will be 
+   * incremented by each call to increment(). This is used in 
+   * parallel processing.
+   * 
+   */
+  public static ArrayIncrementor sequenceIncrementor(
+                          final int[] a, final int max, final int min, final int jump) {
+    return new ArrayIncrementor() {
+        public boolean increment() {
+          for (int k = 0; k < jump; k++) {
+            if (!incrementAux()) return false;
+          }
+          return true;
+        }
+        private boolean incrementAux() {
+          final int len = a.length;
+          for (int i = len - 1; i >= 0; i--) {
+            if (a[i] < max) {
+              a[i]++;
+              for (int j = i + 1; j < len; j++) {
+                a[j] = 0;
+              }
+              boolean ok = false;
+              for (int j = i; j >= 0; j--) {
+                if (a[j] >= min) {
+                  ok = true;
+                  break;
+                }
+              }
+              if (!ok) a[len - 1] = min;
+              return true;
+            }
+          }
+          return false;
+        }
+      };
+  }
 
   /**
    * This just increments the array through all possible tuples
@@ -190,11 +235,21 @@ public final class SequenceGenerator {
     //while (inc.increment()) {
     //  System.out.println(ArrayString.toString(a));
     //}
-    int[] a = new int[] {0,1,2};
-    ArrayIncrementor inc = increasingSequenceIncrementor(a, 4);
-    while (inc.increment()) {
-      System.out.println(ArrayString.toString(a));
+    //int[] a = new int[] {0,1,2};
+    //ArrayIncrementor inc = increasingSequenceIncrementor(a, 4);
+    int[] a = new int[] {0, 4};
+    int[] a2 = new int[] {0, 5};
+    ArrayIncrementor inc = sequenceIncrementor(a, 5, 4, 2);
+    ArrayIncrementor inc2 = sequenceIncrementor(a2, 5, 4, 2);
+    System.out.println(ArrayString.toString(a) + "  " + ArrayString.toString(a2));
+    while (true) {
+      if (!inc.increment()) break;
+      System.out.print(ArrayString.toString(a));
+      System.out.print("  ");
+      if (!inc2.increment()) break;
+      System.out.println(ArrayString.toString(a2));
     }
+    System.out.println("");
   }
 
 
