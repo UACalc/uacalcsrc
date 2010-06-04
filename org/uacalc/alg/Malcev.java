@@ -1631,7 +1631,11 @@ System.out.println("got to idempotent");
             //"/home/ralph/Java/Algebra/algebras/wm3.ua"
             //"/home/ralph/Java/Algebra/algebras/n5.ua"
             //"/home/ralph/Java/Algebra/algebras/forkprime.ua"
-            "/home/ralph/Java/Algebra/algebras/directoidNonCom7.ua"
+            //"/home/ralph/Java/Algebra/algebras/directoidNonCom7.ua"  /////////////////////
+            //"/home/ralph/Java/Algebra/algebras/FivePaper.ua"
+            //"/home/ralph/Java/Algebra/algebras/linjon4.ua"  // has a wnu term with x \circ y = y \circ x
+            "/home/ralph/Java/Algebra/algebras/linjon3.ua" // has no wnu term with x \circ y = y \circ x
+                                                           // in fact x <-> y in F(x,y) has no fixed point 
             );
     }
     catch (Exception e) { 
