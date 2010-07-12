@@ -40,6 +40,8 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JButton delOpButton;
   private javax.swing.JTextField descTextField;
   private javax.swing.JMenuItem distributivityMI;
+  private javax.swing.JMenuItem semidistributivityMI;
+  private javax.swing.JMenuItem meetSemidistributivityMI;
   private javax.swing.JMenuItem drawAlgMI;
   private javax.swing.JMenuItem drawConMI;
   private javax.swing.JMenuItem drawSubMI;
@@ -290,6 +292,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     primalMI = new javax.swing.JMenuItem();
     maltsevMenu = new javax.swing.JMenu();
     distributivityMI = new javax.swing.JMenuItem();
+    semidistributivityMI = new javax.swing.JMenuItem();
+    meetSemidistributivityMI = new javax.swing.JMenuItem();
     modularityMI = new javax.swing.JMenuItem();
     nPermMI = new javax.swing.JMenuItem();
     maltsevMI = new javax.swing.JMenuItem();
@@ -655,6 +659,22 @@ xxx;
         }
     });
     maltsevMenu.add(distributivityMI);
+    
+    semidistributivityMI.setText("Semi-Distributivity");
+    semidistributivityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            semidistributivityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(semidistributivityMI);
+    
+    meetSemidistributivityMI.setText("Meet Semi-Distributivity");
+    meetSemidistributivityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            meetSemidistributivityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(meetSemidistributivityMI);
 
     modularityMI.setText("Modularity");
     modularityMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1157,6 +1177,14 @@ xxx;
   private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
     getComputationsController().setupJonssonTermsTask();
   }//GEN-LAST:event_distributivityMIActionPerformed
+  
+  private void semidistributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
+    getComputationsController().setupSDTermsTask();
+  }
+  
+  private void meetSemidistributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
+    getComputationsController().setupMeetSDTermsTask();
+  }
 
   private void modularityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modularityMIActionPerformed
     getComputationsController().setupGummTermsTask();

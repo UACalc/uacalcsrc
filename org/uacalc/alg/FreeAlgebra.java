@@ -393,14 +393,15 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
   /**
    * This returns the map which given the index of an
    * element, returns the index of the element obtained from
-   * the first by applying the automorphisn interchanging the
+   * the first by applying the automorphism interchanging the
    * first two generators.
    * 
    * 
    * @return
    */
   public Operation switchXandYAutomorphism() {
-    final int k = generators().size();
+    //final int k = generators().size();
+    final int k = getVariables().size();
     if (k < 2) return null;  // TODO: give an error
     final int n = cardinality();
     Map<Term,Integer> substMap = new HashMap<Term,Integer>(k);

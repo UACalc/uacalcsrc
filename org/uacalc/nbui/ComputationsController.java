@@ -607,6 +607,128 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(jonssonTermTask);
   }
   
+  public void setupSDTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding SD terms for " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<java.util.List<Term>>  sdTermTask 
+                                   = new BackgroundTask<java.util.List<Term>>(report) {
+      public java.util.List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding semi-distributivity terms.");
+        report.setDescription(desc);
+        java.util.List<Term> terms = Malcev.sdTerms(alg, report);
+        return terms;
+      }
+      public void onCompletion(java.util.List<Term> terms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (exception != null) {
+          System.out.println("exception: " + exception);
+          exception.printStackTrace();
+        }
+        if (!cancelled) {
+          if (terms == null) {
+            report.addEndingLine("The variety is not congruence semi-distributive.");
+            ttm.setDescription(desc + ": there are none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Done finding SD terms.");
+            ttm.setTerms(terms);
+          }
+          //ttm.setVariables(fr.getVariables());
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(sdTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(sdTermTask);
+  }
+  
+  public void setupMeetSDTermsTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding SD Meet terms for " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<java.util.List<Term>>  sdTermTask 
+                                   = new BackgroundTask<java.util.List<Term>>(report) {
+      public java.util.List<Term> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine("Finding SD-Meet terms.");
+        report.setDescription(desc);
+        java.util.List<Term> terms = Malcev.sdmeetTerms(alg, report);
+        return terms;
+      }
+      public void onCompletion(java.util.List<Term> terms, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (exception != null) {
+          System.out.println("exception: " + exception);
+          exception.printStackTrace();
+        }
+        if (!cancelled) {
+          if (terms == null) {
+            report.addEndingLine("The variety is not congruence meet semi-distributive.");
+            ttm.setDescription(desc + ": there are none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Done finding meet semi-distributive terms.");
+            ttm.setTerms(terms);
+          }
+          //ttm.setVariables(fr.getVariables());
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(sdTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(sdTermTask);
+  }
+  
+  
+  
   public void setupGummTermsTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

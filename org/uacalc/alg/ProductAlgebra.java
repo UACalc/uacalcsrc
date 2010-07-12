@@ -13,6 +13,7 @@ import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.io.AlgebraIO;
 
 /**
  * This class represents the direct product of <tt>SmallAlgebra</tt>s.
@@ -279,7 +280,17 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
-    if (args.length == 0) return;
+    if (args.length == 0) {
+      SmallAlgebra alg12 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Documents/algebras/A12.ua");
+      SmallAlgebra alg22 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Documents/algebras/A12.ua");
+      List<SmallAlgebra> lst = new ArrayList<SmallAlgebra>(2);
+      lst.add(alg12);
+      lst.add(alg22);
+      SmallAlgebra alg2 = new ProductAlgebra("A2", lst);
+      AlgebraIO.writeAlgebraFile(alg2, "/Users/ralph/Documents/algebras/A2.ua");
+      return;
+    }
+    
     System.out.println("reading " + args[0]);
     Algebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
     System.out.println("The alg \n" + alg);
