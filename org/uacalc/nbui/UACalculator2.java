@@ -1255,7 +1255,7 @@ xxx;
   }//GEN-LAST:event_subMIActionPerformed
 
   private void prodMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prodMIActionPerformed
-  // TODO add your handling code here:
+    getComputationsController().formProd();
   }//GEN-LAST:event_prodMIActionPerformed
 
   private void powMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powMIActionPerformed

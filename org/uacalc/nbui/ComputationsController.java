@@ -424,6 +424,94 @@ public class ComputationsController {
     return opt;
   }
   
+  public void formProd() {
+    {// keep gAlg2 local
+      final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
+      if (gAlg2 == null) {
+        JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+            "<html>You must have an algebra loaded.<br>"
+            + "Use the file menu or make a new one.</html>",
+            "No algebra error",
+            JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+    }
+    final int pow = getNumberDialog(1, "How many different factors (>0) do you want to multiply?", "Number of factors");
+    if (pow == -1) return;
+    final List<SmallAlgebra> listOfFactors = new ArrayList<SmallAlgebra>(pow);
+    String name = "Prod of ";
+    {// keep GUIAlgebra[] algs local
+      //produce an array with all algebras currently open to choose from
+      GUIAlgebra[] algs = new GUIAlgebra[getMainControler().getAlgebraList().size()];
+      {//fill the array, keep j local
+        int j = 0;
+        for (GUIAlgebra a : getMainControler().getAlgebraList()) {
+          algs[j++] = a;
+        }
+      }
+      // get the first algebra from the user
+      final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+                       "<html><center>Please choose the first<br>" 
+                           + "algebra of your product</center></html>", 
+                       "First factor",
+                       JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
+      if (gA == null) return;  // user has aborted
+      final SmallAlgebra A = gA.getAlgebra();
+      int exponent = 0;
+      //do
+      //{
+        exponent = getNumberDialog(1, "To which power (>0) do you want to raise the inserted algebra?", "Power of the entered algebra");
+        if (exponent == -1) return;
+      //}while(exponent < 0);
+      // add the entered algebra exponent many times to the list of algebras to take the product of 
+      for (int i = 0; i < exponent; i++)
+      {
+        listOfFactors.add(A);  
+      }
+      name += A.getName() + (exponent > 1 ? "^" + exponent : "");
+      // get the the other algebras from the user
+      for (int i = 1; i < pow; i++)
+      {
+        SmallAlgebra B = null;
+        boolean isNotSimilarToFirst = false;
+        do 
+        { 
+          final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+                           "<html><center>Please choose the<br>" 
+                               + (i + 1) + (i>2?"th":(i==2?"rd":"nd")) + " algebra of your product</center></html>", 
+                           "" + (i + 1) + (i>2?"th":(i==2?"rd":"nd")) +  " factor",
+                           JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
+          if (gB == null) return;  // user has aborted
+          B = gB.getAlgebra();
+          isNotSimilarToFirst = !B.isSimilarTo(A);
+          if (isNotSimilarToFirst ) {
+            JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+                "<html>The algebras must have the same similarity type. Choose another algebra!<br>",
+                "Algebras Not Similar",
+                JOptionPane.ERROR_MESSAGE);
+            //return;
+          }
+        } while(isNotSimilarToFirst);
+        //do
+        //{
+          exponent = getNumberDialog(1, "To which power (>0) do you want to raise the inserted algebra?", "Power of the entered algebra");
+          if (exponent == -1) return;
+        //}while(exponent < 0);
+        // add the entered algebra exponent many times to the list of algebras to take the product of 
+        for (int k = 0; k < exponent; k++)
+        {
+          listOfFactors.add(B);  
+        }
+        name += " x " + B.getName() + (exponent > 1 ? "^" + exponent : "");
+      }
+    }
+    // construct the new product out of the entered algebras
+    ProductAlgebra prodAlg = new ProductAlgebra(name, listOfFactors);  // here
+    MainController mc = uacalcUI.getMainController();
+    mc.addAlgebra(prodAlg, true);
+    uacalcUI.repaint();
+  }
+    
   public void setupSubPowerTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
