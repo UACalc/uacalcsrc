@@ -424,6 +424,13 @@ public class ComputationsController {
     return opt;
   }
   
+  /**
+   * The gui for forming a product algebra.
+   * 
+   * Written by Mike Behrisch.
+   * 
+   * 
+   */
   public void formProd() {
     {// keep gAlg2 local
       final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
