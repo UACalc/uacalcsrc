@@ -425,11 +425,9 @@ public class ComputationsController {
   }
   
   /**
-   * The gui for forming a product algebra.
+   * The gui for forming a product algebras.
    * 
    * Written by Mike Behrisch.
-   * 
-   * 
    */
   public void formProd() {
     {// keep gAlg2 local
