@@ -420,7 +420,7 @@ public class Kearnes {
     
     AlgebraIO.writeAlgebraFile(averageAlg(3), "/tmp/averageAlg3.ua");
     AlgebraIO.writeAlgebraFile(averageAlg(4), "/tmp/averageAlg4.ua");
-    AlgebraIO.writeAlgebraFile(averageAlg(5), "/tmp/averageAlg5.ua");
+    //AlgebraIO.writeAlgebraFile(averageAlg(5), "/tmp/averageAlg5.ua");
 
     
     int n = 4;
@@ -482,7 +482,10 @@ public class Kearnes {
     //SmallAlgebra alvReduct = makeJonssonReduct(n, true);
     SmallAlgebra jonReduct = new ReductAlgebra(alg0, jonTerms);
     SmallAlgebra alvReduct = new ReductAlgebra(alg0, jonALVTerms);
-
+    AlgebraIO.writeAlgebraFile(alvReduct, "/tmp/kearnesAlv-" + n + ".ua");
+    SmallAlgebra polinLike = new PolinLikeAlgebra("polinLike", alvReduct, alvReduct, null, 0, 0);
+    AlgebraIO.writeAlgebraFile(polinLike, "/tmp/kearnesPolin-" + n + ".ua");
+    
 System.out.println("jonReduct ops " + jonReduct.operations());
 
     List<Term> terms = Malcev.jonssonTerms(jonReduct, false);
