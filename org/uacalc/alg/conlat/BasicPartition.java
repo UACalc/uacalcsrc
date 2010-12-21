@@ -949,7 +949,33 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     ans.normalize();
     return ans;
   }
+  
+  // should have two int variables.
+  public static Partition firstProjection(final int n) {
+    int[] arr = new int[n*n];
+    for (int k = 0; k < n; k++) {
+      for (int j = 1; j < n; j++) {
+        arr[k*n + j] = k*n; 
+      }
+      arr[k*n] = - n;
+    }
+    return new BasicPartition(arr);
+  }
 
+//should have two int variables.
+  public static Partition secondProjection(final int n) {
+    int[] arr = new int[n*n];
+    for (int i = 0; i < n; i++) {
+      arr[i] = - n;
+    }
+    for (int k = 1; k < n; k++) {
+      for (int j = 0; j < n; j++) {
+        arr[k*n + j] = j;
+      }
+    }
+    return new BasicPartition(arr);
+  }
+  
   public static void main(String[] args) {
     
     BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
@@ -1016,12 +1042,26 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
         {3,4,5,6,0,1,2,9,7,8}        
     };
     
+    int[][] mat5 = {
+        {0,1,2,3,4},
+        {1,3,0,4,2},
+        {2,4,3,1,0},
+        {3,0,4,2,1},
+        {4,2,1,0,4}
+    };
+    
     List<BasicPartition> genset = new ArrayList<BasicPartition>(3);
     
-    genset.add((BasicPartition)partitionFromMatrix(firstProj));
-    genset.add((BasicPartition)partitionFromMatrix(secondProj));
-    genset.add((BasicPartition)partitionFromMatrix(mat));
-    genset.add((BasicPartition)partitionFromMatrix(mat2));
+    genset.add((BasicPartition)partitionFromMatrix(mat5));
+    genset.add((BasicPartition)firstProjection(5));
+    genset.add((BasicPartition)secondProjection(5));
+
+    
+    
+    //genset.add((BasicPartition)partitionFromMatrix(firstProj));
+    //genset.add((BasicPartition)partitionFromMatrix(secondProj));
+    //genset.add((BasicPartition)partitionFromMatrix(mat));
+    //genset.add((BasicPartition)partitionFromMatrix(mat2));
     List<Partition> closure = closureAt(genset);
     for (Partition par : closure) {
       System.out.print(par);
