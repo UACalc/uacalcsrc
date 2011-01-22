@@ -976,7 +976,33 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return new BasicPartition(arr);
   }
   
+  static boolean endNow = true;
+  
   public static void main(String[] args) {
+    
+    
+    // In this example we took the representations of M_3 on 3 and 4 elements and combined them
+    // to give an embedding of M_3 in Eq(12) and then found the closure. It is the lattice 
+    // on the AU cover. So not closed but not all of M_3^2.
+                                                       // 0   1   2   3   4   5   6   7   8   9   10   11 
+    BasicPartition alpha = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
+    BasicPartition beta  = new BasicPartition(new int[] {-4, -4,  0,  1, -2, -2,  4,  5,  0,  1,  0,  1});
+    BasicPartition gamma = new BasicPartition(new int[] {-2, -2,  1,  0, -4, -4,  5,  4,  4, 5,   5,  4});
+
+    List<Partition> pars12 = new ArrayList<Partition>(12);
+    pars12.add(alpha);
+    pars12.add(beta);
+    pars12.add(gamma);
+    SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
+    System.out.println("|Con(A)| = " + alg12.con().universe().size());
+    
+    try {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/alg12.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
+    
+    if (endNow) return;
+
     
     BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
     BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});

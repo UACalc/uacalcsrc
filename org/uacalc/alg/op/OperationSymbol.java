@@ -13,7 +13,7 @@ import java.util.Set;
  * An oration symbol. It has both a String for it printed name and 
  * and arity. 
  */
-public class OperationSymbol {
+public class OperationSymbol implements Comparable<OperationSymbol> {
 
   public static final OperationSymbol JOIN = new OperationSymbol("join", 2);
   public static final OperationSymbol MEET = new OperationSymbol("meet", 2);
@@ -65,6 +65,12 @@ public class OperationSymbol {
       default:
         return new OperationSymbol("op" + arity + "_" + ind, arity);
     }
+  }
+  
+  public int compareTo(OperationSymbol sym) {
+    if (arity < sym.arity()) return -1;
+    if (arity > sym.arity()) return 1;
+    return name.compareTo(sym.name());
   }
 
   public boolean equals(Object obj) {
