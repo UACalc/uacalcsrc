@@ -980,7 +980,6 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static void main(String[] args) {
     
-    
     // In this example we took the representations of M_3 on 3 and 4 elements and combined them
     // to give an embedding of M_3 in Eq(12) and then found the closure. It is the lattice 
     // on the AU cover. So not closed but not all of M_3^2.
@@ -1002,8 +1001,28 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     catch (Exception e) { e.printStackTrace(); }
     
     if (endNow) return;
-
     
+
+    // Peter's M-4's on 5 letters
+    BasicPartition jip00 = new BasicPartition(new int[] {-2, 0, -2, 2, -1});
+    BasicPartition jip01 = new BasicPartition(new int[] {-2, -2, 1, -1, 0});
+    BasicPartition jip02 = new BasicPartition(new int[] {-2, -2, -1, 0, 1});
+    BasicPartition jip03 = new BasicPartition(new int[] {-1, -2, -2, 1, 2});
+    List<Partition> jipPars = new ArrayList<Partition>();
+    jipPars.add(jip00);
+    jipPars.add(jip01);
+    jipPars.add(jip02);
+    jipPars.add(jip03);
+    Set<IntArray> unaryCloJip = unaryClone(jipPars);
+    System.out.println("|Pol_1| = " + unaryCloJip.size());
+    SmallAlgebra jip = unaryCloneAlgebra(jipPars);
+    System.out.println("|Con(A)| = " + jip.con().universe().size());
+    //for (Partition par : jip.con().universe()) {
+    //  System.out.println(par);
+    //}
+    
+    
+
     BasicPartition rfz0 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1});
     BasicPartition rfz1 = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -1});
     BasicPartition rfz2 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0}); 
@@ -1014,7 +1033,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (IntArray ia : lst) {
       System.out.println(ia);
     }
-    System.out.println(":clone size = " + lst.size());
+    System.out.println("clone size (new method) = " + lst.size());
+    pars2.add(rfz0);
+    pars2.add(rfz2);
+    lst = unaryClone(pars2);
+    System.out.println("clone size (old method) = " + lst.size());
+    System.out.println("");
     
     int[][] firstProj5 = {
         {0,0,0,0,0},
@@ -1108,12 +1132,41 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
         {4,2,1,0,4}
     };
     
+    int[][] william0 = {{0, 1, 2, 3},
+     {1, 0, 3, 2},
+     {2, 3, 0, 1},
+     {3, 2, 1, 0}};
+
+    int[][] william1 = {{0, 1, 2, 3},
+        {2, 3, 0, 1},
+        {3, 2, 1, 0},
+        {1, 0, 3, 2}};
+    
+    int[][] william2 = {{0, 1, 2, 3},
+        {3, 2, 1, 0},
+        {1, 0, 3, 2},
+        {2, 3, 0, 1}};
+    
+    System.out.println("first:" + partitionFromMatrix(mat));
+    System.out.println("secon:" + partitionFromMatrix(mat2));
     List<BasicPartition> genset = new ArrayList<BasicPartition>(3);
     
-    genset.add((BasicPartition)partitionFromMatrix(mat5));
-    genset.add((BasicPartition)firstProjection(5));
-    genset.add((BasicPartition)secondProjection(5));
-
+    //genset.add((BasicPartition)partitionFromMatrix(mat5));
+    //genset.add((BasicPartition)firstProjection(5));
+    //genset.add((BasicPartition)secondProjection(5));
+   
+    //genset.add((BasicPartition)firstProjection(4));
+    genset.add((BasicPartition)partitionFromMatrix(william0));
+    genset.add((BasicPartition)partitionFromMatrix(william1));
+    genset.add((BasicPartition)partitionFromMatrix(william2));
+    genset.add((BasicPartition)secondProjection(4));
+    
+    List<Partition> willPars = new ArrayList<Partition>();
+    for (Partition p : genset) {
+      willPars.add((Partition)p);
+    }
+    SmallAlgebra algWJD = unaryCloneAlgebra(willPars);
+    System.out.println("|Con(WJD) = " + algWJD.con().cardinality());
     
     
     //genset.add((BasicPartition)partitionFromMatrix(firstProj));
