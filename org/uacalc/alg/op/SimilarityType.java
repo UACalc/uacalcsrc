@@ -30,10 +30,26 @@ public class SimilarityType {
   List<OperationSymbol> operationSymbols;
 
   public SimilarityType(List<OperationSymbol> opSyms) {
+    this(opSyms, false);
+  }
+  
+  public SimilarityType(List<OperationSymbol> opSyms, boolean sort) {
+    if (sort) Collections.sort(opSyms);
     this.operationSymbols = opSyms;
   }
 
   public List<OperationSymbol> getOperationSymbols() { 
+    return operationSymbols; 
+  }
+  
+  /**
+   * The sorting is by lowest arity first then by alphabetical
+   * on the name.
+   * 
+   * @return a sorted list of operations.
+   */
+  public List<OperationSymbol> getSortedOperationSymbols() {
+    Collections.sort(operationSymbols);
     return operationSymbols; 
   }
   
@@ -74,9 +90,8 @@ public class SimilarityType {
     //SimilarityType st = (SimilarityType)obj;
     List<OperationSymbol> ops = ((SimilarityType)obj).getOperationSymbols();
     if (ops.size() != operationSymbols.size()) return false;
-    for (Iterator<OperationSymbol> it = operationSymbols.iterator(); 
-                                                            it.hasNext(); ) {
-      if (!ops.contains(it.next())) return false;
+    for (OperationSymbol op : operationSymbols) {
+      if (!ops.contains(op)) return false;
     }
     return true;
   }
