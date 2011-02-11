@@ -207,14 +207,19 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
                                       final boolean decompose,
                                       final List<Equation> relations,
                                       final ProgressReport report) {
+    // if we subdirectly decompose the 1-element algebra, we get the empty
+    // decomposition, which is correct, but require special handling.
+    final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
+    final List<IntArray> projs = new ArrayList<IntArray>();
     if (decompose) {
       if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
-      final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
-      final List<IntArray> projs = new ArrayList<IntArray>();
       for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens, relations)) {
         algs.add(algV.getAlgebra());
         projs.add(new IntArray(algV.getVector()));
       }
+    }
+    if (decompose && algs.size() > 0) {
+      if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
       productAlgebra = new BigProductAlgebra(algs);
       gens = transpose(projs);
       final SortedMap<Integer,Integer> sizeMultiplicities = productAlgebra.sizeMultiplicities();
@@ -234,8 +239,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       }
       logger.fine("size of the over product is " + s);
       productAlgebra = new BigProductAlgebra(alg, s);
-      int[] projs = new int[numberOfGens];
-      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(projs, n-1);
+      int[] projsVec = new int[numberOfGens];
+      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(projsVec, n-1);
       gens = new ArrayList<IntArray>(numberOfGens);
       for (int i = 0; i < numberOfGens; i++) {
         gens.add(new IntArray(s));
@@ -244,7 +249,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       for (int k = 0; k < s; k++) {
         for (int i = 0; i < numberOfGens; i++) {
           final IntArray ia = gens.get(i);
-          ia.set(k, projs[i]);
+          ia.set(k, projsVec[i]);
         }
         inc.increment();
       }
@@ -423,6 +428,8 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
+    SmallAlgebra algB = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/Jipsen/b.ua");
+    FreeAlgebra f1 = new FreeAlgebra(algB, 1, true, true);
     if (args.length == 0) {
       SmallAlgebra alg0 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/lat2.ua");
       SmallAlgebra m3 = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/m3.ua");

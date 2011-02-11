@@ -2,7 +2,7 @@
 
 package org.uacalc.alg.conlat;
 
-import org.uacalc.util.IntArray;
+import org.uacalc.util.*;
 import org.uacalc.util.Horner;
 import org.uacalc.lat.*;
 import org.latdraw.orderedset.POElem;
@@ -554,6 +554,46 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   // Work on the concrete representation problem
+  
+  public static Map<IntArray,List<Partition>> funcToJIs(int n) {
+    //Map<IntArray,List<Partition>> map = new TreeMap<IntArray,List<Partition>>();
+    List<List<Partition>> jiSets = new ArrayList<List<Partition>>();
+    int[] arr = new int[n];
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, n-1);
+    int k = 0;
+    while (true) {
+      List<Operation> ops = new ArrayList<Operation>(1);
+      int[] copy = new int[n];
+      System.arraycopy(arr, 0, copy, 0, n);
+      ops.add(Operations.makeIntOperation("", 1, n, copy));
+      SmallAlgebra alg = new BasicAlgebra("", n, ops);
+      List<Partition> jis = alg.con().joinIrreducibles();
+      if (!contains(jis, jiSets)) {
+        jiSets.add(jis);
+        System.out.println("" + k++ + ": " + jis.size() + ", " + alg.con().cardinality());
+        //map.put(new IntArray(copy), jis);
+      }
+      if (!inc.increment()) break;
+    }
+    System.out.println("number found = " + jiSets.size());
+    //return map;
+    return null;
+  }
+  
+  private static boolean contains(List<Partition> jis, List<List<Partition>> jiSets) {
+    for (List<Partition> jis2 : jiSets) {
+      if (equals(jis, jis2)) return true;
+    }
+    return false;
+  }
+  
+  private static boolean equals(List<Partition> jis, List<Partition> jis2) {
+    if (jis.size() != jis2.size()) return false;
+    for (Partition par : jis) {
+      if (!jis2.contains(par)) return false;
+    }
+    return true;
+  }
 
   public static Partition directProduct(Partition alpha, Partition beta) {
     final int n = alpha.universeSize();
@@ -979,6 +1019,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   static boolean endNow = true;
   
   public static void main(String[] args) {
+    
+    funcToJIs(5);
     
     // In this example we took the representations of M_3 on 3 and 4 elements and combined them
     // to give an embedding of M_3 in Eq(12) and then found the closure. It is the lattice 
