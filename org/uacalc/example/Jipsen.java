@@ -6,17 +6,30 @@ import org.uacalc.alg.conlat.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * This class serves as an interface to Sage. args[0] should
+ * be a command and others arguments to the command, usually
+ * algebra file names. 
+ * 
+ * @author ralph
+ *
+ */
 public class Jipsen {
 
   /**
-   * @param args
+   * 
+   * @param args   
    */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
     if (args.length == 0) {
-      System.out.println("need a file name of an algebra");
+      System.out.println("Error: usage command arg1 arg2 ...");
       return;
     }
+    final String command = args[0];
+    
+    
+    
+    
     SmallAlgebra alg = null;
     try {
       alg = AlgebraIO.readAlgebraFile(args[0]);
