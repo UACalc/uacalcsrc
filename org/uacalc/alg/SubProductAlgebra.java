@@ -141,6 +141,15 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     setup(prod, gens, univList);
   }
   
+  public SubProductAlgebra(SmallAlgebra alg, int pow, Map<IntArray,Partition> rels) {
+    this("", alg, pow, rels);
+  }
+  
+  public SubProductAlgebra(String name, SmallAlgebra alg, int pow, Map<IntArray,Partition> rels) {
+    super(name);
+    
+  }
+  
   public static List<IntArray> transpose(List<IntArray> lst) {
     final int k = lst.size(); // if k = 0 we should throw an IllegalArguementExcpetion
     final int n = lst.get(0).universeSize();
@@ -418,6 +427,39 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
       }
     }
     return kern;
+  }
+  
+  /**
+   * This gives all <tt>pow</tt> tuples with entries 0 to n-1
+   * such that if (i,j) maps to theta, then the ith element 
+   * is theta related to the jth element. So is A is an algebra
+   * of size n, this gives the subuniverse where the coordinates
+   * are related by the partitions (or congruences) of <tt>rels</tt>. 
+   * 
+   * @param n       the size of the projections
+   * @param pow     the power
+   * @param rels    a map from pairs of coords to partition on n
+   * @return
+   */
+  public static List<IntArray> universeFromRelations(int n, int pow, Map<IntArray,Partition> rels) {
+    //if (rels.size() == 0) throw new IllegalArgumentException();
+    int[] arr = new int[pow];
+    for (int i = 0; i < pow; i++) arr[i] = 0;
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, n - 1);
+    List<IntArray> ans = new ArrayList<IntArray>();
+    ans.add(new IntArray(Arrays.copyOf(arr, pow)));
+    while (inc.increment()) {
+      if (respects(arr, rels)) ans.add(new IntArray(Arrays.copyOf(arr, pow)));
+    }
+    return ans;
+  }
+  
+  private static boolean respects(int[] arr, Map<IntArray,Partition> rels) {
+    for (IntArray pair : rels.keySet()) {
+      Partition par = rels.get(pair);
+      if (!par.isRelated(pair.get(0), pair.get(1))) return false;
+    }
+    return true;
   }
   
   public void convertToDefaultValueOps() {
