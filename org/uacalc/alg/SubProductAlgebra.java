@@ -147,7 +147,9 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   
   public SubProductAlgebra(String name, SmallAlgebra alg, int pow, Map<IntArray,Partition> rels) {
     super(name);
-    
+    productAlgebra = new BigProductAlgebra(alg, pow);
+    final List<IntArray> univ = universeFromRelations(alg.cardinality(), pow, rels);
+    setup(new BigProductAlgebra(alg, pow), univ, univ);  // make gens = univ
   }
   
   public static List<IntArray> transpose(List<IntArray> lst) {
@@ -449,6 +451,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     List<IntArray> ans = new ArrayList<IntArray>();
     ans.add(new IntArray(Arrays.copyOf(arr, pow)));
     while (inc.increment()) {
+      System.out.println("arr: " + Arrays.toString(arr));
       if (respects(arr, rels)) ans.add(new IntArray(Arrays.copyOf(arr, pow)));
     }
     return ans;
@@ -457,8 +460,11 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   private static boolean respects(int[] arr, Map<IntArray,Partition> rels) {
     for (IntArray pair : rels.keySet()) {
       Partition par = rels.get(pair);
-      if (!par.isRelated(pair.get(0), pair.get(1))) return false;
+      System.out.println("pair: " + pair);
+      System.out.println("par: " + par);
+      if (!par.isRelated(arr[pair.get(0)], arr[pair.get(1)])) return false;
     }
+    System.out.println("returning true");
     return true;
   }
   
@@ -472,6 +478,16 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
+    SmallAlgebra polin = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin.ua");
+    Partition theta = polin.con().Cg(0, 2);
+    Map<IntArray,Partition> map = new HashMap<IntArray,Partition>();
+    map.put(new IntArray(new int[] {0, 1}), theta);
+    map.put(new IntArray(new int[] {1, 2}), theta);
+    SmallAlgebra subpow = new SubProductAlgebra(polin, 3, map);
+    System.out.println("univ: " + subpow.universe());
+    System.out.println("con size: " + subpow.con().cardinality());
+    org.uacalc.io.AlgebraIO.writeAlgebraFile(subpow, "/home/ralph/Java/Algebra/algebras/subpolin3.ua");
+    
     if (args.length == 0) return;
     System.out.println("reading " + args[0]);
     Algebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
