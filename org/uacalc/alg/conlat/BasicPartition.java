@@ -641,7 +641,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
 
-  public static SmallAlgebra unaryCloneAlgebra(List<Partition> pars) {
+  public static SmallAlgebra unaryCloneAlgebra(List<? extends Partition> pars) {
     String f = "f_";
     final int size = pars.get(0).universeSize();
     final NavigableSet<IntArray> lst = unaryClone(pars);
@@ -679,7 +679,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @param pars
    * @return
    */
-  public static NavigableSet<IntArray> unaryClone(List<Partition> pars) {
+  public static NavigableSet<IntArray> unaryClone(List<? extends Partition> pars) {
     // n is the size of the set the partition are on.
     final int n = pars.get(0).universeSize();
     // set is an empty set to hold the answer.
@@ -706,7 +706,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
                                        final int k,
                                        final int n,
                                        final NavigableSet<IntArray> ans,
-                                       final List<Partition> pars) {
+                                       final List<? extends Partition> pars) {
     //System.out.println("k = " + k);
     if (k == n) {
       IntArray copy = new IntArray(n);
@@ -766,7 +766,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   private static boolean respects(final IntArray partialFunction, 
                            final int k, final int value, 
-                           final List<Partition> pars) {
+                           final List<? extends Partition> pars) {
     for (Partition par : pars) {
       final int r = par.representative(k);
       for (int i = 0; i < k; i++) {
@@ -804,6 +804,108 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       if (c.get(i) != ia.get(i)) return false;
     }
     return true;
+  }
+  
+  public static List<Partition>  generalizedWeakClosure(
+              List<BasicPartition> pars, 
+              int pow,
+              Map<IntArray,Partition> rels) {
+    if (pars == null || pars.isEmpty()) {
+      throw new IllegalArgumentException("The partitions list must be nonempty.");
+    }
+    final int n = pars.get(0).universeSize();
+    final List<IntArray> univ = SubProductAlgebra.universeFromRelations(n, pow, rels);
+    Set<Partition> hs = new HashSet<Partition>();
+    final BasicPartition zero = zero(n);
+    final Partition firstProj = zero(n).inducedPartition(univ, 0);
+    hs.add(firstProj);
+    for (int i = 1; i < pow; i++) {
+      hs.add(zero.inducedPartition(univ, i));
+    }
+    for (BasicPartition par : pars) {
+      for (int i = 0; i < pow; i++) {
+        hs.add(par.inducedPartition(univ, i));
+      }
+    }
+    List<Partition> sub = subUniverseGenerated(new ArrayList<Partition>(hs));
+    System.out.println("sub size = " + sub.size());
+    List<Partition> ans = new ArrayList<Partition>();
+    for (Partition par : sub) {
+      //System.out.println("par: " + par +" is geq firstProj: " + firstProj.leq(par));
+      if (firstProj.leq(par)) ans.add(((BasicPartition)par).projection(univ, n, 0));
+    }
+    return ans;
+  }
+  
+  public static void testGeneralizedWeakClosure() {
+    
+ // |012|345|6|7|
+    // |012|345|67|
+    // |0|146|257|3|
+    // |03|146|257|
+    // this seems to give a closed hexagon. (At least closed under the L(\theta) 
+    // construction.
+    BasicPartition rfw0 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3, -1, -1});
+    BasicPartition rfw1 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3, -2, 6});
+    BasicPartition rfw2 = new BasicPartition(new int[] {-1, -3, -3, -1, 1, 2, 1, 2}); 
+    BasicPartition rfw3 = new BasicPartition(new int[] {-2, -3, -3, 0, 1, 2, 1, 2});
+
+ // (045|123) (03|15|24) (01|25|34) (02|14|35)
+    // DeMeo's closed M_4
+    BasicPartition demeo0 = new BasicPartition(new int[] {-3, -3, 1, 1, 0, 0});
+    BasicPartition demeo1 = new BasicPartition(new int[] {-2, -2, -2, 0, 2, 1});
+    BasicPartition demeo2 = new BasicPartition(new int[] {-2, 0, -2, -2, 3, 2});
+    BasicPartition demeo3 = new BasicPartition(new int[] {-2, -2, 0, -2, 1, 3 }); 
+    
+    // The ones above have the closure = the (simple) weak closure.
+    // But JB's the closure is 6 elements and the weak closure is 5,
+    // if we take \alpha to be jb70 or jb71, but the simple weak
+    // closure is 6 if we use jb72
+    // Take the pentagon on seven elements
+    // |06|15|2|3|4|
+    // |06|145|23|
+    // |034|16|25|
+    // and you also get the intermediate element
+    // |06|145|2|3|
+    // in the closure.
+    // JB
+    BasicPartition jb70 = new BasicPartition(new int[] {-2, -2, -1, -1, -1, 1, 0});
+    BasicPartition jb71 = new BasicPartition(new int[] {-2, -3, -2, 2, 1, 1, 0});
+    BasicPartition jb72 = new BasicPartition(new int[] {-3, -2, -2, 0, 0, 2, 1});
+    
+    // |01|23|45|
+    // |05|21|43|
+    // |03|25|41|
+    // |024|135|
+    BasicPartition bill0 = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4});
+    BasicPartition bill1 = new BasicPartition(new int[] {-2, -2, 1, -2, 3, 0});
+    BasicPartition bill2 = new BasicPartition(new int[] {-2, -2, -2, 0, 1, 2}); 
+    BasicPartition bill3 = new BasicPartition(new int[] {-3, -3, 0, 1, 0, 1}); 
+    
+    List<BasicPartition> gens = new ArrayList<BasicPartition>();
+    gens.add(bill0);
+    gens.add(bill1);
+    gens.add(bill2);
+    //gens.add(bill3);
+  
+    
+    List<Partition> closure = closureAt(gens);
+    for (Partition par : closure) {
+      System.out.print(par);
+      if (par.equals(gens.get(0))) System.out.println(" **");
+      else if (gens.contains(par)) System.out.println(" *");
+      else System.out.println("");
+    }
+    System.out.println("closure size: " + closure.size());
+    //List<Partition> gensPar = new ArrayList<>
+    SmallAlgebra alg12 = unaryCloneAlgebra(gens);
+    System.out.println("|Con(A)| = " + alg12.con().universe().size());
+    try {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/jb7.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
+
+    
   }
   
   /**
@@ -1037,10 +1139,27 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     
+    List<BasicPartition> bpars12 = new ArrayList<BasicPartition>(3);
+    for (Partition par : pars12) {
+      bpars12.add((BasicPartition)par);
+    }
+    
+    List<Partition> closureAt = closureAt(bpars12);
+    for (Partition par : closureAt) {
+      System.out.print(par);
+      if (par.equals(bpars12.get(0))) System.out.println(" **");
+      else if (bpars12.contains(par)) System.out.println(" *");
+      else System.out.println("");
+    }
+    System.out.println("closureAt size: " + closureAt.size());
+    
     try {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/alg12.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
+    
+    testGeneralizedWeakClosure();
+
     
     if (endNow) return;
     
