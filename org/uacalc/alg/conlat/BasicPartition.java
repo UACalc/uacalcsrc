@@ -815,6 +815,9 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     final int n = pars.get(0).universeSize();
     final List<IntArray> univ = SubProductAlgebra.universeFromRelations(n, pow, rels);
+    System.out.println("univ size: " + univ.size() + ", pow: " + pow);
+    //if (endNow) return null;
+    
     Set<Partition> hs = new HashSet<Partition>();
     final BasicPartition zero = zero(n);
     final Partition firstProj = zero(n).inducedPartition(univ, 0);
@@ -828,7 +831,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       }
     }
     List<Partition> sub = subUniverseGenerated(new ArrayList<Partition>(hs));
-    System.out.println("sub size = " + sub.size());
+    System.out.println("sublattice size = " + sub.size());
     List<Partition> ans = new ArrayList<Partition>();
     for (Partition par : sub) {
       //System.out.println("par: " + par +" is geq firstProj: " + firstProj.leq(par));
@@ -838,6 +841,60 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   public static void testGeneralizedWeakClosure() {
+    
+    int[][] mat = new int[][] {
+        {0,6,5,4,7,8,9,1,2,3},
+        {9,1,0,6,5,7,8,2,3,4},
+        {8,9,2,1,0,6,7,3,4,5},
+        {7,8,9,3,2,1,0,4,5,6},
+        {1,7,8,9,4,3,2,5,6,0},
+        {3,2,7,8,9,5,4,6,0,1},
+        {5,4,3,7,8,9,6,0,1,2},
+        {2,3,4,5,6,0,1,7,8,9},
+        {4,5,6,0,1,2,3,9,7,8},
+        {6,0,1,2,3,4,5,8,9,7}        
+    };
+    
+    int[][] mat2 = new int[][] {
+        {0,9,8,7,1,3,5,2,4,6},
+        {6,1,9,8,7,2,4,3,5,0},
+        {5,0,2,9,8,7,3,4,6,1},
+        {4,6,1,3,9,8,7,5,0,2},
+        {7,5,0,2,4,9,8,6,1,3},
+        {8,7,6,1,3,5,9,0,2,4},
+        {9,8,7,0,2,4,6,1,3,5},
+        {1,2,3,4,5,6,0,7,8,9},
+        {2,3,4,5,6,0,1,8,9,7},
+        {3,4,5,6,0,1,2,9,7,8}        
+    };
+    
+    // results: Using just M_3 (both projs and mat) and
+    //          0-1 and 0-2 both related by mat
+    //          generalizedWeakClosure gave only the M_3.
+    
+    List<BasicPartition> genset = new ArrayList<BasicPartition>(3);
+    genset.add((BasicPartition)firstProjection(10));
+    genset.add((BasicPartition)secondProjection(10));
+    genset.add((BasicPartition)partitionFromMatrix(mat));
+    genset.add((BasicPartition)partitionFromMatrix(mat));
+    //List<Partition> closure = closureAt(genset);
+    final Map<IntArray,Partition> map10 = new HashMap<IntArray,Partition>();
+    map10.put(new IntArray(new int[] {0,1}), genset.get(2));
+    map10.put(new IntArray(new int[] {0,2}), genset.get(3));
+    
+    System.out.println("Start:");
+    List<Partition> closure10 = generalizedWeakClosure(genset, 3, map10);
+    for (Partition par : closure10) {
+      System.out.print(par);
+      if (par.equals(genset.get(0))) System.out.println(" **");
+      else if (genset.contains(par)) System.out.println(" *");
+      else System.out.println("");
+    }
+    System.out.println("closure10 size: " + closure10.size());
+    
+    if (endNow) return;
+  //genset.add((BasicPartition)firstProjection(4));
+    
     
  // |012|345|6|7|
     // |012|345|67|
@@ -889,7 +946,18 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //gens.add(bill3);
   
     
-    List<Partition> closure = closureAt(gens);
+    //List<Partition> closure = closureAt(gens);
+    
+    // results:  1. pow = 3, 0-1 related by bill0, 0-2 by bill1:
+    //              univ has 24 elements, the sublattice has 8094 elements
+    //              and the closure is all 6
+    //           2. now both 0-1 and 0-2 are bill0 (so 1-2 must be also)
+    //              univ has 24 again, sublattice has 2323, gets whole closure.
+    final Map<IntArray,Partition> map = new HashMap<IntArray,Partition>();
+    map.put(new IntArray(new int[] {0,1}), bill0);
+    map.put(new IntArray(new int[] {0,2}), bill1);
+    map.put(new IntArray(new int[] {1,2}), bill2);
+    List<Partition> closure = generalizedWeakClosure(gens, 3, map);
     for (Partition par : closure) {
       System.out.print(par);
       if (par.equals(gens.get(0))) System.out.println(" **");
@@ -1122,7 +1190,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static void main(String[] args) {
     
-    funcToJIs(5);
+    //funcToJIs(5);
+    testGeneralizedWeakClosure();
+    
+    if (endNow) return;
+    
     
     // In this example we took the representations of M_3 on 3 and 4 elements and combined them
     // to give an embedding of M_3 in Eq(12) and then found the closure. It is the lattice 
@@ -1165,6 +1237,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     
 
     // Peter's M-4's on 5 letters
+    /*
     BasicPartition jip00 = new BasicPartition(new int[] {-2, 0, -2, 2, -1});
     BasicPartition jip01 = new BasicPartition(new int[] {-2, -2, 1, -1, 0});
     BasicPartition jip02 = new BasicPartition(new int[] {-2, -2, -1, 0, 1});
@@ -1181,6 +1254,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //for (Partition par : jip.con().universe()) {
     //  System.out.println(par);
     //}
+     */
     
     
 
@@ -1317,24 +1391,30 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //genset.add((BasicPartition)secondProjection(5));
    
     //genset.add((BasicPartition)firstProjection(4));
-    genset.add((BasicPartition)partitionFromMatrix(william0));
-    genset.add((BasicPartition)partitionFromMatrix(william1));
-    genset.add((BasicPartition)partitionFromMatrix(william2));
-    genset.add((BasicPartition)secondProjection(4));
+    //genset.add((BasicPartition)partitionFromMatrix(william0));
+    //genset.add((BasicPartition)partitionFromMatrix(william1));
+    //genset.add((BasicPartition)partitionFromMatrix(william2));
+    //genset.add((BasicPartition)secondProjection(4));
     
-    List<Partition> willPars = new ArrayList<Partition>();
-    for (Partition p : genset) {
-      willPars.add((Partition)p);
-    }
-    SmallAlgebra algWJD = unaryCloneAlgebra(willPars);
-    System.out.println("|Con(WJD) = " + algWJD.con().cardinality());
+    //List<Partition> willPars = new ArrayList<Partition>();
+    //for (Partition p : genset) {
+    //  willPars.add((Partition)p);
+    //}
+    //SmallAlgebra algWJD = unaryCloneAlgebra(willPars);
+    //System.out.println("|Con(WJD) = " + algWJD.con().cardinality());
     
     
-    //genset.add((BasicPartition)partitionFromMatrix(firstProj));
-    //genset.add((BasicPartition)partitionFromMatrix(secondProj));
-    //genset.add((BasicPartition)partitionFromMatrix(mat));
-    //genset.add((BasicPartition)partitionFromMatrix(mat2));
-    List<Partition> closure = closureAt(genset);
+    genset.add((BasicPartition)partitionFromMatrix(firstProj));
+    genset.add((BasicPartition)partitionFromMatrix(secondProj));
+    genset.add((BasicPartition)partitionFromMatrix(mat));
+    genset.add((BasicPartition)partitionFromMatrix(mat2));
+    //List<Partition> closure = closureAt(genset);
+    final Map<IntArray,Partition> map = new HashMap<IntArray,Partition>();
+    map.put(new IntArray(new int[] {0,1}), genset.get(2));
+    map.put(new IntArray(new int[] {0,2}), genset.get(3));
+    
+    System.out.println("Start:");
+    List<Partition> closure = generalizedWeakClosure(genset, 3, map);
     for (Partition par : closure) {
       System.out.print(par);
       if (par.equals(genset.get(0))) System.out.println(" **");
@@ -1342,6 +1422,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       else System.out.println("");
     }
     System.out.println("closure size: " + closure.size());
+    
+    if (endNow) return;
     
     List<Partition> genset2 = new ArrayList<Partition>();
     for (Partition p : genset) {
