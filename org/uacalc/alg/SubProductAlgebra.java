@@ -451,7 +451,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     List<IntArray> ans = new ArrayList<IntArray>();
     ans.add(new IntArray(Arrays.copyOf(arr, pow)));
     while (inc.increment()) {
-      System.out.println("arr: " + Arrays.toString(arr));
+      //System.out.println("arr: " + Arrays.toString(arr));
       if (respects(arr, rels)) ans.add(new IntArray(Arrays.copyOf(arr, pow)));
     }
     return ans;
@@ -460,11 +460,11 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   private static boolean respects(int[] arr, Map<IntArray,Partition> rels) {
     for (IntArray pair : rels.keySet()) {
       Partition par = rels.get(pair);
-      System.out.println("pair: " + pair);
-      System.out.println("par: " + par);
+      //System.out.println("pair: " + pair);
+      //System.out.println("par: " + par);
       if (!par.isRelated(arr[pair.get(0)], arr[pair.get(1)])) return false;
     }
-    System.out.println("returning true");
+    //System.out.println("returning true");
     return true;
   }
   
