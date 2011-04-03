@@ -126,18 +126,18 @@ public class IntArray implements Cloneable {
   }
   
   /**
-   * Test if this is represents an idempotent function; that is,
-   * one satisfying f(f(x)) = f(x).
+   * Test if this represents an idempotent function; that is,
+   * one satisfying the equation f(f(x)) &asymp; f(x).
    * 
-   * @return
+   * @return <code>true</code> iff f(f(x)) = f(x) for all 0 &le; x &lt; <code>size</code>.
    */
   public boolean isIdempotent() {
-    boolean ans = true;
     for (int i = 0; i < size; i++) {
-      if (array[i] < 0 || array[i] >= size) return false;
-      if (array[array[i]] != array[i]) return false;
+      final int j = array[i];
+      if (j < 0 || j >= size) return false;
+      if (array[j] != j) return false;
     }
-    return ans;
+    return true;
   }
   
   public static Comparator<IntArray> lexicographicComparitor() {

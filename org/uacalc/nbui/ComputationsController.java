@@ -481,10 +481,12 @@ public class ComputationsController {
         boolean isNotSimilarToFirst = false;
         do 
         { 
+          final int lastdigit = i%10;
+          final String suffix = lastdigit < 3 ? ((i/10)%10 == 1 ? "th" : (lastdigit == 0 ? "st" : (lastdigit == 1 ? "nd" : "rd"))) : "th";
           final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
                            "<html><center>Please choose the<br>" 
-                               + (i + 1) + (i>2?"th":(i==2?"rd":"nd")) + " algebra of your product</center></html>", 
-                           "" + (i + 1) + (i>2?"th":(i==2?"rd":"nd")) +  " factor",
+                               + (i + 1) + suffix + " algebra of your product</center></html>", 
+                           "" + (i + 1) + suffix +  " factor",
                            JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
           if (gB == null) return;  // user has aborted
           B = gB.getAlgebra();

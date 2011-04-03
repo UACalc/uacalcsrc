@@ -26,10 +26,10 @@ import java.util.logging.*;
  * pair.
  * <p>
  * The algorithm used is similar to that described in J. Berman, E. W.
- * Kiss, P. Prohle, and A. Szendrei <i>The set of type of a
+ * Kiss, P. Pr&#337;hle, and &Aacute;. Szendrei <i>The set of type of a
  * finitely generated variety</i>, Discrete Math. 112 (1993), 1-20.
  * Preprint available on the second author's web site:
- * {@link http://www.cs.elte.hu/~ewkiss/}.
+ * <a href="http://www.cs.elte.hu/~ewkiss/" target="_blank">http://www.cs.elte.hu/~ewkiss/</a>.
  * They define a directed graph G(A) with vertices two elements
  * subsets of A and edges corresponding to images of unary polynomials.
  * <p>

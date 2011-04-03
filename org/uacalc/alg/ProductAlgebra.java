@@ -214,6 +214,30 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public List getUniverseList() { return new ArrayList<IntArray>(universe()); }
   public Map getUniverseOrder() { return null; }
 
+  /**
+   * Returns the carrier set of the product of the specified <code>List algs</code> of Objects as a <code>Set</code>.
+   * This set does not support to be modified in any way (by adding or deleting or otherwise modifying its members). 
+   * This applies in particular to the elements returned by the <code>iterator()</code>.
+   * Modifying them does not have any effect on the elements in the set, as they are not stored explicitly.
+   * <p>
+   * For the <code>size</code> of the set, see the {@link #calcCard} method.
+   * <p>
+   * The <code>contains</code> method returns true iff applied to a <code>List</code> of objects that are successively 
+   * contained in the algebras in <code>algs</code>.
+   * <p>
+   * The <code>iterator()</code> returns the tuples in the product as <code>ArrayList</code>s in lexicographic order (reading words from left to right).
+   * This means the right-most (last, largest) index is incremented fastest. 
+   * The order of the algebras in the given <code>List algs</code> determines the order of the entries in the tuples. 
+   * This iterator supports only forward iteration and has got no <code>remove</code> method.
+   * Furthermore, there is no possibility to change the elements in the <code>Set</code> by modifying the tuples returned by the iterator.
+   * Putting this differently, the iterator only provides the "enumeration functionality", but not the complete "element access functionality".
+   * It is possible to iterate past the end of the set, i.e., after <code>hasNext</code> has returned <code>false</code>.
+   * In this case the iterator starts again with the first tuple.
+   @param algs <code>List</code> of <code>Algebra</code>s being factors of the product.
+   @return a <code>Set</code> of all tuples (<code>ArrayList</code>s) in the product.
+   @exception UnsupportedOperationException if the <code>iterator()</code> is used and one of the objects in the <code>List algs</code> is not an <code>Algebra</code>.
+   @exception UnsupportedOperationException if the <code>Set</code> is modified by one of the methods <code>add, addAll, clear, remove, removeAll, retainAll</code>.
+   */
   protected Set makeCartesianProduct(final List algs) {
     return new AbstractSet() {
         public int size() { return size; }
@@ -229,8 +253,90 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
           return true;
         }
         // should check if each has an iterator and make one
+        /* returns an iterator over the cartesian product, returning tuples as ArrayLists, 
+           whose entries are in the order of the given List algs. The last index is incremented fastest */
+        /**
+         * Iterator for products of <code>SmallAlgebra</code>s as inner class returning the tuples in the product as <code>ArrayList</code>s in lexicographic order (reading words from left to right).
+         * This means the right-most (last, largest) index is incremented fastest. 
+         * The order of the algebras in the given <code>List algs</code> determines the order of the entries in the tuples. 
+         * <p>
+         * This iterator supports only forward iteration and has got no <code>remove</code> method.
+         * <p>
+         * It is possible to iterate past the end of the set, i.e. after <code>hasNext</code> has returned <code>false</code>.
+         * In this case the iterator cyclically starts again with the first tuple.
+         */
+        class ProductIterator implements Iterator
+        {
+          final private int numberOfFactors = algs.size();
+          private Iterator[] itArray; // as many iterators as factors
+          //ArrayList tuple; //a list of objects (the iterators may return any kind of object in fact)
+          private Object[] prodTuple;
+          private boolean hasMoreTuples;
+          private ProductIterator() {
+            itArray = new Iterator[numberOfFactors]; // as many iterators as factors
+            prodTuple = new Object[numberOfFactors]; // tuple to contain the values to be returned in each iteration
+            hasMoreTuples = false;
+            Iterator itAlgs = algs.iterator();
+            int k = 0;
+            for (ListIterator iterAlgs = algs.listIterator(numberOfFactors); iterAlgs.hasPrevious(); k++)
+            {
+              Object curObj = iterAlgs.previous();
+              // the following could be done without checking, then probably risking a ClassCastException?
+              if (!(curObj instanceof Algebra)) throw new UnsupportedOperationException("There is a member in the list that is not an Algebra.");
+              Algebra curAlg = (Algebra) curObj;
+              itArray[k] = curAlg.iterator();   // this may throw an unsupported operation exception 
+                                                // if one of the factors does not have an iterator
+              if (itArray[k].hasNext())   
+              {
+                prodTuple[k] = (itArray[k]).next();
+              }
+              else
+                return ;   // if one of the algebras in the List is empty, hasMoreTuples stays false.
+            }
+            hasMoreTuples = true; // if there are no algebras (empty product containing the empty tuple) or
+                                  // all algebras are nonempty, hasMoreTuples is set to true.
+          }
+          
+          public boolean hasNext() {
+            return hasMoreTuples;
+          }
+
+          public Object next() {
+            // return the prepared tuple as an ArrayList:
+            ArrayList returnTuple = new ArrayList(numberOfFactors); // make a copy of the current tuple since this will
+                                                                    // be reused for the following method call
+                                                                    // This implies that the iterator cannot provide the
+                                                                    // "element access" functionality (write access), it
+                                                                    // can only traverse the tuples in the product.
+            for (int l = numberOfFactors; l > 0; )
+            {
+              returnTuple.add(prodTuple[--l]);
+            }
+            // prepare a new tuple for the next iteration (store it inside prodTuple)
+            int k = 0; // find the least index k such that there is still an element.
+            for (ListIterator iterAlgs = algs.listIterator(numberOfFactors); iterAlgs.hasPrevious() && !itArray[k].hasNext(); k++)
+            {
+              // if the k-th-iterator does not have any more elements, reinitialise it
+              itArray[k] = ((Algebra) iterAlgs.previous()).iterator();   // this may throw an unsupported operation exception 
+                                                                         // if one of the factors does not have an iterator
+              prodTuple[k] = (itArray[k]).next();
+            }
+            if (k < numberOfFactors) // the "slowest running" iterator has not yet been exhausted.
+              prodTuple[k] = (itArray[k]).next();
+            else // All iterators have been exhausted, i.e., there are no more new tuples. 
+                 // This also means that all iterators have been reinitialised, so we can 
+                 // start again with the first tuple. This is useful when running "out of
+                 // bounds" by looping just with next() and not checking for hasNext().
+              hasMoreTuples = false;
+            return returnTuple; 
+          }
+
+          public void remove() {
+            throw new UnsupportedOperationException("Cannot remove tuples from the universe of a product since these are implicitly stored.");
+          }
+        }
         public Iterator iterator() {
-          throw new UnsupportedOperationException();
+          return new ProductIterator();
         }
       };
   }
@@ -261,13 +367,24 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public static int calcCard(int[] sizes) {
     final BigInteger max = BigInteger.valueOf((long)Integer.MAX_VALUE); 
     BigInteger v = BigInteger.ONE;
+    boolean infinityHasOccurred = false;
     for (int i = 0; i < sizes.length; i++) {
+      if (sizes[i] == 0) return 0;           // if there is at least one empty factor, the product is empty.
+      // if we reach this point, no empty factors have occurred so far.  
       v = v.multiply(BigInteger.valueOf((long)sizes[i]));
-      if (v.compareTo(max) > 0) {
-        return -1;
+      if (v.compareTo(max) > 0 || sizes[i] < 0) {
+        //return -1; // cannot return -1 immediately, since a later factor might be empty (sizes[i]==0)
+        infinityHasOccurred = true;      // set a mark that one factor was "computer infinite"
+        // v can be reset to 0 to minimise computation efforts, because v != 0 and  
+        // now it is only interesting whether there's another 0 in the array that might trigger the above "return 0".
+        v = BigInteger.ZERO;  
       }
     }
-    return v.intValue();
+    // if we reach this point, there are no empty factors in the product (possibly because there are no factors at all).  
+    if (infinityHasOccurred) 
+      return -1;
+    else // none of the factors was computer infinite, nor did we run over the largest int.
+      return v.intValue();
   }
   
   public void convertToDefaultValueOps() {
