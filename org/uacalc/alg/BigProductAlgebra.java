@@ -19,7 +19,7 @@ import org.uacalc.alg.sublat.*;
 /**
  * This class represents the direct product of <tt>SmallAlgebra</tt>s
  * which is too big to be a <tt>SmallAlgebra</tt>.
- * We use IntArray for the elements of the unverse. After we have a 
+ * We use IntArray for the elements of the universe. After we have a 
  * real element scheme, we'll use that.
  *
  * @author Ralph Freese
@@ -337,32 +337,39 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
 */
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
+   * Closure of <code>elems</code> under the operations. 
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
+   * @see #sgClose(List, Map)
    */
   public List<IntArray> sgClose(List<IntArray> elems) {
-    return sgClose(elems, 0, null);
+   // * @see #sgClose(List<IntArray>, Map<IntArray, Term> )
+    return sgClose(elems/*, 0*/, null); //@mike
   }
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
+   * Closure of <code>elems</code> under the operations.
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
    *
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
+   * @see #sgClose(List, int,  Map)
    */
   public List<IntArray> sgClose(List<IntArray> elems, Map<IntArray, Term> termMap) {
+    // * @see #sgClose(List<IntArray>, int, Map<IntArray, Term> ) 
+    // The following is not needed any more, as it is contained in 
+    // sgClose(List<IntArray>, int, Map<IntArray, Term>, IntArray, ProgressReport)
     // TODO: add in constants and terms for constants
+    /*
     List<IntArray> consts = getConstants();
     Set<IntArray> elemsHS = new HashSet<IntArray>(elems);
     for (IntArray ia : consts) {
@@ -371,77 +378,104 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
         if (termMap != null) termMap.put(ia, getConstantTerm(ia));
       }
     }
+    */ 
     return sgClose(elems, 0, termMap);
   }
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
+   * Closure of <code>elems</code> under the operations.
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
+   * @param closedMark use a default of <code>0</code> if you do not know what this is good for.
    *
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
+   *
+   * @return a <code>List</code> of <code>IntArray</code>'s.
+   * @see #sgClose(List, int,  Map, IntArray, ProgressReport)
+   */
+  public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
+                               final Map<IntArray,Term> termMap) {
+   // * @see #sgClose(List<IntArray>, int,  Map<IntArray, Term>, IntArray, ProgressReport )
+    return sgClose(elems, closedMark, termMap, null, null);
+  }
+
+  /**
+   * Closure of <code>elems</code> under the operations.
+   *
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
+   *
+   * @param termMap a Map from the element to the corresponding term
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
+   *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    *
    * @param elt an element to search for; if found return the closure
                 found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
+   * @see #sgClose(List, Map, IntArray, ProgressReport)
    */
   public List<IntArray> sgClose(List<IntArray> elems, 
                                 Map<IntArray, Term> termMap, IntArray elt) {
-    return sgClose(elems, 0, termMap, elt, null);
+   // * @see #sgClose(List<IntArray>, Map<IntArray, Term>, IntArray, ProgressReport )
+    return sgClose(elems/*, 0*/, termMap, elt, null); //@mike
   }
   
+  /**
+   * Closure of <code>elems</code> under the operations.
+   *
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
+   *
+   * @param termMap a Map from the element to the corresponding term
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
+   *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
+   * @param elt an element to search for; if found return the closure
+   *            found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
+   * @param report a reference to a <code>ProgressReport</code>; used in the GUI to display the status of the closure.
+   *               Use a <code>null</code> reference if you do not need it.
+   *
+   * @return a <code>List</code> of <code>IntArray</code>'s.
+   * @see #sgClose(List, int,  Map, IntArray, ProgressReport)
+   */
   public List<IntArray> sgClose(List<IntArray> elems, 
       Map<IntArray, Term> termMap, IntArray elt, ProgressReport report) {
-    HashSet<IntArray> elemsHS = new HashSet<IntArray>(elems);
-    for (IntArray ia : getConstants()) {
-      if (!elemsHS.contains(ia)) {
-        elems.add(ia);
-        termMap.put(ia, NonVariableTerm.makeConstantTerm(constantToSymbol.get(ia)));
-      }
-    }
+   // * @see #sgClose(List<IntArray>, int,  Map<IntArray, Term>, IntArray, ProgressReport )
+    //@mike moved code to add nullary ops to sgClose(List<IntArray>, int, Map<IntArray, Term>, IntArray, ProgressReport)
     return sgClose(elems, 0, termMap, elt, report);
   }
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
+   * Closure of <code>elems</code> under the operations. (Worry about
    * nullary ops later.)
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
    *
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
-   *
-   * @return a List of IntArray's.
-   */
-  public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
-                               final Map<IntArray,Term> termMap) {
-    return sgClose(elems, closedMark, termMap, null, null);
-  }
-
-
-
-  /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
-   *
-   * @param elems a List of IntArray's
-   *
-   * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
-   *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    *
    * @param elt an element to search for; if found return the closure
                 found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
+   * @param report a reference to a <code>ProgressReport</code>; used in the GUI to display the status of the closure.
+   *               Use a <code>null</code> reference if you do not need it.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
    */
   public List sgClose_old(List elems, int closedMark, final Map termMap, 
                                 final  Object elt, ProgressReport report) {
@@ -515,20 +549,23 @@ System.out.println("so far: " + currentMark);
   }
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
+   * Closure of <code>elems</code> under the operations. (Worry about
    * nullary ops later.)
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
    *
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    *
    * @param elt an element to search for; if found return the closure
                 found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
    */
   public List sgCloseXX(List elems, int closedMark, final Map termMap, 
                                                   final  Object elt) {
@@ -599,24 +636,44 @@ System.out.println("so far: " + currentMark);
   }
 
   /**
-   * Closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
+   * Closure of <code>elems</code> under the operations.
+   * Computes the closure of the specified tuples (in the collection <code>elems</code>) under all
+   * fundamental operations including nullary operations.
    *
-   * @param elems a List of IntArray's
-   *
+   * @param elems a List of <code>IntArray</code>'s to be closed under the operations.
+   * @param closedMark use a default of <code>0</code> if you do not know what this is good for.
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
-   *
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    * @param elt an element to search for; if found return the closure
                 found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
+   * @param report a reference to a <code>ProgressReport</code>; used in the GUI to display the status of the closure.
+   *               Use a <code>null</code> reference if you do not need it.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
    */
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                    final Map<IntArray,Term> termMap, final  IntArray elt, ProgressReport report) {
-    Closer closer = new Closer(this, elems, termMap);
+    //----- add nullary constants -----
+    // REMARK: One does not expect a closure operation to modify the generators.
+    //         Therefore, we should add the constants to a newly created copy of elems.
+    //         This is, for instance, important for the closure of the generators in FreeAlgebra
+    final ArrayList<IntArray> elemsCopy = new ArrayList<IntArray>(elems);
+    {// keep the HashSet local
+      final HashSet<IntArray> elemsHS = new HashSet<IntArray>(elems);
+      for (IntArray ia : getConstants()) {
+        if (!elemsHS.contains(ia)) {
+          elemsCopy.add(ia);
+          if (termMap != null) termMap.put(ia, NonVariableTerm.makeConstantTerm(constantToSymbol.get(ia))); //@mike added the if condition
+        }
+      }
+    }//HashSet not needed any more, so it can be garbage collected
+    //----- start closure -----
+    Closer closer = new Closer(this, elemsCopy, termMap);
     closer.setProgressReport(report);
     closer.setElementToFind(elt);
     
@@ -737,20 +794,25 @@ System.out.println("so far: " + currentMark);
 
   /**
    * A fast version for powers to compute the 
-   * closure of <tt>elems</tt> under the operations. (Worry about
+   * closure of <code>elems</code> under the operations. (Worry about
    * nullary ops later.)
    *
-   * @param elems a List of IntArray's
+   * @param elems a <code>List</code> of <code>IntArray</code>'s to be closed under the fundamental operations.
    *
    * @param termMap a Map from the element to the corresponding term
-   *                used to generated it. The generators should be 
-   *                already in the Map. In other words the termMap
+   *                used to generate it. The generators should be 
+   *                already in the Map. In other words the <code>termMap</code>
    *                should have the same number of entries as elems.
+   *                Provide a <code>null</code> reference if the terms 
+   *                are not of interest. 
    *
    * @param elt an element to search for; if found return the closure
                 found so far.
+   *            Use a <code>null</code> reference if there is no element to search for.
+   * @param report a reference to a <code>ProgressReport</code>; used in the GUI to display the status of the closure.
+   *               Use a <code>null</code> reference if you do not need it.
    *
-   * @return a List of IntArray's.
+   * @return a <code>List</code> of <code>IntArray</code>'s.
    */
   private final List<IntArray> sgClosePower(final int algSize, 
       List<Operation> ops, List<IntArray> elems, int closedMark, 
