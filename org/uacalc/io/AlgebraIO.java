@@ -54,7 +54,7 @@ public final class AlgebraIO {
     BufferedReader in = new BufferedReader(new FileReader(f));
     String line = in.readLine();
     if (line == null) throw new BadAlgebraFileException("Nothing in the file");
-    List ops = new ArrayList();
+    List<Operation> ops = new ArrayList<Operation>();
     //HashMap map = new HashMap();
     int size = Integer.parseInt(line);
     for (line = in.readLine(); line != null; line = in.readLine()) {
@@ -65,6 +65,43 @@ public final class AlgebraIO {
   
   public static SmallAlgebra readAlgebraFromStream(InputStream is) 
                        throws IOException, BadAlgebraFileException {
+    AlgebraReader r = new AlgebraReader(is);
+    try {
+      return r.readAlgebraFromStream();
+    }
+    catch (org.xml.sax.SAXException saxEx) {
+      throw new BadAlgebraFileException("Bad xml file");
+    }
+    catch (javax.xml.parsers.ParserConfigurationException parEx) {
+      throw new BadAlgebraFileException("Bad xml file");
+    }
+  }
+  
+  public static List<SmallAlgebra> readAlgebraListFile(String f) 
+                     throws IOException, BadAlgebraFileException {
+    return readAlgebraListFile(new File(f));
+  }
+
+  public static List<SmallAlgebra> readAlgebraListFile(File f) 
+  throws IOException, BadAlgebraFileException {
+    String ext = ExtFileFilter.getExtension(f);
+    if (ext != null && ExtFileFilter.UA_EXTS.contains(ext.toLowerCase())) {
+      AlgebraReader r = new AlgebraReader(f);
+      try {
+        return r.readAlgebraListFile();
+      }
+      catch (org.xml.sax.SAXException saxEx) {
+        throw new BadAlgebraFileException("Bad xml file");
+      }
+      catch (javax.xml.parsers.ParserConfigurationException parEx) {
+        throw new BadAlgebraFileException("Bad xml file");
+      }
+    }
+    return null;
+  }
+
+  public static SmallAlgebra readAlgebraListFromStream(InputStream is) 
+  throws IOException, BadAlgebraFileException {
     AlgebraReader r = new AlgebraReader(is);
     try {
       return r.readAlgebraFromStream();

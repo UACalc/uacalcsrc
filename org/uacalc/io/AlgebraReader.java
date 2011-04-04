@@ -46,10 +46,10 @@ public final class AlgebraReader extends DefaultHandler {
   private String intArrayString = EMPTY_STRING;
   private String productElemString = EMPTY_STRING;
 
-
   private File file;
   private InputStream inputStream;
   private SmallAlgebra algebra;
+  private List<SmallAlgebra> algebraList;
   private int algType;
   private SimpleList tagStack = SimpleList.EMPTY_LIST;
   private String algName;
@@ -106,7 +106,42 @@ public final class AlgebraReader extends DefaultHandler {
     saxParser.parse(inputStream, handler);
     return algebra;
   }
+  
+  public List<SmallAlgebra> readAlgebraListFile() throws IOException, SAXException,
+                                               ParserConfigurationException {
+    //  Use an instance of ourselves as the SAX event handler
+    DefaultHandler handler = this;
+    //  Use the default (non-validating) parser
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser saxParser = factory.newSAXParser();
+    saxParser.parse(file, handler);
+    return algebraList;
+  }
+  
+  public List<SmallAlgebra> readAlgebraListFromStream() throws IOException, SAXException,
+                                                           ParserConfigurationException {
+    //  Use an instance of ourselves as the SAX event handler
+    DefaultHandler handler = this;
+    //  Use the default (non-validating) parser
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser saxParser = factory.newSAXParser();
+    saxParser.parse(inputStream, handler);
+    return algebraList;
+  }
 
+  private void clearStrings() {
+    algNameString = EMPTY_STRING;
+    opNameString = EMPTY_STRING;
+    descString = EMPTY_STRING;
+    cardinalityString = EMPTY_STRING;
+    arityString = EMPTY_STRING;
+    powerString = EMPTY_STRING;
+    powersString = EMPTY_STRING;
+    rowString = EMPTY_STRING;
+    intArrayString = EMPTY_STRING;
+    productElemString = EMPTY_STRING;
+  }
+  
   private String currentTag() {
     return (String)tagStack.first();
   }
@@ -146,7 +181,7 @@ public final class AlgebraReader extends DefaultHandler {
                              Attributes attrs) throws SAXException {
     String elemName = lName; // element name
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
-    //System.out.println("elem is " + elemName);
+    System.out.println("elem is " + elemName);
     tagStack = tagStack.cons(elemName);
 
     if ("algName".equals(elemName)) algNameString = EMPTY_STRING;
@@ -215,6 +250,11 @@ public final class AlgebraReader extends DefaultHandler {
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
     //System.out.println("and elemName = " + elemName);
 
+    if ("algebra".equals(elemName)) {
+      if (algebraList == null) algebraList = new ArrayList<SmallAlgebra>();
+      algebraList.add(algebra);
+      clearStrings();
+    }
     if ("algName".equals(elemName)) algName = algNameString.trim();
     if ("opName".equals(elemName)) opName = opNameString.trim();
     if ("desc".equals(elemName)) desc = descString.trim();
@@ -329,9 +369,13 @@ public final class AlgebraReader extends DefaultHandler {
     //if (args.length == 0) return;
     //System.out.println("reading " + args[0]);
     AlgebraReader r = new AlgebraReader("/tmp/lyndonQuot.ua");
-    SmallAlgebra alg = r.readAlgebraFile();
-    System.out.println("alg has size " + alg.cardinality());
-    System.out.println("alg.con jis " + alg.con().joinIrreducibles().size());
+    //SmallAlgebra alg = r.readAlgebraFile();
+    for (SmallAlgebra algx : r.readAlgebraListFile()) {
+      System.out.println("alg: " + algx + ", card: " + algx.cardinality());
+    }
+    System.out.println("");
+    //System.out.println("alg has size " + alg.cardinality());
+    //System.out.println("alg.con jis " + alg.con().joinIrreducibles().size());
     //AlgebraWriter xmlWriter = new AlgebraWriter(alg, "/tmp/hoo.xml");
     //xmlWriter.writeAlgebraXML();
     //System.out.println("/tmp/hoo.xml written");
