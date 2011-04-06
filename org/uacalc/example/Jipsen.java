@@ -31,8 +31,9 @@ public class Jipsen {
     
     
     SmallAlgebra alg = null;
+    List<SmallAlgebra> algebras = null;
     try {
-      alg = AlgebraIO.readAlgebraFile(args[0]);
+      algebras = AlgebraIO.readAlgebraListFile(args[0]);
     }
     catch (IOException e) {}             // put an error message here.
     catch (BadAlgebraFileException e) {}
