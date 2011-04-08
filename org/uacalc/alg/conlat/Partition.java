@@ -37,6 +37,11 @@ public interface Partition extends BinaryRelation {
   public static final int HUMAN = 3;
 
   /**
+   * Printing types: blocks using [ and ].
+   */
+  public static final int SQ_BRACE_BLOCK = 4;
+  
+  /**
    * This returns the array representation of the partition as described 
    * in Ralph Freese's notes on partitions, see 
    * {@link <a href="http://www.math.hawaii.edu/~ralph/Notes/">

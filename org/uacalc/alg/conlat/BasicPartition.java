@@ -413,6 +413,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
         return partToKissString(array);
       case BLOCK:
         return partToBlockString(array);
+      case SQ_BRACE_BLOCK:
+        return partToBlockString(array, "[", "][", "]");
       case HUMAN:
         return partToBlockString(array) +
 	    " (" + numberOfBlocks() + " block(s))";
@@ -460,29 +462,22 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return ans;
   }
         
-
-
   /** EWK
    * Make String representation of the partition in block form.
    */
   private static String partToBlockString(int [] part) {
-    //It is assumed that part is normalized.
-    int size = part.length;
-    boolean isZero = true;
-    for(int i = 0; i < size; i++) {
-      if (part[i] != -1) {
-        isZero = false;
-        break;
-      }
-    }
-    //if( isZero ) {
-    //  return("the \"zero\" partition");
-    //}
-    //if( part[0] == -part.length ) {
-    //  return("the \"one\" partition");
-    //}
+    final String vert = "|";
+    return partToBlockString(part, vert, vert, vert);
+  }
 
-    ArrayList blocks[] = new ArrayList[part.length];
+  /** EWK
+   * Make String representation of the partition in block form.
+   */
+  private static String partToBlockString(int [] part, final String left,
+                                            final String middle, final String end) {
+    //It is assumed that part is normalized.
+
+    ArrayList[] blocks = new ArrayList[part.length];
     int i;
     for(i=0; i<part.length; i++) {
       int r = root(i,part);
@@ -492,7 +487,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     final String vert = "|";
     final String dash = "-";
     final String comma = ",";
-    final StringBuffer sb = new StringBuffer(vert);
+    final StringBuffer sb = new StringBuffer(left);
     boolean first;
     for(i = 0; i < part.length; i++) {
       if( blocks[i] == null ) continue;
@@ -506,8 +501,10 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
         }
         sb.append(it.next().toString());
       }
-      sb.append(vert);
+      sb.append(middle);
     }
+    final int k = sb.lastIndexOf(middle);
+    sb.replace(k, k+2, end);
     return(sb.toString());
   }
   
@@ -1192,6 +1189,10 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     
     //funcToJIs(5);
     testGeneralizedWeakClosure();
+    //BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
+    //BasicPartition foo = new BasicPartition(new int[] {-1,-1});
+    //System.out.println(foo);
+    //System.out.println(foo.toString(SQ_BRACE_BLOCK));
     
     if (endNow) return;
     
