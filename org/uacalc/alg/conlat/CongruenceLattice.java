@@ -328,6 +328,51 @@ public class CongruenceLattice implements Lattice {
     return ((Partition)a).leq((Partition)b);
   }
 
+  /**
+   * Returns a list of the complements of <code>par</code>.
+   * 
+   * @param par
+   * @return
+   */
+  public List<Partition> complements(Partition par) {
+    List<Partition> ans = new ArrayList<Partition>();
+    for (Partition comp : universe()) {
+      if (one().equals(par.join(comp)) && zero().equals(par.meet(comp))) {
+        ans.add(comp);
+      }
+    }
+    return ans;
+  }
+  
+  /**
+   * Find congruences alpha, beta, gamma which generate L3
+   * of Jonsson-Rival notation; see Fig 2.2 of Jipsen-Rose.
+   * 
+   * @return
+   */
+  public List<Partition> findL3Generators() {
+    List<Partition> ans = new ArrayList<Partition>(3);
+    for (Partition alpha : universe()) {
+      List<Partition> comps = complements(alpha);
+      for (Partition gamma : comps) {
+        for (Partition beta : universe()) {
+          if (!alpha.leq(beta) && !beta.leq(gamma)
+              && alpha.meet(beta).equals(zero()) 
+              && (gamma.join(beta).equals(one()))
+              && gamma.meet(alpha.join(beta)).leq(beta)
+              && beta.leq(alpha.join(gamma.meet(beta))) ) {
+            ans.add(alpha);
+            ans.add(beta);
+            ans.add(gamma);
+            return ans;
+          }
+        }
+      }
+    }
+    return null;
+  }
+  
+  
   public List constantOperations() { return SimpleList.EMPTY_LIST; }
 
   // TODO fix this
@@ -1177,6 +1222,11 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_W = " + comm);
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
+    
+    SmallAlgebra set = new BasicAlgebra("", 7, new ArrayList<Operation>());
+    System.out.println("Con size: " + set.con().cardinality());
+    List<Partition> l3 = set.con().findL3Generators();
+    System.out.println("L3 generators: " + l3);
   }
 
   
