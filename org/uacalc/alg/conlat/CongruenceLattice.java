@@ -352,23 +352,51 @@ public class CongruenceLattice implements Lattice {
    */
   public List<Partition> findL3Generators() {
     List<Partition> ans = new ArrayList<Partition>(3);
+    int count = 0;
     for (Partition alpha : universe()) {
+      if (!alpha.isInitialLexRepresentative()) continue;
       List<Partition> comps = complements(alpha);
+      
       for (Partition gamma : comps) {
+        boolean gammaIsLexFirst = true;
+        int[][] alphaBlocks = alpha.getBlocks();
+        for (int i = 0; i < alphaBlocks.length; i++) {
+          if (!gammaIsLexFirst) break;
+          int[] block = alphaBlocks[i];
+          int previousRoot = gamma.representative(block[0]);
+          for (int j = 1; j < block.length; j++ ) {
+            if (previousRoot > gamma.representative(block[j])) {
+              gammaIsLexFirst = false;
+              break;
+            }
+            previousRoot = gamma.representative(block[j]);            
+          }
+        }
+        if (!gammaIsLexFirst) continue;
         for (Partition beta : universe()) {
           if (!alpha.leq(beta) && !beta.leq(gamma)
               && alpha.meet(beta).equals(zero()) 
               && (gamma.join(beta).equals(one()))
               && gamma.meet(alpha.join(beta)).leq(beta)
               && beta.leq(alpha.join(gamma.meet(beta))) ) {
+            count++;
             ans.add(alpha);
             ans.add(beta);
             ans.add(gamma);
-            return ans;
+            System.out.println("\nalpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
+            SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
+            System.out.println("|Con(A)| = " + alg.con().universe().size());
+            if (alg.con().cardinality() == 7) {
+              System.out.println("Found a closed rep");
+              return ans;
+            }
+            ans.clear();
+            //return ans;
           }
         }
       }
     }
+    System.out.println("count: " + count);
     return null;
   }
   
@@ -1223,10 +1251,14 @@ public class CongruenceLattice implements Lattice {
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
     
-    SmallAlgebra set = new BasicAlgebra("", 7, new ArrayList<Operation>());
+    theta = new BasicPartition(new int[] {-2, -1, 0});
+    System.out.println("theta initial? " + theta.isInitialLexRepresentative());
+    long t = System.currentTimeMillis();
+    SmallAlgebra set = new BasicAlgebra("", 9, new ArrayList<Operation>());
     System.out.println("Con size: " + set.con().cardinality());
     List<Partition> l3 = set.con().findL3Generators();
     System.out.println("L3 generators: " + l3);
+    System.out.println("time: " + (System.currentTimeMillis() - t));
   }
 
   

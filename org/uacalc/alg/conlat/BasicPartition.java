@@ -3,7 +3,6 @@
 package org.uacalc.alg.conlat;
 
 import org.uacalc.util.*;
-import org.uacalc.util.Horner;
 import org.uacalc.lat.*;
 import org.latdraw.orderedset.POElem;
 
@@ -414,7 +413,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       case BLOCK:
         return partToBlockString(array);
       case SQ_BRACE_BLOCK:
-        return partToBlockString(array, "[", "][", "]");
+        return partToBlockString(array, "[[", "],[", "]]");
       case HUMAN:
         return partToBlockString(array) +
 	    " (" + numberOfBlocks() + " block(s))";
@@ -494,17 +493,14 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       Iterator it = blocks[i].iterator();
       first = true;
       while( it.hasNext() ) {
-        if ( !first ) {
-          sb.append(comma);
-        } else {
-          first = false;
-        }
+        if ( !first ) sb.append(comma);
+        else first = false;
         sb.append(it.next().toString());
       }
       sb.append(middle);
     }
     final int k = sb.lastIndexOf(middle);
-    sb.replace(k, k+2, end);
+    sb.replace(k, k + middle.length(), end);
     return(sb.toString());
   }
   
@@ -1183,20 +1179,37 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return new BasicPartition(arr);
   }
   
+  /**
+   * This will be true if, when the separators of the blocks are
+   * removed, it is just 0 to n-1 in order.
+   * 
+   * @return
+   */
+  public boolean isInitialLexRepresentative() {
+    int currentRoot = 0;
+    final int[] arr = getArray();
+    for (int i = 1; i < universeSize(); i++) {
+      if (arr[i] < 0) currentRoot = i;
+      else if (arr[i] != currentRoot) return false;
+    }
+    return true;
+  }
+  
+  
   static boolean endNow = true;
   
   public static void main(String[] args) {
     
     //funcToJIs(5);
-    testGeneralizedWeakClosure();
-    //BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
+    //testGeneralizedWeakClosure();
+    BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
     //BasicPartition foo = new BasicPartition(new int[] {-1,-1});
-    //System.out.println(foo);
-    //System.out.println(foo.toString(SQ_BRACE_BLOCK));
+    System.out.println(foo);
+    System.out.println(foo.toString(SQ_BRACE_BLOCK));
     
-    if (endNow) return;
+    //if (endNow) return;
     
-    
+    /*
     // In this example we took the representations of M_3 on 3 and 4 elements and combined them
     // to give an embedding of M_3 in Eq(12) and then found the closure. It is the lattice 
     // on the AU cover. So not closed but not all of M_3^2.
@@ -1204,6 +1217,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition alpha = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
     BasicPartition beta  = new BasicPartition(new int[] {-4, -4,  0,  1, -2, -2,  4,  5,  0,  1,  0,  1});
     BasicPartition gamma = new BasicPartition(new int[] {-2, -2,  1,  0, -4, -4,  5,  4,  4, 5,   5,  4});
+    */
+    
+    BasicPartition alpha = new BasicPartition(new int[] {-2,  -2, -2,  2,  1, 0, -2,  6});
+    BasicPartition beta  = new BasicPartition(new int[] {-2, -2,  -2, -2,  0, 1,  3,  2});
+    BasicPartition gamma = new BasicPartition(new int[] {-3, -3,   1,  0, -2, 1,  0,  4});
+    
 
     List<Partition> pars12 = new ArrayList<Partition>(12);
     pars12.add(alpha);
@@ -1211,6 +1230,13 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     pars12.add(gamma);
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
+    
+    try {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algL3.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
+    
+    if (endNow) return;
     
     List<BasicPartition> bpars12 = new ArrayList<BasicPartition>(3);
     for (Partition par : pars12) {

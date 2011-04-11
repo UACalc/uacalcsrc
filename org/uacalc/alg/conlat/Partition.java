@@ -79,6 +79,8 @@ public interface Partition extends BinaryRelation {
   public int blockIndex(int i);
 
   public int[][] getBlocks();
+  
+  public boolean isInitialLexRepresentative();
 
   public boolean isZero();
 
