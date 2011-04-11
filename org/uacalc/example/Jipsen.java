@@ -21,19 +21,18 @@ public class Jipsen {
    * @param args   
    */
   public static void main(String[] args) {
+    //if (args.length == 0) {
+    //  System.out.println("Error: usage command arg1 arg2 ...");
+    //  return;
+    //}
+    //final String command = args[0];
     if (args.length == 0) {
-      System.out.println("Error: usage command arg1 arg2 ...");
+      System.out.println("need a file name of an algebra");
       return;
     }
-    final String command = args[0];
-    
-    
-    
-    
     SmallAlgebra alg = null;
-    List<SmallAlgebra> algebras = null;
     try {
-      algebras = AlgebraIO.readAlgebraListFile(args[0]);
+      alg = AlgebraIO.readAlgebraFile(args[0]);
     }
     catch (IOException e) {}             // put an error message here.
     catch (BadAlgebraFileException e) {}
@@ -44,5 +43,6 @@ public class Jipsen {
       System.out.println(par);
     }
   }
+
 
 }

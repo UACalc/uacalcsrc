@@ -1254,7 +1254,7 @@ public class CongruenceLattice implements Lattice {
     theta = new BasicPartition(new int[] {-2, -1, 0});
     System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();
-    SmallAlgebra set = new BasicAlgebra("", 9, new ArrayList<Operation>());
+    SmallAlgebra set = new BasicAlgebra("", 10, new ArrayList<Operation>());
     System.out.println("Con size: " + set.con().cardinality());
     List<Partition> l3 = set.con().findL3Generators();
     System.out.println("L3 generators: " + l3);
