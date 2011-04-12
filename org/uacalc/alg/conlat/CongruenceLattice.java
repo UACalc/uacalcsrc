@@ -386,6 +386,19 @@ public class CongruenceLattice implements Lattice {
             System.out.println("\nalpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
             SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
             System.out.println("|Con(A)| = " + alg.con().universe().size());
+            if (alg.con().cardinality() != 12) {
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+              System.out.println("ans: " + ans);
+              System.out.println("Con(A) has size: " + alg.con().cardinality());
+              System.out.println("count: " + count);
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+              System.out.println("***********************************");
+            }
             if (alg.con().cardinality() == 7) {
               System.out.println("Found a closed rep");
               return ans;
