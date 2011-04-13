@@ -1181,15 +1181,22 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   /**
    * This will be true if, when the separators of the blocks are
-   * removed, it is just 0 to n-1 in order.
+   * removed, it is just 0 to n-1 in order; also the sizes of
+   * the blocks are getting smaller, left to right.
    * 
    * @return
    */
   public boolean isInitialLexRepresentative() {
     int currentRoot = 0;
+    
     final int[] arr = getArray();
+    int currentBlockSize = arr[0];  // actually this is minus the size
     for (int i = 1; i < universeSize(); i++) {
-      if (arr[i] < 0) currentRoot = i;
+      if (arr[i] < 0) {
+        if (arr[i] > currentBlockSize) return false;
+        currentBlockSize = arr[i];
+        currentRoot = i;
+      }
       else if (arr[i] != currentRoot) return false;
     }
     return true;
