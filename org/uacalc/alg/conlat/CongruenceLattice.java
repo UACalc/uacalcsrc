@@ -353,10 +353,13 @@ public class CongruenceLattice implements Lattice {
   public List<Partition> findL3Generators() {
     List<Partition> ans = new ArrayList<Partition>(3);
     int count = 0;
+    int max = 1000000;
+    int min = 0;
+    List<Partition> minAns = new ArrayList<Partition>(3);
+    List<Partition> maxAns = new ArrayList<Partition>(3);
     for (Partition alpha : universe()) {
       if (!alpha.isInitialLexRepresentative()) continue;
       List<Partition> comps = complements(alpha);
-      
       for (Partition gamma : comps) {
         boolean gammaIsLexFirst = true;
         int[][] alphaBlocks = alpha.getBlocks();
@@ -383,22 +386,18 @@ public class CongruenceLattice implements Lattice {
             ans.add(alpha);
             ans.add(beta);
             ans.add(gamma);
-            System.out.println("\nalpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
+            System.out.println("alpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
             SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
-            System.out.println("|Con(A)| = " + alg.con().universe().size());
-            if (alg.con().cardinality() != 12) {
-              System.out.println("***********************************");
-              System.out.println("***********************************");
-              System.out.println("***********************************");
-              System.out.println("***********************************");
-              System.out.println("ans: " + ans);
-              System.out.println("Con(A) has size: " + alg.con().cardinality());
-              System.out.println("count: " + count);
-              System.out.println("***********************************");
-              System.out.println("***********************************");
-              System.out.println("***********************************");
-              System.out.println("***********************************");
+            final int consize = alg.con().universe().size();
+            if (consize < max) {
+              max = consize;
+              maxAns = new ArrayList<Partition>(ans);
             }
+            if (consize > min) {
+              min = consize;
+              minAns = new ArrayList<Partition>(ans);
+            }
+            System.out.println("|Con(A)| = " + alg.con().universe().size());
             if (alg.con().cardinality() == 7) {
               System.out.println("Found a closed rep");
               return ans;
@@ -410,6 +409,10 @@ public class CongruenceLattice implements Lattice {
       }
     }
     System.out.println("count: " + count);
+    System.out.println("maxConSize: " + max);
+    System.out.println("max ans: " + maxAns);
+    System.out.println("minConSize: " + min);
+    System.out.println("min ans: " + minAns);
     return null;
   }
   
@@ -533,7 +536,7 @@ public class CongruenceLattice implements Lattice {
     int k = 0;
     while (it.hasNext()) {
       k++;
-      System.out.println("k = " + k);
+      //System.out.println("k = " + k);
       if (Thread.currentThread().isInterrupted()) {
         if (report != null) {
           report.addEndingLine("Cancelled (" + univ.size() + " elements so far)");
