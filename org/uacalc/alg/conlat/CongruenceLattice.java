@@ -469,14 +469,14 @@ public class CongruenceLattice implements Lattice {
                   maxAns = new ArrayList<Partition>(ans);
                 }
                 final int card = alg.con().cardinality();
-                if (card < 10 && card > 6) {
-                  System.out.println("alpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
-                  System.out.println("|Con(A)| = " + alg.con().universe().size());
+                if (card < 8 && card > 6) {
+                  System.out.println("alpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma + ", delta: " + delta);
+                  System.out.println("|Con(A)| = " + alg.con().universe().size() + ", clone size: " + alg.operations().size());
                 }
-                if (alg.con().cardinality() == 7) {
-                  System.out.println("Found a closed rep");
-                  return ans;
-                }
+                //if (alg.con().cardinality() == 7) {
+                //  System.out.println("Found a closed rep");
+                //  return ans;
+                //}
                 ans.clear();
               }
             }
@@ -1343,8 +1343,8 @@ public class CongruenceLattice implements Lattice {
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
     
-    theta = new BasicPartition(new int[] {-2, -1, 0});
-    System.out.println("theta initial? " + theta.isInitialLexRepresentative());
+    //theta = new BasicPartition(new int[] {-2, -1, 0});
+    //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();
     SmallAlgebra set = new BasicAlgebra("", 9, new ArrayList<Operation>());
     System.out.println("Con size: " + set.con().cardinality());
