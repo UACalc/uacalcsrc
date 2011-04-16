@@ -1230,7 +1230,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition beta  = new BasicPartition(new int[] {-2, -2,  -2, -2,  0, 1,  3,  2});
     BasicPartition gamma = new BasicPartition(new int[] {-3, -3,   1,  0, -2, 1,  0,  4});
     
-    */
+    
     
     //  generators: [|0|1|2|3,4|5,6|7,8|, |0,1|2,8|3|4,5|6|7|, |0,5,7|1,6|2,3|4,8|, |0,1|2,8|3,6|4,5|7|]
     
@@ -1238,6 +1238,15 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition beta  = new BasicPartition(new int[] {-2, 0, -2, -1, -2, 4, -1, -1, 2});
     BasicPartition gamma = new BasicPartition(new int[] {-3, -2, -2, 2, -2, 0,  1,  0, 4});
     BasicPartition delta = new BasicPartition(new int[] {-2,  0, -2, -2, -2, 4, 3,  -1, 2});
+    */
+    
+
+    // [|0|1|2|3|4|5|6,7,8|, |0,3,7|1,5,8|2,4,6|, |0,5,6|1,4,7|2,3,8|, |0,3|1,5|2,4|6|7|8|]
+    // con size = 16
+    BasicPartition alpha = new BasicPartition(new int[] {-1, -1, -1, -1, -1, -1, -3, 6, 6});
+    BasicPartition beta  = new BasicPartition(new int[] {-3, -3, -3, 0, 2, 1, 2, 0, 1});
+    BasicPartition gamma = new BasicPartition(new int[] {-3, -3, -3, 2, 1, 0, 0, 1, 2});
+    BasicPartition delta = new BasicPartition(new int[] {-2,  -2, -2, 0, 2, 1, -1, -1, -1});
 
     List<Partition> pars12 = new ArrayList<Partition>(12);
     pars12.add(alpha);
@@ -1248,7 +1257,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     
     try {
-      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algPJ21.ua");
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algPJnot10.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     

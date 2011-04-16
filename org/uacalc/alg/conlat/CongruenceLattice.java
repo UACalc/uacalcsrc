@@ -493,6 +493,87 @@ public class CongruenceLattice implements Lattice {
     return null;
   }
   
+  public List<Partition> findLPJ10Generators() {
+    List<Partition> ans = new ArrayList<Partition>(4);
+    int count = 0;
+    int max = 0;
+    int min = 100;
+    List<Partition> minAns = new ArrayList<Partition>(3);
+    List<Partition> maxAns = new ArrayList<Partition>(3);
+    for (Partition alpha : universe()) {
+      if (!alpha.isInitialLexRepresentative()) continue;
+      List<Partition> comps = complements(alpha);
+      for (Partition gamma : comps) {
+        boolean gammaIsLexFirst = true;
+        int[][] alphaBlocks = alpha.getBlocks();
+        for (int i = 0; i < alphaBlocks.length; i++) {
+          if (!gammaIsLexFirst) break;
+          int[] block = alphaBlocks[i];
+          int previousRoot = gamma.representative(block[0]);
+          for (int j = 1; j < block.length; j++ ) {
+            if (previousRoot > gamma.representative(block[j])) {
+              gammaIsLexFirst = false;
+              break;
+            }
+            previousRoot = gamma.representative(block[j]);            
+          }
+        }
+        if (!gammaIsLexFirst) continue;
+        for (Partition beta : universe()) {
+          if (!alpha.leq(beta) && !beta.leq(gamma)
+              && !beta.leq(alpha) 
+              && beta.meet(gamma).equals(zero())
+              && alpha.meet(beta).equals(zero())
+              //&& gamma.meet(beta).equals(zero())
+              && gamma.join(beta).equals(one())
+              && alpha.join(beta).equals(one()) ) {
+            //final Partition aplusb = alpha.join(beta);
+            for (Partition delta : universe()) {
+              if (delta.leq(beta) && !delta.equals(beta) 
+                  && !delta.equals(alpha)
+                  && gamma.join(delta).equals(one())
+                  && gamma.meet(alpha.join(delta)).equals(zero())
+                  && alpha.join(delta).meet(beta).equals(delta) ) {
+                count++;
+                ans.add(alpha);
+                ans.add(beta);
+                ans.add(gamma);
+                ans.add(delta);
+                SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
+                final int consize = alg.con().universe().size();
+                if (consize < min) {
+                  min = consize;
+                  minAns = new ArrayList<Partition>(ans);
+                }
+                if (consize > max) {
+                  max = consize;
+                  maxAns = new ArrayList<Partition>(ans);
+                }
+                final int card = alg.con().cardinality();
+                if (card < 8) {
+                  System.out.println("alpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma + ", delta: " + delta);
+                  System.out.println("|Con(A)| = " + alg.con().universe().size() + ", clone size: " + alg.operations().size());
+                }
+                //if (alg.con().cardinality() == 7) {
+                //  System.out.println("Found a closed rep");
+                //  return ans;
+                //}
+                ans.clear();
+              }
+            }
+            //return ans;
+          }
+        }
+      }
+    }
+    System.out.println("count: " + count);
+    System.out.println("maxConSize: " + max);
+    System.out.println("max ans: " + maxAns);
+    System.out.println("minConSize: " + min);
+    System.out.println("min ans: " + minAns);
+    return null;
+  }
+  
   public List constantOperations() { return SimpleList.EMPTY_LIST; }
 
   // TODO fix this
@@ -1348,8 +1429,8 @@ public class CongruenceLattice implements Lattice {
     long t = System.currentTimeMillis();
     SmallAlgebra set = new BasicAlgebra("", 9, new ArrayList<Operation>());
     System.out.println("Con size: " + set.con().cardinality());
-    List<Partition> l3 = set.con().findLXXGenerators();
-    System.out.println("L3 generators: " + l3);
+    List<Partition> l3 = set.con().findLPJ10Generators();
+    System.out.println("generators: " + l3);
     System.out.println("time: " + (System.currentTimeMillis() - t));
   }
 
