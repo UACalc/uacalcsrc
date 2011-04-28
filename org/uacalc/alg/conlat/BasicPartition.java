@@ -1275,6 +1275,9 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition delta = new BasicPartition(new int[] {-4, 0, -2, 2, 0, -4, 5, 0, 5, 5});
     */
     
+    ////////////////////////////////////////////////////////////////
+    //       A Triple Wing Pentagon
+    ////////////////////////////////////////////////////////////////
     // |0 1 2 9 10 17 18|3 4 5|6 7 8|11 14 15 19 22 23|12 13 16 20 21 24|
     BasicPartition beta  = new BasicPartition(new int[] 
        {-7, 0, 0, -3, 3, 3, -3, 6, 6, 0, 0, -6, -6, 12, 11, 11, 12, 0, 0, 11, 12, 12, 11, 11, 12});
