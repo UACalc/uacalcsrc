@@ -1243,21 +1243,66 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
 
     // [|0|1|2|3|4|5|6,7,8|, |0,3,7|1,5,8|2,4,6|, |0,5,6|1,4,7|2,3,8|, |0,3|1,5|2,4|6|7|8|]
     // con size = 16
+    /*
     BasicPartition alpha = new BasicPartition(new int[] {-1, -1, -1, -1, -1, -1, -3, 6, 6});
     BasicPartition beta  = new BasicPartition(new int[] {-3, -3, -3, 0, 2, 1, 2, 0, 1});
     BasicPartition gamma = new BasicPartition(new int[] {-3, -3, -3, 2, 1, 0, 0, 1, 2});
     BasicPartition delta = new BasicPartition(new int[] {-2,  -2, -2, 0, 2, 1, -1, -1, -1});
+    */
+    
+    // Double Wing Pentagon:
+    // |0|1,2|3,4|5,6|, |0,2,4|1,6|3|5|", |0,1,3,5|2|4|6|, |0,1,3,5|2|4,6|
+    /*
+    BasicPartition alpha = new BasicPartition(new int[] {-1, -2, 1, -2, 3, -2, 5});
+    BasicPartition beta  = new BasicPartition(new int[] {-3, -2, 0, -1, 0, -1, 1,});
+    BasicPartition gamma = new BasicPartition(new int[] {-4, 0, -1, 0, -1, 0, -1});
+    BasicPartition delta = new BasicPartition(new int[] {-4,  0, -1, 0, -2, 0, 4});
+    */
+    
+    // JB's DWP  |056|14|2|3|,  |0|1|246|35|, |0123|45|6|, |03|12|45|6|
+    /*
+    BasicPartition alpha = new BasicPartition(new int[] {-3, -2, -1, -1, 1, 0, 0});
+    BasicPartition beta  = new BasicPartition(new int[] {-1, -1, -3, -2, 2, 3, 2});
+    BasicPartition gamma = new BasicPartition(new int[] {-4, 0, 0, 0, -2, 4, -1});
+    BasicPartition delta = new BasicPartition(new int[] {-2, -2, 1, 0, -2, 4, -1});
+    */
+    
+    // a DWP with minimal sets Z2 x Z2 (three of them)
+    /*
+    BasicPartition alpha = new BasicPartition(new int[] {-4, 0, -2, 2, 0, -2, 5, 0, -2, 8});
+    BasicPartition beta  = new BasicPartition(new int[] {-3, -3, 0, 1, -2, 0, 4, -2, 7, 1});
+    BasicPartition gamma = new BasicPartition(new int[] {-3, -3, 1, 0, -2, 4, 0, -2, 1, 7});
+    BasicPartition delta = new BasicPartition(new int[] {-4, 0, -2, 2, 0, -4, 5, 0, 5, 5});
+    */
+    
+    // |0 1 2 9 10 17 18|3 4 5|6 7 8|11 14 15 19 22 23|12 13 16 20 21 24|
+    BasicPartition beta  = new BasicPartition(new int[] 
+       {-7, 0, 0, -3, 3, 3, -3, 6, 6, 0, 0, -6, -6, 12, 11, 11, 12, 0, 0, 11, 12, 12, 11, 11, 12});
+    
+    // |0 3 6 11 12|1 4 7 19 20|2 5 8|9 13 15|10 14 16|17 21 23|18 22 24|
+    BasicPartition gamma = new BasicPartition(new int[] 
+       {-5, -5, -3, 0, 1, 2, 0, 1, 2, -3, -3, 0, 0, 9, 10, 9, 10, -3, -3, 1, 1, 17, 18, 17, 18});
+    
+    // |0 4 8 13 14|1 5 6 21 22|2 3 7|9 11 16|10 12 15|17 19 24|18 20 23|
+    BasicPartition delta = new BasicPartition(new int[] 
+       {-5, -5, -3, 2, 0, 1, 1, 2, 0, -3, -3, 9, 10, 0, 0, 10, 9, -3, -3, 17, 18, 1, 1, 18, 17});
+    
+    // |0 5 7 15 16|1 3 8 23 24|2 4 6|9 12 14|10 11 13|17 20 22|18 19 21|
+    BasicPartition alpha = new BasicPartition(new int[] 
+       {-5, -5, -3, 1, 2, 0, 2, 0, 1, -3, -3, 10, 9, 10, 9, 0, 0, -3, -3, 18, 17, 18, 17, 1, 1});
 
+    
     List<Partition> pars12 = new ArrayList<Partition>(12);
     pars12.add(alpha);
     pars12.add(beta);
     pars12.add(gamma);
     pars12.add(delta);
+    System.out.println("pars12: " + pars12);
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     
     try {
-      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algPJnot10.ua");
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algTWP.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     
