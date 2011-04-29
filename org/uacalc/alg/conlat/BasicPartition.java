@@ -51,6 +51,51 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     this.size = part.length;
     normalize();
   }
+  
+  public BasicPartition(String str) {
+    this.array = stringToPartition(str);
+    this.size = array.length;
+    normalize();
+  }
+  
+  public static int[] stringToPartition(String str) {
+    final String vert = "|";
+    str = str.trim();
+    if (vert.equals(str.substring(0, 1)) && str.endsWith(vert)) {
+      str = str.substring(1,str.length() - 1);
+      String[] strings = str.split("\\|");
+      final int blkCount = strings.length;
+      List<TreeSet<Integer>> blocks = new ArrayList<TreeSet<Integer>>(blkCount);
+      for (int i = 0; i < blkCount; i++) {
+        blocks.add(blkStringToSet(strings[i]));
+      }
+      int size = 0;
+      for (TreeSet<Integer> blk : blocks) {
+        size = size + blk.size();
+      }
+      int[] ans = new int[size];
+      for (int i = 0; i < size; i++) {
+        for (TreeSet<Integer> blk : blocks) {
+          if (blk.contains(i)) {
+            if (blk.first().equals(i)) ans[i] = - blk.size();
+            else ans[i] = blk.first();
+          }
+        }
+      }
+      return ans;      
+    }
+    return null;
+  }
+  
+  private static TreeSet<Integer> blkStringToSet(String blkStr) {
+    final String comma = ",";
+    TreeSet<Integer> ans = new TreeSet<Integer>();
+    final String[] elts = blkStr.split("[,\\s]+");
+    for (int i = 0; i < elts.length; i++) {
+      ans.add(Integer.parseInt(elts[i]));
+    }
+    return ans;
+  }
 
   /**
    * The order of a linear extension respecting rank.
@@ -1209,10 +1254,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     
     //funcToJIs(5);
     //testGeneralizedWeakClosure();
-    BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -2,  10});
+    BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -1,  -1});
     //BasicPartition foo = new BasicPartition(new int[] {-1,-1});
     System.out.println(foo);
     System.out.println(foo.toString(SQ_BRACE_BLOCK));
+    System.out.println(new BasicPartition(foo.toString()));
+    System.out.println(new BasicPartition("|0 4 3|1 2|"));
     
     //if (endNow) return;
     
@@ -1275,24 +1322,30 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition delta = new BasicPartition(new int[] {-4, 0, -2, 2, 0, -4, 5, 0, 5, 5});
     */
     
+    // A Triple wing pentagon with Con B, B a minimal set, the subgroups of S_3. 
+    BasicPartition alpha = new BasicPartition("|0 1 2 6 7 11 12|3 4 5|8 9 10 13 14 15|");
+    BasicPartition beta  = new BasicPartition("|0 3 8|1 5 15|2 4|6 9|7 10|11 14|12 13|");
+    BasicPartition gamma = new BasicPartition("|0 4 9|1 3 13|2 5|6 10|7 8|11 15|12 14|");
+    BasicPartition delta = new BasicPartition("|0 5 10|1 4 14|2 3|6 8|7 9|11 13|12 15|");
+    
     ////////////////////////////////////////////////////////////////
     //       A Triple Wing Pentagon
     ////////////////////////////////////////////////////////////////
     // |0 1 2 9 10 17 18|3 4 5|6 7 8|11 14 15 19 22 23|12 13 16 20 21 24|
-    BasicPartition beta  = new BasicPartition(new int[] 
-       {-7, 0, 0, -3, 3, 3, -3, 6, 6, 0, 0, -6, -6, 12, 11, 11, 12, 0, 0, 11, 12, 12, 11, 11, 12});
+    //BasicPartition beta  = new BasicPartition(new int[] 
+    //   {-7, 0, 0, -3, 3, 3, -3, 6, 6, 0, 0, -6, -6, 12, 11, 11, 12, 0, 0, 11, 12, 12, 11, 11, 12});
     
     // |0 3 6 11 12|1 4 7 19 20|2 5 8|9 13 15|10 14 16|17 21 23|18 22 24|
-    BasicPartition gamma = new BasicPartition(new int[] 
-       {-5, -5, -3, 0, 1, 2, 0, 1, 2, -3, -3, 0, 0, 9, 10, 9, 10, -3, -3, 1, 1, 17, 18, 17, 18});
+    //BasicPartition gamma = new BasicPartition(new int[] 
+    //   {-5, -5, -3, 0, 1, 2, 0, 1, 2, -3, -3, 0, 0, 9, 10, 9, 10, -3, -3, 1, 1, 17, 18, 17, 18});
     
     // |0 4 8 13 14|1 5 6 21 22|2 3 7|9 11 16|10 12 15|17 19 24|18 20 23|
-    BasicPartition delta = new BasicPartition(new int[] 
-       {-5, -5, -3, 2, 0, 1, 1, 2, 0, -3, -3, 9, 10, 0, 0, 10, 9, -3, -3, 17, 18, 1, 1, 18, 17});
+    //BasicPartition delta = new BasicPartition(new int[] 
+    //   {-5, -5, -3, 2, 0, 1, 1, 2, 0, -3, -3, 9, 10, 0, 0, 10, 9, -3, -3, 17, 18, 1, 1, 18, 17});
     
     // |0 5 7 15 16|1 3 8 23 24|2 4 6|9 12 14|10 11 13|17 20 22|18 19 21|
-    BasicPartition alpha = new BasicPartition(new int[] 
-       {-5, -5, -3, 1, 2, 0, 2, 0, 1, -3, -3, 10, 9, 10, 9, 0, 0, -3, -3, 18, 17, 18, 17, 1, 1});
+    //BasicPartition alpha = new BasicPartition(new int[] 
+    //   {-5, -5, -3, 1, 2, 0, 2, 0, 1, -3, -3, 10, 9, 10, 9, 0, 0, -3, -3, 18, 17, 18, 17, 1, 1});
 
     
     List<Partition> pars12 = new ArrayList<Partition>(12);
@@ -1305,7 +1358,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     
     try {
-      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algTWP.ua");
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algXXX.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     
