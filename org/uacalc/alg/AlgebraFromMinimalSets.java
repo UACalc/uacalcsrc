@@ -17,12 +17,11 @@ import org.uacalc.alg.op.*;
  * @author ralph
  *
  */
-public class AlgebraFromMinimalSets extends GeneralAlgebra implements
+public class AlgebraFromMinimalSets extends BasicAlgebra implements
     SmallAlgebra {
 
   SmallAlgebra minimalAlgebra;
   int minAlgSize;
-  int algSize;
   List<int[]> maps;
   
   /**
@@ -44,10 +43,10 @@ public class AlgebraFromMinimalSets extends GeneralAlgebra implements
   }
   
   public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, List<int[]> maps) {
-    super(name);
+    super(name, 3 * minAlg.cardinality() - 2, new ArrayList<Operation>());
     this.minimalAlgebra = minAlg;
     minAlgSize = minAlg.cardinality();
-    algSize = 3 * minAlgSize - 2;
+    size = 3 * minAlgSize - 2;
     if (maps != null) this.maps = maps;
     else makeDefaultMaps();
     makeMapToB();
@@ -60,7 +59,7 @@ public class AlgebraFromMinimalSets extends GeneralAlgebra implements
     //ops.add(Operations.makeIntOperation("p", 1, algSize, mapToB));
     
     for (final int[] map : maps) {
-      Operation op = new AbstractOperation("p" + r++, 1, algSize) {
+      Operation op = new AbstractOperation("p" + r++, 1, size) {
         public int intValueAt(int[] args) {
           final int arg = args[0];
           return map[mapToB[arg]];
@@ -73,7 +72,7 @@ public class AlgebraFromMinimalSets extends GeneralAlgebra implements
       ops.add(op);
     }
     
-    Operation toC = new AbstractOperation("toC", 1, algSize) {
+    Operation toC = new AbstractOperation("toC", 1, size) {
       public int intValueAt(int[] args) {
         final int arg = args[0];
         if (arg == 0) return 0;
@@ -109,57 +108,25 @@ public class AlgebraFromMinimalSets extends GeneralAlgebra implements
   
   private void makeMapToB() {
     if (mapToB != null) return;
-    mapToB = new int[algSize];
+    mapToB = new int[size];
     for (int[] map : maps) {
       for (int i = 0; i < minAlgSize; i++) {
         mapToB[map[i]] = i;
       }
     }
   }
-  
-  
-  @Override
-  public AlgebraType algebraType() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void convertToDefaultValueOps() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public int elementIndex(Object elem) {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public Object getElement(int k) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public List getUniverseList() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Map getUniverseOrder() {
-    // TODO Auto-generated method stub
-    return null;
-  }
 
   /**
    * @param args
    */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
-
+    SmallAlgebra minalg = new BasicAlgebra(null, 3, new ArrayList<Operation>());
+    SmallAlgebra alg = new AlgebraFromMinimalSets(minalg);
+    System.out.println("card: " + alg.cardinality());
+    try {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg, "/tmp/algXXX.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
   }
 
 }
