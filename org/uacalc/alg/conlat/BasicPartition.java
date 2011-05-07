@@ -1323,10 +1323,17 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     */
     
     // A Triple wing pentagon with Con B, B a minimal set, the subgroups of S_3. 
+    /*
     BasicPartition alpha = new BasicPartition("|0 1 2 6 7 11 12|3 4 5|8 9 10 13 14 15|");
     BasicPartition beta  = new BasicPartition("|0 3 8|1 5 15|2 4|6 9|7 10|11 14|12 13|");
     BasicPartition gamma = new BasicPartition("|0 4 9|1 3 13|2 5|6 10|7 8|11 15|12 14|");
     BasicPartition delta = new BasicPartition("|0 5 10|1 4 14|2 3|6 8|7 9|11 13|12 15|");
+    */
+    
+    BasicPartition alpha = new BasicPartition("|0 1 2|3 4 5|6 7 8|");
+    BasicPartition beta  = new BasicPartition("|0 3|1|2|4 6|5|7|8|");
+    BasicPartition gamma = new BasicPartition("|0|1 4|2|3|5 8|6|7|");
+    BasicPartition delta = new BasicPartition("|0 5 8|1 4 7|2|3|6|");
     
     ////////////////////////////////////////////////////////////////
     //       A Triple Wing Pentagon
@@ -1356,6 +1363,9 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("pars12: " + pars12);
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
+    for (Partition par : alg12.con().universe()) {
+      System.out.println(par);
+    }
     
     try {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algXXX.ua");
