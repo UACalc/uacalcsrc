@@ -60,12 +60,28 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static int[] stringToPartition(String str) {
     final String vert = "|";
+    final String lbrack = "[";
+    final String rbrack = "]";
     str = str.trim();
+    List<TreeSet<Integer>> blocks = null;
+    String[] strings = null;
+    int blkCount = -1;
     if (vert.equals(str.substring(0, 1)) && str.endsWith(vert)) {
       str = str.substring(1,str.length() - 1);
-      String[] strings = str.split("\\|");
-      final int blkCount = strings.length;
-      List<TreeSet<Integer>> blocks = new ArrayList<TreeSet<Integer>>(blkCount);
+      strings = str.split("\\|");
+      blkCount = strings.length;
+      blocks = new ArrayList<TreeSet<Integer>>(blkCount);
+    }
+    if (lbrack.equals(str.substring(0, 1)) && str.endsWith(rbrack)) {
+      str = str.substring(1,str.length() - 1).trim();
+      if (!lbrack.equals(str.substring(0,1))) {
+        throw new IllegalArgumentException("Not a valid partition string"); 
+      }
+      strings = str.substring(1).split("\\[");
+      blkCount = strings.length;
+      blocks = new ArrayList<TreeSet<Integer>>(blkCount);
+    }
+    if (blocks != null) {
       for (int i = 0; i < blkCount; i++) {
         blocks.add(blkStringToSet(strings[i]));
       }
@@ -88,7 +104,14 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   private static TreeSet<Integer> blkStringToSet(String blkStr) {
-    final String comma = ",";
+    blkStr = blkStr.trim();
+    final String rbrack = "]";
+    int idx = blkStr.indexOf(rbrack);
+    if (idx != -1) {
+      blkStr = blkStr.substring(0, idx).trim();
+      idx = blkStr.indexOf(rbrack);
+      if (idx != -1) blkStr = blkStr.substring(0, idx).trim();
+    }
     TreeSet<Integer> ans = new TreeSet<Integer>();
     final String[] elts = blkStr.split("[,\\s]+");
     for (int i = 0; i < elts.length; i++) {
@@ -1330,10 +1353,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition delta = new BasicPartition("|0 5 10|1 4 14|2 3|6 8|7 9|11 13|12 15|");
     */
     
-    BasicPartition alpha = new BasicPartition("|0 1 2|3 4 5|6 7 8|");
+    BasicPartition alpha = new BasicPartition("| 0 1 2| 3 4 5 |6 7 8|");
     BasicPartition beta  = new BasicPartition("|0 3|1|2|4 6|5|7|8|");
     BasicPartition gamma = new BasicPartition("|0|1 4|2|3|5 8|6|7|");
-    BasicPartition delta = new BasicPartition("|0 5 8|1 4 7|2|3|6|");
+    //BasicPartition delta = new BasicPartition("|0 5 8|1 4 7|2|3|6|");
+    BasicPartition delta = new BasicPartition("[[0 5 8],[1 4 7],[2],[3],[6]]");
     
     ////////////////////////////////////////////////////////////////
     //       A Triple Wing Pentagon

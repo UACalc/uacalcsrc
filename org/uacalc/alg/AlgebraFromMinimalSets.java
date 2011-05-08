@@ -31,26 +31,54 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   int[] mapToB; // from A to B
   
   public AlgebraFromMinimalSets(SmallAlgebra minAlg) {
-    this(null, minAlg, null);
+    this(null, minAlg, 3 * minAlg.cardinality() - 2, null);
   }
   
-  public AlgebraFromMinimalSets(SmallAlgebra minAlg, List<int[]> maps) {
-    this(null, minAlg, maps);
+  public AlgebraFromMinimalSets(SmallAlgebra minAlg, int algSize, List<int[]> maps) {
+    this(null, minAlg, algSize, maps);
   }
   
   public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg) {
-    this(name, minAlg, null);
+    this(name, minAlg, 3 * minAlg.cardinality() - 2, null);
   }
   
-  public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, List<int[]> maps) {
+  public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, int algSize, List<int[]> maps) {
     super(name, 3 * minAlg.cardinality() - 2, new ArrayList<Operation>());
     this.minimalAlgebra = minAlg;
     minAlgSize = minAlg.cardinality();
-    size = 3 * minAlgSize - 2;
+    size = algSize;
+    final boolean mapsNull = maps == null;
     if (maps != null) this.maps = maps;
     else makeDefaultMaps();
     makeMapToB();
     setOperations(makeOps());
+    if (mapsNull) {
+      Operation op = new AbstractOperation("s", 1, size) {
+        public int intValueAt(int[] args) {
+          final int arg = args[0];
+          if (arg < minAlgSize) return arg;
+          if (arg < 2 * minAlgSize - 1) return 0;
+          return minAlgSize - 1;
+        }
+        
+        public List valueAt(List args) {
+          throw new UnsupportedOperationException();
+        }
+      };
+      operations.add(op);
+    }
+    for (final Operation minOp : minAlg.operations()) {
+      operations.add(new AbstractOperation("op-" + minOp.symbol().name(), 1, size) {
+        public int intValueAt(int[] args) {
+          final int arg = mapToB[args[0]];
+          return minOp.intValueAt(new int[] {arg});
+        }
+        
+        public List valueAt(List args) {
+          throw new UnsupportedOperationException();
+        }
+      });
+    }
   }
   
   private List<Operation> makeOps() {
@@ -109,9 +137,14 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   private void makeMapToB() {
     if (mapToB != null) return;
     mapToB = new int[size];
+    for (int i = 0; i < size; i++) mapToB[i] = -1;
     for (int[] map : maps) {
       for (int i = 0; i < minAlgSize; i++) {
-        mapToB[map[i]] = i;
+        final int iprime = map[i];
+        if (mapToB[iprime] != -1 && mapToB[iprime] != i) {
+          throw new IllegalArgumentException("Inconsistent maps");
+        }
+        mapToB[iprime] = i;
       }
     }
   }
@@ -121,10 +154,15 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
    */
   public static void main(String[] args) {
     SmallAlgebra minalg = new BasicAlgebra(null, 3, new ArrayList<Operation>());
+    try {
+      //minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/regS3.ua");
+      minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/c3-2.ua");
+    }
+    catch (Exception e) { e.printStackTrace(); }
     SmallAlgebra alg = new AlgebraFromMinimalSets(minalg);
     System.out.println("card: " + alg.cardinality());
     try {
-      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg, "/tmp/algXXX.ua");
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(alg, "/tmp/algXXX25.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
   }

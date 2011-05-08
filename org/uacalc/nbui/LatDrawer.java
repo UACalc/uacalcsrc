@@ -6,7 +6,9 @@ import org.latdraw.diagram.*;
 import org.latdraw.beans.*;
 
 import org.uacalc.lat.*;
+import org.uacalc.alg.*;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.alg.conlat.*;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -176,6 +178,8 @@ public class LatDrawer extends JPanel {
           }
           //if (key == 's' || key == 'S') drawPanel.stopRotation();
           if (key == 's' || key == 'S') showSublattice();
+          if (key == 'c') showClosure(false);
+          if (key == 'C') showClosure(true);
           if (key == '.' || key == '>') drawPanel.rotateOnce();
           if (key == ',' || key == '<') drawPanel.rotateLeft();
           if (key == 'd' || key == 'D') drawPanel.setDraggingAllowed(
@@ -358,11 +362,55 @@ public class LatDrawer extends JPanel {
     return ans;
   }
   
+  private Set<Vertex> getClosure(List<Vertex> gens, boolean keepAlg) {
+    Set<Vertex> ans = new HashSet<Vertex>();
+    if (gens == null || gens.size() == 0) return ans;
+    Object foo = gens.get(0).getUnderlyingObject();
+    if (!(foo instanceof BasicPartition)) return getSublattice(gens);
+    List<Partition> pars = new ArrayList<Partition>(gens.size());
+    for (Vertex v : gens) {
+      pars.add((Partition)v.getUnderlyingObject());
+    }
+    SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(pars);
+    if (keepAlg) {
+      alg.convertToDefaultValueOps();
+      uacalc.getMainController().addAlgebra(alg, false);
+    }
+    Set<Partition> closure = alg.con().universe();
+    for (Vertex v : getDiagram().getVertices()) {
+      Partition par = (Partition)v.getUnderlyingObject();
+      if (closure.contains(par)) ans.add(v);
+    }
+    return ans;
+  }
+  
   public void showSublattice() {
     if (getSelectedElemList() != null) {
       List<Vertex> elems = new ArrayList<Vertex>(getSelectedElemList());
       elems.add(getSelectedElem());
       Set<Vertex> sub = getSublattice(elems);
+      Set<Vertex> elemsSet = new HashSet<Vertex>(elems);
+      for (Vertex v : sub) {
+        if (!elemsSet.contains(v)) {
+          v.setColor(GENERATED_ELEMS_COLOR);
+          v.setFilled(true);
+        }
+      }
+      repaint();
+      System.out.println(sub.size());
+    }
+  }
+  
+  /**
+   * In Congruence panel this will show the closure (all congruences
+   * respected by all operations respecting the given ones; just the 
+   * sublattice generated otherwise.
+   */
+  public void showClosure(boolean keepAlg) {
+    if (getSelectedElemList() != null) {
+      List<Vertex> elems = new ArrayList<Vertex>(getSelectedElemList());
+      elems.add(getSelectedElem());
+      Set<Vertex> sub = getClosure(elems, keepAlg);
       Set<Vertex> elemsSet = new HashSet<Vertex>(elems);
       for (Vertex v : sub) {
         if (!elemsSet.contains(v)) {
