@@ -42,6 +42,18 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     this(name, minAlg, 3 * minAlg.cardinality() - 2, null);
   }
   
+  /**
+   * If k is the cardinality of <code>minAlg</code>, each map maps
+   * k = {0,..., k-1} one-to-one into n = {0,...,n-1}. The first map
+   * must be the identity. Each element of n must be in the range of 
+   * at least one map. Given any two elements of n, there are overlapping
+   * ranges of the maps going from on to the other.
+   * 
+   * @param name
+   * @param minAlg   a permutational algebra
+   * @param maps
+   */
+ 
   public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, int algSize, List<int[]> maps) {
     super(name, 3 * minAlg.cardinality() - 2, new ArrayList<Operation>());
     this.minimalAlgebra = minAlg;
