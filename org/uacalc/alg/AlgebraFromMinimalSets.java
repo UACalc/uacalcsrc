@@ -156,7 +156,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     SmallAlgebra minalg = new BasicAlgebra(null, 3, new ArrayList<Operation>());
     try {
       //minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/regS3.ua");
-      minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/c3-2.ua");
+      minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/c3-2unary.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     SmallAlgebra alg = new AlgebraFromMinimalSets(minalg);
