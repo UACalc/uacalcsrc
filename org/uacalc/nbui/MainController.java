@@ -640,10 +640,12 @@ public class MainController {
     //fileChooser.addChoosableFileFilter(
     //     new ExtFileFilter("Board Files (*.brd)", ExtFileFilter.BOARD_EXT));
     //fileChooser.setAccessory(new CurvePreviewer(this, fileChooser));
+    fileChooser.setMultiSelectionEnabled(true);
     int option = fileChooser.showOpenDialog(uacalcUI.getFrame());
 
     if (option==JFileChooser.APPROVE_OPTION) {
       theFile = fileChooser.getSelectedFile();
+      System.out.println("files: " + Arrays.toString(fileChooser.getSelectedFiles()));
       currentFolder = theFile.getParent();
       //getPrefs().put("algebraDir", theFile.getParent()); // done below
       open(theFile);
