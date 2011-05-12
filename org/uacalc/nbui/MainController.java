@@ -644,15 +644,34 @@ public class MainController {
     int option = fileChooser.showOpenDialog(uacalcUI.getFrame());
 
     if (option==JFileChooser.APPROVE_OPTION) {
+      File[] theFiles = fileChooser.getSelectedFiles();
       theFile = fileChooser.getSelectedFile();
       System.out.println("files: " + Arrays.toString(fileChooser.getSelectedFiles()));
       currentFolder = theFile.getParent();
       //getPrefs().put("algebraDir", theFile.getParent()); // done below
-      open(theFile);
+      if (theFiles.length < 2) open(theFile);
+      else open(theFiles);
+    }
+  }
+  
+  public void open(File file ) {
+    SmallAlgebra a = openAux(file);
+    if (a != null) {
+      //this is to get rid of the left over error messages below
+      //setUserMessage("");
+      //setCurrentFile(file);
+      //setTitle();
+      //setModified(false);
+      if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+        a.convertToDefaultValueOps();
+      }
+      //setDirty(false);
+      setCurrentAlgebra(addAlgebra(a, file, true));
+      uacalcUI.repaint();
     }
   }
 
-  public void open(File file) {
+  public SmallAlgebra openAux(File file) {
     getPrefs().put("algebraDir", file.getParent());
     SmallAlgebra a = null;
     try {
@@ -673,18 +692,27 @@ public class MainController {
       System.err.println("open failed");
       beep();
     }
-    if (a != null) {
-      //this is to get rid of the left over error messages below
-      //setUserMessage("");
-      //setCurrentFile(file);
-      //setTitle();
-      //setModified(false);
-      if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
-        a.convertToDefaultValueOps();
+    return a;
+  }
+  
+  public void open(File[] files) {
+    SmallAlgebra[] algs = new SmallAlgebra[files.length];
+    for (int i = 0; i < files.length; i++) {
+      algs[i] = openAux(files[i]);
+    }
+    boolean makeCurr = true;
+    for (int i = 0; i < algs.length; i++) {
+      if (algs[i] != null) {
+        SmallAlgebra a = algs[i];
+        if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+          a.convertToDefaultValueOps();
+        }
+        if (makeCurr) {
+          setCurrentAlgebra(addAlgebra(a, files[i], true));
+          makeCurr = false;
+        }
+        else addAlgebra(a, files[i], false);
       }
-      //setDirty(false);
-      setCurrentAlgebra(addAlgebra(a, file, true));
-      uacalcUI.repaint();
     }
   }
   
