@@ -80,10 +80,15 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
       operations.add(op);
     }
     for (final Operation minOp : minAlg.operations()) {
-      operations.add(new AbstractOperation("op-" + minOp.symbol().name(), 1, size) {
+      operations.add(new AbstractOperation("op-" + minOp.symbol().name(), minOp.arity(), size) {
         public int intValueAt(int[] args) {
-          final int arg = mapToB[args[0]];
-          return minOp.intValueAt(new int[] {arg});
+          int[] argsToB = new int[args.length];
+          for (int i = 0; i < args.length; i++) {
+            argsToB[i] = mapToB[args[i]];
+          }
+          //final int arg = mapToB[args[0]];
+          //return minOp.intValueAt(new int[] {arg});
+          return minOp.intValueAt(argsToB);
         }
         
         public List valueAt(List args) {
@@ -168,7 +173,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     SmallAlgebra minalg = new BasicAlgebra(null, 3, new ArrayList<Operation>());
     try {
       //minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/regS3.ua");
-      minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/c3-2unary.ua");
+      minalg = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/c3-2.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     SmallAlgebra alg = new AlgebraFromMinimalSets(minalg);
