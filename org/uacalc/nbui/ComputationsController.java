@@ -1616,7 +1616,7 @@ public class ComputationsController {
     // pop up something with an explanation of what this is
     SmallAlgebra ans = new AlgebraFromMinimalSets(alg);
     ans.convertToDefaultValueOps();
-    uacalcUI.getMainController().addAlgebra(ans, false);
+    uacalcUI.getMainController().addAlgebra(ans, true);
   }
   
   public void formMatrixPowerAlgebra() {
