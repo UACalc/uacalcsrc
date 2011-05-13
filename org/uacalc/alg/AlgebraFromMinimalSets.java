@@ -77,10 +77,11 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
           throw new UnsupportedOperationException();
         }
       };
-      operations.add(op);
+      operations.add(Operations.makeIntOperation(op));
     }
     for (final Operation minOp : minAlg.operations()) {
-      operations.add(new AbstractOperation("op-" + minOp.symbol().name(), minOp.arity(), size) {
+      operations.add(Operations.makeIntOperation(
+          new AbstractOperation("op-" + minOp.symbol().name(), minOp.arity(), size) {
         public int intValueAt(int[] args) {
           int[] argsToB = new int[args.length];
           for (int i = 0; i < args.length; i++) {
@@ -94,7 +95,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
         public List valueAt(List args) {
           throw new UnsupportedOperationException();
         }
-      });
+      }));
     }
   }
   
@@ -114,22 +115,8 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
           throw new UnsupportedOperationException();
         }
       };
-      ops.add(op);
+      ops.add(Operations.makeIntOperation(op));
     }
-    
-    Operation toC = new AbstractOperation("toC", 1, size) {
-      public int intValueAt(int[] args) {
-        final int arg = args[0];
-        if (arg == 0) return 0;
-        if (arg < minAlgSize) return arg + minAlgSize - 1;
-        return 0;
-      }
-      
-      public List valueAt(List args) {
-        throw new UnsupportedOperationException();
-      }
-    };
-    
     return ops;
   }
   

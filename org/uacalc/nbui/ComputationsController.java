@@ -1609,6 +1609,16 @@ public class ComputationsController {
     mc.addAlgebra(powAlg, true);
   }
   
+  public void formRabbitEarsAlgebra() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    // pop up something with an explanation of what this is
+    SmallAlgebra ans = new AlgebraFromMinimalSets(alg);
+    ans.convertToDefaultValueOps();
+    uacalcUI.getMainController().addAlgebra(ans, false);
+  }
+  
   public void formMatrixPowerAlgebra() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

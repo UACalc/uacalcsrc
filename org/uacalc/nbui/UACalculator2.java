@@ -105,6 +105,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem prodMI;
   private javax.swing.JMenuItem quitMI;
   private javax.swing.JMenuItem quotMI;
+  private javax.swing.JMenuItem rabbitEarsMI;
   private javax.swing.JLabel resultDescLabel;
   private javax.swing.JPanel resultPane;
   private javax.swing.JTable resultTable;
@@ -280,6 +281,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     editMenu = new javax.swing.JMenu();
     hspMenu = new javax.swing.JMenu();
     quotMI = new javax.swing.JMenuItem();
+    rabbitEarsMI = new javax.swing.JMenuItem();
     subMI = new javax.swing.JMenuItem();
     prodMI = new javax.swing.JMenuItem();
     powMI = new javax.swing.JMenuItem();
@@ -611,6 +613,14 @@ xxx;
         }
     });
     hspMenu.add(subpowMI);
+    
+    rabbitEarsMI.setText("Rabbit Ears");
+    rabbitEarsMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          rabbittEarsMIActionPerformed(evt);
+      }
+    });
+    hspMenu.add(rabbitEarsMI);
 
     jMenuBar1.add(hspMenu);
 
@@ -1270,6 +1280,10 @@ xxx;
     getComputationsController().setupSubPowerTask();
   }//GEN-LAST:event_subpowMIActionPerformed
 
+  private void rabbittEarsMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subpowMIActionPerformed
+    getComputationsController().formRabbitEarsAlgebra();
+  }
+  
   private void mmstMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mmstMIActionPerformed
     getComputationsController().setupMarkovicMcKenzieSiggersTaylorTermTask();
   }//GEN-LAST:event_mmstMIActionPerformed
