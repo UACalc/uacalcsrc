@@ -1616,16 +1616,20 @@ public class ComputationsController {
     // pop up something with an explanation of what this is
     String numStr = JOptionPane.showInputDialog(uacalcUI.getFrame(), 
         "<html>Input 2 numbers less than " 
-        + alg.cardinality() + ", one after another,<br> " 
+        + alg.cardinality() + ", separated by a space or comma,<br> " 
         + "for the connecting points a and b.</html>", 
         "Connecting Points a and b", JOptionPane.QUESTION_MESSAGE);
     if (numStr == null) return;  // user cancelled
-    String[] numsArr = numStr.split("\\s+");
+    String[] numsArr = numStr.split("[,\\s]+");
     if (numsArr.length < 2) return;
     List<Integer> connectPts = new ArrayList<Integer>(2);
-    connectPts.add(Integer.parseInt(numsArr[0]));
-    connectPts.add(Integer.parseInt(numsArr[1]));
-    SmallAlgebra ans = new AlgebraFromMinimalSets("REars", alg, connectPts);
+    final int a = Integer.parseInt(numsArr[0]);
+    final int b = Integer.parseInt(numsArr[1]);
+    final String minName = alg.getName();
+    connectPts.add(a);
+    connectPts.add(b);
+    SmallAlgebra ans = new AlgebraFromMinimalSets("REars-" + 
+        (minName == null ? "" : minName) + "-" + a +"-" + b, alg, connectPts);
     ans.convertToDefaultValueOps();
     uacalcUI.getMainController().addAlgebra(ans, true);
   }
