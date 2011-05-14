@@ -23,6 +23,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   SmallAlgebra minimalAlgebra;
   int minAlgSize;
   List<Integer> connectingPts;
+  int a, b;
   List<int[]> maps;
   
   /**
@@ -41,6 +42,10 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   
   public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg) {
     this(name, minAlg, 3 * minAlg.cardinality() - 2, null, null);
+  }
+  
+  public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, List<Integer> connectPts) {
+    this(name, minAlg, 3 * minAlg.cardinality() - 2, null, connectPts);
   }
   
   /**
@@ -63,6 +68,12 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     this.minimalAlgebra = minAlg;
     minAlgSize = minAlg.cardinality();
     size = algSize;
+    a = 0;
+    b = minAlgSize - 1;
+    if (connectingPts != null && connectingPts.size() > 1) {
+      a = connectingPts.get(0);
+      b = connectingPts.get(1);
+    }
     final boolean mapsNull = maps == null;
     if (maps != null) this.maps = maps;
     else makeDefaultMaps();
@@ -73,8 +84,8 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
         public int intValueAt(int[] args) {
           final int arg = args[0];
           if (arg < minAlgSize) return arg;
-          if (arg < 2 * minAlgSize - 1) return 0;
-          return minAlgSize - 1;
+          if (arg < 2 * minAlgSize - 1) return a;
+          return b;
         }
         
         public List valueAt(List args) {
@@ -126,12 +137,6 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   
   private void makeDefaultMaps() {
     final int k = minAlgSize;
-    int a = 0;
-    int b = k - 1;
-    if (connectingPts != null && connectingPts.size() > 1) {
-      a = connectingPts.get(0);
-      b = connectingPts.get(1);
-    }
     maps = new ArrayList<int[]>(3);
     int[] B = new int[k];
     int[] C = new int[k];
