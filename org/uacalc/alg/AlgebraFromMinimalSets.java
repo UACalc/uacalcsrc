@@ -22,6 +22,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
 
   SmallAlgebra minimalAlgebra;
   int minAlgSize;
+  List<Integer> connectingPts;
   List<int[]> maps;
   
   /**
@@ -31,15 +32,15 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   int[] mapToB; // from A to B
   
   public AlgebraFromMinimalSets(SmallAlgebra minAlg) {
-    this(null, minAlg, 3 * minAlg.cardinality() - 2, null);
+    this(null, minAlg, 3 * minAlg.cardinality() - 2, null, null);
   }
   
   public AlgebraFromMinimalSets(SmallAlgebra minAlg, int algSize, List<int[]> maps) {
-    this(null, minAlg, algSize, maps);
+    this(null, minAlg, algSize, maps, null);
   }
   
   public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg) {
-    this(name, minAlg, 3 * minAlg.cardinality() - 2, null);
+    this(name, minAlg, 3 * minAlg.cardinality() - 2, null, null);
   }
   
   /**
@@ -54,8 +55,11 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
    * @param maps
    */
  
-  public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, int algSize, List<int[]> maps) {
-    super(name, 3 * minAlg.cardinality() - 2, new ArrayList<Operation>());
+  public AlgebraFromMinimalSets(String name, SmallAlgebra minAlg, 
+                                int algSize, List<int[]> maps, 
+                                List<Integer> connectPts) {
+    super(name, algSize, new ArrayList<Operation>());
+    this.connectingPts = connectPts;
     this.minimalAlgebra = minAlg;
     minAlgSize = minAlg.cardinality();
     size = algSize;
@@ -122,6 +126,12 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
   
   private void makeDefaultMaps() {
     final int k = minAlgSize;
+    int a = 0;
+    int b = k - 1;
+    if (connectingPts != null && connectingPts.size() > 1) {
+      a = connectingPts.get(0);
+      b = connectingPts.get(1);
+    }
     maps = new ArrayList<int[]>(3);
     int[] B = new int[k];
     int[] C = new int[k];
@@ -131,11 +141,11 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     maps.add(D);
     for (int i = 0; i < k; i++) {
       B[i] = i;
-      C[i] = i - 1 + k;
-      D[i] = i - 1 + 2*k;
+      C[i] = i < a ? i + k : i + k - 1 ;
+      D[i] = i < b ? i + 2*k - 1 : i + 2*k - 2;
     }
-    C[0] = 0;
-    D[k - 1] = k - 1;
+    C[a] = a;
+    D[b] = b;
   }
   
   private void makeMapToB() {
