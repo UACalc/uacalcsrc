@@ -8,6 +8,7 @@ import org.latdraw.orderedset.POElem;
 
 import org.uacalc.alg.op.*; // only needed in main
 import org.uacalc.alg.*;    // only needed in main
+import org.uacalc.terms.*;
 
 
 import java.util.*;
@@ -1044,6 +1045,18 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @return
    */
   public static List<Partition> closureAt(List<BasicPartition> pars) {
+    final Map<Partition,Term> termMap = new HashMap<Partition,Term>();
+    final String[] letters = new String[] {"a", "b","c","d","e","f"};
+    final String str0 = "0";
+    final String str1 = "1";
+    if (pars.size() > letters.length) {
+      System.out.println("I need more letters!!!");
+      throw new IllegalArgumentException("More letters needed");
+    }
+    //termMap.put(pars.get(0), new VariableImp(letters[0]));
+    for (int i = 1; i < pars.size(); i++) {
+      
+    }
     final BasicPartition alpha = pars.get(0);
     final int n = alpha.universeSize();
     int[][] blocks = alpha.getBlocks();
@@ -1065,9 +1078,17 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     Partition alpha0 = alpha.inducedPartition(univ, 0);
     System.out.println("alpha: " + alpha);
     System.out.println("alpha0: " + alpha0);
+    
+    //List<Partition>
+    // here
+    
+    
     Set<Partition> hs = new HashSet<Partition>();
+    
     hs.add(firstProj);
+    termMap.put(firstProj, new VariableImp("p0"));
     hs.add(zero(alpha.universeSize()).inducedPartition(univ, 1)); //second proj kernel
+    
     hs.add(alpha0); 
     hs.add(alpha.inducedPartition(univ, 1));
     for (BasicPartition par : pars) {
