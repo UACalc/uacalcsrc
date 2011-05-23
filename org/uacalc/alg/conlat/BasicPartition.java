@@ -1053,10 +1053,6 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       System.out.println("I need more letters!!!");
       throw new IllegalArgumentException("More letters needed");
     }
-    //termMap.put(pars.get(0), new VariableImp(letters[0]));
-    for (int i = 1; i < pars.size(); i++) {
-      
-    }
     final BasicPartition alpha = pars.get(0);
     final int n = alpha.universeSize();
     int[][] blocks = alpha.getBlocks();
@@ -1079,30 +1075,36 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("alpha: " + alpha);
     System.out.println("alpha0: " + alpha0);
     
-    //List<Partition>
-    // here
-    
-    
-    Set<Partition> hs = new HashSet<Partition>();
-    
-    hs.add(firstProj);
-    termMap.put(firstProj, new VariableImp("p0"));
-    hs.add(zero(alpha.universeSize()).inducedPartition(univ, 1)); //second proj kernel
-    
-    hs.add(alpha0); 
-    hs.add(alpha.inducedPartition(univ, 1));
-    for (BasicPartition par : pars) {
-      System.out.println("gen par is " + par);
-      System.out.println("gen par_0 is " + par.inducedPartition(univ, 0));
-      hs.add(par.inducedPartition(univ, 0));
-      hs.add(par.inducedPartition(univ, 1));      
+    //List<Partition> sublat = new ArrayList<Partition>();
+    List<Partition> wkClosure = new ArrayList<Partition>();
+    //sublat.add(alpha0);
+    wkClosure.add(alpha0);
+    termMap.put(alpha0, new VariableImp("a"));
+    for (int i = 1; i < pars.size(); i++) {
+      final BasicPartition par = pars.get(i);
+      final Partition par0 = par.inducedPartition(univ,0);
+      //sublat.add(par0);
+      wkClosure.add(par0);
+      termMap.put(par0, new VariableImp(letters[i] + str0));
     }
-    List<Partition> sub = subUniverseGenerated(new ArrayList<Partition>(hs));
-    System.out.println("sub size = " + sub.size());
+    wkClosure = subUniverseGenerated(wkClosure, termMap);
+    System.out.println("sublat size: " + wkClosure.size());
+    final int subSize = wkClosure.size();
+    for (int i = 1; i < pars.size(); i++) {
+      final BasicPartition par = pars.get(i);
+      final Partition par1 = par.inducedPartition(univ,1);
+      wkClosure.add(par1);
+      termMap.put(par1, new VariableImp(letters[i] + str1));
+    }
+    wkClosure = subUniverseGenerated(wkClosure, termMap, firstProj);
     List<Partition> ans = new ArrayList<Partition>();
-    for (Partition par : sub) {
+    for (Partition par : wkClosure) {
       //System.out.println("par: " + par +" is geq firstProj: " + firstProj.leq(par));
-      if (firstProj.leq(par)) ans.add(((BasicPartition)par).projection(univ, n, 0));
+      if (firstProj.leq(par)) {
+        ans.add(((BasicPartition)par).projection(univ, n, 0));
+        System.out.print("par: " + ((BasicPartition)par).projection(univ, n, 0));
+        System.out.print("term: " + termMap.get(par));
+      }
     }
     return ans;
   }
@@ -1148,6 +1150,25 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   public static List<Partition> joinClosure(List<Partition> pars) {
+    return joinClosure(pars, null, null);
+  }
+  
+  public static List<Partition> joinClosure(List<Partition> pars, Map<Partition,Term> termMap) {
+    return joinClosure(pars, termMap, null);
+  }
+  
+  /**
+   * This is the join closure except that it will stop if
+   * it finds a new element above projkernel.
+   * 
+   * @param pars
+   * @param termMap
+   * @param projkernel
+   * @return
+   */
+  public static List<Partition> joinClosure(List<Partition> pars, 
+                                            final Map<Partition,Term> termMap,
+                                            final Partition projkernel) {
     Set<Partition> hs = new HashSet<Partition>(pars);
     List<Partition> ans = new ArrayList<Partition>(pars);
     int k = 0;
@@ -1156,13 +1177,30 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       int n = ans.size();
       for (int i = k; i < n; i++) {
         Partition join = elt.join(ans.get(i));
-        if (hs.add(join)) ans.add(join);
+        if (hs.add(join)) {
+          ans.add(join);
+          if (termMap != null) {
+            List<Term> children = new ArrayList<Term>(2);
+            children.add(termMap.get(elt));
+            children.add(termMap.get(ans.get(i)));
+            termMap.put(join, new NonVariableTerm(OperationSymbol.JOIN, children));
+          }
+          if (projkernel != null && projkernel.leq(join)) {
+            System.out.println("new elt: " + join + ", " + termMap.get(join));
+            //return ans;
+          }
+        }
       }
     }
     return ans;
   }
   
   public static List<Partition> meetClosure(List<Partition> pars) {
+    return meetClosure(pars, null);
+  }
+
+  
+  public static List<Partition> meetClosure(List<Partition> pars, Map<Partition,Term> termMap) {
     Set<Partition> hs = new HashSet<Partition>(pars);
     List<Partition> ans = new ArrayList<Partition>(pars);
     int k = 0;
@@ -1171,23 +1209,41 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       int n = ans.size();
       for (int i = k; i < n; i++) {
         Partition join = elt.meet(ans.get(i));
-        if (hs.add(join)) ans.add(join);
+        if (hs.add(join)) {
+          ans.add(join);
+          if (termMap != null) {
+            List<Term> children = new ArrayList<Term>(2);
+            children.add(termMap.get(elt));
+            children.add(termMap.get(ans.get(i)));
+            termMap.put(join, new NonVariableTerm(OperationSymbol.MEET, children));
+          }
+        }
       }
     }
     return ans;
   }
   
   public static List<Partition> subUniverseGenerated(List<Partition> gens) {
-    List<Partition> ans = meetClosure(gens);
-    ans = meetClosure(ans);
+    return subUniverseGenerated(gens, null, null);
+  }
+  
+  public static List<Partition> subUniverseGenerated(List<Partition> gens, Map<Partition,Term> termMap) {
+    return subUniverseGenerated(gens, termMap, null);
+  }
+  
+  public static List<Partition> subUniverseGenerated(List<Partition> gens, 
+                                                     Map<Partition,Term> termMap,
+                                                     Partition projkernel) {
+    List<Partition> ans = meetClosure(gens, termMap);
+    //ans = meetClosure(ans);
     int k = ans.size();
     while (true) {
       System.out.println("k = " + k);
-      ans = joinClosure(ans);
+      ans = joinClosure(ans, termMap, projkernel);
       if (ans.size() == k) return ans;
       k = ans.size();
       System.out.println("k = " + k);
-      ans = meetClosure(ans);
+      ans = meetClosure(ans, termMap);
       if (ans.size() == k) return ans;
       k = ans.size();
     }
@@ -1400,10 +1456,11 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //   {-5, -5, -3, 1, 2, 0, 2, 0, 1, -3, -3, 10, 9, 10, 9, 0, 0, -3, -3, 18, 17, 18, 17, 1, 1});
 
     
-    List<Partition> pars12 = new ArrayList<Partition>(12);
+    List<BasicPartition> pars12 = new ArrayList<BasicPartition>(12);
+    pars12.add(gamma);
     pars12.add(alpha);
     pars12.add(beta);
-    pars12.add(gamma);
+    //pars12.add(gamma);
     pars12.add(delta);
     System.out.println("pars12: " + pars12);
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
@@ -1416,6 +1473,13 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/algXXX.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
+    
+    List<Partition> wkClosure = closureAt(pars12);
+    System.out.println("weak closure size: " + wkClosure.size());
+    System.out.println("weak closure: ");
+    for (Partition par : wkClosure) {
+      
+    }
     
     if (endNow) return;
     
