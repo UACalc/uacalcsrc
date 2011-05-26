@@ -1103,7 +1103,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       if (firstProj.leq(par)) {
         ans.add(((BasicPartition)par).projection(univ, n, 0));
         System.out.print("par: " + ((BasicPartition)par).projection(univ, n, 0));
-        System.out.print("term: " + termMap.get(par));
+        System.out.println(", term: " + termMap.get(par));
       }
     }
     return ans;
@@ -1457,11 +1457,12 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
 
     
     List<BasicPartition> pars12 = new ArrayList<BasicPartition>(12);
+    pars12.add(delta);
     pars12.add(gamma);
     pars12.add(alpha);
     pars12.add(beta);
     //pars12.add(gamma);
-    pars12.add(delta);
+    //pars12.add(delta);
     System.out.println("pars12: " + pars12);
     SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
@@ -1475,7 +1476,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     catch (Exception e) { e.printStackTrace(); }
     
     List<Partition> wkClosure = closureAt(pars12);
-    System.out.println("weak closure size: " + wkClosure.size());
+    System.out.println("\n\nweak closure size: " + wkClosure.size());
     System.out.println("weak closure: ");
     for (Partition par : wkClosure) {
       
