@@ -35,16 +35,23 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
     UA_EXTS.add(XML_EXT);
   }
   
-  List exts;
+  public final static List<String> ALL_ALG_EXTS = new ArrayList<String>();
+  static {
+    ALL_ALG_EXTS.add(UA_EXT);
+    ALL_ALG_EXTS.add(XML_EXT);
+    ALL_ALG_EXTS.add(ALG_EXT);
+  }
+  
+  List<String> exts;
   String description;
 
-  public ExtFileFilter(String desc, List exts) {
+  public ExtFileFilter(String desc, List<String> exts) {
     this.exts = exts;
     this.description = desc;
   }
 
   public ExtFileFilter(String desc, String ext) {
-    this.exts = new ArrayList();
+    this.exts = new ArrayList<String>();
     exts.add(ext);
     this.description = desc;
   }

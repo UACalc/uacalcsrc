@@ -637,9 +637,9 @@ public class MainController {
     else fileChooser = new JFileChooser();
     //fileChooser.addChoosableFileFilter(
     //     new ExtFileFilter("Shape3D Files (*.s3d)", ExtFileFilter.S3D_EXT));
-    //fileChooser.addChoosableFileFilter(
-    //     new ExtFileFilter("Board Files (*.brd)", ExtFileFilter.BOARD_EXT));
-    //fileChooser.setAccessory(new CurvePreviewer(this, fileChooser));
+    fileChooser.addChoosableFileFilter(
+         new ExtFileFilter("Algebra Files (*.ua, *.alg)", ExtFileFilter.ALL_ALG_EXTS));
+    fileChooser.setAccessory(new AlgebraPreviewer(uacalcUI, fileChooser));
     fileChooser.setMultiSelectionEnabled(true);
     int option = fileChooser.showOpenDialog(uacalcUI.getFrame());
 
