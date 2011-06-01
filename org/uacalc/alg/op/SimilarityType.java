@@ -28,6 +28,8 @@ public class SimilarityType {
   }
 
   List<OperationSymbol> operationSymbols;
+  Map<Integer,Integer> aritiesMap;
+  int maxArity = -1;
 
   public SimilarityType(List<OperationSymbol> opSyms) {
     this(opSyms, false);
@@ -72,6 +74,27 @@ public class SimilarityType {
     }
     return (int)inputSize.longValue();
   }
+  
+  /**
+   * A map from the arity to the number of ops of that arity.
+   * @return
+   */
+  public Map<Integer,Integer> getAritiesMap() {
+    if (aritiesMap != null) return aritiesMap; 
+    aritiesMap = new TreeMap<Integer,Integer>();
+    for (OperationSymbol sym : operationSymbols) {
+      final int k = sym.arity();
+      maxArity = Math.max(maxArity, k);
+      if (aritiesMap.get(k) == null) aritiesMap.put(k, 1);
+      else aritiesMap.put(k, 1 + aritiesMap.get(k));
+    }
+    return aritiesMap;
+  }
+  
+  public int getMaxArity() {
+    getAritiesMap();
+    return maxArity;
+  }
 
   public String toString() {
     StringBuffer sb = new StringBuffer("(");
@@ -81,6 +104,17 @@ public class SimilarityType {
       if (it.hasNext()) sb.append(", ");
     }
     sb.append(")");
+    return sb.toString();
+  }
+  
+  public String aritiesString() {
+    StringBuffer sb = new StringBuffer();
+    final int k = getMaxArity();
+    for (int i = k; i >= 0; i--) {
+      if (getAritiesMap().get(i) != null) {
+        sb.append("" + i + "(" + getAritiesMap().get(i) + ") ");
+      }
+    }
     return sb.toString();
   }
 

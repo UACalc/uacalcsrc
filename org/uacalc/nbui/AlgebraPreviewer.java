@@ -70,7 +70,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
       }
       nameField.setText(algebra.getName());
       cardField.setText("" + algebra.cardinality());
-      simTypeField.setText(algebra.similarityType().toString());
+      simTypeField.setText(algebra.similarityType().aritiesString());
       descField.setText(algebra.getDescription());
 
       /*
