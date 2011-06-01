@@ -47,6 +47,8 @@ public class MainController {
   private DrawingController drawingController;
   private PropertyChangeSupport propertyChangeSupport;
   
+  private JFileChooser fileChooser;
+  
   private JComboBox algListComboBox = new JComboBox();
   public static final String ALGEBRA_CHANGED = "Algebra Changed";
   
@@ -525,6 +527,8 @@ public class MainController {
     //if (!getAlgebraEditorController().sync()) return false;
     boolean newFormat = true;
     if (ext.equals(org.uacalc.io.ExtFileFilter.ALG_EXT)) newFormat = false;
+    if (fileChooser == null) initFileChooser();
+    /*
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
     JFileChooser fileChooser;
@@ -539,6 +543,7 @@ public class MainController {
                             ExtFileFilter.UA_EXTS) :
          new ExtFileFilter("Alg Files Old Format (*.alg)", 
                             ExtFileFilter.ALG_EXT));
+    */
     int option = fileChooser.showSaveDialog(uacalcUI.getFrame());
     if (option == JFileChooser.APPROVE_OPTION) {
       // save original user selection
@@ -626,21 +631,26 @@ public class MainController {
     return false;
   }
 
+  private void initFileChooser() {
+    String pwd = getPrefs().get("algebraDir", null);
+    if (pwd == null) pwd = System.getProperty("user.dir");
+    if (pwd != null) fileChooser = new JFileChooser(pwd);
+    else fileChooser = new JFileChooser();
+    fileChooser.addChoosableFileFilter(
+        new ExtFileFilter("Algebra Files (*.ua, *.alg)", ExtFileFilter.ALL_ALG_EXTS));
+    AlgebraPreviewer algPreviewer = new AlgebraPreviewer();
+    fileChooser.setAccessory(algPreviewer);
+    fileChooser.addPropertyChangeListener(algPreviewer); // to receive selection changes
+    fileChooser.setMultiSelectionEnabled(true);
+  }
   
   public void open() {
     String pwd = getPrefs().get("algebraDir", null);
     if (pwd == null) pwd = System.getProperty("user.dir");
     File theFile = null;
     // pwd = currentFolder;
-    JFileChooser fileChooser;
-    if (pwd != null) fileChooser = new JFileChooser(pwd);
-    else fileChooser = new JFileChooser();
-    //fileChooser.addChoosableFileFilter(
-    //     new ExtFileFilter("Shape3D Files (*.s3d)", ExtFileFilter.S3D_EXT));
-    fileChooser.addChoosableFileFilter(
-         new ExtFileFilter("Algebra Files (*.ua, *.alg)", ExtFileFilter.ALL_ALG_EXTS));
-    fileChooser.setAccessory(new AlgebraPreviewer(uacalcUI, fileChooser));
-    fileChooser.setMultiSelectionEnabled(true);
+    // JFileChooser fileChooser; // now a field
+    if (fileChooser == null) initFileChooser();
     int option = fileChooser.showOpenDialog(uacalcUI.getFrame());
 
     if (option==JFileChooser.APPROVE_OPTION) {
@@ -655,27 +665,57 @@ public class MainController {
   }
   
   public void open(File file ) {
+    java.util.List<SmallAlgebra> algs = null;
+    try {
+      algs = AlgebraIO.readAlgebraListFile(file);
+      //a = AlgebraIO.readAlgebraFile(file);
+      // TODO: add to list of algs
+    }
+    catch (BadAlgebraFileException e) {
+      System.err.println("Bad algebra file " + file);
+      e.printStackTrace();
+      beep();
+    }
+    catch (IOException e) {
+      System.err.println("IO error on file " + file);
+      e.printStackTrace();
+      beep();
+    }
+    catch (NullPointerException e) {
+      System.err.println("open failed");
+      beep();
+    }
+    if (algs == null || algs.size() == 0) {
+      System.err.println("open failed");
+      beep();
+      return;
+    }
+    SmallAlgebra[] algsvec = new SmallAlgebra[algs.size()];
+    for (int i = 0; i < algs.size(); i++) {
+      algsvec[i] = algs.get(i);
+    }
+    addAlgebras(algsvec, null);
+    
     SmallAlgebra a = openAux(file);
+    /*
     if (a != null) {
-      //this is to get rid of the left over error messages below
-      //setUserMessage("");
-      //setCurrentFile(file);
-      //setTitle();
-      //setModified(false);
       if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
         a.convertToDefaultValueOps();
       }
-      //setDirty(false);
       setCurrentAlgebra(addAlgebra(a, file, true));
       uacalcUI.repaint();
     }
+    */
+    uacalcUI.repaint();
   }
 
   public SmallAlgebra openAux(File file) {
     getPrefs().put("algebraDir", file.getParent());
     SmallAlgebra a = null;
     try {
-      a = AlgebraIO.readAlgebraFile(file);
+      java.util.List<SmallAlgebra> algs = AlgebraIO.readAlgebraListFile(file);
+      //a = AlgebraIO.readAlgebraFile(file);
+      a = algs.get(0);
       // TODO: add to list of algs
     }
     catch (BadAlgebraFileException e) {
@@ -700,6 +740,10 @@ public class MainController {
     for (int i = 0; i < files.length; i++) {
       algs[i] = openAux(files[i]);
     }
+    addAlgebras(algs, files);
+  }
+  
+  private void addAlgebras(SmallAlgebra[] algs, File[] files) {
     boolean makeCurr = true;
     for (int i = 0; i < algs.length; i++) {
       if (algs[i] != null) {
@@ -707,11 +751,13 @@ public class MainController {
         if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
           a.convertToDefaultValueOps();
         }
+        File file = null;
+        if (files != null) file = files[i];
         if (makeCurr) {
-          setCurrentAlgebra(addAlgebra(a, files[i], true));
+          setCurrentAlgebra(addAlgebra(a, file, true));
           makeCurr = false;
         }
-        else addAlgebra(a, files[i], false);
+        else addAlgebra(a, file, false);
       }
     }
   }
