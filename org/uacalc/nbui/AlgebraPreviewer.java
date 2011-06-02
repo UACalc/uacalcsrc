@@ -18,7 +18,8 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
   JTextField cardField = new JTextField(6);
   JTextField simTypeField = new JTextField();
   JTextField descField = new JTextField();
-  JTextArea descArea = new JTextArea();
+  JScrollBar scrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
+  //JTextArea descArea = new JTextArea();
 
   public AlgebraPreviewer() {
     this.uacalc = uacalc;
@@ -29,6 +30,9 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     //add(new JLabel("Center:"), BorderLayout.CENTER);
     //add(nameField, BorderLayout.SOUTH);
     
+    BoundedRangeModel brm = descField.getHorizontalVisibility();
+    scrollBar.setModel(brm);
+    
     add(new JLabel("name:"));
     add(nameField);
     add(new JLabel("card:"));
@@ -38,6 +42,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     nameField.setText("testing");
     //add(descArea, "grow, span, wrap");
     add(descField, "grow, span, wrap");
+    add(scrollBar, "grow, span, wrap");
     
     //revalidate();
     //setVisible(true);

@@ -694,9 +694,11 @@ public class MainController {
     for (int i = 0; i < algs.size(); i++) {
       algsvec[i] = algs.get(i);
     }
-    addAlgebras(algsvec, null);
+    File[] files = null;
+    if (algs.size() == 1) files = new File[] {file};
+    addAlgebras(algsvec, files);
     
-    SmallAlgebra a = openAux(file);
+    //SmallAlgebra a = openAux(file);
     /*
     if (a != null) {
       if (a.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
@@ -753,6 +755,7 @@ public class MainController {
         }
         File file = null;
         if (files != null) file = files[i];
+        System.out.println("file: " + file);
         if (makeCurr) {
           setCurrentAlgebra(addAlgebra(a, file, true));
           makeCurr = false;
