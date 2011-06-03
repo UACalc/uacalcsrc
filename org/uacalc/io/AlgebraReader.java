@@ -181,7 +181,7 @@ public final class AlgebraReader extends DefaultHandler {
                              Attributes attrs) throws SAXException {
     String elemName = lName; // element name
     if ("".equals(elemName)) elemName = qName; // namespaceAware = false
-    System.out.println("elem is " + elemName);
+    //System.out.println("elem is " + elemName);
     tagStack = tagStack.cons(elemName);
 
     if ("algName".equals(elemName)) algNameString = EMPTY_STRING;

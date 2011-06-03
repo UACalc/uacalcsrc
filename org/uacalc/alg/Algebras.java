@@ -310,9 +310,9 @@ public class Algebras {
     ops.add(Operations.makeMatrixDiagonalOp(k, alg.cardinality()));
     // convert to basic ops (not power ops)
     List<Operation> ops2 = Operations.makeIntOperations(ops);
-    for (Operation op : ops2) {
-      System.out.println(ArrayString.toString(op.getTable()));
-    }
+    //for (Operation op : ops2) {
+    //  System.out.println(ArrayString.toString(op.getTable()));
+    //}
     SmallAlgebra ans = new BasicAlgebra("matrixPower", Operations.power(alg.cardinality(), k), ops2);
     //try {
     //  org.uacalc.io.AlgebraIO.writeAlgebraFile(ans, "/home/ralph/Java/Algebra/algebras/upow.ua");

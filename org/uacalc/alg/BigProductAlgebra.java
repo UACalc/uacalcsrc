@@ -185,7 +185,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
           // old
           
           public int[] valueAt(int[][] args) {
-            System.out.println("called with args: " + ArrayString.toString(args));
+            //System.out.println("called with args: " + ArrayString.toString(args));
             //final int[] ans = new int[numberOfFactors];
             final int[] ans2 = new int[numberOfFactors];
             /*
@@ -212,7 +212,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
               }
               else {
                 for (int index = 0; index < arity; index++) {
-                  System.out.println("number of factors: " + numberOfFactors + "index: " + index + " j: " + j);
+                  //System.out.println("number of factors: " + numberOfFactors + "index: " + index + " j: " + j);
                   arg[index] = args[index][j];
                 }
                 ans2[j] = opList.get(j).intValueAt(arg);

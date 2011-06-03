@@ -593,7 +593,7 @@ if (false) {
         opTables[i] = op.getTable();
         if (opTables[i] == null) nullTable = true;
       }
-      System.out.println("nullTable = " + nullTable);
+      //System.out.println("nullTable = " + nullTable);
       arities[i] = op.arity();
       symbols[i] = op.symbol();
       if (imgOps != null) imgOps[i] = imageAlgebra.getOperation(op.symbol());
