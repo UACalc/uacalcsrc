@@ -43,12 +43,14 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     //add(descArea, "grow, span, wrap");
     add(descField, "grow, span, wrap");
     add(scrollBar, "grow, span, wrap");
-    
-    //revalidate();
-    //setVisible(true);
-    //fc.addPropertyChangeListener(this);
-
+  }
   
+  private void clearTextFields() {
+    final String emptyStr = "";
+    nameField.setText(emptyStr);
+    cardField.setText(emptyStr);
+    simTypeField.setText(emptyStr);
+    descField.setText(emptyStr);
   }
 
 
@@ -58,6 +60,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     // If the directory changed, clear the preview
     if (JFileChooser.DIRECTORY_CHANGED_PROPERTY.equals(prop)) {
       algebra = null;
+      clearTextFields();
       //repaint();
       return;
     }
@@ -65,6 +68,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
       File file = (File) e.getNewValue();
       if (file != null) {
         algebra = null;
+        clearTextFields();
         try {
           algebra = AlgebraIO.readAlgebraFile(file);
           // TODO: add to list of algs
@@ -73,11 +77,13 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
 
         catch (IOException ex) {uacalc.beep(); }
       }
-      nameField.setText(algebra.getName());
-      cardField.setText("" + algebra.cardinality());
-      simTypeField.setText(algebra.similarityType().aritiesString());
-      descField.setText(algebra.getDescription());
+      if (algebra != null) {
+        if (algebra.getName() != null) nameField.setText(algebra.getName());
 
+        cardField.setText("" + algebra.cardinality());
+        simTypeField.setText(algebra.similarityType().aritiesString());
+        if (algebra.getDescription() != null) descField.setText(algebra.getDescription());
+      }
       /*
       javax.swing.text.Document doc = new javax.swing.text.PlainDocument();
       try {

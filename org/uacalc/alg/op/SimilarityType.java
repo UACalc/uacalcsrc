@@ -112,7 +112,13 @@ public class SimilarityType {
     final int k = getMaxArity();
     for (int i = k; i >= 0; i--) {
       if (getAritiesMap().get(i) != null) {
-        sb.append("" + i + "(" + getAritiesMap().get(i) + ") ");
+        if (i != k) sb.append(", ");
+        int num = getAritiesMap().get(i);
+        String aryString;
+        if (i == 1) aryString = "unary (" + num + ")";
+        else if (i == 2) aryString = "binary: (" + num + ")";
+        else aryString = "" + i + "-ary (" + num + ")";
+        sb.append(aryString);
       }
     }
     return sb.toString();
