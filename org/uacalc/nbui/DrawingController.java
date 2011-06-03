@@ -103,9 +103,11 @@ public class DrawingController {
     if (makeIfNull && lat == null) {
       uacalcUI.getMainController().beep();
       uacalcUI.getMainController().setUserWarning(
-          "This algebra has no semlattice operations.", false); 
+          "This algebra has no semlattice operations.", false);
+      return;
     }
     getLatDrawer().setBasicLattice(lat);
+    if (makeIfNull) getLatDrawer().getDrawPanel().improve();
     getLatDrawer().repaint();
   }
   

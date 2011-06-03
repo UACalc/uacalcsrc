@@ -189,6 +189,7 @@ public class ConController {
     getConLatDrawer().setBasicLattice(alg.con().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
     setConTable(makeIfNull);
+    if (makeIfNull) getConLatDrawer().getDrawPanel().improve();
     getConLatDrawer().repaint();
   }
   

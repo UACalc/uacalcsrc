@@ -838,11 +838,13 @@ public class MainController {
     setTitle();
     // TODO: fix this
     //getLatDrawPanel().setDiagram(null);
-    getConController().drawCon(alg.getAlgebra(), false);
+    final int idx = uacalcUI.getTabbedPane().getSelectedIndex();
+    getConController().drawCon(alg.getAlgebra(), idx == 3 ? true : false);
+    //getConController().getConLatDrawer().getDrawPanel().improve();
     uacalcUI.setEmptyOpTableModel();
     getAlgebraEditorController().setAlgebra(alg);
-    getSubController().drawSub(alg.getAlgebra(), false);
-    getDrawingController().drawAlg(alg, false);
+    getSubController().drawSub(alg.getAlgebra(), idx == 4 ? true : false);
+    getDrawingController().drawAlg(alg, idx == 5 ? true : false);
   }
   
   public Random getRandom() {

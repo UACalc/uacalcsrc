@@ -74,7 +74,7 @@ public class SubController {
       }
     }
     getSubLatDrawer().setBasicLattice(alg.sub().getBasicLattice(makeIfNull));
-    //getConLatDrawer().setDiagram(alg.con().getDiagram());
+    if (makeIfNull) getSubLatDrawer().getDrawPanel().improve();
     getSubLatDrawer().repaint();
   }
   

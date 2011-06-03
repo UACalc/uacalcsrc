@@ -789,6 +789,28 @@ public class LatDrawer extends JPanel {
     //JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
     JToolBar toolBar = new JToolBar();
     ClassLoader cl = this.getClass().getClassLoader();
+    JButton goButton = new JButton("Go");
+    goButton.setPreferredSize(new Dimension(32, 32));
+    goButton.setToolTipText("Draw the lattice and table");
+    goButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (getDiagram() == null) {
+          final int idx = getUACalc().getTabbedPane().getSelectedIndex();
+          if (idx == 3) {
+            getUACalc().getMainController().getConController().drawCon();
+          }
+          if (idx == 4) {
+            getUACalc().getMainController().getSubController().drawSub();
+          }
+          if (idx == 5) {
+            getUACalc().getMainController().getDrawingController().drawAlg();
+          }
+        }
+      }
+    });
+    
+    toolBar.add(goButton);
+    
     ImageIcon icon = new ImageIcon
       (cl.getResource("org/latdraw/sample/images/Forward16.gif"));
     JButton forwardButton = new JButton(icon);
