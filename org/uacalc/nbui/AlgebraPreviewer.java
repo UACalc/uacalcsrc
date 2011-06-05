@@ -14,11 +14,13 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
   
   UACalc uacalc;
   Algebra algebra;
+  int numAlgs = 1;
   JTextField nameField = new JTextField(18);
   JTextField cardField = new JTextField(6);
   JTextField simTypeField = new JTextField();
   JTextField descField = new JTextField();
   JScrollBar scrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
+  JLabel numAlgsLabel = new JLabel();
   //JTextArea descArea = new JTextArea();
 
   public AlgebraPreviewer() {
@@ -43,6 +45,8 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     //add(descArea, "grow, span, wrap");
     add(descField, "grow, span, wrap");
     add(scrollBar, "grow, span, wrap");
+    add(new JLabel("Num of Algs in File: "));
+    add(numAlgsLabel);
   }
   
   private void clearTextFields() {
@@ -51,6 +55,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
     cardField.setText(emptyStr);
     simTypeField.setText(emptyStr);
     descField.setText(emptyStr);
+    numAlgsLabel.setText(emptyStr);
   }
 
 
@@ -70,8 +75,13 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
         algebra = null;
         clearTextFields();
         try {
-          algebra = AlgebraIO.readAlgebraFile(file);
-          // TODO: add to list of algs
+          java.util.List<SmallAlgebra> algs = AlgebraIO.readAlgebraListFile(file);
+          numAlgs = algs.size();
+          if (numAlgs > 0) {
+            algebra = algs.get(0);
+            numAlgsLabel.setText("" + numAlgs);
+          }
+          else uacalc.beep();
         }
         catch (BadAlgebraFileException ex) {uacalc.beep(); }
 
