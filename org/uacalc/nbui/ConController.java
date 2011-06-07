@@ -186,10 +186,11 @@ public class ConController {
       }
       
     }
+    final boolean latWasNull = alg.con().getBasicLattice(false) == null;
     getConLatDrawer().setBasicLattice(alg.con().getBasicLattice(makeIfNull));
     //getConLatDrawer().setDiagram(alg.con().getDiagram());
     setConTable(makeIfNull);
-    if (makeIfNull) getConLatDrawer().getDrawPanel().improve();
+    if (makeIfNull && latWasNull) getConLatDrawer().getDrawPanel().improve();
     getConLatDrawer().repaint();
   }
   
