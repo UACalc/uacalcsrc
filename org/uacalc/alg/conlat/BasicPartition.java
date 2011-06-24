@@ -9,6 +9,7 @@ import org.latdraw.orderedset.POElem;
 import org.uacalc.alg.op.*; // only needed in main
 import org.uacalc.alg.*;    // only needed in main
 import org.uacalc.terms.*;
+import org.uacalc.ui.tm.ProgressReport;
 
 
 import java.util.*;
@@ -702,11 +703,14 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return true;
   }
   
-
   public static SmallAlgebra unaryCloneAlgebra(List<? extends Partition> pars) {
+    return unaryCloneAlgebra(pars, null);
+  }
+
+  public static SmallAlgebra unaryCloneAlgebra(List<? extends Partition> pars, ProgressReport report) {
     String f = "f_";
     final int size = pars.get(0).universeSize();
-    final NavigableSet<IntArray> lst = unaryClone(pars);
+    final NavigableSet<IntArray> lst = unaryClone(pars, report);
     //System.out.println("TreeSet: " + lst);
     //IntArray ia0 = new IntArray(new int[] {0, 0, 4, 0, 0, 0, 0});
     //System.out.println("ceiling 0 0 4 0 ... = " + lst.ceiling(ia0));
@@ -741,7 +745,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @param pars
    * @return
    */
-  public static NavigableSet<IntArray> unaryClone(List<? extends Partition> pars) {
+  public static NavigableSet<IntArray> unaryClone(List<? extends Partition> pars, ProgressReport report) {
     // n is the size of the set the partition are on.
     final int n = pars.get(0).universeSize();
     // set is an empty set to hold the answer.
@@ -749,7 +753,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     // ia is really just a vector of length n to hold the function we are considering
     IntArray ia = new IntArray(n);
     // call the (recursive) workhorse.
-    unaryCloneAux(ia, 0, n, set, pars);
+    unaryCloneAux(ia, 0, n, set, pars, report);
     
     return set;
   }
@@ -768,7 +772,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
                                        final int k,
                                        final int n,
                                        final NavigableSet<IntArray> ans,
-                                       final List<? extends Partition> pars) {
+                                       final List<? extends Partition> pars,
+                                       ProgressReport report) {
     //System.out.println("k = " + k);
     if (k == n) {
       IntArray copy = new IntArray(n);
@@ -780,7 +785,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (int value = 0; value < n; value++) {
       if (respects(arr, k, value, pars)) {
         arr.set(k, value);
-        unaryCloneAux(arr, k + 1, n, ans, pars);
+        unaryCloneAux(arr, k + 1, n, ans, pars, report);
       }
     }
   }
@@ -792,7 +797,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public static NavigableSet<IntArray> binaryClone(List<Partition> pars, 
                                                    NavigableSet<IntArray> unaryClone) {
     final int n = pars.get(0).universeSize();
-    if (unaryClone == null) unaryClone = unaryClone(pars);
+    if (unaryClone == null) unaryClone = unaryClone(pars, null);
     NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     List<IntArray> partialOp = new ArrayList<IntArray>(n);
     for (int i = 0; i < n; i++) {
@@ -1544,7 +1549,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("clone size (new method) = " + lst.size());
     pars2.add(rfz0);
     pars2.add(rfz2);
-    lst = unaryClone(pars2);
+    lst = unaryClone(pars2, null);
     System.out.println("clone size (old method) = " + lst.size());
     System.out.println("");
     
@@ -1702,7 +1707,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (Partition p : genset) {
       genset2.add(p);
     }
-    Set<IntArray> unaryClo = unaryClone(genset2);
+    Set<IntArray> unaryClo = unaryClone(genset2, null);
     System.out.println("|Pol_1| = " + unaryClo.size());
     Partition parMatrix = partitionFromMatrix(mat);
     System.out.println("parMatrix = " + parMatrix);
@@ -2000,7 +2005,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     catch (Exception e) { e.printStackTrace(); }
     
-    Set<IntArray> unaryFns = unaryClone(pars);
+    Set<IntArray> unaryFns = unaryClone(pars, null);
     System.out.println("|Pol_1| = " + unaryFns.size());
     System.out.println("unaries: " + unaryFns);
     for (IntArray f : unaryFns) {

@@ -53,6 +53,10 @@ public class Closer {
   // a blocks and values constraint as in IntArray.
   int[][] blocks;
   int[][] values;
+  // stop closing  if we have found this many elements. 
+  // only used in sgClosePower for now.
+  // ned to amke a UI for this.
+  int maxSize = -1; //380; //-1;
   
   ProgressReport report;
   
@@ -175,6 +179,10 @@ public class Closer {
   public int[][] getValues() { return values; }
   
   public void setValues(int[][] values) { this.values = values; }
+  
+  public int getmaxSize() { return maxSize; }
+  
+  public void setMaxSize(int k) { maxSize = k; }
   
   //protected static ProgressReport monitor;
   
@@ -638,6 +646,7 @@ if (false) {
       else {
         System.out.println(str);
       }
+      if (maxSize > 0 && ans.size() >= maxSize) return ans;
       pass++;
       // close the elements in current
       for (int i = 0; i < k; i++) {
