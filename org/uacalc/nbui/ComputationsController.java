@@ -802,7 +802,7 @@ public class ComputationsController {
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine("Done finding meet semi-distributive terms.");
+            report.addEndingLine("Done finding meet semi-distributive terms. The variety is congruence meet semi-distributive.");
             ttm.setTerms(terms);
           }
           //ttm.setVariables(fr.getVariables());

@@ -394,8 +394,21 @@ public class Algebras {
     return makeRandomAlgebra(n, new SimilarityType(syms), seed);
   }
 
+  public static SmallAlgebra ternaryDiscriminatorAlgebra(int card) {
+    List<Operation> ops = new ArrayList<Operation>(1);
+    ops.add(Operations.ternaryDiscriminator(card));
+    return new BasicAlgebra("Disc-" + card, card, ops);
+  }
 
+  static boolean endNow = true;
+  
   public static void main(String[] args) throws Exception {
+    
+    for (int i = 3; i < 9; i++) {
+      org.uacalc.io.AlgebraIO.writeAlgebraFile(Algebras.ternaryDiscriminatorAlgebra(i), "/tmp/TD-" + i + ".ua");
+    }
+
+      if (endNow) return;
     
     int[][] firstProj = {
         {0,0,0,0,0,0,0,0,0,0},

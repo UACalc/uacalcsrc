@@ -13,10 +13,12 @@ import org.uacalc.alg.conlat.BasicPartition;
  */
 public class Operations {
 
+  /*
   static Logger logger = Logger.getLogger("org.uacalc.alg.Operations");
   static {
     logger.setLevel(Level.FINER);
   }
+  */
 
 
   /**
@@ -29,8 +31,6 @@ public class Operations {
    * be used to test if an operation is a endomorphism (or automorphism).
    */
   public static boolean commutes(final Operation unaryOp, final Operation op) {
-Logger logger = Logger.getLogger("org.uacalc.alg.Operations");
-logger.setLevel(Level.FINE);
     final int setSize = op.getSetSize();
     final int[] arr = new int[op.arity()];
     final int[] imageArr = new int[op.arity()];
@@ -41,8 +41,7 @@ logger.setLevel(Level.FINE);
     }
     unaryArg[0] = op.intValueAt(arr);
     if (op.intValueAt(imageArr) != unaryOp.intValueAt(unaryArg)) {
-//System.out.println("first");
-      logger.info("fails to commute at " + ArrayString.toString(arr));
+      System.out.println("fails to commute at " + ArrayString.toString(arr));
       return false;
     }
     ArrayIncrementor inc = 
@@ -55,8 +54,8 @@ logger.setLevel(Level.FINE);
         imageArr[i] = unaryOp.intValueAt(unaryArg);
       }
       if (op.intValueAt(imageArr) != v) {
-        logger.info("fails to commute at " + ArrayString.toString(arr));
-        logger.info("with op " + op.symbol().name());
+        System.out.println("fails to commute at " + ArrayString.toString(arr));
+        System.out.println("with op " + op.symbol().name());
         return false;
       }
     }
@@ -282,6 +281,21 @@ logger.setLevel(Level.FINE);
       if (op0.intValueAt(arr) != op1.intValueAt(arr)) return false;
     }
     return true;
+  }
+  
+  public static Operation ternaryDiscriminator(final int size) {
+    Operation disc = new AbstractOperation("disc", 3, size) {
+      
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+      
+      public int intValueAt(int[] args) {
+        if (args[0] == args[1]) return args[2];
+        return args[0];
+      }
+    };
+    return disc;
   }
   
   /**
