@@ -92,6 +92,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JButton newAlgButton;
   private javax.swing.JMenuItem newMI;
   private javax.swing.JMenuItem nuMI;
+  private javax.swing.JMenuItem wnuMI;
   private javax.swing.JTable opTable;
   private TableModel emptyOpTableModel;
   private javax.swing.JScrollPane opTableScrollPane;
@@ -302,6 +303,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     majorityMI = new javax.swing.JMenuItem();
     pixleyMI = new javax.swing.JMenuItem();
     nuMI = new javax.swing.JMenuItem();
+    wnuMI = new javax.swing.JMenuItem();
     mmstMI = new javax.swing.JMenuItem();
     drawingMenu = new javax.swing.JMenu();
     drawConMI = new javax.swing.JMenuItem();
@@ -733,6 +735,14 @@ xxx;
         }
     });
     maltsevMenu.add(nuMI);
+    
+    wnuMI.setText("weak near unanimity term");
+    wnuMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            wnuMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(wnuMI);
 
     mmstMI.setText("MMS Taylor term");
     mmstMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1207,6 +1217,10 @@ xxx;
   private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
     getComputationsController().setupNUTermTask();
   }//GEN-LAST:event_nuMIActionPerformed
+  
+  private void wnuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
+    getComputationsController().setupWeakNUTermTask();
+  }
 
   private void maltsevMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maltsevMIActionPerformed
     getComputationsController().setupMalcevTermTask();

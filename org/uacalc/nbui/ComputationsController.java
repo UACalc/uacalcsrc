@@ -1247,6 +1247,64 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(nuTask);
   }
   
+  public void setupWeakNUTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int arity = getNumberDialog(3, "What arity (at least 3)?", "Arity");
+    if (!(arity > 2)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Weak near unanimity term of arity " + arity +  " over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  wnuTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term wnu = Malcev.findWeakNUTerm(alg, arity, report);
+        return wnu;
+      }
+      public void onCompletion(Term wnu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (wnu == null) {
+            report.addEndingLine("The variety has no Weak NU term of arity " + arity);
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a Weak NU term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(wnu);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(wnuTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(wnuTask);
+  }
+  
   public void setupJICongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
