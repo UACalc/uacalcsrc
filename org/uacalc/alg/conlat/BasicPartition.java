@@ -690,7 +690,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @return
    */
   public static boolean isHereditary(List<Partition> pars) {
-    SmallAlgebra alg = unaryCloneAlgebra(pars);
+    SmallAlgebra alg = unaryPolymorphismsAlgebra(pars);
     System.out.println("Size of the closure is " + alg.con().cardinality());
     CongruenceLattice con = alg.con();
     BasicLattice conBasic = con.getBasicLattice(true);
@@ -703,14 +703,14 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return true;
   }
   
-  public static SmallAlgebra unaryCloneAlgebra(List<? extends Partition> pars) {
-    return unaryCloneAlgebra(pars, null);
+  public static SmallAlgebra unaryPolymorphismsAlgebra(List<? extends Partition> pars) {
+    return unaryPolymorphismsAlgebra(pars, null);
   }
 
-  public static SmallAlgebra unaryCloneAlgebra(List<? extends Partition> pars, ProgressReport report) {
+  public static SmallAlgebra unaryPolymorphismsAlgebra(List<? extends Partition> pars, ProgressReport report) {
     String f = "f_";
     final int size = pars.get(0).universeSize();
-    final NavigableSet<IntArray> lst = unaryClone(pars, report);
+    final NavigableSet<IntArray> lst = unaryPolymorphisms(pars, report);
     //System.out.println("TreeSet: " + lst);
     //IntArray ia0 = new IntArray(new int[] {0, 0, 4, 0, 0, 0, 0});
     //System.out.println("ceiling 0 0 4 0 ... = " + lst.ceiling(ia0));
@@ -724,10 +724,10 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return new BasicAlgebra("", size, ops);
   }
   
-  public static SmallAlgebra binaryCloneAlgebra(List<Partition> pars) {
+  public static SmallAlgebra binaryPolymorphismsAlgebra(List<Partition> pars, ProgressReport report) {
     String b = "b_";
     final int size = pars.get(0).universeSize();
-    final NavigableSet<IntArray> lst = binaryClone(pars);
+    final NavigableSet<IntArray> lst = binaryPolymorphisms(pars, null, report);
     System.out.println("number of ops in the binary clone is " + lst.size());
     final List<Operation> ops = new ArrayList<Operation>(lst.size());
     int i = 0;
@@ -745,7 +745,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @param pars
    * @return
    */
-  public static NavigableSet<IntArray> unaryClone(List<? extends Partition> pars, ProgressReport report) {
+  public static NavigableSet<IntArray> unaryPolymorphisms(List<? extends Partition> pars, ProgressReport report) {
     // n is the size of the set the partition are on.
     final int n = pars.get(0).universeSize();
     // set is an empty set to hold the answer.
@@ -753,7 +753,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     // ia is really just a vector of length n to hold the function we are considering
     IntArray ia = new IntArray(n);
     // call the (recursive) workhorse.
-    unaryCloneAux(ia, 0, n, set, pars, report);
+    unaryPolymorphismsAux(ia, 0, n, set, pars, report);
     
     return set;
   }
@@ -768,7 +768,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    * @param ans     the answer set
    * @param pars    the list of partitions
    */
-  private static void unaryCloneAux(final IntArray arr, 
+  private static void unaryPolymorphismsAux(final IntArray arr, 
                                        final int k,
                                        final int n,
                                        final NavigableSet<IntArray> ans,
@@ -785,34 +785,36 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (int value = 0; value < n; value++) {
       if (respects(arr, k, value, pars)) {
         arr.set(k, value);
-        unaryCloneAux(arr, k + 1, n, ans, pars, report);
+        unaryPolymorphismsAux(arr, k + 1, n, ans, pars, report);
       }
     }
   }
   
-  public static NavigableSet<IntArray> binaryClone(List<Partition> pars) {
-    return binaryClone(pars, null);
+  public static NavigableSet<IntArray> binaryPolymorphisms(List<Partition> pars) {
+    return binaryPolymorphisms(pars, null, null);
   }
   
-  public static NavigableSet<IntArray> binaryClone(List<Partition> pars, 
-                                                   NavigableSet<IntArray> unaryClone) {
+  public static NavigableSet<IntArray> binaryPolymorphisms(List<Partition> pars, 
+                                                   NavigableSet<IntArray> unaryClone, 
+                                                   ProgressReport report) {
     final int n = pars.get(0).universeSize();
-    if (unaryClone == null) unaryClone = unaryClone(pars, null);
+    if (unaryClone == null) unaryClone = unaryPolymorphisms(pars, report);
     NavigableSet<IntArray> set = new TreeSet<IntArray>(IntArray.lexicographicComparitor());
     List<IntArray> partialOp = new ArrayList<IntArray>(n);
     for (int i = 0; i < n; i++) {
       partialOp.add(null);
     }
-    binaryCloneAux(partialOp, 0, n, unaryClone, set);
+    binaryPolymorphismsAux(partialOp, 0, n, unaryClone, set, report);
     System.out.println("binary clone size = " + set.size());
     return set;
   }
   
-  private static void binaryCloneAux(final List<IntArray> partialOp, 
+  private static void binaryPolymorphismsAux(final List<IntArray> partialOp, 
                                         final int index, 
                                         final int n, 
                                         final NavigableSet<IntArray> unaryClone,
-                                        final NavigableSet<IntArray> set) {
+                                        final NavigableSet<IntArray> set,
+                                        ProgressReport report) {
     if (index == n) {
       int[] op = new int[n*n];
       for (int i = 0; i < n; i++) {
@@ -826,7 +828,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (IntArray unaryFn : unaryClone) {
       if (respects(partialOp, index, n, unaryFn, unaryClone)) {
         partialOp.set(index, unaryFn);
-        binaryCloneAux(partialOp, index + 1, n, unaryClone, set);
+        binaryPolymorphismsAux(partialOp, index + 1, n, unaryClone, set, report);
       }
     }
   }
@@ -1033,7 +1035,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     }
     System.out.println("closure size: " + closure.size());
     //List<Partition> gensPar = new ArrayList<>
-    SmallAlgebra alg12 = unaryCloneAlgebra(gens);
+    SmallAlgebra alg12 = unaryPolymorphismsAlgebra(gens);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     try {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(alg12, "/tmp/jb7.ua");
@@ -1469,7 +1471,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //pars12.add(gamma);
     //pars12.add(delta);
     System.out.println("pars12: " + pars12);
-    SmallAlgebra alg12 = unaryCloneAlgebra(pars12);
+    SmallAlgebra alg12 = unaryPolymorphismsAlgebra(pars12);
     System.out.println("|Con(A)| = " + alg12.con().universe().size());
     for (Partition par : alg12.con().universe()) {
       System.out.println(par);
@@ -1549,7 +1551,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     System.out.println("clone size (new method) = " + lst.size());
     pars2.add(rfz0);
     pars2.add(rfz2);
-    lst = unaryClone(pars2, null);
+    lst = unaryPolymorphisms(pars2, null);
     System.out.println("clone size (old method) = " + lst.size());
     System.out.println("");
     
@@ -1707,7 +1709,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     for (Partition p : genset) {
       genset2.add(p);
     }
-    Set<IntArray> unaryClo = unaryClone(genset2, null);
+    Set<IntArray> unaryClo = unaryPolymorphisms(genset2, null);
     System.out.println("|Pol_1| = " + unaryClo.size());
     Partition parMatrix = partitionFromMatrix(mat);
     System.out.println("parMatrix = " + parMatrix);
@@ -1992,20 +1994,20 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     //for (int i = 0; i < lst.size(); i++) {
       //ops.add(Operations.makeIntOperation(f + i, 1, size, lst.get(i).getArray()));
     //}
-    SmallAlgebra alg = unaryCloneAlgebra(pars);
+    SmallAlgebra alg = unaryPolymorphismsAlgebra(pars);
     System.out.println("|Con(A)| = " + alg.con().universe().size());
     for (Partition par : alg.con().universe()) {
       System.out.println(par);
     }
     
     //binaryClone(pars, null);
-    SmallAlgebra alg2 = binaryCloneAlgebra(pars);
+    SmallAlgebra alg2 = binaryPolymorphismsAlgebra(pars, null);
     try {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(alg2, "/tmp/alg2.ua");
     }
     catch (Exception e) { e.printStackTrace(); }
     
-    Set<IntArray> unaryFns = unaryClone(pars, null);
+    Set<IntArray> unaryFns = unaryPolymorphisms(pars, null);
     System.out.println("|Pol_1| = " + unaryFns.size());
     System.out.println("unaries: " + unaryFns);
     for (IntArray f : unaryFns) {
@@ -2026,7 +2028,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     prod.add(first);
     prod.add(second);
     prod.add(third);
-    alg = unaryCloneAlgebra(prod);
+    alg = unaryPolymorphismsAlgebra(prod);
     System.out.println("|Con(A)| = " + alg.con().universe().size());
     for (Partition par : alg.con().universe()) {
       System.out.println(par);

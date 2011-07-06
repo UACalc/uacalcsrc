@@ -387,7 +387,7 @@ public class CongruenceLattice implements Lattice {
             ans.add(beta);
             ans.add(gamma);
             System.out.println("alpha:" + alpha + ", beta: " + beta + ", gamma: " + gamma);
-            SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
+            SmallAlgebra alg = BasicPartition.unaryPolymorphismsAlgebra(ans);
             final int consize = alg.con().universe().size();
             if (consize < max) {
               max = consize;
@@ -458,7 +458,7 @@ public class CongruenceLattice implements Lattice {
                 ans.add(beta);
                 ans.add(gamma);
                 ans.add(delta);
-                SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
+                SmallAlgebra alg = BasicPartition.unaryPolymorphismsAlgebra(ans);
                 final int consize = alg.con().universe().size();
                 if (consize < min) {
                   min = consize;
@@ -539,7 +539,7 @@ public class CongruenceLattice implements Lattice {
                 ans.add(beta);
                 ans.add(gamma);
                 ans.add(delta);
-                SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(ans);
+                SmallAlgebra alg = BasicPartition.unaryPolymorphismsAlgebra(ans);
                 final int consize = alg.con().universe().size();
                 if (consize < min) {
                   min = consize;

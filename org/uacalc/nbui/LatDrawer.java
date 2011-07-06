@@ -371,7 +371,7 @@ public class LatDrawer extends JPanel {
     for (Vertex v : gens) {
       pars.add((Partition)v.getUnderlyingObject());
     }
-    SmallAlgebra alg = BasicPartition.unaryCloneAlgebra(pars);
+    SmallAlgebra alg = BasicPartition.unaryPolymorphismsAlgebra(pars);
     if (keepAlg) {
       alg.convertToDefaultValueOps();
       uacalc.getMainController().addAlgebra(alg, false);

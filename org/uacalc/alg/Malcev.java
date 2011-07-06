@@ -375,12 +375,13 @@ public class Malcev {
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
  // ** Need to put in a test if the tables will fit in memory. **
     //f2.makeOperationTables();
+    final int pow = isIdempotent ? arity : arity + 1;
     int[][] blocks = new int[1][];
     blocks[0] = new int[arity];
     final List<IntArray> gens = new ArrayList<IntArray>(arity);
     final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>();
     for (int i = 0; i < arity ; i++) {
-      final int[] arr = isIdempotent ? new int[arity] : new int[arity + 1]; // the last is always 0 (= x)
+      final int[] arr = new int[pow]; 
       arr[i] = 1;
       IntArray ia = new IntArray(arr);
       gens.add(ia);
@@ -394,7 +395,7 @@ public class Malcev {
       blocks[0][i] = i;
     }
     if (report != null) report.addStartLine("looking for " + arity + "-ary weak nu term");
-    BigProductAlgebra f2power = new BigProductAlgebra(f2, arity);
+    BigProductAlgebra f2power = new BigProductAlgebra(f2, pow);
     Closer closer = new Closer(f2power, gens, termMap);
     closer.setProgressReport(report);
     closer.setBlocks(blocks);
@@ -1953,9 +1954,10 @@ System.out.println("got to idempotent");
             //"/Users/ralph/Documents/algebras/tournamentSink.ua"
             //"/home/ralph/Java/Algebra/algebras/FivePaper.ua"
             //"/home/ralph/Java/Algebra/algebras/linjon4.ua"  // has a wnu term with x \circ y = y \circ x
-            "/home/ralph/Java/Algebra/algebras/linjon3.ua" // has no wnu term with x \circ y = y \circ x
+            //"/home/ralph/Java/Algebra/algebras/linjon3.ua" // has no wnu term with x \circ y = y \circ x
                                                            // in fact x <-> y in F(x,y) has no fixed point 
-           // "/Users/ralph/Documents/algebras/Polin.ua" 
+            //"/Users/ralph/Documents/algebras/Polin.ua" 
+            "/home/ralph/Java/Algebra/algebras/polin.ua"
             //"/Users/ralph/Documents/algebras/A2new.ua"
         );
     }
@@ -1968,6 +1970,8 @@ System.out.println("got to idempotent");
     
     Term wnu = findWeakNUTerm(alg, 3, null);
     System.out.println("wnu: " + wnu);
+    
+    if (true) return;
     
     List<Term> sdm = sdmeetTerms(alg, null);
     System.out.println("SD-meet terms = " + sdm);
