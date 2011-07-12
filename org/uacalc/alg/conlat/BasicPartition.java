@@ -779,10 +779,19 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       IntArray copy = new IntArray(n);
       System.arraycopy(arr.getArray(), 0, copy.getArray(), 0, n);
       ans.add(copy);
+      if (report != null) {
+        report.setSize(ans.size());
+      }
       //System.out.println(copy);
       return;
     }
     for (int value = 0; value < n; value++) {
+      if (Thread.currentThread().isInterrupted()) {
+        if (report != null) {
+          report.addEndingLine("Cancelled (" + ans.size() + " unary polymorphisms so far)");
+          return;
+        }
+      }
       if (respects(arr, k, value, pars)) {
         arr.set(k, value);
         unaryPolymorphismsAux(arr, k + 1, n, ans, pars, report);
@@ -809,6 +818,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return set;
   }
   
+  // TODO: add report stuff
   private static void binaryPolymorphismsAux(final List<IntArray> partialOp, 
                                         final int index, 
                                         final int n, 

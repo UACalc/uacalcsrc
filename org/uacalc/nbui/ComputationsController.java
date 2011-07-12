@@ -1487,6 +1487,76 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(centralityTask);
   }
   
+  public void setupUnaryPolymorphismsTask() {
+    // get the current highlighted congruences.
+    
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    gAlg.getCurrentLattice(true);
+    List<org.latdraw.diagram.Vertex> verts 
+      = uacalcUI.getMainController().getConController().getConLatDrawer().getSelectedElemList();
+    // pop up something to tell them how to use this
+    if (verts == null) return;
+    
+    // here !!!!!!!!!!!!!!!!!!!
+    
+    
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the congruences of " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    uacalcUI.repaint();
+    final BackgroundTask<Set<Partition>>  congTask = new BackgroundTask<Set<Partition>>(report) {
+      public Set<Partition> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        java.util.Set<Partition> ans = alg.con().universe(report);
+        if (Thread.currentThread().isInterrupted()) {
+          report.addEndingLine("cancelled ...");
+          return null;
+        }
+        alg.con().typeSet(report);  // make want to make this optional
+        return ans;
+      }
+      public void onCompletion(java.util.List<Partition> congs, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          //updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (congs == null) {
+            System.out.println("The congs list was null. This should not happen.");
+          }
+          else {
+            report.addEndingLine("Found " + congs.size() + " congruences");
+            //java.util.List<Term> terms = new ArrayList<Term>(1);
+            //terms.add(jis);
+            //ttm.setTerms(terms);
+          }
+          //if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(congTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    //uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(congTask);
+  }
+  
   public void setupBinVATask() {
     final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg2 == null) {
