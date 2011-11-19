@@ -262,9 +262,18 @@ public class Closer {
     final boolean operationNotNull = operation == null ? false : true;
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
-    final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
-    for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
-      rawList.add(it.next().getArray());
+    final List<int[]> rawList = new ArrayList<int[]>(); // the corresponding raw int[]
+    for (IntArray ia : elems) {
+      rawList.add(ia.getArray());
+    }
+    //  Code to add the constants
+    final List<IntArray> constants = algebra.getConstants();// add the constants, if any
+    for (IntArray arr : constants) {
+      ans.add(arr);
+      rawList.add(arr.getArray());
+      if (termMap != null) {
+        termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+      }
     }
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
@@ -626,9 +635,18 @@ if (false) {
     System.out.println("got to sgClosePower, reportNotNull: " + reportNotNull);
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
-    final List<int[]> rawList = new ArrayList<int[]>(); // the corr raw int[]
-    for (Iterator<IntArray> it = elems.iterator(); it.hasNext(); ) {
-      rawList.add(it.next().getArray());
+    final List<int[]> rawList = new ArrayList<int[]>(); // the corresponding raw int[]'s
+    for (IntArray arr : elems) {
+      rawList.add(arr.getArray());
+    }
+    //         Code to add the constants
+    final List<IntArray> constants = algebra.getConstants();// add the constants, if any
+    for (IntArray arr : constants) {
+      ans.add(arr);
+      rawList.add(arr.getArray());
+      if (termMap != null) {
+        termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+      }
     }
     final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     int currentMark = ans.size();
