@@ -638,7 +638,7 @@ public class MainController {
     else fileChooser = new JFileChooser();
     fileChooser.addChoosableFileFilter(
         new ExtFileFilter("Algebra Files (*.ua, *.alg)", ExtFileFilter.ALL_ALG_EXTS));
-    AlgebraPreviewer algPreviewer = new AlgebraPreviewer();
+    AlgebraPreviewer algPreviewer = new AlgebraPreviewer(uacalcUI);
     fileChooser.setAccessory(algPreviewer);
     fileChooser.addPropertyChangeListener(algPreviewer); // to receive selection changes
     fileChooser.setMultiSelectionEnabled(true);

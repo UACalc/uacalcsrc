@@ -23,7 +23,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
   JLabel numAlgsLabel = new JLabel();
   //JTextArea descArea = new JTextArea();
 
-  public AlgebraPreviewer() {
+  public AlgebraPreviewer(UACalc uacalc) {
     this.uacalc = uacalc;
     setLayout(new MigLayout());
     //setLayout(new BorderLayout());
@@ -76,7 +76,7 @@ public class AlgebraPreviewer extends JPanel implements PropertyChangeListener {
         clearTextFields();
         try {
           java.util.List<SmallAlgebra> algs = AlgebraIO.readAlgebraListFile(file);
-          numAlgs = algs.size();
+          numAlgs = algs == null ? 0 : algs.size();
           if (numAlgs > 0) {
             algebra = algs.get(0);
             numAlgsLabel.setText("" + numAlgs);
