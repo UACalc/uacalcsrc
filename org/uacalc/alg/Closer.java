@@ -266,16 +266,20 @@ public class Closer {
     for (IntArray ia : elems) {
       rawList.add(ia.getArray());
     }
+    final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     //  Code to add the constants
     final List<IntArray> constants = algebra.getConstants();// add the constants, if any
     for (IntArray arr : constants) {
-      ans.add(arr);
-      rawList.add(arr.getArray());
-      if (termMap != null) {
-        termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+      if (!su.contains(arr)) {
+        su.add(arr);
+        ans.add(arr);
+        rawList.add(arr.getArray());
+        if (termMap != null) {
+          termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+        }
       }
     }
-    final HashSet<IntArray> su = new HashSet<IntArray>(ans);
+
     int currentMark = ans.size();
     int pass = 0;
     CloserTiming timing = null; 
@@ -639,16 +643,19 @@ if (false) {
     for (IntArray arr : elems) {
       rawList.add(arr.getArray());
     }
+    final HashSet<IntArray> su = new HashSet<IntArray>(ans);
     //         Code to add the constants
     final List<IntArray> constants = algebra.getConstants();// add the constants, if any
     for (IntArray arr : constants) {
-      ans.add(arr);
-      rawList.add(arr.getArray());
-      if (termMap != null) {
-        termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+      if (!su.contains(arr)) {
+        ans.add(arr);
+        rawList.add(arr.getArray());
+        if (termMap != null) {
+          termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+        }
       }
     }
-    final HashSet<IntArray> su = new HashSet<IntArray>(ans);
+
     int currentMark = ans.size();
     int pass = 0;
     final CloserTiming timing = reportNotNull ?  new CloserTiming(algebra, report) : null;
