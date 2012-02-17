@@ -85,6 +85,12 @@ public final class AlgebraIO {
   public static List<SmallAlgebra> readAlgebraListFile(File f) 
   throws IOException, BadAlgebraFileException {
     String ext = ExtFileFilter.getExtension(f);
+    if (ext != null && ExtFileFilter.ALG_EXT.contains(ext.toLowerCase())) {
+      SmallAlgebra alg = readAlgebraFile(f);
+      List<SmallAlgebra> lst = new ArrayList<SmallAlgebra>(1);
+      lst.add(alg);
+      return lst;
+    }
     if (ext != null && ExtFileFilter.UA_EXTS.contains(ext.toLowerCase())) {
       AlgebraReader r = new AlgebraReader(f);
       try {
