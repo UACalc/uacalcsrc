@@ -354,13 +354,17 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
    * @param A   an algebra
    * @return    the corresponding term or null
    */
-  public static Term findInClone(Operation op, SmallAlgebra A) {
-    FreeAlgebra F = new FreeAlgebra(A, op.arity(), false);
+  public static Map<Operation,Term> findInClone(List<Operation> ops, SmallAlgebra A) {
+    int maxArity = -1;
+    for (Operation op : ops) {
+      if (maxArity < op.arity()) maxArity = op.arity();
+    }
+    FreeAlgebra F = new FreeAlgebra(A, maxArity, false);
     Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
     closer.setRootAlgebra(A);
-    closer.setOperation(op);
+    closer.setOperations(ops);
     closer.sgClosePower();
-    return closer.getTermForOperation();
+    return closer.getTermMapForOperations();
   }
 
   public List<Term> getIdempotentTerms() {

@@ -47,9 +47,9 @@ public class Closer {
   Map<IntArray,Integer> homomorphism; // actually a partial homo into imageAlg.
   Equation failingEquation = null; // a list of two terms
   SmallAlgebra rootAlgebra; // the root of a power algebra
-  // an operation on the set of the root algebra; to test if it is in the clone. 
-  Operation operation;
-  Term termForOperation;
+  // a list of operations on the set of the root algebra; to test if they are in the clone. 
+  List<Operation> operations;
+  Map<Operation,Term> termMapForOperations;
   // a blocks and values constraint as in IntArray.
   int[][] blocks;
   int[][] values;
@@ -102,12 +102,12 @@ public class Closer {
   
   public Equation getFailingEquation() { return failingEquation; }
   
-  // stuff for finding a term of a given operation
-  public Term getTermForOperation() { return termForOperation; }
+  // stuff for finding a terms of given operations
+  public Map<Operation,Term> getTermMapForOperations() { return termMapForOperations; }
   
   public void setRootAlgebra(SmallAlgebra alg) { rootAlgebra = alg; }
   
-  public void setOperation(Operation op) { operation = op; }
+  public void setOperations(List<Operation> op) { operations = op; }
   
   
   public List<IntArray> getGenerators() { return generators; }
@@ -259,7 +259,10 @@ public class Closer {
     final boolean imgAlgNull = imgOps == null ? true : false;
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
-    final boolean operationNotNull = operation == null ? false : true;
+    final boolean operationsNotNull = operations == null ? false : true;
+    
+    if (operationsNotNull) termMapForOperations = new HashMap<Operation,Term>();
+    int operationsFound = 0;
 
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corresponding raw int[]
@@ -359,7 +362,7 @@ public class Closer {
               }
               termMap.put(v, new NonVariableTerm(f.symbol(), children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
-              if (operationNotNull) {
+              if (operationsNotNull) {
                 Term term = termMap.get(v);
                 // why are recreating vars each time ???
                 List<Variable> vars = new ArrayList<Variable>(generators.size());
@@ -367,9 +370,12 @@ public class Closer {
                   vars.add((Variable)termMap.get(ia));
                 }
                 Operation termOp = term.interpretation(rootAlgebra, vars, true);
-                if (Operations.equalValues(termOp, operation)) {
-                  termForOperation = term;
-                  return ans;
+                for (Operation op : operations) {
+                  if (Operations.equalValues(termOp, op)) {
+                    termMapForOperations.put(op, term);
+                    operationsFound++;
+                    if (operationsFound == operations.size()) return ans;
+                  }
                 }
               }
             }
@@ -501,7 +507,7 @@ if (false) {
     final boolean imgAlgNull = imgOps == null ? true : false;
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
-    final boolean operationNotNull = operation == null ? false : true;
+    final boolean operationsNotNull = operations == null ? false : true;
 
     elems = Collections.synchronizedList(elems);
     ans = Collections.synchronizedList(new ArrayList<IntArray>(elems));// IntArrays
@@ -632,9 +638,12 @@ if (false) {
     final boolean imgAlgNull = imgOps == null ? true : false;
     final boolean eltToFindNotNull = eltToFind == null ? false : true;
     final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
-    final boolean operationNotNull = operation == null ? false : true;
+    final boolean operationsNotNull = operations == null ? false : true;
     final boolean blocksNotNull = blocks == null ? false : true;
     final boolean valuesNotNull = values == null ? false : true;
+    
+    if (operationsNotNull) termMapForOperations = new HashMap<Operation,Term>();
+    int operationsFound = 0;
     
     System.out.println("got to sgClosePower, reportNotNull: " + reportNotNull);
     final int power = algebra.getNumberOfFactors();
@@ -738,7 +747,7 @@ if (false) {
               }
               termMap.put(v, new NonVariableTerm(symbols[i], children));
               //logger.fine("" + v + " from " + f.symbol() + " on " + arg);
-              if (operationNotNull) {
+              if (operationsNotNull) {
                 Term term = termMap.get(v);
                 // why are recreating vars each time ???
                 List<Variable> vars = new ArrayList<Variable>(generators.size());
@@ -746,10 +755,12 @@ if (false) {
                   vars.add((Variable)termMap.get(ia));
                 }
                 Operation termOp = term.interpretation(rootAlgebra, vars, true);
-                if (Operations.equalValues(termOp, operation)) {
-                  termForOperation = term;
-                  if (reportNotNull) report.addEndingLine("found operation, term = " + term);
-                  return ans;
+                for (Operation op : operations) {
+                  if (Operations.equalValues(termOp, op)) {
+                    termMapForOperations.put(op, term);
+                    operationsFound++;
+                    if (operationsFound == operations.size()) return ans;
+                  }
                 }
               }
             }

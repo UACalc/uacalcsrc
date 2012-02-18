@@ -399,6 +399,30 @@ public class Algebras {
     ops.add(Operations.ternaryDiscriminator(card));
     return new BasicAlgebra("Disc-" + card, card, ops);
   }
+  
+  /**
+   * Test if some operations are in Clo(A) and return the corresponding
+   * terms. 
+   * 
+   * 
+   * @param ops
+   * @param alg
+   * @param exitOnFailure  quit on first failure.
+   * @return
+   */
+  public Map<Operation,Term> opsInCloA(List<Operation> ops, SmallAlgebra alg, boolean exitOnFailure) {
+    if (ops.isEmpty()) return null;
+    List<IntArray> tables = new ArrayList<IntArray>(ops.size());
+    for (Operation op : ops) {
+      int[] table = op.getTable(true);
+      if (table == null) {
+        System.out.println("couldn't make table for " + op);
+        return null;
+      }
+      tables.add(new IntArray(table));
+    }
+    return null;
+  }
 
   static boolean endNow = true;
   
