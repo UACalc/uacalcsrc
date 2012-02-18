@@ -410,6 +410,8 @@ public class Algebras {
    * @param exitOnFailure  quit on first failure.
    * @return
    */
+  
+  // change this !!!!!!!!!!!!
   public Map<Operation,Term> opsInCloA(List<Operation> ops, SmallAlgebra alg, boolean exitOnFailure) {
     if (ops.isEmpty()) return null;
     List<IntArray> tables = new ArrayList<IntArray>(ops.size());
