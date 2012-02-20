@@ -10,6 +10,7 @@ import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.terms.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.ui.tm.ProgressReport;
 //import org.apache.log4j.*;
 import java.util.logging.*;
 
@@ -303,6 +304,7 @@ public class Algebras {
    * @param k
    * @return
    */
+  
   public static SmallAlgebra matrixPower(final SmallAlgebra alg, final int k) {
     PowerAlgebra pow = new PowerAlgebra(alg, k);
     List<Operation> ops = pow.operations();
@@ -352,6 +354,61 @@ public class Algebras {
     }
     return new BasicAlgebra("Trans" + n, pow, ops);
   }
+  
+  /**
+   * Test if ops are in the clone of A and return a
+   * mapping from OperationSymbols to terms, which
+   * will have entries for those opertions which are
+   * in the clone.
+   * 
+   * @param ops a list of operations on the set of A
+   * @param A   an algebra
+   * @return    a map from the operation symbols to the terms
+   */
+  public static Map<OperationSymbol,Term> findInClone(List<Operation> ops, 
+                                    SmallAlgebra A, ProgressReport report) {
+    if (ops == null || ops.isEmpty() || A == null) 
+      throw new IllegalArgumentException("ops cannot be empty and the algebra cannot be null");
+    List<Operation> ops2 = new ArrayList<Operation>(ops.size());
+    for (Operation op : ops) {
+      ops2.add(op);
+    }
+    Collections.sort(ops2); // reverse it ????
+    System.out.println("ops2: " + ops2);
+    Map<OperationSymbol,Term> map = new HashMap<OperationSymbol,Term>();
+    int arity = ops2.get(0).arity();
+    final int size = ops2.size();
+    List<Operation> currentOps = new ArrayList<Operation>();
+    currentOps.add(ops2.get(0));
+    for (int i = 1; i <= size; i++) {
+      int nextArity = i < size ? ops2.get(i).arity() : -1;
+      System.out.println("arity: " + arity + ", i: " + i + ", next arity: " + nextArity);
+      if (i == size || ops2.get(i).arity() != arity) {
+        if (!currentOps.isEmpty()) {
+          FreeAlgebra F = new FreeAlgebra(A, arity, false);
+          Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
+          closer.setRootAlgebra(A);
+          System.out.println("closing with currentOps.size() = " + currentOps.size());
+          for (Operation op : currentOps) {
+            System.out.println(op.symbol());
+          }
+          closer.setOperations(currentOps);
+          closer.sgClosePower();
+          Map<Operation,Term> currMap = closer.getTermMapForOperations();
+          System.out.println("number found: " + currMap.keySet().size());
+          for (Operation op : currMap.keySet()) {
+            map.put(op.symbol(), currMap.get(op));
+          }
+          currMap.clear();
+          if (i + 1 < size) arity = ops2.get(i + 1).arity();
+        }
+      }
+      if (i < size) currentOps.add(ops2.get(i));
+      System.out.println("currentOps size = " + currentOps.size());
+    }
+    System.out.println("map size: " + map.keySet().size());
+    return map;
+  }
 
   /**
    * Make a random algebra of a given similarity type.
@@ -399,36 +456,27 @@ public class Algebras {
     ops.add(Operations.ternaryDiscriminator(card));
     return new BasicAlgebra("Disc-" + card, card, ops);
   }
-  
-  /**
-   * Test if some operations are in Clo(A) and return the corresponding
-   * terms. 
-   * 
-   * 
-   * @param ops
-   * @param alg
-   * @param exitOnFailure  quit on first failure.
-   * @return
-   */
-  
-  // change this !!!!!!!!!!!!
-  public Map<Operation,Term> opsInCloA(List<Operation> ops, SmallAlgebra alg, boolean exitOnFailure) {
-    if (ops.isEmpty()) return null;
-    List<IntArray> tables = new ArrayList<IntArray>(ops.size());
-    for (Operation op : ops) {
-      int[] table = op.getTable(true);
-      if (table == null) {
-        System.out.println("couldn't make table for " + op);
-        return null;
-      }
-      tables.add(new IntArray(table));
-    }
-    return null;
-  }
+
 
   static boolean endNow = true;
   
   public static void main(String[] args) throws Exception {
+    
+
+    SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
+    SmallAlgebra polid = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polinidempotent.ua");
+    List<Operation> opers = polid.operations();
+//  Operation firstOp = polid.operations().get(0);
+//  ops = new ArrayList<Operation>();
+//  ops.add(firstOp);
+    for (Operation op : opers) System.out.println(op.symbol());
+    Map<OperationSymbol,Term> map = findInClone(opers, pol, null);
+    System.out.println("map: " + map);
+    for (OperationSymbol sym : map.keySet()) {
+      System.out.print(sym + " : ");
+      System.out.println(map.get(sym));
+    }
+    if (true) return;
     
     for (int i = 3; i < 9; i++) {
       org.uacalc.io.AlgebraIO.writeAlgebraFile(Algebras.ternaryDiscriminatorAlgebra(i), "/tmp/TD-" + i + ".ua");

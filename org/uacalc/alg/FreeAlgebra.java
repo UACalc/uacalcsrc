@@ -345,27 +345,6 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     closer.sgClose();
     return closer.getFailingEquation();
   }
-  
-  /**
-   * Test if op is in the clone of A and return the
-   * term if it is; null otherwise.
-   * 
-   * @param op  an operation of the set of A
-   * @param A   an algebra
-   * @return    the corresponding term or null
-   */
-  public static Map<Operation,Term> findInClone(List<Operation> ops, SmallAlgebra A) {
-    int maxArity = -1;
-    for (Operation op : ops) {
-      if (maxArity < op.arity()) maxArity = op.arity();
-    }
-    FreeAlgebra F = new FreeAlgebra(A, maxArity, false);
-    Closer closer = new Closer(F.getProductAlgebra(), F.generators(), F.getTermMap());
-    closer.setRootAlgebra(A);
-    closer.setOperations(ops);
-    closer.sgClosePower();
-    return closer.getTermMapForOperations();
-  }
 
   public List<Term> getIdempotentTerms() {
     List<Term> ans = new ArrayList<Term>();
@@ -432,6 +411,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
+    
     SmallAlgebra algB = org.uacalc.io.AlgebraIO.readAlgebraFile("/tmp/Jipsen/b.ua");
     FreeAlgebra f1 = new FreeAlgebra(algB, 1, true, true);
     if (args.length == 0) {

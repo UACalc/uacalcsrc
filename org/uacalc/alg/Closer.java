@@ -64,7 +64,7 @@ public class Closer {
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens) {
     this.algebra = alg;
-    this.generators = gens;
+    setGenerators(gens);  // this will remove duplicates
   }
   
   public Closer(BigProductAlgebra alg, List<IntArray> gens, Map<IntArray,Term> termMap) {
@@ -107,13 +107,22 @@ public class Closer {
   
   public void setRootAlgebra(SmallAlgebra alg) { rootAlgebra = alg; }
   
-  public void setOperations(List<Operation> op) { operations = op; }
+  public void setOperations(List<Operation> opers) { operations = opers; }
   
   
   public List<IntArray> getGenerators() { return generators; }
   
-  public void setGenerators(List<IntArray> generators) { 
-    this.generators = generators;
+  /**
+   * This set generators to gens without any duplicates.
+   * 
+   * @param gens
+   */
+  public void setGenerators(List<IntArray> gens) {
+    generators = new ArrayList<IntArray>(gens.size());
+    final Set<IntArray> hs = new HashSet<IntArray>(gens.size());
+    for (IntArray ia : gens) {
+      if (!hs.contains(ia)) generators.add(ia); 
+    }
   }
   
   public Map<IntArray,Term> getTermMap() { return termMap; }
@@ -371,7 +380,7 @@ public class Closer {
                 }
                 Operation termOp = term.interpretation(rootAlgebra, vars, true);
                 for (Operation op : operations) {
-                  if (Operations.equalValues(termOp, op)) {
+                  if (termMapForOperations.containsKey(op) && Operations.equalValues(termOp, op)) {
                     termMapForOperations.put(op, term);
                     operationsFound++;
                     if (operationsFound == operations.size()) return ans;

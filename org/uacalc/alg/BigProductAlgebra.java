@@ -663,6 +663,7 @@ System.out.println("so far: " + currentMark);
     //         Therefore, we should add the constants to a newly created copy of elems.
     //         This is, for instance, important for the closure of the generators in FreeAlgebra
     final ArrayList<IntArray> elemsCopy = new ArrayList<IntArray>(elems);
+    /* The constants are added in Closer:
     {// keep the HashSet local
       final HashSet<IntArray> elemsHS = new HashSet<IntArray>(elems);
       for (IntArray ia : getConstants()) {
@@ -672,6 +673,7 @@ System.out.println("so far: " + currentMark);
         }
       }
     }//HashSet not needed any more, so it can be garbage collected
+    */
     //----- start closure -----
     Closer closer = new Closer(this, elemsCopy, termMap);
     closer.setProgressReport(report);

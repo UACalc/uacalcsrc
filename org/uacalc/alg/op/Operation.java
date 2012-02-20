@@ -14,7 +14,7 @@ import java.util.List;
  * optional. 
  * 
  */
-public interface Operation {
+public interface Operation extends Comparable<Operation> {
 
   /**
    * This gives the arity of this operation.

@@ -124,7 +124,10 @@ public abstract class AbstractOperation implements Operation {
     return valueTable;
   }
 
-
+  public int compareTo(Operation op) {
+    return symbol().compareTo(op.symbol());
+  }
+  
 }
 
 
