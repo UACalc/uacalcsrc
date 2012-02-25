@@ -1606,7 +1606,7 @@ public class ComputationsController {
     final String desc = "Test if " + gB.toString() + " in V(" + gA.toString() + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Equation>  nuTask = new BackgroundTask<Equation>(report) {
+    final BackgroundTask<Equation>  nuBinVATask = new BackgroundTask<Equation>(report) {
       public Equation compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
@@ -1656,10 +1656,116 @@ public class ComputationsController {
         }
       }
     };
-    addTask(nuTask);
+    addTask(nuBinVATask);
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
-    BackgroundExec.getBackgroundExec().execute(nuTask);
+    BackgroundExec.getBackgroundExec().execute(nuBinVATask);
+  }
+  
+  public void setupCloBinCloATask() {
+    final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg2 == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    GUIAlgebra[] algs = new GUIAlgebra[getMainControler().getAlgebraList().size()];
+    int i = 0;
+    for (GUIAlgebra a : getMainControler().getAlgebraList()) {
+      algs[i++] = a;
+    }
+    final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+                     "<html><center>Clo(B) in Clo(<font color=\"red\">A</font>)?<br>" 
+                         + "Choose <font color=\"red\">A</font></center></html>", 
+                     "Clo(B) in Clo(A)",
+                     JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
+    //System.out.println("gA = " + gA);
+    if (gA == null) return;
+    final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+        "<html><center>Clo(<font color=\"red\">B</font>) in Clo(A)?" 
+            + "<br>Choose <font color=\"red\">B</font></center></html>", 
+        "Clo(B) in Clo(A)",
+        JOptionPane.QUESTION_MESSAGE, null,
+        algs, algs[0]);
+    if (gB == null) return;
+    final SmallAlgebra A = gA.getAlgebra();
+    final SmallAlgebra B = gB.getAlgebra();
+    if (A.cardinality() != B.cardinality()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>Ths algebras must be on the same set (have the same cardinality).<br>",
+          "Algebras Not the Same Cardinality",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final int[] BGenerators = B.sub().findMinimalSizedGeneratingSet().getArray();
+    
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    //final String nameA = A.getName() != null ? A.getName() : gA.toString();
+    //final String nameB = B.getName() != null ? B.getName() : gB.toString();
+    final String desc = "Test if the basic ops of " + gB.toString() + "are in Clo(" + gA.toString() + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    // here  !!!!!!!!!!!!
+    final BackgroundTask<Equation>  cloneTask = new BackgroundTask<Equation>(report) {
+      public Equation compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Equation eq = FreeAlgebra.findEquationOfAnotB(A, B, BGenerators, report);
+        return eq;
+      }
+      public void onCompletion(Equation eq, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (eq == null) {
+            report.addEndingLine(gB.toString() + "is in V(" + gA.toString() + ")");
+            ttm.setDescription(desc + ": it is!");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(gB.toString() + "is not in V(" + gA.toString() + ")");
+            ttm.setDescription("An equation of " + gA.toString() 
+                + " that fails in " + gB.toString() 
+                + " by substituting " + ArrayString.toString(BGenerators) 
+                + " for the variables");
+            updateResultTextField(this, ttm);
+            java.util.List<Term> terms = new ArrayList<Term>(2);
+            terms.add(eq.leftSide());
+            terms.add(eq.rightSide());
+            ttm.setTerms(terms);
+            uacalcUI.repaint();
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(cloneTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(cloneTask);
   }
   
   public void setupPrimalTermsTask() {

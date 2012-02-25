@@ -608,7 +608,8 @@ if (false) {
   private final List<IntArray> sgClosePower(
                      List<IntArray> elems, int closedMark, 
                      final Map<IntArray,Term> termMap) {
-    
+    System.out.println("elems: " + elems);
+    System.out.println("termMap: " + termMap);
     if (report != null) report.addStartLine("subpower closing ...");
     final int algSize = algebra.factors().get(0).cardinality();
     final List<Operation> ops = algebra.factors().get(0).operations();
@@ -666,6 +667,7 @@ if (false) {
     final List<IntArray> constants = algebra.getConstants();// add the constants, if any
     for (IntArray arr : constants) {
       if (!su.contains(arr)) {
+        su.add(arr);
         ans.add(arr);
         rawList.add(arr.getArray());
         if (termMap != null) {
@@ -673,7 +675,6 @@ if (false) {
         }
       }
     }
-
     int currentMark = ans.size();
     int pass = 0;
     final CloserTiming timing = reportNotNull ?  new CloserTiming(algebra, report) : null;
