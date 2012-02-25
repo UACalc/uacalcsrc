@@ -73,7 +73,15 @@ public class NonVariableTerm implements Term {
    * the variable assignment.
    */
   public Object eval(Algebra alg, Map map) {
-    return null;
+    //@mike implemented this
+    final Operation op = alg.getOperation(leadingOperationSymbol());
+    final List args = new ArrayList(op.arity());
+    List children = getChildren();
+    for (int i = 0; i < op.arity(); i++ ) {
+      Term t = (Term)children.get(i);
+      args.add(t.eval(alg, map));
+    }
+    return op.valueAt(args);
   }
 
   public int intEval(Algebra alg, Map map) {
