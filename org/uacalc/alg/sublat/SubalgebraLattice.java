@@ -156,7 +156,7 @@ public class SubalgebraLattice implements Lattice {
     return getBasicLattice().getDiagram();
   }
 
-  public Set universe() {
+  public Set<BasicSet> universe() {
     if (universe == null) makeUniverse();
     return universe;
   }
@@ -169,7 +169,7 @@ public class SubalgebraLattice implements Lattice {
     return SimilarityType.LATTICE_SIMILARITY_TYPE;
   }
 
-  public Iterator iterator() { return universe().iterator(); }
+  public Iterator<BasicSet> iterator() { return universe().iterator(); }
 
   public String getName() {
     return "Sub(" + getAlgebra() + ")";

@@ -107,6 +107,10 @@ public class CongruenceLattice implements Lattice {
   private Set<Partition> congruencesHash = null;
 //  private List<Partition> meetIrredCongruences = null;
   private Set<Integer> typeSet = null;
+  
+  private int permutabilityLevel = -1;
+  private Partition[] permutabilityLevelWitnesses;
+  
 
 
   /**
@@ -1405,11 +1409,66 @@ public class CongruenceLattice implements Lattice {
     return null;
   }
 */
+  /**
+   * Get the permutabiltiy level of this lattice (not the
+   * whole variety). Store the actual partitions on
+   * <code>permutabilityLevelWitnesses</code>.
+   */
+  public int permutabilityLevel() {
+    if (permutabilityLevel > 0) return permutabilityLevel;
+    List<Partition> univ = new ArrayList<Partition>(universe());
+    final int size = univ.size();
+    int level = 0;
+    Partition[] hiLevelPars = new Partition[2];
+    for (int i = 0; i < size; i++) {
+      final Partition par0 = univ.get(i);
+      for (int j = i+1; j < size; j++) {
+        final Partition par1 = univ.get(j);
+        if (par1.leq(par0) || par0.leq(par1)) continue;
+        int lev = BasicPartition.permutabilityLevel(par0, par1);
+        if (lev > level) {
+          level = lev;
+          hiLevelPars[0] = par0;
+          hiLevelPars[1] = par1;
+        }
+      }
+    }
+    permutabilityLevel = level;
+    permutabilityLevelWitnesses = hiLevelPars; 
+    return level;
+  }
+  
+  public Partition[] getPermutabilityLevelWitnesses() {
+    return permutabilityLevelWitnesses;
+  }
+  
+  
+  
   public void makeOperationTables() {}
 
   public boolean isIdempotent() { return true; }
 
   public static void main(String[] args) throws Exception {
+    SmallAlgebra sch0 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt0.ua");
+    SmallAlgebra sch1 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt1.ua");
+    List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>(3);
+    algs.add(sch0);
+    algs.add(sch0);
+    algs.add(sch1);
+    algs.add(sch1);
+    SmallAlgebra schProd = new ProductAlgebra(algs);
+    Set<org.uacalc.alg.sublat.BasicSet> subs = schProd.sub().universe();
+    for (org.uacalc.alg.sublat.BasicSet sub : subs) {
+      SmallAlgebra subalg = new Subalgebra(schProd, sub);
+      System.out.println("subalg size: " + subalg.cardinality());
+      if (subalg.cardinality() > 0) {
+        System.out.println(subalg.con().permutabilityLevel());
+      }
+    }
+    
+    
+    
+    if (true) return;
     SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
     Partition one = alg.con().one();
     //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
