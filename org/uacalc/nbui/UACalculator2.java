@@ -481,7 +481,8 @@ xxx;
 
     fileMenu.setText("File");
 
-    builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+    builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,  Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        // was java.awt.event.InputEvent.CTRL_MASK));
     builtInAlgsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
     builtInAlgsMI.setText("Built In Algs");
     builtInAlgsMI.addActionListener(new java.awt.event.ActionListener() {
