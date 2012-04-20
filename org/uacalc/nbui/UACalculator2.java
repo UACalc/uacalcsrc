@@ -481,7 +481,8 @@ xxx;
 
     fileMenu.setText("File");
 
-    builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,  Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    builtInAlgsMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,  
+        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         // was java.awt.event.InputEvent.CTRL_MASK));
     builtInAlgsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
     builtInAlgsMI.setText("Built In Algs");
@@ -492,7 +493,8 @@ xxx;
     });
     fileMenu.add(builtInAlgsMI);
 
-    newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+    newMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, 
+        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     newMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/New16.gif"))); // NOI18N
     newMI.setText("New");
     newMI.addActionListener(new java.awt.event.ActionListener() {
@@ -502,7 +504,8 @@ xxx;
     });
     fileMenu.add(newMI);
 
-    openMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+    openMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 
+        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     openMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Open16.gif"))); // NOI18N
     openMI.setText("Open");
     openMI.addActionListener(new java.awt.event.ActionListener() {
@@ -512,7 +515,8 @@ xxx;
     });
     fileMenu.add(openMI);
     
-    saveMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+    saveMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 
+        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     saveMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
     saveMI.setText("Save");
     saveMI.addActionListener(new java.awt.event.ActionListener() {
@@ -553,7 +557,8 @@ xxx;
     });
     fileMenu.add(tableCSVMI);
 
-    quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+    quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, 
+        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     quitMI.setText("Quit");
     quitMI.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
