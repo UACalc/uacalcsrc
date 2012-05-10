@@ -1114,6 +1114,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       termMap.put(par1, new VariableImp(letters[i] + str1));
     }
     wkClosure = subUniverseGenerated(wkClosure, termMap, firstProj);
+    System.out.println("weak closure: " + wkClosure);
     List<Partition> ans = new ArrayList<Partition>();
     for (Partition par : wkClosure) {
       //System.out.println("par: " + par +" is geq firstProj: " + firstProj.leq(par));
@@ -1369,6 +1370,84 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   
   public static void main(String[] args) {
     
+    BasicPartition rfu0 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3});
+    BasicPartition rfu1 = new BasicPartition(new int[] {-2, -2, -2, 0,1, 2});
+    BasicPartition rfu2 = new BasicPartition(new int[] {-2, -2, -2, 2, 0, 1}); 
+    
+    List<BasicPartition> pars3 = new ArrayList<BasicPartition>();
+    pars3.add(rfu1);
+    pars3.add(rfu0);
+    pars3.add(rfu2);
+    closureAt(pars3);
+    
+    /*
+     * Even though this is part of a group the whole lattice
+     * used in the  weak closure is not. It does not have uniform congruences.
+     * 
+     * 
+|0,1,2,3|4,5,6,7|8,9,10,11|, 
+|0,1,4,5,8,9|2,3,6,7,10,11|,
+|0,1,6,7|2,3,8,9|4,5,10,11|,
+|0,1|2,3|4,5|6,7|8,9|10,11|,
+|0,1,2,3,4,5,6,7,8,9,10,11|,
+|0,2,4,6,8,10|1,3,5,7,9,11|,
+|0,2,5,7|1,3,8,10|4,6,9,11|,
+|0,2|1,3|4,6|5,7|8,10|9,11|,
+|0,4,8|1,5,9|2,6,10|3,7,11|,
+|0,5|1,8|2,7|3,10|4,9|6,11|,
+|0|1|2|3|4|5|6|7|8|9|10|11|,
+|0,6|1,7|2,8|3,9|4,10|5,11|,
+|0,7|1|2|3,8|4,11|5|6|9|10|,
+|0,3,4,7,8,11|1,5,9|2,6,10|,
+|0,5,6,11|1,2,7,8|3,4,9,10|,
+|0,3|1|2|4,7|5|6|8,11|9|10|,
+|0|1,2|3|4|5,6|7|8|9,10|11|,
+|0,11|1|2|3,4|5|6|7,8|9|10|,
+|0,1,10,11|2,3,4,5|6,7,8,9|,
+|0,2,9,11|1,3,4,6|5,7,8,10|,
+|0,4,8|1,2,5,6,9,10|3,7,11|,
+|0,3,5,10|1,6,8,11|2,4,7,9|,
+|0,3,6,9|1,4,7,10|2,5,8,11|,
+|0,3,4,7,8,11|1|2|5|6|9|10|,
+|0,7|1,2|3,8|4,11|5,6|9,10|,
+|0,3,4,7,8,11|1,2,5,6,9,10|,
+|0,3|1,2|4,7|5,6|8,11|9,10|,
+|0,3,4,7,8,11|1,2|5,6|9,10|,
+|0,11|1,2|3,4|5,6|7,8|9,10|,
+|0,9|1,4|2,11|3,6|5,8|7,10|,
+|0,4,8|1|2|3,7,11|5|6|9|10|,
+|0|1,6|2,9|3|4|5,10|7|8|11|,
+|0,7|1,6|2,9|3,8|4,11|5,10|,
+|0,10|1,11|2,4|3,5|6,8|7,9|,
+|0|1,10|2,5|3|4|6,9|7|8|11|,
+|0,7|1,10|2,5|3,8|4,11|6,9|,
+|0,11|1,10|2,5|3,4|6,9|7,8|,
+|0,11|1,6|2,9|3,4|5,10|7,8|,
+|0,4,8|1,2|3,7,11|5,6|9,10|,
+|0,3|1,6|2,9|4,7|5,10|8,11|,
+|0,3|1,10|2,5|4,7|6,9|8,11|,
+|0,7,9,10|1,2,4,11|3,5,6,8|,
+|0,3,4,7,8,11|1,10|2,5|6,9|,
+|0,3,4,7,8,11|1,6|2,9|5,10|,
+|0|1,2,5,6,9,10|3|4|7|8|11|,
+|0,7|1,2,5,6,9,10|3,8|4,11|,
+|0,11|1,2,5,6,9,10|3,4|7,8|,
+|0,3|1,2,5,6,9,10|4,7|8,11|,
+|0,4,8|1,6|2,9|3,7,11|5,10|,
+|0,4,8|1,10|2,5|3,7,11|6,9|,
+|0|1,5,9|2,6,10|3|4|7|8|11|,
+|0,7|1,5,9|2,6,10|3,8|4,11|,
+|0,11|1,5,9|2,6,10|3,4|7,8|,
+|0,3|1,5,9|2,6,10|4,7|8,11|]
+
+     * 
+     * 
+     * 
+     */
+    
+    
+    if (endNow) return;
+    
     //funcToJIs(5);
     //testGeneralizedWeakClosure();
     BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -1,  -1});
@@ -1554,6 +1633,8 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     
     List<Partition> pars2 = new ArrayList<Partition>();
     pars2.add(rfz1);
+    
+    
     NavigableSet<IntArray> lst = Algebras.unaryClone(pars2, rfz0, rfz2);
     for (IntArray ia : lst) {
       System.out.println(ia);

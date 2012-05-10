@@ -1669,7 +1669,7 @@ System.out.println("got to idempotent");
     return null;
   }
 
-  public static List hagemannMitschkeTerms(SmallAlgebra alg) {
+  public static List<Term> hagemannMitschkeTerms(SmallAlgebra alg) {
     return hagemannMitschkeTerms(alg, null);
   }
   
@@ -1680,9 +1680,9 @@ System.out.println("got to idempotent");
    * <code>k</code>-permutable variety.
    * It is guarenteed to be the least number of terms possible.
    */
-  public static List hagemannMitschkeTerms(SmallAlgebra alg, ProgressReport report) {
+  public static List<Term> hagemannMitschkeTerms(SmallAlgebra alg, ProgressReport report) {
     if (report != null) report.addStartLine("finding Hagemann-Mitschke terms.");
-    List ans = new ArrayList();
+    List ans = new ArrayList<Term>();
     if (alg.cardinality() == 1) {
       ans.add(Variable.x);
       ans.add(Variable.z);

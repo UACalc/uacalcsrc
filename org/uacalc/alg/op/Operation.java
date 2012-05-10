@@ -108,6 +108,11 @@ public interface Operation extends Comparable<Operation> {
   public boolean isTotallySymmetric();
   
   /**
+   * Check if a ternary operation is a Maltsev operation.
+   */
+  public boolean isMaltsev();
+  
+  /**
    * Only OperationWithDefaultValue's can fail this.
    * 
    * @return

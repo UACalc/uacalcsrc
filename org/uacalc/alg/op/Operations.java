@@ -182,6 +182,30 @@ public class Operations {
     }
     return true;
   }
+  
+  /**
+   * Check if a ternary operation is a Maltsev operation.
+   * 
+   * @param op
+   * @return
+   */
+  public static final boolean isMaltsev(Operation op) {
+    if (op.arity() != 3) return false;
+    final int n = op.getSetSize();
+    int[] arg = new int[3];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        arg[0] = i;
+        arg[1] = i;
+        arg[2] = j;
+        if (j != op.intValueAt(arg)) return false;
+        if (i == j) continue;
+        arg[1] = j;
+        if (i != op.intValueAt(arg)) return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * Find an argument where these operations differ. 

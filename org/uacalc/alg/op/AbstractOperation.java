@@ -114,6 +114,13 @@ public abstract class AbstractOperation implements Operation {
   public boolean isCommutative() {
     return Operations.isCommutative(this);
   }
+  
+  /**
+   * Check if a ternary operation is a Maltsev operation.
+   */
+  public boolean isMaltsev() {
+    return Operations.isMaltsev(this);
+  }
 
   public void makeTable() {}
 
