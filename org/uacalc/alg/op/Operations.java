@@ -538,6 +538,24 @@ public class Operations {
     return op;
   }
   
+  public static Operation makeModuleOperation(final int modulus, final int[] coeffs) {
+    Operation op = new AbstractOperation("op-" + modulus + "-" + Arrays.toString(coeffs), coeffs.length, modulus) {
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+      
+      public int intValueAt(int[] args) {
+        if (args.length != coeffs.length) throw new IllegalArgumentException();
+        int dotp = 0;
+        for (int i = 0; i < coeffs.length; i++) {
+          dotp += (coeffs[i] * args[i]) % modulus;
+        }
+        return dotp;
+      }
+    };
+    return op;
+  }
+  
   public static Operation makeCompositionOp(final int n, final int pow) {
     Operation op = new AbstractOperation("comp", 2, pow) {
       
