@@ -212,6 +212,11 @@ public final class AlgebraReader extends DefaultHandler {
       intArray = new int[cardinality];
       intArrayIndex = 0;
     }
+    // 6/1/2012
+    if ("subUniverse".equals(elemName)) {
+      intArray = new int[cardinality];
+      intArrayIndex = 0;
+    }
   }
 
   /**
@@ -231,6 +236,10 @@ public final class AlgebraReader extends DefaultHandler {
     if ("row".equals(currentTag())) rowString += s;
     if ("intArray".equals(currentTag())) {
       if ("congruence".equals(parentTag()) && s.length() > 0) {
+        intArrayString += s;
+      }
+      // 6/1/2012
+      else if ("subUniverse".equals(parentTag()) &&  s.length() > 0) {
         intArrayString += s;
       }
       else if ("powers".equals(parentTag()) && s.length() > 0) {
@@ -265,6 +274,10 @@ public final class AlgebraReader extends DefaultHandler {
     if ("powers".equals(elemName)) powers = rawIntArray(powersString.trim());
     if ("row".equals(elemName)) intRow(rowString.trim());
     if ("intArray".equals(elemName) && "congruence".equals(parent)) {
+      intArrayString = intArrayString.trim();
+      if (intArrayString.length() > 0) intArray = rawIntArray(intArrayString);
+    }
+    if ("intArray".equals(elemName) && "subUniverse".equals(parent)) {
       intArrayString = intArrayString.trim();
       if (intArrayString.length() > 0) intArray = rawIntArray(intArrayString);
     }
@@ -336,10 +349,14 @@ public final class AlgebraReader extends DefaultHandler {
       addDescription();      
     }
     if ("subAlgebra".equals(elemName)) {
+      System.out.println("superAlgebra size = " + superAlgebra.cardinality());
+      System.out.println("subUniv size = " + subUniverse.length);
+      System.out.println("subUniv = " + Arrays.toString(subUniverse));
       if (algName == null) {
         algebra = new Subalgebra(superAlgebra, subUniverse);
       }
       else algebra = new Subalgebra(algName, superAlgebra, subUniverse);
+      System.out.println("algebra size = " + algebra.cardinality());
       algName = null;
       addDescription();
     }
@@ -368,7 +385,9 @@ public final class AlgebraReader extends DefaultHandler {
                           SAXException, IOException, BadAlgebraFileException {
     //if (args.length == 0) return;
     //System.out.println("reading " + args[0]);
-    AlgebraReader r = new AlgebraReader("/tmp/lyndonQuot.ua");
+    //AlgebraReader r = new AlgebraReader("/tmp/lyndonQuot.ua");
+    //AlgebraReader r = new AlgebraReader("/tmp/testalg.ua");
+    AlgebraReader r = new AlgebraReader("/tmp/5HM3alt1sub.ua");
     //SmallAlgebra alg = r.readAlgebraFile();
     for (SmallAlgebra algx : r.readAlgebraListFile()) {
       System.out.println("alg: " + algx + ", card: " + algx.cardinality());
