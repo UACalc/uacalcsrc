@@ -48,7 +48,8 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   private void makeOperations() {
     final int k = superAlgebra.operations().size();
-    operations = new ArrayList(k);
+    List<Operation> ops = new ArrayList<Operation>(k);
+    //operations = new ArrayList(k);
     for (int i = 0; i < k; i++) {
       final Operation opx = superAlgebra.operations().get(i);
       final int arity = opx.arity();
@@ -88,8 +89,9 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
                             congruence.representative(opx.intValueAt(argsx)));
           }
       };
-      operations.add(op);
+      ops.add(op);
     }
+    setOperations(ops);
   }
 
   public void makeOperationTables() {

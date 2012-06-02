@@ -89,7 +89,8 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
 
   private void makeOperations() {
     final int k = superAlgebra.operations().size();
-    operations = new ArrayList(k);
+    List<Operation> ops = new ArrayList<Operation>(k);
+    //operations = new ArrayList(k);
     for (int i = 0; i < k; i++) {
       final Operation opx = (Operation)superAlgebra.operations().get(i);
       final int arity = opx.arity();
@@ -127,8 +128,9 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
             return index(opx.intValueAt(argsx));
           }
       };
-      operations.add(op);
+      ops.add(op);
     }
+    setOperations(ops);
   }
 
   public void makeOperationTables() {

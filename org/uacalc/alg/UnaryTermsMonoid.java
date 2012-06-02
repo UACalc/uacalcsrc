@@ -46,7 +46,8 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
       universe.add(unaryTerms[i]);
       unaryTermList.add(unaryTerms[i]);
     }
-    operations = new ArrayList<Operation>(1);
+    List<Operation> ops = new ArrayList<Operation>(1);
+    //operations = new ArrayList<Operation>(1);
     final Operation opx = Operations.makeBinaryIntOperation(
         OperationSymbol.PRODUCT, free1.cardinality(), makeTable());
     Operation op = new AbstractOperation(OperationSymbol.PRODUCT, unaryTerms.length) {
@@ -63,7 +64,8 @@ public class UnaryTermsMonoid extends GeneralAlgebra implements SmallAlgebra {
         return opx.intValueAt(args);
       }
     };
-    operations.add(op);
+    ops.add(op);
+    setOperations(ops);
   }
   
   private int[][] makeTable() {

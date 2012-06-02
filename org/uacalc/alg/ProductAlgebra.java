@@ -64,7 +64,7 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   protected void makeOperations() {
     final int k = algebras.get(0).operations().size();
-    operations = new ArrayList<Operation>(k);
+    List<Operation> ops = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
       final int arity = 
            ((Operation)((Algebra)algebras.get(0)).operations().get(i)).arity();
@@ -155,8 +155,9 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
             return ans;
           }
       };
-      operations.add(op);
+      ops.add(op);
     }
+    setOperations(ops);
   }
 
   public void makeOperationTables() {

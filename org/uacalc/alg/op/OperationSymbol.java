@@ -67,9 +67,12 @@ public class OperationSymbol implements Comparable<OperationSymbol> {
     }
   }
   
+  /**
+   * This puts high arity operations first.
+   */
   public int compareTo(OperationSymbol sym) {
-    if (arity < sym.arity()) return -1;
-    if (arity > sym.arity()) return 1;
+    if (arity < sym.arity()) return 1;
+    if (arity > sym.arity()) return -1;
     return name.compareTo(sym.name());
   }
 

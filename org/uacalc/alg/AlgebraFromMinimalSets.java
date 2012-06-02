@@ -79,6 +79,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
     else makeDefaultMaps();
     makeMapToB();
     setOperations(makeOps());
+    List<Operation> ops = new ArrayList<Operation>();
     if (mapsNull) {
       Operation op = new AbstractOperation("s", 1, size) {
         public int intValueAt(int[] args) {
@@ -92,10 +93,10 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
           throw new UnsupportedOperationException();
         }
       };
-      operations.add(Operations.makeIntOperation(op));
+      ops.add(Operations.makeIntOperation(op));
     }
     for (final Operation minOp : minAlg.operations()) {
-      operations.add(Operations.makeIntOperation(
+      ops.add(Operations.makeIntOperation(
           new AbstractOperation("op-" + minOp.symbol().name(), minOp.arity(), size) {
         public int intValueAt(int[] args) {
           int[] argsToB = new int[args.length];
@@ -112,6 +113,7 @@ public class AlgebraFromMinimalSets extends BasicAlgebra implements
         }
       }));
     }
+    setOperations(ops);
   }
   
   private List<Operation> makeOps() {

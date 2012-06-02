@@ -71,7 +71,7 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
     final int topSize = topAlg.cardinality();
     final int botSize = botAlg.cardinality();
     if (map == null) map = id(topSize + botSize);
-    List ops = new ArrayList();
+    List<Operation> ops = new ArrayList<Operation>();
     for (Iterator it = topAlg.similarityType().getOperationSymbols().iterator();
                                                               it.hasNext(); ) {
       ops.add(polinizeOperation((OperationSymbol)it.next()));
@@ -88,7 +88,8 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
 //System.out.println("ops : " + ops.size());
     //setOperations(ops);
 //System.out.println("get ops : " + operations().size());
-    operations = ops;
+    setOperations(ops);
+    //operations = ops;
 
 
     //setOperations(makeOperations(topAlg, botAlg, map));

@@ -36,12 +36,13 @@ public class ReductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     this.termList = termList;
     size = alg.cardinality();
     universe = alg.universe();
-    operations = makeOperations(alg, termList);
+    List<Operation> ops = makeOperations(alg, termList);
+    setOperations(ops);
   }
 
-  private List makeOperations(SmallAlgebra alg, List<Term> terms) {
+  private List<Operation> makeOperations(SmallAlgebra alg, List<Term> terms) {
     final int k = terms.size();
-    List operations = new ArrayList(k);
+    List<Operation> operations = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
       Term term = terms.get(i);
       if (!term.isaVariable()) operations.add(term.interpretation(alg));

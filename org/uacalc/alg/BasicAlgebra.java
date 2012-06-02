@@ -34,6 +34,7 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * If a universe is not given, use Integers.
    */
   public BasicAlgebra(String name, final int s, List<Operation> operations) {
+    
     super(name, new AbstractSet() {
       public boolean contains(Object obj) {
         try {
@@ -155,7 +156,8 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
       }
       else opsDV.add(op);
     }
-    operations = opsDV;
+    setOperations(opsDV);
+    //operations = opsDV;
   }
   
   

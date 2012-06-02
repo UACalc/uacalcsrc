@@ -23,7 +23,7 @@ import org.uacalc.ui.tm.ProgressReport;
  */
 public class GeneralAlgebra implements Algebra {
 
-  protected List<Operation> operations;
+  private List<Operation> operations;
   protected Map<OperationSymbol,Operation> operationsMap;
   protected SimilarityType similarityType;
   protected Set universe;
@@ -48,8 +48,9 @@ public class GeneralAlgebra implements Algebra {
 
   public GeneralAlgebra(String name, Set univ, List<Operation> operations) {
     this(name, univ);
-    this.operations = operations;
-    this.operationsMap = Operations.makeMap(operations);
+    setOperations(operations);
+    //this.operations = operations;
+    this.operationsMap = Operations.makeMap(operations());
     //similarityType = new int[operations.size()];
     //int k;
     //Iterator it;
@@ -77,8 +78,19 @@ public class GeneralAlgebra implements Algebra {
     this.size = univ.size();
   }
 
+  /**
+   * This sorts the list of operations.
+   * 
+   * @param ops
+   */
   protected void setOperations(List<Operation> ops) {
-    this.operations = ops;
+    List<Operation> ops2 = new ArrayList<Operation>(ops.size());
+    for (Operation op : ops) {
+      ops2.add(op);
+    }
+    //Collections.copy(ops2, ops);
+    Collections.sort(ops2);
+    this.operations = ops2;
   }
 
   public Map<OperationSymbol,Operation> getOperationsMap() {

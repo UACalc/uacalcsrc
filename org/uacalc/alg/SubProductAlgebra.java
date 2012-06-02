@@ -225,7 +225,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   protected void makeOperations() {
     final int k = productAlgebra.operations().size();
-    operations = new ArrayList(k);
+    List<Operation> ops = new ArrayList<Operation>(k);
+    //operations = new ArrayList(k);
     for (int i = 0; i < k; i++) {
       final Operation opx = (Operation)productAlgebra.operations().get(i);
       final int arity = opx.arity();
@@ -263,8 +264,9 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
             return elementIndex(opx.valueAt(lst));
           }
       };
-      operations.add(op);
+      ops.add(op);
     }
+    setOperations(ops);
   }
 
   public void makeOperationTables() {

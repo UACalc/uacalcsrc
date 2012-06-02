@@ -153,7 +153,8 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
    */
   protected void makeOperations() {
     final int k = algebras.get(0).operations().size();
-    operations = new ArrayList<Operation>(k);
+    List<Operation> ops = new ArrayList<Operation>(k);
+    //operations = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
       final int arity = 
            ((Operation)algebras.get(0).operations().get(i)).arity();
@@ -230,8 +231,9 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
             return ans2;
           }
       };
-      operations.add(op);
+      ops.add(op);
     }
+    setOperations(ops);
   }
 
   public void makeOperationTables() {

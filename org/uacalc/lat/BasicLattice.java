@@ -51,9 +51,11 @@ public class  BasicLattice extends GeneralAlgebra
     super(name);
     this.poset = poset;
     univList = poset.univ();
-    operations = new ArrayList<Operation>();
-    operations.add(makeJoinOperation());
-    operations.add(makeMeetOperation());
+    List<Operation> ops = new ArrayList<Operation>(2);
+    //operations = new ArrayList<Operation>();
+    ops.add(makeJoinOperation());
+    ops.add(makeMeetOperation());
+    setOperations(ops);
   }
 
   /**
@@ -65,9 +67,11 @@ public class  BasicLattice extends GeneralAlgebra
     super(name);
     poset = makeOrderedSet(lat);
     univList = poset.univ();
-    operations = new ArrayList<Operation>();
-    operations.add(makeJoinOperation());
-    operations.add(makeMeetOperation());
+    List<Operation> ops = new ArrayList<Operation>(2);
+    //operations = new ArrayList<Operation>();
+    ops.add(makeJoinOperation());
+    ops.add(makeMeetOperation());
+    setOperations(ops);
   }
 
   /**
@@ -81,9 +85,11 @@ public class  BasicLattice extends GeneralAlgebra
     poset = makeOrderedSet(lat);
     if (label) makeTctTypeMap(poset, lat);
     univList = poset.univ();
-    operations = new ArrayList<Operation>();
-    operations.add(makeJoinOperation());
-    operations.add(makeMeetOperation());
+    List<Operation> ops = new ArrayList<Operation>(2);
+    //operations = new ArrayList<Operation>();
+    ops.add(makeJoinOperation());
+    ops.add(makeMeetOperation());
+    setOperations(ops);
   }
 
   private void makeTctTypeMap(org.latdraw.orderedset.OrderedSet poset, 
