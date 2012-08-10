@@ -4,10 +4,12 @@ package org.uacalc.alg;
 
 import java.util.*;
 import org.uacalc.util.*;
+import org.uacalc.alg.QuotientAlgebra;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.op.SimilarityType;
+import org.uacalc.alg.sublat.*;
 import org.uacalc.terms.*;
 import org.uacalc.alg.conlat.*;
 import org.uacalc.ui.tm.ProgressReport;
@@ -457,6 +459,38 @@ public class Algebras {
     return new BasicAlgebra("Disc-" + card, card, ops);
   }
 
+  /**
+   * Determine if an algebra is quasicritical: is not
+   * a subdirect product of proper subalgebras. Returns 
+   * a map from a set of congruences of A whose intersection 
+   * is zero to subuniverses of A. A modulo the congruence is
+   * isomorphic to the subalgebra.
+   * 
+   * @param A
+   * @return a map from congruences to subalgebras
+   */
+  public Map<Partition,SmallAlgebra> quasiCritical(SmallAlgebra A) {
+    Map<Partition,SmallAlgebra> map = new HashMap<Partition,SmallAlgebra>();
+    BasicSet gens = A.sub().findMinimalSizedGeneratingSet();
+    //Map<IntArray,BasicSet> gens2subs = new HashMap<IntArray,BasicSet>();
+    // make the above a method in SubalgebraLattice
+    final int genSize = gens.getArray().length;
+    for (Partition par : A.con().universe()) {
+      if (par.equals(A.con().zero())  || par.equals(A.con().one())) continue;
+      SmallAlgebra quot = new QuotientAlgebra(A, par);
+      int[] arr = new int[genSize];
+      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality());
+      while (true) {
+        Map<Integer,Integer> homo = SubalgebraLattice.extendToHomomorphism(gens.getArray(), arr, A, quot);
+        //
+        //if (homo != null && quot.cardinality() == SubalgebraLattice.Sg(Arrays.copyOf(arr, arr.length))) {
+          
+        
+      }
+    }
+    if (map.isEmpty()) return null;
+    return map;
+  }
 
   static boolean endNow = true;
   
