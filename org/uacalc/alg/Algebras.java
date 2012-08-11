@@ -469,27 +469,43 @@ public class Algebras {
    * @param A
    * @return a map from congruences to subalgebras
    */
-  public Map<Partition,SmallAlgebra> quasiCritical(SmallAlgebra A) {
-    Map<Partition,SmallAlgebra> map = new HashMap<Partition,SmallAlgebra>();
-    BasicSet gens = A.sub().findMinimalSizedGeneratingSet();
+  public static Map<Partition,IntArray> quasiCritical(SmallAlgebra A) {
+    final Partition zero = A.con().zero();
+    Partition phi = A.con().one();
+    Map<Partition,IntArray> map = new HashMap<Partition,IntArray>();
+    int[] gens = A.sub().findMinimalSizedGeneratingSet().getArray();
     //Map<IntArray,BasicSet> gens2subs = new HashMap<IntArray,BasicSet>();
     // make the above a method in SubalgebraLattice
-    final int genSize = gens.getArray().length;
+    System.out.println("gens: " + Arrays.toString(gens));
+    final int genSize = gens.length;
     for (Partition par : A.con().universe()) {
-      if (par.equals(A.con().zero())  || par.equals(A.con().one())) continue;
-      SmallAlgebra quot = new QuotientAlgebra(A, par);
-      int[] arr = new int[genSize];
-      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality());
-      while (true) {
-        Map<Integer,Integer> homo = SubalgebraLattice.extendToHomomorphism(gens.getArray(), arr, A, quot);
-        //
-        //if (homo != null && quot.cardinality() == SubalgebraLattice.Sg(Arrays.copyOf(arr, arr.length))) {
+      if (par.equals(A.con().zero())  || phi.leq(par)) continue;
           
-        
+      System.out.println("par: " + par);
+      QuotientAlgebra quot = new QuotientAlgebra(A, par);
+      int[] quotGens = new int[genSize];
+      for (int i = 0 ; i < genSize; i++) {
+        quotGens[i] = quot.canonicalHomomorphism(gens[i]);
+      }
+      System.out.println("qutoGens: " + Arrays.toString(quotGens));
+      int[] arr = new int[genSize];
+      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality() - 1);
+      while (true) {
+        //System.out.println("arr: " + Arrays.toString(arr));
+        Map<Integer,Integer> homo = SubalgebraLattice.extendToHomomorphism(quotGens, arr, quot, A);
+        if (homo != null) { // means there is a homomorphis
+          if (homo.size() == new TreeSet<Integer>(homo.values()).size()) {  //test if homo is 1-1
+            //map.put(par, A.sub().Sg(arr));  // put the whole subalg ?
+            map.put(par, new IntArray(arr));
+            phi = phi.meet(par);
+            if (phi.equals(zero)) return map;
+            break;
+          }
+        }
+        if (!inc.increment()) break;
       }
     }
-    if (map.isEmpty()) return null;
-    return map;
+    return null;
   }
 
   static boolean endNow = true;
@@ -499,6 +515,13 @@ public class Algebras {
 
     SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
     SmallAlgebra polid = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polinidempotent.ua");
+    SmallAlgebra lat = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
+    
+    Map<Partition,IntArray> mapx = quasiCritical(polid);
+    System.out.println("map: " + mapx);
+    
+    if (true) return;
+    
     List<Operation> opers = polid.operations();
 //  Operation firstOp = polid.operations().get(0);
 //  ops = new ArrayList<Operation>();

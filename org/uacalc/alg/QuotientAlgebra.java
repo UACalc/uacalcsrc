@@ -139,6 +139,17 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
   public int representativeIndex(int rep) {
     return Arrays.binarySearch(representatives, rep);
   }
+  /**
+   * If <code>e</code> is the index of an element of the
+   * parent algebra, this returns the corresponding element
+   * of the quotient algebra. 
+   * 
+   * @param e the index of an element in the parent algebra
+   * @return the index of its image
+   */
+  public int canonicalHomomorphism(int e) {
+    return representativeIndex(getCongruence().representative(e));
+  }
 
   // TODO: do something ??
   public List getUniverseList() { return null; }
