@@ -470,24 +470,33 @@ public class Algebras {
    * @return a map from congruences to subalgebras
    */
   public static Map<Partition,IntArray> quasiCritical(SmallAlgebra A) {
+    return quasiCritical(A, null);
+  }
+  
+  
+  public static Map<Partition,IntArray> quasiCritical(SmallAlgebra A, ProgressReport report) {
     final Partition zero = A.con().zero();
     Partition phi = A.con().one();
     Map<Partition,IntArray> map = new HashMap<Partition,IntArray>();
     int[] gens = A.sub().findMinimalSizedGeneratingSet().getArray();
     //Map<IntArray,BasicSet> gens2subs = new HashMap<IntArray,BasicSet>();
     // make the above a method in SubalgebraLattice
-    System.out.println("gens: " + Arrays.toString(gens));
+    System.out.println("gens of A: " + Arrays.toString(gens));
     final int genSize = gens.length;
+    System.out.println("|Con(A)| = " + A.con().cardinality());
+    int k = 0;
     for (Partition par : A.con().universe()) {
+      k++;
+      if (k % 1000 == 0) System.out.println("k = " + k);
       if (par.equals(A.con().zero())  || phi.leq(par)) continue;
           
-      System.out.println("par: " + par);
+      //System.out.println("par: " + par);
       QuotientAlgebra quot = new QuotientAlgebra(A, par);
       int[] quotGens = new int[genSize];
       for (int i = 0 ; i < genSize; i++) {
         quotGens[i] = quot.canonicalHomomorphism(gens[i]);
       }
-      System.out.println("qutoGens: " + Arrays.toString(quotGens));
+      //System.out.println("quotGens: " + Arrays.toString(quotGens));
       int[] arr = new int[genSize];
       ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality() - 1);
       while (true) {
@@ -495,6 +504,7 @@ public class Algebras {
         Map<Integer,Integer> homo = SubalgebraLattice.extendToHomomorphism(quotGens, arr, quot, A);
         if (homo != null) { // means there is a homomorphis
           if (homo.size() == new TreeSet<Integer>(homo.values()).size()) {  //test if homo is 1-1
+            System.out.println("This one worked: par = " + par + " phi = " + phi);
             //map.put(par, A.sub().Sg(arr));  // put the whole subalg ?
             map.put(par, new IntArray(arr));
             phi = phi.meet(par);
@@ -505,6 +515,8 @@ public class Algebras {
         if (!inc.increment()) break;
       }
     }
+    System.out.println("map is " + map);
+    System.out.println("phi is " + phi);
     return null;
   }
 
@@ -516,8 +528,11 @@ public class Algebras {
     SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
     SmallAlgebra polid = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polinidempotent.ua");
     SmallAlgebra lat = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
+    SmallAlgebra jenjb = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/jenjb3.ua");
+
     
-    Map<Partition,IntArray> mapx = quasiCritical(polid);
+    
+    Map<Partition,IntArray> mapx = quasiCritical(jenjb);
     System.out.println("map: " + mapx);
     
     if (true) return;
