@@ -528,11 +528,11 @@ public class Algebras {
     SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
     SmallAlgebra polid = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polinidempotent.ua");
     SmallAlgebra lat = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
-    SmallAlgebra jenjb = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/jenjb3.ua");
+    SmallAlgebra jenjb = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/jenjb4.ua");
 
     
     
-    Map<Partition,IntArray> mapx = quasiCritical(jenjb);
+    Map<Partition,IntArray> mapx = quasiCritical(polid);
     System.out.println("map: " + mapx);
     
     if (true) return;
