@@ -479,45 +479,139 @@ public class Algebras {
     Partition phi = A.con().one();
     Map<Partition,IntArray> map = new HashMap<Partition,IntArray>();
     int[] gens = A.sub().findMinimalSizedGeneratingSet().getArray();
-    //Map<IntArray,BasicSet> gens2subs = new HashMap<IntArray,BasicSet>();
-    // make the above a method in SubalgebraLattice
-    System.out.println("gens of A: " + Arrays.toString(gens));
+    if (report != null) {
+      report.addLine("gens of A: " + Arrays.toString(gens));
+    }
+    else System.out.println("gens of A: " + Arrays.toString(gens));
+    
     final int genSize = gens.length;
-    System.out.println("|Con(A)| = " + A.con().cardinality());
+    final Map<Integer,List<int[]>> cardToGens = new HashMap<Integer,List<int[]>>(A.cardinality());
+    
+    int[] arr = new int[genSize];
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality() - 1);  
+    int m = 0;
+    if (report != null) {
+      report.addStartLine("Constructing a table from cardinalities to generating sets of subalgebra");
+    }
+    final int total = (int)Math.pow(A.cardinality(), genSize);
+    while (true) {
+      if (Thread.currentThread().isInterrupted()) {
+        if (report != null) {
+          report.addEndingLine("cancelled ...");
+        }
+        return null;
+      }
+      m++;
+      if (m % 10000 == 0) {
+        if (report != null) {
+          report.addLine(m + " of (" + A.cardinality() + ")^" + genSize + " = " + total + " so far");
+        } 
+        else {
+          System.out.println("m = " + m);
+        }
+      }
+      SmallAlgebra subalg = A.sub().Sg(arr);
+      List<int[]> subGens = cardToGens.get(subalg.cardinality());
+      if (subGens == null) {
+        subGens = new ArrayList<int[]>();
+        subGens.add(Arrays.copyOf(arr, arr.length));
+        cardToGens.put(subalg.cardinality(), subGens);
+      }
+      else {
+        boolean dupFound = false;
+        for (int[] genset : subGens) {
+          //System.out.println("arr: " + Arrays.toString(arr));
+          //System.out.println("genset: " + Arrays.toString(genset));
+          if (SubalgebraLattice.extendToHomomorphism(arr, genset, A, A) != null) {
+            dupFound = true;
+            break;
+          }
+        }
+        if (!dupFound) {
+          subGens.add(Arrays.copyOf(arr, arr.length));
+        }
+      }
+      if (!inc.increment()) break;
+    }
+    if (report != null) {
+      report.addEndingLine("Table construction complete:");
+    }
+    for (int i = 1; i <= A.cardinality(); i++) {
+      List<int[]> foo = cardToGens.get(i);
+      int size = foo != null ? foo.size() : 0;
+      if (report != null) {
+        report.addLine("For card = " + i + " there are " + size + " gensets");
+      }
+      else {
+        System.out.println("i = " + i + ", number of gensets = " + size);
+      }
+    }
+    
+    if (report != null) {
+      report.addLine("|Con(A)| = " + A.con().cardinality());
+    }
+    else System.out.println("|Con(A)| = " + A.con().cardinality());
     int k = 0;
+    if (report != null) {
+      report.addStartLine("Testing which thetas are good: those for which A mod theta is a subalgebra.");
+    }
     for (Partition par : A.con().universe()) {
+      if (Thread.currentThread().isInterrupted()) {
+        if (report != null) {
+          report.addEndingLine("cancelled ...");
+        }
+        return null;
+      }
       k++;
-      if (k % 1000 == 0) System.out.println("k = " + k);
+      if (k % 1000 == 0) {
+        if (report != null) {
+          report.addLine("tried " + k + " congruences");
+        }
+        else System.out.println("k = " + k);
+      }
       if (par.equals(A.con().zero())  || phi.leq(par)) continue;
           
       //System.out.println("par: " + par);
       QuotientAlgebra quot = new QuotientAlgebra(A, par);
+      if (cardToGens.get(quot.cardinality()) == null) continue;
       int[] quotGens = new int[genSize];
       for (int i = 0 ; i < genSize; i++) {
         quotGens[i] = quot.canonicalHomomorphism(gens[i]);
       }
-      //System.out.println("quotGens: " + Arrays.toString(quotGens));
-      int[] arr = new int[genSize];
-      ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality() - 1);
-      while (true) {
-        //System.out.println("arr: " + Arrays.toString(arr));
-        Map<Integer,Integer> homo = SubalgebraLattice.extendToHomomorphism(quotGens, arr, quot, A);
-        if (homo != null) { // means there is a homomorphis
-          if (homo.size() == new TreeSet<Integer>(homo.values()).size()) {  //test if homo is 1-1
-            System.out.println("This one worked: par = " + par + " phi = " + phi);
-            //map.put(par, A.sub().Sg(arr));  // put the whole subalg ?
-            map.put(par, new IntArray(arr));
-            phi = phi.meet(par);
-            if (phi.equals(zero)) return map;
-            break;
+      List<int[]> subGensList = cardToGens.get(quot.cardinality());
+      for (int[] subGens : subGensList) {
+        if (SubalgebraLattice.extendToHomomorphism(quotGens, subGens, quot, A) != null) {
+          map.put(par, new IntArray(subGens));
+          phi = phi.meet(par);
+          if (report != null) {
+            report.addLine("A mod " + par + " is a subalgebra");
+            report.addLine("the intersection of good congruences is " + phi);
           }
+          else System.out.println("This one worked: par = " + par + " phi = " + phi);
+          //map.put(par, A.sub().Sg(arr));  // put the whole subalg ?
+
+          if (phi.equals(zero)) {
+            if (report != null) {
+              report.addEndingLine("meet of good congruences is 0.");
+              report.addLine("map is " + map);
+            }
+            return map;
+          }
+          break; 
         }
-        if (!inc.increment()) break;
       }
     }
-    System.out.println("map is " + map);
-    System.out.println("phi is " + phi);
+    if (report != null) {
+      report.addEndingLine("Done:");
+      report.addLine("map is " + map);
+      report.addLine("meet of good congruences is " + phi);
+    }
+    else {
+      System.out.println("map is " + map);
+      System.out.println("phi is " + phi);
+    }
     return null;
+    
   }
 
   static boolean endNow = true;
@@ -528,11 +622,11 @@ public class Algebras {
     SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
     SmallAlgebra polid = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polinidempotent.ua");
     SmallAlgebra lat = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin3ontop.ua");
-    SmallAlgebra jenjb = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/jenjb4.ua");
+    SmallAlgebra jenjb = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/jenjb3.ua");
 
     
     
-    Map<Partition,IntArray> mapx = quasiCritical(polid);
+    Map<Partition,IntArray> mapx = quasiCritical(jenjb);
     System.out.println("map: " + mapx);
     
     if (true) return;

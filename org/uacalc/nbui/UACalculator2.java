@@ -103,6 +103,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem powMI;
   private javax.swing.JMenuItem matrixPowMI;
   private javax.swing.JMenuItem primalMI;
+  private javax.swing.JMenuItem quasiCriticalMI;
   private javax.swing.JMenuItem prodMI;
   private javax.swing.JMenuItem quitMI;
   private javax.swing.JMenuItem quotMI;
@@ -293,6 +294,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     membershipTestMI = new javax.swing.JMenuItem();
     subPowerMI = new javax.swing.JMenuItem();
     primalMI = new javax.swing.JMenuItem();
+    quasiCriticalMI = new javax.swing.JMenuItem();
     maltsevMenu = new javax.swing.JMenu();
     distributivityMI = new javax.swing.JMenuItem();
     semidistributivityMI = new javax.swing.JMenuItem();
@@ -665,6 +667,15 @@ xxx;
         }
     });
     tasksMenu.add(primalMI);
+    
+    quasiCriticalMI.setText("quasicritical");
+    quasiCriticalMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          quasiCriticalMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(quasiCriticalMI);
+
 
     jMenuBar1.add(tasksMenu);
     
@@ -1274,6 +1285,10 @@ xxx;
 
   private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
     getComputationsController().setupPrimalTermsTask();
+  }//GEN-LAST:event_primalMIActionPerformed
+  
+  private void quasiCriticalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
+    getComputationsController().setupQuasiCriticalTask();
   }//GEN-LAST:event_primalMIActionPerformed
 
   private void quotMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotMIActionPerformed
