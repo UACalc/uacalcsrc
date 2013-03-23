@@ -270,7 +270,7 @@ public class Closer {
   }
   
   public List<IntArray> sgClose() {
-    System.out.println("nCPU = " + nCPUs);
+    //System.out.println("nCPU = " + nCPUs);
     //System.out.println("termMap = " + termMap);
     //return sgCloseParallel(generators, 0, termMap);
     return sgClose(generators, 0, termMap);
@@ -706,7 +706,7 @@ if (false) {
     if (operationsNotNull) termMapForOperations = new HashMap<Operation,Term>();
     int operationsFound = 0;
     
-    System.out.println("got to sgClosePower, reportNotNull: " + reportNotNull);
+    //System.out.println("got to sgClosePower, reportNotNull: " + reportNotNull);
     final int power = algebra.getNumberOfFactors();
     ans = new ArrayList<IntArray>(elems);// IntArrays
     final List<int[]> rawList = new ArrayList<int[]>(); // the corresponding raw int[]'s

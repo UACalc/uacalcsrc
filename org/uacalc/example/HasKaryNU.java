@@ -23,6 +23,7 @@ import org.uacalc.alg.BigProductAlgebra;
 import org.uacalc.util.ArrayIncrementor;
 import org.uacalc.util.IntArray;
 import org.uacalc.util.SequenceGenerator;
+import org.uacalc.ui.tm.ProgressReport;
 
 
 
@@ -38,7 +39,7 @@ public class HasKaryNU {
         SmallAlgebra InputAlg2 = null;
         SmallAlgebra testalg = null;
         int pow = 1;
-        int arity = 3;
+        int arity = 10;
         if (args.length > 1) arity =  Integer.parseInt(args[0]);
         if (args.length > 1) {
             InputAlg1 = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile(args[1]);
@@ -120,8 +121,8 @@ public class HasKaryNU {
         //pipe the output from the sgClose method to a string, rather
         //than the console
         PrintStream out = new PrintStream(OutStream);
-        System.setOut(out);
-        List<IntArray> sub = alg.sgClose(gens, null, Aarray);
+        //System.setOut(out);
+        List<IntArray> sub = alg.sgClose(gens, null, Aarray, new ProgressReport());
         //out.close();
         //restore console output
         System.setOut(console);

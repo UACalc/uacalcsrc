@@ -42,7 +42,10 @@ public class ProgressReport {
     this.logArea = logArea;
   }
   
-  // a null version to suppress output anywhere
+  /**
+   * This creates a version without a TaskTableModel or logArea so
+   * the output is effectly suppressed. Matt wanted this.
+   */
   public ProgressReport() {
     dontOutput = true;
   }
@@ -80,6 +83,7 @@ public class ProgressReport {
   
   public String getTimeNext() { return timeNext; }
   public void setTimeNext(String time) {
+    if (dontOutput) return;
     timeNext = time;
     getTaskTableModel().fireTableDataChanged();
   }
