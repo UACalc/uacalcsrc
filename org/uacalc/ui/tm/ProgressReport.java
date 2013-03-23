@@ -9,6 +9,8 @@ import org.uacalc.alg.AlgebraWithGeneratingVector;
 
 
 public class ProgressReport {
+  
+  final boolean dontOutput;
 
   private MonitorPanel monitorPanel;
   private JTextArea logArea;
@@ -35,12 +37,20 @@ public class ProgressReport {
   
   // the new version
   public ProgressReport(TaskTableModel taskTableModel, JTextArea logArea) {
+    dontOutput = false;
     this.taskTableModel = taskTableModel;
     this.logArea = logArea;
   }
   
+  // a null version to suppress output anywhere
+  public ProgressReport() {
+    dontOutput = true;
+  }
+  
+  
   // the old version depending on a MonitorPanel
   public ProgressReport(MonitorPanel panel) {
+    dontOutput = false;
     monitorPanel = panel;
     logArea = panel.getLogArea();
     sizeField = panel.getSizeField();
@@ -77,6 +87,7 @@ public class ProgressReport {
   public int getPass() { return pass; }
   
   public void setPass(int v) {
+    if (dontOutput) return;;
     pass = v;
     //if (monitorPanel.getProgressReport() == this) {
     //  setPassFieldText(String.valueOf(v));
@@ -87,6 +98,7 @@ public class ProgressReport {
   
   public int getPassSize() { return passSize; }
   public void setPassSize(int v) {
+    if (dontOutput) return;
     passSize = v;
     //if (monitorPanel.getProgressReport() == this) {
     //  setPassSizeFieldText(String.valueOf(v));
@@ -98,6 +110,7 @@ public class ProgressReport {
   public int getSize() { return size; }
   
   public void setSize(int v) {
+    if (dontOutput) return;
     size = v;
     //if (monitorPanel.getProgressReport() == this) {
     //  setSizeFieldText(String.valueOf(v));
@@ -109,6 +122,7 @@ public class ProgressReport {
   public String getDescription() { return desc; }
 
   public void setDescription(String v) {
+    if (dontOutput) return;
     desc = v;
     //if (monitorPanel.getProgressReport() == this) {
     //  setDescFieldText(String.valueOf(v));
@@ -123,6 +137,7 @@ public class ProgressReport {
   }
   
   public void addLine(final String line) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         final String str = getIndentString() + line;
@@ -133,6 +148,7 @@ public class ProgressReport {
   }
   
   public void addStartLine(final String line) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         final String str = getIndentString() + line;
@@ -145,6 +161,7 @@ public class ProgressReport {
   }
   
   public void addEndingLine(final String line) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {  
         long time = System.currentTimeMillis() - times.removeFirst();
@@ -157,12 +174,14 @@ public class ProgressReport {
   }
   
   private void conditionalAppend(String str) {
+    if (dontOutput) return;
     if (taskTableModel.getCurrentTask().getProgressReport() == ProgressReport.this) {
       appendToLogArea(str + "\n");
     }
   }
   
   public void reset() {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         resetAux();
@@ -197,6 +216,7 @@ public class ProgressReport {
   }
   
   public void printlnToLog(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         printlnToLogAux(s);
@@ -205,6 +225,7 @@ public class ProgressReport {
   }
   
   public void printStart(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         printlnToLogAux(s);
@@ -215,6 +236,7 @@ public class ProgressReport {
   }
   
   public void printEnd(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         System.out.println("end: s = " + s + ", times.size() = " + times.size());
@@ -226,6 +248,7 @@ public class ProgressReport {
   }
   
   public void setDescFieldText(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         descField.setText(s);
@@ -234,6 +257,7 @@ public class ProgressReport {
   }
   
   public void setPassFieldText(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         passField.setText(s);
@@ -242,6 +266,7 @@ public class ProgressReport {
   }
   
   public void setPassSizeFieldText(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         System.out.println("pass size, s = " + s);
@@ -251,6 +276,7 @@ public class ProgressReport {
   }
   
   public void setSizeFieldText(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         sizeField.setText(s);
@@ -259,6 +285,7 @@ public class ProgressReport {
   }
   
   public void appendToLogArea(final String s) {
+    if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
       public void run() {
         logArea.append(s);
