@@ -34,38 +34,38 @@ import org.uacalc.ui.tm.ProgressReport;
 public class HasKaryNU {
   
   public static void main(String[] args)
-            throws IOException, BadAlgebraFileException {
-        SmallAlgebra InputAlg1 = null;
-        SmallAlgebra InputAlg2 = null;
-        SmallAlgebra testalg = null;
-        int pow = 1;
-        int arity = 10;
-        if (args.length > 1) arity =  Integer.parseInt(args[0]);
-        if (args.length > 1) {
-            InputAlg1 = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile(args[1]);
-        }
-        if (args.length > 2) {
-            InputAlg2 = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile(args[2]);
-            List algs = new ArrayList();
-            algs.add(InputAlg1);
-            algs.add(InputAlg2);
-            testalg = new ProductAlgebra(algs);
-        } else {
-            //testalg = InputAlg1;
-            testalg = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/BA2.ua");
-        }
-        int result = hasNUHorowitz(testalg, arity);
-        if (result == 1) {
-            System.out.println("Algebra has a " + arity + "-ary NU term");
-        } else if (result == 0) {
-            System.out.println("Algebra has no  " + arity + "-ary NU term");
-            //AlgebraIO.writeAlgebraFile(testalg, "NoMajorityTerm.ua");
-        } else if (result == -1) {
-            System.out.println("Algebra has no Jonsson terms");
-           // AlgebraIO.writeAlgebraFile(testalg, "NoMajorityTerm.ua");
-        }
+  throws IOException, BadAlgebraFileException {
+    SmallAlgebra InputAlg1 = null;
+    SmallAlgebra InputAlg2 = null;
+    SmallAlgebra testalg = null;
+    int pow = 1;
+    int arity = 10;
+    if (args.length > 1) arity =  Integer.parseInt(args[0]);
+    if (args.length > 1) {
+      InputAlg1 = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile(args[1]);
     }
-  
+    if (args.length > 2) {
+      InputAlg2 = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile(args[2]);
+      List algs = new ArrayList();
+      algs.add(InputAlg1);
+      algs.add(InputAlg2);
+      testalg = new ProductAlgebra(algs);
+    } else {
+      //testalg = InputAlg1;
+      testalg = (SmallAlgebra) org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/BA2.ua");
+    }
+    int result = hasNUHorowitz(testalg, arity);
+    if (result == 1) {
+      System.out.println("Algebra has a " + arity + "-ary NU term");
+    } else if (result == 0) {
+      System.out.println("Algebra has no  " + arity + "-ary NU term");
+      //AlgebraIO.writeAlgebraFile(testalg, "NoMajorityTerm.ua");
+    } else if (result == -1) {
+      System.out.println("Algebra has no Jonsson terms");
+      // AlgebraIO.writeAlgebraFile(testalg, "NoMajorityTerm.ua");
+    }
+  }
+
 
   /**
    *

@@ -7,6 +7,8 @@ public class BasicBinaryRelation implements BinaryRelation {
 
   private final NavigableSet<IntArray> pairs;
   private final int univSize;
+  private Map<Integer,List<Integer>> rightMap = new HashMap<Integer,List<Integer>>();
+  private Map<Integer,List<Integer>> leftMap = new HashMap<Integer,List<Integer>>();
   
   public BasicBinaryRelation(int univSize) {
     this.univSize = univSize;
@@ -16,6 +18,12 @@ public class BasicBinaryRelation implements BinaryRelation {
   public BasicBinaryRelation(Collection<IntArray> collection, int univSize) {
     this(univSize);
     pairs.addAll(collection);
+  }
+  
+  private void makeRightMap() {
+    for (IntArray ia : pairs) {
+      
+    }
   }
   
   public NavigableSet<IntArray> getPairs() { return pairs; }
