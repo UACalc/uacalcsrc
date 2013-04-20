@@ -105,6 +105,21 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return null;
   }
   
+  /**
+   * The relational composition. I might make sense
+   * to make this class a subclass of BasicBinaryRelation,
+   * but I am not doing that now.
+   */
+  public BinaryRelation compose(BinaryRelation beta) {
+    BasicBinaryRelation ans = new BasicBinaryRelation(size);
+    for (IntArray ia : pairs) {
+      for (int k = 0; k < size; k++) {
+        if (beta.isRelated(ia.get(1), k)) ans.add(ia.get(0), k);
+      }
+    }
+    return ans;
+  }
+  
   private static TreeSet<Integer> blkStringToSet(String blkStr) {
     blkStr = blkStr.trim();
     final String rbrack = "]";

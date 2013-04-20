@@ -7,8 +7,8 @@ public class BasicBinaryRelation implements BinaryRelation {
 
   private final NavigableSet<IntArray> pairs;
   private final int univSize;
-  private Map<Integer,List<Integer>> rightMap = new HashMap<Integer,List<Integer>>();
-  private Map<Integer,List<Integer>> leftMap = new HashMap<Integer,List<Integer>>();
+  //private Map<Integer,List<Integer>> rightMap = null;
+  //private Map<Integer,List<Integer>> leftMap = null;
   
   public BasicBinaryRelation(int univSize) {
     this.univSize = univSize;
@@ -20,12 +20,7 @@ public class BasicBinaryRelation implements BinaryRelation {
     pairs.addAll(collection);
   }
   
-  private void makeRightMap() {
-    for (IntArray ia : pairs) {
-      
-    }
-  }
-  
+
   public NavigableSet<IntArray> getPairs() { return pairs; }
   
   public int compareTo(Object o) {
@@ -41,6 +36,20 @@ public class BasicBinaryRelation implements BinaryRelation {
   
   public Iterator<IntArray> iterator() {
     return pairs.iterator();
+  }
+  
+  /**
+   * Relation composition. This follows DeMeo's suggestion.
+   * 
+   */
+  public BinaryRelation compose(BinaryRelation beta) {
+    BasicBinaryRelation ans = new BasicBinaryRelation(univSize);
+    for (IntArray ia : pairs) {
+      for (int k = 0; k < univSize; k++) {
+        if (beta.isRelated(ia.get(1), k)) ans.add(ia.get(0), k);
+      }
+    }
+    return ans;
   }
   
   public void add(int i, int j) {
@@ -60,5 +69,6 @@ public class BasicBinaryRelation implements BinaryRelation {
     }
     return true;
   }
+  
   
 }

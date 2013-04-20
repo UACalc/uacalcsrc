@@ -11,5 +11,9 @@ public interface BinaryRelation extends Iterable<IntArray>, Comparable {
   
   public NavigableSet<IntArray> getPairs();
   
+  //public void add(int a, int b);
+  
+  public BinaryRelation compose(BinaryRelation beta);
+  
   
 }
