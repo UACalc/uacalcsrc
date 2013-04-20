@@ -112,7 +112,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
    */
   public BinaryRelation compose(BinaryRelation beta) {
     BasicBinaryRelation ans = new BasicBinaryRelation(size);
-    for (IntArray ia : pairs) {
+    for (IntArray ia : getPairs()) {
       for (int k = 0; k < size; k++) {
         if (beta.isRelated(ia.get(1), k)) ans.add(ia.get(0), k);
       }

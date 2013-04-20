@@ -70,5 +70,25 @@ public class BasicBinaryRelation implements BinaryRelation {
     return true;
   }
   
+  public String toString() {
+    return pairs.toString();
+  }
+  
+  public static void main(String[] args) {
+    BasicBinaryRelation alpha = new BasicBinaryRelation(5);
+    BasicBinaryRelation beta = new BasicBinaryRelation(5);
+    alpha.add(0,1);
+    alpha.add(0,2);
+    beta.add(1,3);
+    System.out.println(alpha.compose(beta).toString());
+    BasicPartition test_alpha = new BasicPartition(new int[] {-2, 0, -2, 2, -2, 4});// 
+    BasicPartition test_beta = new BasicPartition(new int[] {-2, 0, -4, 2, 2, 2});
+    BasicPartition test_gamma = new BasicPartition(new int[] {-2, -2, 0, -2, 1, 3});
+    Partition alphaPar = new BasicPartition("|0,1|2,3|4,5|");
+    Partition betaPar = new BasicPartition("|0,1|2,3,4,5|");
+    Partition gammaPar = new BasicPartition("|0,2|1,4|3,5|");
+
+    System.out.println(alphaPar.compose(gammaPar).toString());
+  }
   
 }
