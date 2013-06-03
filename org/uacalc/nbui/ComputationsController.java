@@ -1226,7 +1226,8 @@ public class ComputationsController {
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine("Found an NU term.");
+            report.addEndingLine("Found an NU term: " + nu);
+            ttm.setDescription(desc + " " + nu);
             java.util.List<Term> terms = new ArrayList<Term>(1);
             terms.add(nu);
             ttm.setTerms(terms);

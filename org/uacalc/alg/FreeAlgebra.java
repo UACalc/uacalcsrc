@@ -137,7 +137,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     setThinGenerators(thinGens);
     setDecompose(decompose);
     //System.out.println("progressReport in Free is " + report);
-    String line = "constructing free algebra on " + numberOfGens 
+    String line = "Constructing free algebra on " + numberOfGens 
                    + " generators over " + alg.getName();
     if (report != null) {
       report.addStartLine(line);
@@ -212,7 +212,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     final List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>();
     final List<IntArray> projs = new ArrayList<IntArray>();
     if (decompose) {
-      if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
+      //if (report != null) report.addStartLine("using subdirect decompositions to eliminate some projections.");
       for (AlgebraWithGeneratingVector algV : setupSIProjections(alg, numberOfGens, relations)) {
         algs.add(algV.getAlgebra());
         projs.add(new IntArray(algV.getVector()));
@@ -237,7 +237,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
       for (int  i = 0; i < numberOfGens; i++) {
         s = s * n;
       }
-      logger.fine("size of the over product is " + s);
+      //logger.fine("size of the over product is " + s);
       productAlgebra = new BigProductAlgebra(alg, s);
       int[] projsVec = new int[numberOfGens];
       ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(projsVec, n-1);
