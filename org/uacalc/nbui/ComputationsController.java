@@ -1131,6 +1131,68 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
   
+  public void setupWeak3EdgeTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A weak 3-edge (Taylor) term over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  w3edgeTermTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.addLine("that is, a term satisfying e(y,y,x,x) = e(y,x,y,x) = e(x,x,x,y)");
+        report.setDescription(desc);
+        Term w3edgeTerm = Malcev.weak3EdgeTerm(alg, report);
+        return w3edgeTerm;
+      }
+      public void onCompletion(Term w3edgeTerm, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (w3edgeTerm == null) {
+            report.addEndingLine("The variety has no Taylor term");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a weak 3-edge (Taylor) term.");
+            report.addLine("see M. Maroti and R. McKenzie, \"Existence theorems for weakly symmetric operations\", "
+                + "Algebra Universalis, 59(2008), 463-489, and ");
+            report.addLine("K. Kearnes, P. Markovic, and R. McKenzie, " 
+                + "\"Optimal strong Mal'cev conditions for onitting type 1 in locally finite varieties\", "
+                + "Algebra Universalis, to appear.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(w3edgeTerm);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(w3edgeTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(w3edgeTermTask);
+  }
+  
   public void setupMarkovicMcKenzieSiggersTaylorTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
@@ -1870,7 +1932,7 @@ public class ComputationsController {
           if (pTerms == null) {
             report.addEndingLine("This algebra is not primal;");
             report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
-                + "the semi-primal, and the dualizable,\" Algebra Universalis, to appear.");
+                + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
             ttm.setDescription(desc + ": there are none.");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();

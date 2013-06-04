@@ -86,6 +86,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenu maltsevMenu;
   private javax.swing.JMenuItem membershipTestMI;
   private javax.swing.JMenuItem mmstMI;
+  private javax.swing.JMenuItem w3edgeTermMI;
   private javax.swing.JMenuItem modularityMI;
   private javax.swing.JTextField msgTextField;
   private javax.swing.JMenuItem nPermMI;
@@ -307,6 +308,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     nuMI = new javax.swing.JMenuItem();
     wnuMI = new javax.swing.JMenuItem();
     mmstMI = new javax.swing.JMenuItem();
+    w3edgeTermMI = new javax.swing.JMenuItem();
     drawingMenu = new javax.swing.JMenu();
     drawConMI = new javax.swing.JMenuItem();
     drawSubMI = new javax.swing.JMenuItem();
@@ -768,6 +770,14 @@ xxx;
         }
     });
     maltsevMenu.add(mmstMI);
+    
+    w3edgeTermMI.setText("Weak 3-edge term");
+    w3edgeTermMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          w3edgeTermMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(w3edgeTermMI);
 
     jMenuBar1.add(maltsevMenu);
 
@@ -1322,6 +1332,10 @@ xxx;
   private void mmstMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mmstMIActionPerformed
     getComputationsController().setupMarkovicMcKenzieSiggersTaylorTermTask();
   }//GEN-LAST:event_mmstMIActionPerformed
+  
+  private void w3edgeTermMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupWeak3EdgeTermTask();
+  }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
     getMainController().removeCurrentAlgebra();

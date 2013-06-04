@@ -286,13 +286,15 @@ public class Malcev {
     return null;
   }
   
+  
+  
   /**
    * Gives a term t(x,y,z,u) satisfying t(y,x,x,x) = t(x,x,y,y) and
    * t(x,x,y,x) = t(x,y,x,x).
    * 
    */
   public static Term markovicMcKenzieSiggersTaylorTerm(SmallAlgebra alg) {
-    return  markovicMcKenzieSiggersTaylorTerm(alg, null);
+    return markovicMcKenzieSiggersTaylorTerm(alg, null);
   }
   
   /**
@@ -372,6 +374,64 @@ public class Malcev {
     return null;
   }
 
+  public static Term weak3EdgeTerm(SmallAlgebra alg, ProgressReport report) {
+    if (alg.cardinality() == 1)  return Variable.x;
+    if (report != null) report.addStartLine(
+        "Looking for a weak 3-edge term: e(y,y,x,x) = e(y,x,y,x) = e(x,x,x,y).");
+    final boolean isIdempotent = alg.isIdempotent();
+    final int[][] blocks = new int[][] {{0,1,2}};
+    final int[][] values = new int[][] {{3,0}};
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    // ** Need to put in a test if the tables will fit in memory. **
+    f2.makeOperationTables();
+    //logger.info("f2 size is " + f2.cardinality());
+    IntArray g0;
+    IntArray g1;
+    IntArray g2;
+    IntArray g3;
+    if (isIdempotent) {
+      g0 = new IntArray(new int[] {1,1,0});
+      g1 = new IntArray(new int[] {1,0,0});
+      g2 = new IntArray(new int[] {0,1,0});
+      g3 = new IntArray(new int[] {0,0,1});
+    }
+    else {
+      g0 = new IntArray(new int[] {1,1,0,0});
+      g1 = new IntArray(new int[] {1,0,0,0});
+      g2 = new IntArray(new int[] {0,1,0,0});
+      g3 = new IntArray(new int[] {0,0,1,0});
+    }
+    List<IntArray> gens = new ArrayList<IntArray>(4);
+    gens.add(g0);
+    gens.add(g1);
+    gens.add(g2);
+    gens.add(g3);
+    final Map<IntArray,Term> termMap = new HashMap<IntArray,Term>(4);
+    termMap.put(g0, new VariableImp("x0"));
+    termMap.put(g1, new VariableImp("x1"));
+    termMap.put(g2, new VariableImp("x2"));
+    termMap.put(g3, new VariableImp("x3"));
+    //final IntArray yx = new IntArray(new int[] {1,0});
+    BigProductAlgebra f2pow;
+    if (isIdempotent) {
+      f2pow = new BigProductAlgebra(f2, 3);
+    }
+    else {
+      f2pow = new BigProductAlgebra(f2, 4);
+    }
+    Closer closer = new Closer(f2pow, gens, termMap);
+    closer.setProgressReport(report);
+    closer.setBlocks(blocks);
+    if (!isIdempotent) closer.setValues(values);
+    closer.sgClosePower();
+    if (closer.getElementToFind() != null) {
+      Term w3edge = termMap.get(closer.getElementToFind());
+      if (report != null) report.addEndingLine("found a weak 3-edge term: " + w3edge);
+      return w3edge;
+    }
+    if (report != null) report.addEndingLine("there is no weak 3-edge term: ");
+    return null;
+  }
     
   
   
@@ -390,7 +450,7 @@ public class Malcev {
   public static Term findNUF(SmallAlgebra alg, int arity, ProgressReport report) {
     if (alg.cardinality() == 1) return new VariableImp("x0");
     if (alg.isIdempotent()) {
-      if (!isConDistIdempotent(alg, report)) return null;
+      if (!isCongruenceDistIdempotent(alg, report)) return null;
       if (report != null) {
         // may want to add a test for distributivity here.
         report.addStartLine("Using Horitz's algorithm to if an NU term exists");
@@ -737,7 +797,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     if (report != null) report.addStartLine("finding Jonsson terms " 
     		                          + (alvinVariant ? " (ALV variant)" : ""));
     if (alg.isIdempotent()) {
-      if (!isConDistIdempotent(alg, report)) {
+      if (!isCongruenceDistIdempotent(alg, report)) {
         if (report != null) {
           report.addEndingLine("done finding Jonsson terms; there are none");
         }
@@ -862,7 +922,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    * @param report
    * @return
    */
-  public static boolean isConDistIdempotent(SmallAlgebra alg, ProgressReport report) {
+  public static boolean isCongruenceDistIdempotent(SmallAlgebra alg, ProgressReport report) {
     if (report != null) {
       report.addStartLine("Testing if V(A) is CD");
       report.addLine("First look for a Day quadruple, then check if V(A) is con SD-meet.");
@@ -877,8 +937,15 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
 
   public static List<Term> sdTerms(SmallAlgebra alg, ProgressReport report) {
-    if (report != null) report.addStartLine("finding Semidistributive terms ");
+    if (report != null) report.addStartLine("Finding Semidistributive terms ");
     if (alg.isIdempotent()) {
+      if (sdIdempotent(alg, report) != null) {
+        if (report != null) report.addEndingLine("There are none. ");
+        return null;
+      }
+      else {
+        if (report != null) report.addLine("The variety is congruence semidistributive; looking for terms. ");
+      }
       // put in idempotent test for omitting 1, 2, 5
       
       //if (findDayQuadrupleInSquare(alg, report) != null) {
@@ -1001,12 +1068,69 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return null;
   }
 
+  /**
+   * This uses Theorem 4.2 of Freese-Valeriote to test if the 
+   * algebra omits type 1, 2 and 5; that is, is congruence SD. 
+   * It returns the x and y witnessing the failure or null if
+   * there is no failure.
+   * 
+   * @param alg  the algebra, assumed to be idempotent
+   * @param report
+   * @return x and y in alg that witness the failure or null if there is none
+   */
+  public static IntArray sdIdempotent(SmallAlgebra alg, ProgressReport report) {
+    if (report != null) {
+      report.addStartLine("Using Thm 4.2 of Freese-Valeriote to test if V(A) is SD-join");
+    }
+    final int n = alg.cardinality();
+    final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
+    final IntArray a = new IntArray(2);
+    final IntArray b = new IntArray(2);
+    final IntArray c = new IntArray(2);
+    final List<IntArray> gens = new ArrayList<IntArray>(3);
+    gens.add(a);
+    gens.add(b);
+    gens.add(c);
+    for (int x = 0; x < n; x++) {
+      for (int y = 0; y < n; y++) {
+        if (x == y) continue;
+        a.set(0, x);
+        a.set(1, x);
+        b.set(0, x);
+        b.set(1, y);
+        c.set(0, y);
+        c.set(1, x);
+        final SmallAlgebra sub = new SubProductAlgebra("", sq, gens);
+        final int aIndex = sub.elementIndex(a);
+        final int bIndex = sub.elementIndex(b);
+        final int cIndex = sub.elementIndex(c);
+        Partition alpha = sub.con().Cg(aIndex, cIndex);
+        Partition beta = sub.con().Cg(aIndex, bIndex);
+        Partition gamma = sub.con().Cg(bIndex, cIndex);
+        if (!alpha.meet(beta).join(gamma).isRelated(aIndex, cIndex)) {
+          if (report != null) {
+            report.setWitnessAlgebra(new AlgebraWithGeneratingVector(sub, 
+                new int[] {aIndex, bIndex, cIndex}));
+            report.addLine("Found a failure of Theorem 4.2 of Freese-Valeriote");
+            report.addLine("with x = " + x + ", y = " + y);
+            report.addLine("This algebra admits either type 1, 2 or 5.");
+            report.addEndingLine("So this algebra does not generate an SD variety"); 
+          }
+          return new IntArray(new int[] {x, y});
+        }
+      }
+    }
+    if (report != null) {
+      report.addEndingLine("V(A) is congruence semidistributive.");
+    }
+    return null;
+  }
+    
   
-  private static List<Term> path2TermList(List path, 
+  private static List<Term> path2TermList(List<IntArray> path, 
                                           HashMap<IntArray, Term> termMap) {
     List<Term> ans = new ArrayList<Term>();
-    for (Iterator it = path.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
+    for (IntArray ia : path) {
       ans.add(termMap.get(ia));
     }
     return ans;
@@ -1818,7 +1942,7 @@ System.out.println("got to idempotent");
   public static Term pixleyTerm(SmallAlgebra alg, ProgressReport report) {
     if (alg.cardinality() == 1)  return Variable.x;
     if (alg.isIdempotent()) {
-      if (!isConDistIdempotent(alg, report)) {
+      if (!isCongruenceDistIdempotent(alg, report)) {
         if (report != null) report.addLine("there is no Pixley term");
         return null;
       }
