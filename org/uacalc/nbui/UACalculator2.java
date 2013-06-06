@@ -125,6 +125,10 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem tableCSVMI;
   private javax.swing.JMenu tasksMenu;
   private javax.swing.JMenuItem uaFileMI;
+  private javax.swing.JMenu varPropIdemMenu;
+  private javax.swing.JMenuItem omittedIdealMI;
+
+
 
 
   private final MainController actions;
@@ -317,6 +321,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     helpInstructionsMI = new javax.swing.JMenuItem();
     helpAlgorithmsMI = new javax.swing.JMenuItem();
     helpDescriptionMI = new javax.swing.JMenuItem();
+    varPropIdemMenu = new javax.swing.JMenu();
+    omittedIdealMI = new javax.swing.JMenuItem();
     
     
     // tie components together and setup stuff
@@ -780,7 +786,21 @@ xxx;
     maltsevMenu.add(w3edgeTermMI);
 
     jMenuBar1.add(maltsevMenu);
+    
+    varPropIdemMenu.setText("VarProps(Idempotent)");
+    varPropIdemMenu.setToolTipText("Test properties of V(A), A idempotent");
 
+    omittedIdealMI.setText("Largest Omitted Types Ideal");
+    omittedIdealMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            omittedIdealMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(omittedIdealMI);
+    
+    jMenuBar1.add(varPropIdemMenu);
+    
+    
     drawingMenu.setText("Drawing");
 
     drawConMI.setText("Con");
@@ -1335,6 +1355,10 @@ xxx;
   
   private void w3edgeTermMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupWeak3EdgeTermTask();
+  }
+  
+  private void omittedIdealMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupOmittedIdealIdempotentTask();
   }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
