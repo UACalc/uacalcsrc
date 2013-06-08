@@ -2018,6 +2018,462 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupCDIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupCMIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupkPermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupkNUIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupMajorityIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupSDIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupSDMeetIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
+  public void setupPermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) return; // this should be caught earlier
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
+      public Set<Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
+        return omittedTypes;
+      }
+      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          //report.addEndingLine("Found terms showing primality;");
+          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
+          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
+          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
+          //    + gAlg.toString(true));
+          ttm.setDescription(desc + " " + omittedTypes);
+          updateResultTextField(this, ttm);
+          //ttm.setTerms(omittedTypes);// see if we can add a method for this
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
   public void formPowerAlgebra() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

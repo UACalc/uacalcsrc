@@ -127,6 +127,16 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem uaFileMI;
   private javax.swing.JMenu varPropIdemMenu;
   private javax.swing.JMenuItem omittedIdealMI;
+  private javax.swing.JMenuItem CDIdempotentMI;
+  private javax.swing.JMenuItem CMIdempotentMI;
+  private javax.swing.JMenuItem kPermIdempotentMI;
+  private javax.swing.JMenuItem kNUIdempotentMI;
+  private javax.swing.JMenuItem majorityIdempotentMI;
+  private javax.swing.JMenuItem sdIdempotentMI;
+  private javax.swing.JMenuItem sdMeetIdempotentMI;
+  private javax.swing.JMenuItem permIdempotentMI;
+
+
 
 
 
@@ -323,6 +333,15 @@ public class UACalculator2 extends JFrame implements UACalc {
     helpDescriptionMI = new javax.swing.JMenuItem();
     varPropIdemMenu = new javax.swing.JMenu();
     omittedIdealMI = new javax.swing.JMenuItem();
+    CDIdempotentMI = new javax.swing.JMenuItem();
+    CMIdempotentMI = new javax.swing.JMenuItem();
+    kPermIdempotentMI = new javax.swing.JMenuItem();
+    kNUIdempotentMI = new javax.swing.JMenuItem();
+    majorityIdempotentMI = new javax.swing.JMenuItem();
+    sdIdempotentMI = new javax.swing.JMenuItem();
+    sdMeetIdempotentMI = new javax.swing.JMenuItem();
+    permIdempotentMI = new javax.swing.JMenuItem();
+    
     
     
     // tie components together and setup stuff
@@ -787,7 +806,7 @@ xxx;
 
     jMenuBar1.add(maltsevMenu);
     
-    varPropIdemMenu.setText("VarProps(Idempotent)");
+    varPropIdemMenu.setText("Idempotent Algs");
     varPropIdemMenu.setToolTipText("Test properties of V(A), A idempotent");
 
     omittedIdealMI.setText("Largest Omitted Types Ideal");
@@ -797,6 +816,72 @@ xxx;
         }
     });
     varPropIdemMenu.add(omittedIdealMI);
+    
+    CDIdempotentMI.setText("Is V(A) CD");
+    CDIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            CDIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(CDIdempotentMI);
+    
+    CMIdempotentMI.setText("Is V(A) CM");
+    CMIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            CMIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(CMIdempotentMI);
+    
+    kPermIdempotentMI.setText("Is V(A) k-perm some k");
+    kPermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            kPermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(kPermIdempotentMI);
+    
+    kNUIdempotentMI.setText("k-NU for A");
+    kNUIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            kNUIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(kNUIdempotentMI);
+    
+    majorityIdempotentMI.setText("Does A have a maj term");
+    majorityIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            majorityIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(majorityIdempotentMI);
+    
+    sdIdempotentMI.setText("Is V(A) SD");
+    sdIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            sdIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(sdIdempotentMI);
+    
+    
+    sdMeetIdempotentMI.setText("Is V(A) SD meet");
+    sdMeetIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            sdMeetIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(sdMeetIdempotentMI);
+    
+    permIdempotentMI.setText("Is V(A) perm");
+    permIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            permIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(permIdempotentMI);
+    
     
     jMenuBar1.add(varPropIdemMenu);
     
@@ -1359,6 +1444,38 @@ xxx;
   
   private void omittedIdealMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupOmittedIdealIdempotentTask();
+  }
+  
+  private void CDIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupCDIdempotentTask();
+  }
+  
+  private void CMIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupCMIdempotentTask();
+  }
+  
+  private void kPermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupkPermIdempotentTask();
+  }
+  
+  private void kNUIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupkNUIdempotentTask();
+  }
+  
+  private void majorityIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupMajorityIdempotentTask();
+  }
+  
+  private void sdIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupSDIdempotentTask();
+  }
+  
+  private void sdMeetIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupSDMeetIdempotentTask();
+  }
+  
+  private void permIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupPermIdempotentTask();
   }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
