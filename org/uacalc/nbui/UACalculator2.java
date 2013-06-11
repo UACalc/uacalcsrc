@@ -127,6 +127,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem uaFileMI;
   private javax.swing.JMenu varPropIdemMenu;
   private javax.swing.JMenuItem omittedIdealMI;
+  private javax.swing.JMenuItem typeSetMI;
   private javax.swing.JMenuItem CDIdempotentMI;
   private javax.swing.JMenuItem CMIdempotentMI;
   private javax.swing.JMenuItem kPermIdempotentMI;
@@ -333,6 +334,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     helpDescriptionMI = new javax.swing.JMenuItem();
     varPropIdemMenu = new javax.swing.JMenu();
     omittedIdealMI = new javax.swing.JMenuItem();
+    typeSetMI = new javax.swing.JMenuItem();
     CDIdempotentMI = new javax.swing.JMenuItem();
     CMIdempotentMI = new javax.swing.JMenuItem();
     kPermIdempotentMI = new javax.swing.JMenuItem();
@@ -816,6 +818,15 @@ xxx;
         }
     });
     varPropIdemMenu.add(omittedIdealMI);
+    
+    typeSetMI.setText("Bounds on Type Set");
+    typeSetMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            typeSetMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(typeSetMI);
+    
     
     CDIdempotentMI.setText("Is V(A) CD");
     CDIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1444,6 +1455,10 @@ xxx;
   
   private void omittedIdealMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupOmittedIdealIdempotentTask();
+  }
+  
+  private void typeSetMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupTypeSetIdempotentTask();
   }
   
   private void CDIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {

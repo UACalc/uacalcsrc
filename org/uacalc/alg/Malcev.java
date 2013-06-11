@@ -557,19 +557,15 @@ public class Malcev {
             for (int k = 0; k < arity; k++) {
               String GenString = Arrays.toString(G[k]);
               report.addLine(GenString);
-              report.addEndingLine("There is no " + arity + "-ary NU.");
             }
+            report.addEndingLine("There is no " + arity + "-ary NU.");
           }
           //System.out.println("The subuniverse is " + sub.toString());
           return false;
         }
-        if (!Binc.increment()) {
-          break;
-        }
+        if (!Binc.increment()) break;
       }
-      if (!Ainc.increment()) {
-        break;
-      }
+      if (!Ainc.increment()) break;
     }
     if (report != null) report.addEndingLine("There is a " + arity + "-ary NU.");
     return true;
@@ -1560,8 +1556,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return !cgcd.join(cgab_cd.meet(cgac_bd)).isRelated(a,b);
   }
 
-  public static boolean congruenceModularVariety(SmallAlgebra alg) {
-    if (alg.isIdempotent()) return congruenceModularForIdempotent(alg);
+  public static boolean congruenceModularVariety(SmallAlgebra alg, ProgressReport report) {
+    if (alg.isIdempotent()) return congruenceModularForIdempotent(alg, report);
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
@@ -1570,7 +1566,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     IntArray b = new IntArray(new int[] {0,1});
     IntArray c = new IntArray(new int[] {1,0});
     IntArray d = new IntArray(new int[] {1,1});
-    List gens = new ArrayList(4);
+    List<IntArray> gens = new ArrayList<IntArray>(4);
     gens.add(a);
     gens.add(b);
     gens.add(c);
@@ -1580,53 +1576,13 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     SmallAlgebra sub = new SubProductAlgebra("", f2squared, gens);
     // ** Need to put in a test if the tables will fit in memory. **
     sub.makeOperationTables();
-    logger.info("sub alg of f2 square size is " + sub.cardinality());
     Partition cgcd = sub.con().Cg(c, d);
     return cgcd.isRelated(sub.elementIndex(a), sub.elementIndex(b));
   }
 
-  public static boolean congruenceModularForIdempotent(SmallAlgebra alg) {
-System.out.println("got to idempotent");
+  public static boolean congruenceModularForIdempotent(SmallAlgebra alg, ProgressReport report) {
     if (findDayQuadrupleInSquare(alg, null) != null) return false;
     return true;
-/* old code for directly finding the pentagon that is in Freese-Valeriote
-    final int n = alg.cardinality();
-    final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
-    final IntArray zero = new IntArray(2);
-    final IntArray one = new IntArray(2);
-    final IntArray t = new IntArray(2);
-    final int[] zerovec = zero.toArray();
-    final int[] onevec = one.toArray();
-    final int[] tvec = t.toArray();
-    final List gens = new ArrayList(3);
-    gens.add(zero);
-    gens.add(one);
-    gens.add(t);
-    for (int x0 = 0; x0 < n; x0++) {
-      for (int x1 = 0; x1 < n; x1++) {
-        for (int y0 = 0; y0 < n; y0++) {
-          for (int y1 = 0; y1 < n; y1++) {
-            zerovec[0] = x0;
-            zerovec[1] = x1;
-            onevec[0] = x0;
-            onevec[1] = y1;
-            tvec[0] = y0;
-            tvec[1] = y1;
-            final SubProductAlgebra sub = new SubProductAlgebra("", sq, gens);
-            final BasicPartition beta = sub.con().Cg(zero, one);
-            final Partition alpha = (sub.con()).lowerStar(beta);
-            if (alpha == null) continue;
-            final Partition rho2 = sub.projectionKernel(1);
-            if (rho2.join(alpha).isRelated(sub.elementIndex(zero), 
-                                          sub.elementIndex(one))) {
-              return false;
-            }
-          }
-        }
-      }
-    }
-    return true;
-*/
   }
 
 
@@ -2283,12 +2239,50 @@ System.out.println("got to idempotent");
     return typesFound;
   }
   
-  public static Set<Integer> typeSetIdempotent(SmallAlgebra alg, ProgressReport report){
+  /**
+   * This finds two subset of the set of types; the first is 
+   * the types found in S(A) (so the types must contain this)
+   * and a set of types such that the type is contained in this.
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
+  public static List<Set<Integer>> typeSetIdempotent(SmallAlgebra alg, ProgressReport report){
+    if (report != null) report.addStartLine("Finding bounds for the type set of V(A).");
+    final Set<Integer> posibleTypes = new TreeSet<Integer>();
+    for (int i = 1; i <= 5; i++) posibleTypes.add(i);
+    List<Set<Integer>> ans = new ArrayList<Set<Integer>>(2);
+    Set upper = new TreeSet<Integer>();
     Set typesFound = typesInSofAIdempotent(alg, report);
+    ans.add(typesFound);// first part of the pair is typesFound 
     Set omitted = omittedIdealIdempotent(alg, typesFound, report);
-    
-    
-    return null;
+    if (typesFound.contains(1)) {
+      if (typesFound.size() == 1) {
+        ans.add(typesFound);
+      }
+      else {
+        ans.add(posibleTypes);
+      }
+    }
+    else {
+      if (omitted.contains(1) && omitted.contains(5)) {
+        if (congruenceModularForIdempotent(alg, report)) {
+          if (report != null) report.addLine("This algebra lies in a CM variety.");
+          ans.add(typesFound);
+        } 
+        else {
+          if (report != null) report.addLine("This algebra does not lie in a CM variety.");  
+        }
+      }
+      else {
+        posibleTypes.removeAll(omitted);
+        ans.add(posibleTypes);
+      }
+    }
+    if (report != null) report.addEndingLine("type set includes " + ans.get(0) 
+        + " is contained in " + ans.get(1) + ".");
+    return ans;
   }
   
   public static Set<Integer> omittedIdealIdempotent(SmallAlgebra alg, Set<Integer> typesFound, 
@@ -2305,15 +2299,6 @@ System.out.println("got to idempotent");
         }
       }
     }
-    if (report != null) {
-      report.addLine("The types found in subalgebras of A are " + typesFound + ".");
-      report.addEndingLine("The largest ideal of omitted types in V(A) is " + ans + ".");
-      report.addLine("The algorithm is based on M. Valeriote, "
-          + "\"A subalgebra intersection property for congruence distributive varieties,\" "
-          + "AU 61, (2009), 451-464, and ");
-      report.addLine("Freese and Valeriote, "
-          + "\"On the complexity of some {M}altsev conditions\", IJAC 19 (2009), 41-77.");
-    }
     return ans;
   }
   
@@ -2323,7 +2308,17 @@ System.out.println("got to idempotent");
       report.addStartLine("Finding the largest order ideal of omitted types in V(A).");
     }
     Set typesFound = typesInSofAIdempotent(alg, report);
-    return omittedIdealIdempotent(alg, typesFound, report);
+    Set omittedIdeal = omittedIdealIdempotent(alg, typesFound, report);
+    if (report != null) {
+      report.addLine("The types found in subalgebras of A are " + typesFound + ".");
+      report.addEndingLine("The largest ideal of omitted types in V(A) is " + omittedIdeal + ".");
+      report.addLine("The algorithm is based on M. Valeriote, "
+          + "\"A subalgebra intersection property for congruence distributive varieties,\" "
+          + "AU 61, (2009), 451-464, and ");
+      report.addLine("Freese and Valeriote, "
+          + "\"On the complexity of some {M}altsev conditions\", IJAC 19 (2009), 41-77.");
+    }
+    return omittedIdeal;
   }
 
   
@@ -2356,7 +2351,10 @@ System.out.println("got to idempotent");
       return;
     }
     Set ideal = omittedIdealIdempotent(alg, null);
+    List types = typeSetIdempotent(alg, null);
     System.out.println("Omitted ideal is " + ideal);
+    System.out.println("types  " + types);
+
     if (foo) return;
     //Term term = markovicMcKenzieSiggersTaylorTerm(alg, null);
     //System.out.println("term = " + term);

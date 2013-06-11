@@ -2025,6 +2025,69 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupTypeSetIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The current algebra must be idempotent.<br>",
+              "Non idempotent algebra error",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = 
+        "Finding subsets S and T of types with the type set of " + gAlg.toString(true) + " between the two.";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<Set<Integer>>>  omittedTypesTask 
+                                        = new BackgroundTask<List<Set<Integer>>>(report) {
+      public List<Set<Integer>> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<Set<Integer>> bounds = Malcev.typeSetIdempotent(alg, report);
+        return bounds;
+      }
+      public void onCompletion(List<Set<Integer>> bounds, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          String str = "The type set is " + bounds.get(0);
+          if (!bounds.get(0).equals(bounds.get(1))) {
+            str = "The type set contains " + bounds.get(0) + " and is contained in " + bounds.get(1);
+          }
+          report.addEndingLine(str);
+          ttm.setDescription(desc + " " + str);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(omittedTypesTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
+  }
+  
   public void setupCDIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
