@@ -1171,7 +1171,7 @@ public class ComputationsController {
             report.addLine("see M. Maroti and R. McKenzie, \"Existence theorems for weakly symmetric operations\", "
                 + "Algebra Universalis, 59(2008), 463-489, and ");
             report.addLine("K. Kearnes, P. Markovic, and R. McKenzie, " 
-                + "\"Optimal strong Mal'cev conditions for onitting type 1 in locally finite varieties\", "
+                + "\"Optimal strong Mal'cev conditions for omitting type 1 in locally finite varieties\", "
                 + "Algebra Universalis, to appear.");
             java.util.List<Term> terms = new ArrayList<Term>(1);
             terms.add(w3edgeTerm);

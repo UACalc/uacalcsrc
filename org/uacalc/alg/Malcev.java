@@ -23,17 +23,17 @@ import java.util.logging.*;
  */
 public class Malcev {
 
-  static Logger logger = Logger.getLogger("org.uacalc.alg.Malcev");
-  static {
-    logger.setLevel(Level.FINER);
-  }
-  static ProgressReport monitor;
+  //static Logger logger = Logger.getLogger("org.uacalc.alg.Malcev");
+  //static {
+  //  logger.setLevel(Level.FINER);
+  //}
+  //static ProgressReport monitor;
 
   // make sure the class cannot be instantiated.
   private Malcev() {}
 
   //public static Monitor getMonitor() { return monitor; }
-  public static void setMonitor(ProgressReport m) { monitor = m; }
+  //public static void setMonitor(ProgressReport m) { monitor = m; }
   
   /**
    * Gives a Kearnes-Kiss join term. See their monograph, chapter 3.
@@ -374,6 +374,17 @@ public class Malcev {
     return null;
   }
 
+  /**
+   * A finitely generated variety has a Taylor term if and 
+   * only if it has a weak 3-edge term.
+   * See K. Kearnes, P. Markovic, and R. McKenzie,  
+   * Optimal strong Mal'cev conditions for omitting type 1 in locally finite varieties,
+   * Algebra Universalis, to appear. 
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
   public static Term weak3EdgeTerm(SmallAlgebra alg, ProgressReport report) {
     if (alg.cardinality() == 1)  return Variable.x;
     if (report != null) report.addStartLine(
@@ -670,7 +681,7 @@ public class Malcev {
           if (level > maxLevel) {
             maxLevel = level;
             maxLevelAlg = sub;
-            logger.info("max level now is " + maxLevel);
+            //logger.info("max level now is " + maxLevel);
           }
         }
       }
@@ -720,7 +731,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
-    logger.info("f2 size is " + f2.cardinality());
+    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
     IntArray g1;
     IntArray g2;
@@ -753,8 +764,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     // the yx argument means stop if yx is found. 
     // of course we want something different if we want the shortest term.
     List sub = f2pow.sgClose(gens, termMap);
-    logger.info("sub alg of the " + (isIdempotent ? "third" : "fourth")
-       + " power of f2 size " + sub.size());
+    //logger.info("sub alg of the " + (isIdempotent ? "third" : "fourth")
+    //   + " power of f2 size " + sub.size());
     //if (sub.contains(yx)) return (Term)termMap.get(yx);
     IntArray ia = null;
     for (Iterator it = sub.iterator(); it.hasNext(); ) {
@@ -772,7 +783,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   /**
    * This returns a list of Jonsson terms witnessing distributivity, or 
    * null if the algebra does generate a congruence distributive variety.
-   * It is guarenteed to be the least number of terms possible.
+   * It is guaranteed to be the least number of terms possible.
    */
   public static List<Term> jonssonTerms(SmallAlgebra alg) {
     return jonssonTerms(alg, false);
@@ -877,9 +888,9 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
         public boolean equals(Object o) { return false; }
     };
     Collections.sort(middleZero, c);
-    for (IntArray ia : middleZero) {  
-      logger.finer("" + ia);
-    }
+    //for (IntArray ia : middleZero) {  
+    //  logger.finer("" + ia);
+    //}
     final List path = jonssonLevelPath(middleZero, g0, g2, false);
     final List path2 = jonssonLevelPath(middleZero, g0, g2, true);
     if (path == null) {
@@ -1030,8 +1041,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     
     boolean alvinVariant = false;
     
-    final List path = jonssonLevelPath(middleZero, g0, g2, false);
-    final List path2 = jonssonLevelPath(middleZero, g0, g2, true);
+    final List<IntArray> path = jonssonLevelPath(middleZero, g0, g2, false);
+    final List<IntArray> path2 = jonssonLevelPath(middleZero, g0, g2, true);
     if (path != null || path2 != null) {
       if (path == null) {
         ans = path2TermList(path2, termMap);
@@ -1333,10 +1344,6 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
               ia2 = parentMap.get(ia2);
             }
             Collections.reverse(path);
-            logger.fine("path");
-            for (Iterator<IntArray> iter = path.iterator(); iter.hasNext(); ) {
-              logger.fine("" + iter.next());
-            }
             return path;
           }
         }
@@ -1362,35 +1369,32 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     if (alg.cardinality() == 1) return 1;
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
     f2.makeOperationTables();
-    logger.info("f2 size is " + f2.cardinality());
+    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
     IntArray g1 = new IntArray(new int[] {0,1,0});
     IntArray g2 = new IntArray(new int[] {1,0,0});
-    List gens = new ArrayList(3);
+    List<IntArray> gens = new ArrayList<IntArray>(3);
     gens.add(g0);
     gens.add(g1);
     gens.add(g2);
-    final HashMap termMap = new HashMap(3);
+    final HashMap<IntArray,Term> termMap = new HashMap<IntArray,Term>(3);
     termMap.put(g0, Variable.x);
     termMap.put(g1, Variable.y);
     termMap.put(g2, Variable.z);
     BigProductAlgebra f2cubed = new BigProductAlgebra(f2, 3);
-    List sub = f2cubed.sgClose(gens, termMap);
-    logger.info("sub alg of f2 cubed size is " + sub.size());
+    List<IntArray> sub = f2cubed.sgClose(gens, termMap);
+    //logger.info("sub alg of f2 cubed size is " + sub.size());
     final IntArray zero = new IntArray(new int[] {0,0,0});
     if (sub.contains(zero)) {
-      logger.info("this variety has a ternary majority function");
+      //logger.info("this variety has a ternary majority function");
       return 2;
     }
-    List middleZero = new ArrayList();
-    for (Iterator it = sub.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
+    List<IntArray> middleZero = new ArrayList<IntArray>();
+    for (IntArray ia : sub) {
       if (ia.get(1) == 0) middleZero.add(ia);
     }
-    Comparator c = new Comparator() {
-        public int compare(Object o1, Object o2) {
-          IntArray ia1 = (IntArray)o1;
-          IntArray ia2 = (IntArray)o2;
+    Comparator<IntArray> c = new Comparator<IntArray>() {
+        public int compare(IntArray ia1, IntArray ia2) {
           for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
@@ -1403,7 +1407,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return jonssonLevelAux(middleZero, g0, g2);
   }
 
-  public static int jonssonLevelAux(List middleZero, IntArray g0,
+  public static int jonssonLevelAux(List<IntArray> middleZero, IntArray g0,
                                               IntArray g2) {
     // a list of lists of IntArray's
     final List levels = new ArrayList();
@@ -1548,6 +1552,16 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
 
 
+  /**
+   * Check if a, b, c, d form a Day Quadruple in alg.
+   * 
+   * @param a
+   * @param b
+   * @param c
+   * @param d
+   * @param alg
+   * @return
+   */
   public static boolean dayQuadruple(int a, int b, int c, int d,
                                                      SmallAlgebra alg) {
     final Partition cgcd = alg.con().Cg(c,d);
@@ -1556,6 +1570,15 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return !cgcd.join(cgab_cd.meet(cgac_bd)).isRelated(a,b);
   }
 
+  /**
+   * Test if alg generates a CM variety by looking for
+   * a Day quadruple in the square of the free algebra
+   * on 2 generators.
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
   public static boolean congruenceModularVariety(SmallAlgebra alg, ProgressReport report) {
     if (alg.isIdempotent()) return congruenceModularForIdempotent(alg, report);
     FreeAlgebra f2 = new FreeAlgebra(alg, 2);
@@ -1629,7 +1652,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     if (f2 == null) f2 = new FreeAlgebra(alg, 2, report);
     // ** If the tables don't fit in memory, this just doesn't do anything. **
     f2.makeOperationTables();
-    logger.info("f2 size is " + f2.cardinality());
+    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
     IntArray g1 = new IntArray(new int[] {0,1,0});
     IntArray g2 = new IntArray(new int[] {1,0,0});
@@ -1644,7 +1667,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     BigProductAlgebra f2cubed = new BigProductAlgebra(f2, 3);
     
     report.addStartLine("computing the subalgebra of F(2)^3 generated by (x,x,y) (x,y,x), (y,x,x).");
-    List sub = f2cubed.sgClose(gens, termMap, null, report);
+    List<IntArray> sub = f2cubed.sgClose(gens, termMap, null, report);
     report.addEndingLine("done finding subalgebra of F(2)^3.");
     
     
@@ -1658,20 +1681,16 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       ans.add(Variable.z);
       return ans;
     }
-    List middleZero = new ArrayList();
-    for (Iterator it = sub.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
+    List<IntArray> middleZero = new ArrayList<IntArray>();
+    for (IntArray ia : sub) {
       if (ia.get(1) == 0) middleZero.add(ia);
     }
-    List firstOne = new ArrayList();
-    for (Iterator it = sub.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
+    List<IntArray> firstOne = new ArrayList<IntArray>();
+    for (IntArray ia : sub) {
       if (ia.get(0) == 1) firstOne.add(ia);
     }
-    final Comparator c = new Comparator() {
-        public int compare(Object o1, Object o2) {
-          IntArray ia1 = (IntArray)o1;
-          IntArray ia2 = (IntArray)o2;
+    final Comparator<IntArray> c = new Comparator<IntArray>() {
+        public int compare(IntArray ia1, IntArray ia2) {
           for (int i = 0; i < ia1.universeSize(); i++) {
             if (ia1.get(i) < ia2.get(i)) return -1;
             if (ia1.get(i) > ia2.get(i)) return 1;
@@ -1682,16 +1701,15 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     };
     Collections.sort(middleZero, c);
     //Collections.sort(firstOne, c);
-    for (Iterator it = middleZero.iterator(); it.hasNext(); ) {
-      logger.finer("" + it.next());
-    }
-    final List path = gummLevelPath(middleZero, firstOne, g0, g2);
+    //for (Iterator it = middleZero.iterator(); it.hasNext(); ) {
+    //  logger.finer("" + it.next());
+    //}
+    final List<IntArray> path = gummLevelPath(middleZero, firstOne, g0, g2);
     if (path == null) {
       if (report != null) report.addEndingLine("this variety is not congruence modular");
       return null;
     }
-    for (Iterator it = path.iterator(); it.hasNext(); ) {
-      IntArray ia = (IntArray)it.next();
+    for (IntArray ia : path) {
       ans.add(termMap.get(ia));
     }
     if (report != null) report.addEndingLine("done finding Gumm terms.");
@@ -1707,7 +1725,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    * of triples, where two triples are connected by an edge if either
    * their first or third coordinates agree.
    */
-  public static List gummLevelPath(List middleZero, List firstOne, 
+  public static List<IntArray> gummLevelPath(List<IntArray> middleZero, List<IntArray> firstOne, 
                                              IntArray g0, IntArray g2) {
     // a list of lists of IntArray's
     final List levels = new ArrayList();
@@ -1790,10 +1808,10 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
               ia2 = (IntArray)parentMap.get(ia2);
             }
             Collections.reverse(path);
-            logger.fine("path");
-            for (Iterator iter = path.iterator(); iter.hasNext(); ) {
-              logger.fine("" + iter.next());
-            }
+            //logger.fine("path");
+            //for (Iterator iter = path.iterator(); iter.hasNext(); ) {
+            //  logger.fine("" + iter.next());
+            //}
             return path;
           }
         }
@@ -1949,7 +1967,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     // the yx argument means stop if yx is found. 
     // of course we want something different if we want the shortest term.
     List<IntArray> sub = f2cubed.sgClose(gens, termMap, xxx, report);
-    logger.info("sub alg of f2 cubed size is " + sub.size());
+    //logger.info("sub alg of f2 cubed size is " + sub.size());
     if (sub.contains(xxx)) return (Term)termMap.get(xxx);
     return null;
   }
@@ -1982,7 +2000,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
-    logger.info("f2 size is " + f2.cardinality());
+    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0,1});
     IntArray g1 = new IntArray(new int[] {1,1,1});
     IntArray g2 = new IntArray(new int[] {1,0,0});
@@ -2026,7 +2044,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
-    logger.info("f2 size is " + f2.cardinality());
+    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0 = new IntArray(new int[] {0,0});
     IntArray g1 = new IntArray(new int[] {0,1});
     IntArray g2 = new IntArray(new int[] {1,1});
@@ -2147,10 +2165,10 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
               ia2 = (IntArray)parentMap.get(ia2);
             }
             Collections.reverse(path);
-            logger.fine("Hagemann Mitschke path");
-            for (Iterator iter = path.iterator(); iter.hasNext(); ) {
-              logger.fine("" + iter.next());
-            }
+            //logger.fine("Hagemann Mitschke path");
+            //for (Iterator iter = path.iterator(); iter.hasNext(); ) {
+            //  logger.fine("" + iter.next());
+            //}
             return path;
           }
         }
