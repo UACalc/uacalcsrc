@@ -1805,6 +1805,71 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return null;
   }
 
+  /**
+   * This uses Theorem 5.1 of Freese-Valeriote to test if the 
+   * algebra the algebra generates a CP variety.
+   * It returns the x0, x1, y0 and y1 witnessing the failure or null if
+   * there is no failure.
+   * 
+   * @param alg  the algebra, assumed to be idempotent
+   * @param report
+   * @return x0, x1, y0 and y1 in alg that witness the failure or null if there is none
+   */
+  public static IntArray cpIdempotent(SmallAlgebra alg, ProgressReport report) {
+    if (report != null) {
+      report.addStartLine("Using Thm 5.1 of Freese-Valeriote to test if V(A) is SD-meet");
+    }
+    final int n = alg.cardinality();
+    if (n == 1) {
+      if (report != null) report.addEndingLine("the algebra has only one element so its variety is CP.");
+      return null;
+    }
+    final BigProductAlgebra sq = new BigProductAlgebra(alg, 2);
+    final IntArray a = new IntArray(2);
+    final IntArray b = new IntArray(2);
+    final IntArray c = new IntArray(2);
+    final List<IntArray> gens = new ArrayList<IntArray>(3);
+    gens.add(a);
+    gens.add(b);
+    gens.add(c);
+    for (int x0 = 0; x0 < n; x0++) {
+      for (int y0 = 0; y0 < n; y0++) {
+        for (int x1 = 0; x1 < n; x1++) {
+          for (int y1 = 0; y1 < n; y1++) {
+            a.set(0, x0);
+            a.set(1, y0);
+            b.set(0, x0);
+            b.set(1,y1);
+            c.set(0,x1);
+            c.set(1,y1);
+            if (a.equals(b) || a.equals(c) || b.equals(c)) continue;
+            final SmallAlgebra sub = new SubProductAlgebra("", sq, gens);
+            final int aIndex = sub.elementIndex(a);
+            final int bIndex = sub.elementIndex(b);
+            final int cIndex = sub.elementIndex(c);
+            Partition alpha = sub.con().Cg(aIndex, bIndex);
+            Partition beta = sub.con().Cg(bIndex, cIndex);
+            if (!alpha.compose(beta).isRelated(cIndex, aIndex)) {
+              if (report != null) {
+                report.setWitnessAlgebra(new AlgebraWithGeneratingVector(sub, 
+                    new int[] {aIndex, bIndex, cIndex}));
+                report.addLine("Found a failure of Theorem 5.1 of Freese-Valeriote");
+                report.addLine("with x0 = " + x0 + ", y0 = " + y0 + ", x1 = " + x1 + ", y1 = " + y1);
+                report.addEndingLine("This algebra does not generate a CP variety.");
+              }
+              return new IntArray(new int[] {x0,y0,x1,y1});
+            }
+          }
+        }
+      }
+    }
+    if (report != null) {
+      report.addEndingLine("V(A) is congruence permutable.");
+    }
+    return null;
+  }
+  
+  
   public static Term malcevTerm(SmallAlgebra alg) {
     return malcevTerm(alg, null);
   }
@@ -1815,14 +1880,14 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    */
   public static Term malcevTerm(SmallAlgebra alg, ProgressReport report) {
     if (alg.cardinality() == 1)  return Variable.x;
-    if (alg.isIdempotent()) {
-      if (findDayQuadrupleInSquare(alg, report) != null) {
-        if (report != null) {
-          report.addLine("there is no Maltsev term");
-        }
-        return null;
-      }
-    }
+    //if (alg.isIdempotent()) {
+    //  if (findDayQuadrupleInSquare(alg, report) != null) {
+    //    if (report != null) {
+    //      report.addLine("there is no Maltsev term");
+    //    }
+    //    return null;
+    //  }
+    //}
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. **
     f2.makeOperationTables();
@@ -1856,14 +1921,14 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   
   public static Term majorityTerm(SmallAlgebra alg, ProgressReport report) {
     if (alg.cardinality() == 1)  return Variable.x;
-    if (alg.isIdempotent()) {
-      if (findDayQuadrupleInSquare(alg, report) != null) {
-        if (report != null) {
-          report.addLine("there is no majority term");
-        }
-        return null;
-      }
-    }
+    //if (alg.isIdempotent()) {
+    //  if (findDayQuadrupleInSquare(alg, report) != null) {
+    //    if (report != null) {
+    //      report.addLine("there is no majority term");
+    //    }
+    //    return null;
+    //  }
+    //}
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. ** 
     f2.makeOperationTables();
@@ -2257,27 +2322,45 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     Set typesFound = typesInSofAIdempotent(alg, report);
     ans.add(typesFound);// first part of the pair is typesFound 
     Set omitted = omittedIdealIdempotent(alg, typesFound, report);
+    Set<Integer> types12 = new TreeSet<Integer>();
+    types12.add(1);
+    types12.add(2);
     if (typesFound.contains(1)) {
       if (typesFound.size() == 1) {
         ans.add(typesFound);
       }
       else {
+        if (typesFound.contains(2) && typesFound.size() == 2) {  // found 1 and 2 only
+          ans.add(types12);
+        }
+        else {
         ans.add(posibleTypes);
+        }
       }
     }
     else {
-      if (omitted.contains(1) && omitted.contains(5)) {
-        if (congruenceModularForIdempotent(alg, report)) {
-          if (report != null) report.addLine("This algebra lies in a CM variety.");
-          ans.add(typesFound);
-        } 
-        else {
-          if (report != null) report.addLine("This algebra does not lie in a CM variety.");  
-        }
+      if (typesFound.contains(2) && typesFound.size() == 1) { // only 2 found so type set is at most 1,2
+        ans.add(types12);
       }
       else {
-        posibleTypes.removeAll(omitted);
-        ans.add(posibleTypes);
+        if (omitted.contains(5)) { // since it is an ideal and has 5, it has 1
+          if (congruenceModularForIdempotent(alg, report)) {
+            if (report != null) {
+              report.addLine("This algebra lies in a CM variety. By ");
+              report.addLine("R. Freese, \"Subdirectly irreducible algebras in modular varieties,\" "
+                  + "Springer Lecture notes in Mathematics, 1004, 142-152,");
+              report.addLine("the type set of V(A) equals that of S(A) in a CM variety.");
+            }
+            ans.add(typesFound);
+          } 
+          else {
+            if (report != null) report.addLine("This algebra does not lie in a CM variety.");  
+          }
+        }
+        else {
+          posibleTypes.removeAll(omitted);
+          ans.add(posibleTypes);
+        }
       }
     }
     if (report != null) report.addEndingLine("type set includes " + ans.get(0) 

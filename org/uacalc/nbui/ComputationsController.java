@@ -2539,18 +2539,18 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Finding the largest order ideal of omitted type for V(" + gAlg.toString(true) + ")";
+    final String desc = "Does " + gAlg.toString(true) + " generate a CP variety.";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Set<Integer>>  omittedTypesTask = new BackgroundTask<Set<Integer>>(report) {
-      public Set<Integer> compute() {
+    final BackgroundTask<Boolean>  omittedTypesTask = new BackgroundTask<Boolean>(report) {
+      public Boolean compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
-        return omittedTypes;
+        IntArray ia = Malcev.cpIdempotent(alg, report);
+        return ia == null;
       }
-      public void onCompletion(Set<Integer> omittedTypes, Throwable exception, 
+      public void onCompletion(Boolean ans, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
@@ -2560,14 +2560,9 @@ public class ComputationsController {
         }
         if (!cancelled) {
           report.addEndingLine("Done");
-          //report.addEndingLine("Found terms showing primality;");
-          //report.addLine("see D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, \"Flat unars: the primal, "
-          //    + "the semi-primal, and the dualizable,\" Algebra Universalis, 63(2010), 303-329,");
-          //report.addLine("for an explanation of how these terms can be combined to give an arbitrary operation on  "
-          //    + gAlg.toString(true));
-          ttm.setDescription(desc + " " + omittedTypes);
+          String extra = ans ? " It does generate a CP variety." : " It does not generate a CP variety.";
+          ttm.setDescription(desc + " " + extra);
           updateResultTextField(this, ttm);
-          //ttm.setTerms(omittedTypes);// see if we can add a method for this
           List<Term> fake = new ArrayList<Term>();
           ttm.setTerms(fake);
 
