@@ -1573,7 +1573,20 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   /**
    * Test if alg generates a CM variety by looking for
    * a Day quadruple in the square of the free algebra
-   * on 2 generators.
+   * on 2 generators. Use the faster method if alg is idempotent.
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
+  public static boolean congruenceModularVariety(SmallAlgebra alg) {
+    return congruenceModularVariety(alg, null);
+  }
+  
+  /**
+   * Test if alg generates a CM variety by looking for
+   * a Day quadruple in the square of the free algebra
+   * on 2 generators. Use the faster method if alg is idempotent.
    * 
    * @param alg
    * @param report
