@@ -2206,7 +2206,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    * a binary term giving a semilattice operation on {0, 1}. It is based on
    * D. M. Clark, B. A. Davey, J. G. Pitkethly and D. L. Rifqui, 
    * "Flat unars: the primal, the semi-primal, and the dualizable",
-   * Algebra Universalis, 63(2010), 303-329,
+   * Algebra Universalis, 63(2010), 303-329.
    * 
    */
   public static List<Term> primalityTerms(SmallAlgebra alg, ProgressReport report) {

@@ -811,6 +811,15 @@ xxx;
     varPropIdemMenu.setText("Idempotent Algs");
     varPropIdemMenu.setToolTipText("Test properties of V(A), A idempotent");
 
+    typeSetMI.setText("TCT Type Set");
+    typeSetMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            typeSetMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(typeSetMI);
+    
+    
     omittedIdealMI.setText("Largest Omitted Types Ideal");
     omittedIdealMI.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -819,13 +828,6 @@ xxx;
     });
     varPropIdemMenu.add(omittedIdealMI);
     
-    typeSetMI.setText("Bounds on Type Set");
-    typeSetMI.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            typeSetMIActionPerformed(evt);
-        }
-    });
-    varPropIdemMenu.add(typeSetMI);
     
     
     CDIdempotentMI.setText("Is V(A) CD");
