@@ -35,6 +35,9 @@ public class SubalgebraLattice implements Lattice {
   public static final int MAX_DRAWABLE_SIZE = 100;
   private boolean nonDrawable = false;
   
+  private CongruenceLattice con;
+  private SubalgebraLattice sub;
+  
   private BasicLattice basicLat;
 
 
@@ -108,6 +111,16 @@ public class SubalgebraLattice implements Lattice {
   
   public void setDescription(String desc) {
     this.description = desc;
+  }
+  
+  public CongruenceLattice con() {
+    if (con == null) con = getBasicLattice().con();
+    return con;
+  }
+    
+  public SubalgebraLattice sub() {
+    if (sub == null) sub = getBasicLattice().sub();
+    return sub;
   }
 
   public int cardinality() {
@@ -925,9 +938,10 @@ public class SubalgebraLattice implements Lattice {
                 "/home/ralph/Java/Algebra/algebras/m3.ua");
       }
       catch (Exception e) {}
-      //System.out.println("map: " + SubalgebraLattice.extendToHomomorphism(
-      //    new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg, alg2));
+      System.out.println("map: " + SubalgebraLattice.extendToHomomorphism(
+          new int[] {1, 2, 3}, new int[] {3, 1, 2}, alg, alg2));
       System.out.println("gen set is " + alg.sub().findMinimalSizedGeneratingSet());
+      //System.out.println("uniuv: " + alg.sub().con().universe());
       return;
     }
     System.out.println("reading " + args[0]);

@@ -473,6 +473,11 @@ public class  BasicLattice extends GeneralAlgebra
     return sub;
   }
   
+  public CongruenceLattice con() {
+    if (con == null) con = new CongruenceLattice(this);
+    return con;
+  }
+  
   public void convertToDefaultValueOps() {
     throw new UnsupportedOperationException("Only for basic algebras"); 
   }

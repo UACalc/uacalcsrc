@@ -1,6 +1,7 @@
 package org.uacalc.alg.conlat;
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.sublat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.SimilarityType;
@@ -62,6 +63,9 @@ public class CongruenceLattice implements Lattice {
 
   private Partition zeroCong;
   private Partition oneCong;
+  
+  private CongruenceLattice con;
+  private SubalgebraLattice sub;
   
   private String description;
 
@@ -194,6 +198,16 @@ public class CongruenceLattice implements Lattice {
   public javax.swing.JTable getConTable() { return conTable; }
   
   public void setConTable(javax.swing.JTable table) { conTable = table; }
+    
+  public CongruenceLattice con() {
+    if (con == null) con = getBasicLattice().con();
+    return con;
+  }
+    
+  public SubalgebraLattice sub() {
+    if (sub == null) sub = getBasicLattice().sub();
+    return sub;
+  }
   
   public List<Partition> principals() {
     return principals(null);
@@ -1451,6 +1465,9 @@ public class CongruenceLattice implements Lattice {
   public static void main(String[] args) throws Exception {
     SmallAlgebra sch0 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt0.ua");
     SmallAlgebra sch1 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt1.ua");
+    //System.out.println("concon univ = " + sch0.con().con().universe());
+    //System.out.println("consub univ = " + sch0.con().sub().universe());
+    //if (true) return;
     List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>(3);
     algs.add(sch0);
     algs.add(sch0);
