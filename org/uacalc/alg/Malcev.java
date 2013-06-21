@@ -626,7 +626,11 @@ public class Malcev {
         }
         //System.out.println("gens: " + gens);
         //System.out.println("Aaar: " + Aarray);
-        List<IntArray> sub = alg.sgClose(gens, null, Aarray, null); //add null field to turn off report
+        Closer closer = new Closer(alg, gens);
+        closer.setElementToFind(Aarray);
+        closer.setSuppressOutput(true);
+        //List<IntArray> sub = alg.sgClose(gens, null, Aarray, null); //add null field to turn off report
+        List<IntArray> sub = closer.sgClose();
         if (!sub.contains(Aarray)) {
           String Astring = Arrays.toString(A);
           if (report != null) {
@@ -2573,7 +2577,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       e.printStackTrace();
       return;
     }
-    hasNUIdempotent(alg, 6, null);
+    boolean ans = hasNUIdempotent(alg, 6, null);
+    System.out.println("ans is " + ans);
     if (foo) return;
     
     Set ideal = omittedIdealIdempotent(alg, null);

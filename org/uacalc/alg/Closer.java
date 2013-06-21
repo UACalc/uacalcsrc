@@ -59,6 +59,7 @@ public class Closer {
   int maxSize = -1; //380; //-1;
   
   ProgressReport report;
+  private boolean suppressOutput;
   
   static final int nCPUs = Runtime.getRuntime().availableProcessors(); 
   
@@ -360,10 +361,10 @@ public class Closer {
       if (reportNotNull) {
         report.setPass(pass);
         report.setPassSize(ans.size());
-        report.addLine(str);
+        if (!suppressOutput) report.addLine(str);
       }
       else {
-        System.out.println(str);
+        if (!suppressOutput) System.out.println(str);
       }
       pass++;
       if (Thread.currentThread().isInterrupted()) {
@@ -596,10 +597,10 @@ if (false) {
       if (reportNotNull) {
         report.setPass(pass);
         report.setPassSize(ans.size());
-        report.addLine(str);
+        if (!suppressOutput) report.addLine(str);
       }
       else {
-        System.out.println(str);
+        if (!suppressOutput) System.out.println(str);
       }
       pass++;
       if (Thread.currentThread().isInterrupted()) {
@@ -735,10 +736,10 @@ if (false) {
         timing.updatePass(ans.size());
         report.setPass(pass);
         report.setPassSize(ans.size());
-        report.addLine(str);
+        if (!suppressOutput) report.addLine(str);
       }
       else {
-        System.out.println(str);
+        if (!suppressOutput) System.out.println(str);
       }
       if (maxSize > 0 && ans.size() >= maxSize) return ans;
       pass++;
@@ -939,7 +940,7 @@ if (false) {
       closedMark = currentMark;
       currentMark = ans.size();
       if (imgAlgNull && algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
-System.out.println("so far: " + currentMark);
+//System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return ans;
     }
     final String str = "done closing, size = " + ans.size();
@@ -1046,6 +1047,23 @@ System.out.println("so far: " + currentMark);
 
  
   
+  public boolean isSuppressOutput() {
+    return suppressOutput;
+  }
+
+  /**
+   * Setting this to true will suppress the output about
+   * the pass. Useful when calling closing on many small
+   * cases.
+   * 
+   * @param suppressOutput
+   */
+  public void setSuppressOutput(boolean suppressOutput) {
+    this.suppressOutput = suppressOutput;
+  }
+
+
+
   class ParallelWorker implements Runnable {
     
     CountDownLatch latch;
