@@ -249,7 +249,7 @@ public class Algebras {
    * if one exits; otherwise it return <tt>null</tt>.
    */
   public static Term findNUF(SmallAlgebra alg, int arity) {
-    return Malcev.findNUF(alg, arity);
+    return Malcev.nuTerm(alg, arity);
   }
 
   /**

@@ -447,15 +447,15 @@ public class Malcev {
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
-  public static Term findNUF(SmallAlgebra alg, int arity) {
-    return findNUF(alg, arity, null);
+  public static Term nuTerm(SmallAlgebra alg, int arity) {
+    return nuTerm(alg, arity, null);
   }
   
   /**
    * This will find a near unanimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
-  public static Term findNUF(SmallAlgebra alg, int arity, ProgressReport report) {
+  public static Term nuTerm(SmallAlgebra alg, int arity, ProgressReport report) {
     if (alg.cardinality() == 1) return new VariableImp("x0");
     if (alg.isIdempotent()) {
       if (!isCongruenceDistIdempotent(alg, report)) return null;
@@ -463,7 +463,7 @@ public class Malcev {
         // may want to add a test for distributivity here.
         report.addStartLine("Using Horitz's algorithm to if an NU term exists");
       }
-      if (!hasNUIdempotent(alg, arity, report)) {
+      if (!nuTermIdempotent(alg, arity, report)) {
         if (report != null) {
           report.addEndingLine("Done: there is no NU term of arity " + arity);
         }
@@ -520,7 +520,7 @@ public class Malcev {
    * @param arity
    * @return
    */
-  public static boolean hasNUIdempotent_Bad(SmallAlgebra testalg, int arity, ProgressReport report) {
+  public static boolean nuTermIdempotent_Bad(SmallAlgebra testalg, int arity, ProgressReport report) {
     if (arity < 3) throw new IllegalArgumentException("arity must be at least 3");
     if (report != null) report.addStartLine("Using Horowitz's algorithm to test for a " + arity + "-ary NU."); 
     int power = arity;
@@ -588,7 +588,7 @@ public class Malcev {
    * @param arity
    * @return
    */
-  public static boolean hasNUIdempotent(SmallAlgebra testalg, int arity, ProgressReport report) {
+  public static boolean nuTermIdempotent(SmallAlgebra testalg, int arity, ProgressReport report) {
     if (arity < 3) throw new IllegalArgumentException("arity must be at least 3");
     if (report != null) report.addStartLine("Using Horowitz's algorithm to test for a " + arity + "-ary NU."); 
     int power = arity;
@@ -670,7 +670,7 @@ public class Malcev {
    * This will find a near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
-  public static Term findWeakNUTerm(SmallAlgebra alg, int arity) {
+  public static Term weakNUTerm(SmallAlgebra alg, int arity) {
     return findWeakNUTerm(alg, arity, null);
   }
   
@@ -2577,7 +2577,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       e.printStackTrace();
       return;
     }
-    boolean ans = hasNUIdempotent(alg, 6, null);
+    boolean ans = nuTermIdempotent(alg, 6, null);
     System.out.println("ans is " + ans);
     if (foo) return;
     

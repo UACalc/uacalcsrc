@@ -1269,7 +1269,7 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Term nu = Malcev.findNUF(alg, arity, report);
+        Term nu = Malcev.nuTerm(alg, arity, report);
         return nu;
       }
       public void onCompletion(Term nu, Throwable exception, 
@@ -2307,7 +2307,7 @@ public class ComputationsController {
         report.setDescription(desc);
         //Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
         //return omittedTypes;
-        boolean ans = Malcev.hasNUIdempotent(alg, arity, report);
+        boolean ans = Malcev.nuTermIdempotent(alg, arity, report);
         return ans;
       }
       public void onCompletion(Boolean ans, Throwable exception, 
@@ -2373,7 +2373,7 @@ public class ComputationsController {
         report.setDescription(desc);
         //Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
         //return omittedTypes;
-        boolean ans = Malcev.hasNUIdempotent(alg, arity, report);
+        boolean ans = Malcev.nuTermIdempotent(alg, arity, report);
         return ans;
       }
       public void onCompletion(Boolean ans, Throwable exception, 
