@@ -18,6 +18,7 @@ import org.uacalc.ui.util.*;
 public class AlgebraEditorController {
 
   private final UACalc uacalc;
+  private GUIAlgebra gAlg;
   private String desc;
   //private SmallAlgebra alg;
   private int algSize;
@@ -25,6 +26,7 @@ public class AlgebraEditorController {
   private java.util.List<Operation> opList;
   private java.util.List<OperationSymbol> symbolList;
   private java.util.Map<OperationSymbol,Operation> opMap;
+  private SmallAlgebra.AlgebraType currentAlgType;
   private final Random random = RandomGenerator.getRandom();
   
   
@@ -212,6 +214,28 @@ public class AlgebraEditorController {
     addOperation(name, arity);
   }
   
+  public void makeBasicAlg() {
+    // TODO: fix
+    String desc = "Editable copy of " + gAlg.toString(true);
+    String name = gAlg.getAlgebra().getName();
+    if (name == null || name.equals("")) name = "basic-copy";
+    else name = name + "-basic";
+    java.util.List<Operation> opList2 = new ArrayList<Operation>(opList.size());
+    for (Operation op : opList) {
+      opList2.add(new OperationWithDefaultValue(Operations.makeIntOperation(op)));
+    }
+    SmallAlgebra balg = new BasicAlgebra(name, algSize, opList2);
+    balg.setDescription(desc);
+
+    GUIAlgebra gAlg = getMainController().addAlgebra(balg);
+    getMainController().setCurrentAlgebra(gAlg);
+    //setOperationTable(new OperationInputTable());
+    gAlg.setNeedsSave(true);
+    //getActions().setDirty(true);
+    getMainController().setCurrentFile(null);
+
+  }
+  
   private MainController getMainController() { return uacalc.getMainController(); }
   
   public Random getRandom() {
@@ -324,10 +348,9 @@ public class AlgebraEditorController {
   
   private void resetOpsCB() {
     uacalc.getOpsComboBox().removeAllItems();
-    //uacalc.getOpsComboBox().addItem("New Op");
   }
   
-  // to be called when the "New" botton or menu item is hit.
+  // to be called when the "New" button or menu item is hit.
   public void makeNewAlgebra() {
     // TODO: fix this
     //if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
@@ -338,116 +361,18 @@ public class AlgebraEditorController {
     uacalc.repaint();
   }
   
-  // this is call when the check box is clicked.
+  // this is called when the check box is clicked.
   public void setIdempotent(boolean v) {
     OperationWithDefaultValue op = getCurrentOperation();
     if (op == null) return;
     op.setIdempotent(v);
     uacalc.repaint();
   }
-  
-  // TODO: delete this soon
-  /*
-  private void makeToolBar() {
-    //toolBar = new JToolBar();
-    ClassLoader cl = uacalc.getClass().getClassLoader();
-    ImageIcon icon = new ImageIcon(cl.getResource(
-                          "org/uacalc/ui/images/New16.gif"));
-    JButton newAlgBut = new JButton("New", icon);
-    //toolBar.add(newAlgBut);
-    newAlgBut.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        // TODO save this alg !!!!!!
-        //if (opTablePanel != null && !opTablePanel.stopCellEditing()) {
-        //  uacalc.beep();
-        //  return;
-        //}
-        //alg = null;
-        setupNewAlgebra();
-        uacalc.repaint();
-      }
-    });
-    JButton syncBut = new JButton("Sync");
-    syncBut.setToolTipText("sync your changes with current algebra");
-    //toolBar.add(syncBut);
-    syncBut.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        sync();
-      }
-    });
-  }
-  */
-  
-  //delete this too
-  /*
-  public boolean sync() {
-    // TODO: fix this
-    //if (!opTablePanel.stopCellEditing()) {
-    //  uacalc.beep();
-    //  return false;
-    //}
-    SmallAlgebra alg = makeAlgebra();
-    if (alg == null) {
-      uacalc.beep();
-      JOptionPane.showMessageDialog(uacalc,
-          "<html><center>Not all operations are total.<br>" 
-          + "Fill in the tables<br>"
-          + "or set a default value.</center></html>",
-          "Incomplete operation(s)",
-          JOptionPane.WARNING_MESSAGE);
-      return false;
-    }
-    //alg.setDescription(updateDescription());
-    //getActions().updateCurrentAlgebra(makeAlgebra());
-    uacalc.repaint();
-    return true;
-  }
-  */
-  
-  /**
-   * Make an algebra from the operations.
-   * 
-   * @return
-   */
-  /*
-  public SmallAlgebra makeAlgebra() {
-    System.out.println("makeAlgebra: opList size = " + opList.size());
-    java.util.List<Operation> ops = new ArrayList<Operation>(opList.size());
-    for (OperationWithDefaultValue op : opList) {
-      System.out.println("op: " + op + " is total: " + op.isTotal()); // delete me TODO
-      if (op.isTotal()) ops.add(op.makeOrdinaryOperation());
-      else {
-        getActions().beep();
-        JOptionPane.showMessageDialog(uacalc,
-            "<html><center>Not all operations are total.<br>" 
-            + "Fill in the tables<br>"
-            + "or set a default value.</center></html>",
-            "Incomplete operation(s)",
-            JOptionPane.WARNING_MESSAGE);
-        return null;
-      }
-    }
-    System.out.println("ops size = " + ops.size());
-    SmallAlgebra alg = new BasicAlgebra(uacalc.getAlgNameTextField().getText(), algSize, ops);
-    //updateDescription();
-    alg.setDescription(updateDescription());
-    return alg;
-  }
-  */
-  
-  //public JToolBar getToolBar() {
-  //  if (toolBar == null) makeToolBar();
-  //  return toolBar; 
-  //}
-  
-  /*
-  public SmallAlgebra getAlgebra() {
-    return alg;
-  }
-  */
-  
+    
   public void setAlgebra(GUIAlgebra gAlg) {
+    this.gAlg = gAlg;
     SmallAlgebra alg = gAlg.getAlgebra();
+    setCurrentAlgType(alg.algebraType());
     symbolList = new ArrayList<OperationSymbol>();
     opMap = new HashMap<OperationSymbol,Operation>();
     algSize = alg.cardinality();
@@ -455,37 +380,37 @@ public class AlgebraEditorController {
     uacalc.getCardTextField().setText("" + alg.cardinality());
     uacalc.getDescTextField().setText(alg.getDescription());
     final JTable table = uacalc.getOpTable();
-    if (alg.algebraType() != SmallAlgebra.AlgebraType.BASIC) {
-      // TODO: handle all other cases
-      table.setVisible(false);
+    table.setVisible(true); // this may not be necessary anymore
+    if (alg.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
+      table.setEnabled(true);
+      opList = alg.operations();
+      opMap = alg.getOperationsMap();
+      for (Operation op : opList) {
+        symbolList.add(op.symbol());
+        opMap.put(op.symbol(), op);
+        uacalc.getAddOpButton().setEnabled(true);
+        uacalc.getDelOpButton().setEnabled(true);
+        uacalc.getMakeBasicAlgButton().setEnabled(false);
+        setOpsCB();
+      }
       return;
     }
-    table.setVisible(true);
-    opList = alg.operations();
-    opMap = alg.getOperationsMap();
-    //java.util.List<Operation> ops = alg.operations();
-    //symbolList = new ArrayList<OperationSymbol>();
-    //opMap = new HashMap<OperationSymbol,Operation>();
-    for (Operation op : opList) {
-      symbolList.add(op.symbol());
-      //OperationWithDefaultValue op2 = 
-      //  new OperationWithDefaultValue(op);
-      //opList.add(op2);
-      opMap.put(op.symbol(), op);
+    else {
+      table.setEnabled(false);
+      opList = new ArrayList<Operation>();
+      for (Operation op : alg.operations()) {
+        OperationWithDefaultValue opx = new OperationWithDefaultValue(op);
+        opList.add(opx);
+        opMap.put(opx.symbol(), opx);
+        symbolList.add(opx.symbol());
+      }
+      uacalc.getAddOpButton().setEnabled(false);
+      uacalc.getDelOpButton().setEnabled(false);
+      uacalc.getMakeBasicAlgButton().setEnabled(true);
+      setOpsCB();
+      return;
     }
-    setOpsCB();
   }
-  
-  /*
-  public void setAlgebra() {
-    SmallAlgebra alg = getAlgebra();
-    if (alg == null) return;
-    name_tf.setText(alg.name());
-    card_tf.setText("" + alg.cardinality());
-    desc_tf.setText(alg.description());
-    setOpsCB();
-  }
-  */
   
   /**
    * A cute hack to get the toString method of an OperationSymbol to
@@ -602,6 +527,14 @@ public class AlgebraEditorController {
     this.algSize = card;
     return card;
     // set the card field and clear all else
+  }
+
+  private SmallAlgebra.AlgebraType getCurrentAlgType() {
+    return currentAlgType;
+  }
+
+  private void setCurrentAlgType(SmallAlgebra.AlgebraType currentAlgType) {
+    this.currentAlgType = currentAlgType;
   }
   
 }

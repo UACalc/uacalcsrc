@@ -113,11 +113,12 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
             for (int i = 0; i < arity; i++) {
               h = h * size;
             }
-            int[] values = new int[h];
+            valueTable = new int[h];
+            //int[] values = new int[h];
             for (int i = 0; i < h; i++) {
-              values[i] = intValueAt(Horner.hornerInv(i, size, arity));
+              valueTable[i] = intValueAt(Horner.hornerInv(i, size, arity));
             }
-            tableOp = Operations.makeIntOperation(symbol(), size, values);
+            tableOp = Operations.makeIntOperation(symbol(), size, valueTable);
           }
           final int[] argsx = new int[arity];
           public int intValueAt(int[] args) {
@@ -229,7 +230,7 @@ public class Subalgebra extends GeneralAlgebra implements SmallAlgebra {
     algs.add(alg);
     return new Subalgebra(name, new ProductAlgebra(algs), univArr);
   }
-  
+
   public void convertToDefaultValueOps() {
     throw new UnsupportedOperationException("Only for basic algebras"); 
   }

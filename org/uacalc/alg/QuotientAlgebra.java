@@ -11,6 +11,7 @@ import org.uacalc.alg.op.AbstractOperation;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.alg.sublat.*;
+import org.uacalc.io.AlgebraIO;
 
 /**
  * This class represents a quotient algebra of a <tt>SmallAlgebra</tt>.
@@ -73,11 +74,12 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
             for (int i = 0; i < arity; i++) {
               h = h * size;
             }
-            int[] values = new int[h];
+            valueTable = new int[h];
+            //int[] values = new int[h];
             for (int i = 0; i < h; i++) {
-              values[i] = intValueAt(Horner.hornerInv(i, size, arity));
+              valueTable[i] = intValueAt(Horner.hornerInv(i, size, arity));
             }
-            tableOp = Operations.makeIntOperation(symbol(), size, values);
+            tableOp = Operations.makeIntOperation(symbol(), size, valueTable);
           }
           final int[] argsx = new int[arity];
           public int intValueAt(int[] args) {
@@ -203,6 +205,21 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
   public static void main(String[] args) throws java.io.IOException,
                                    org.uacalc.io.BadAlgebraFileException {
+    String str = "/home/ralph/Java/Algebra/algebras/polin.ua";
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(str);
+    SmallAlgebra qalg = new QuotientAlgebra(alg, alg.con().Cg(0,2));
+    //SmallAlgebra qbasic = qalg.makeBasicAlgebra();
+    //AlgebraIO.writeAlgebraFile(qbasic, "/tmp/qbasic.ua");
+    
+    
+    str = "/home/ralph/Java/Algebra/algebras/m3.ua";
+    alg = org.uacalc.io.AlgebraIO.readAlgebraFile(str);
+    
+    SmallAlgebra salg = alg.sub().Sg(new int[] {0,2});
+    System.out.println(salg.cardinality());
+    AlgebraIO.writeAlgebraFile(salg, "/tmp/sbasic.ua");
+    
+    /*
     if (args.length == 0) return;
     System.out.println("reading " + args[0]);
     SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(args[0]);
@@ -214,7 +231,7 @@ public class QuotientAlgebra extends GeneralAlgebra implements SmallAlgebra {
     org.uacalc.io.AlgebraWriter writer
          = new org.uacalc.io.AlgebraWriter(alg2, "/tmp/goo.xml");
     writer.writeAlgebraXML();
-
+    */
     
 
 /*

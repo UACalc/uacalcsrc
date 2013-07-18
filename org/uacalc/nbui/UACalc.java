@@ -66,5 +66,17 @@ public interface UACalc {
   
   public void setEmptyOpTableModel();
   
+  public JButton getAddOpButton();
+  
+  public JButton getDelOpButton();
+  
+  public JButton getMakeBasicAlgButton();
+  
+  
+  
+  
+  
+  
+  
   
 }

@@ -108,6 +108,7 @@ public class PolinLikeAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
 
+  
 
   private List makeOperations(SmallAlgebra topAlg, 
                               SmallAlgebra botAlg, Operation map) {

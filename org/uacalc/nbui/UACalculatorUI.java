@@ -9,6 +9,8 @@ package org.uacalc.nbui;
 import java.awt.event.*;
 import java.io.*;
 
+import javax.swing.JButton;
+
 
 /**
  *
@@ -2574,6 +2576,19 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     // only on the miglayout version
     public void setEmptyOpTableModel() {
       
+    }
+    
+    public JButton getAddOpButton() {
+      return addOpButton;
+    }
+    
+    public JButton getDelOpButton() {
+      return delOpButton;
+    }
+    
+    public JButton getMakeBasicAlgButton() {
+      // TODO: fix this 
+      return null;
     }
   
 }

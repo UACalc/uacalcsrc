@@ -91,6 +91,7 @@ public class ReductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     return congruenceAsAlgebra("", alg, cong);
   }
 
+  
   /**
    * This gives the congruence <tt>cong</tt> as a subalgebra of A^2.
    */

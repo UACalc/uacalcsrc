@@ -116,11 +116,11 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
             for (int i = 0; i < arity; i++) {
               h = h * size;
             }
-            int[] values = new int[h];
+            valueTable = new int[h];
             for (int i = 0; i < h; i++) {
-              values[i] = intValueAt(Horner.hornerInv(i, size, arity));
+              valueTable[i] = intValueAt(Horner.hornerInv(i, size, arity));
             }
-            tableOp = Operations.makeIntOperation(symbol(), size, values);
+            tableOp = Operations.makeIntOperation(symbol(), size, valueTable);
           }
           public int intValueAt(int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);

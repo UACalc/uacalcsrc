@@ -140,7 +140,7 @@ System.out.println("tmp.length = " + tmp.length );
     // TODO Auto-generated method stub
 
   }
-  
+
   public void convertToDefaultValueOps() {
     throw new UnsupportedOperationException("Only for basic algebras"); 
   }

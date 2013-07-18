@@ -89,6 +89,7 @@ public interface SmallAlgebra extends Algebra {
    */
   public void convertToDefaultValueOps();
   
+  
 }
 
 

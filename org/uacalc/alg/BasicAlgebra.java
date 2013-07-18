@@ -161,6 +161,7 @@ public class BasicAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
   
   
+  
   public AlgebraType algebraType() {
     return AlgebraType.BASIC;
   }

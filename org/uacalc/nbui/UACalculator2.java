@@ -82,6 +82,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JToolBar jToolBar1;
   private javax.swing.JTextArea logTextArea;
   private javax.swing.JMenuItem majorityMI;
+  private javax.swing.JButton makeBasicAlgButton;
   private javax.swing.JMenuItem maltsevMI;
   private javax.swing.JMenu maltsevMenu;
   private javax.swing.JMenuItem membershipTestMI;
@@ -223,6 +224,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     opsComboBox = new javax.swing.JComboBox();
     delOpButton = new javax.swing.JButton();
     addOpButton = new javax.swing.JButton();
+    makeBasicAlgButton = new javax.swing.JButton();
+    makeBasicAlgButton.setEnabled(false);
     opTableScrollPane = new javax.swing.JScrollPane();
     opTable = new javax.swing.JTable();
     emptyOpTableModel = new javax.swing.table.DefaultTableModel(
@@ -375,6 +378,14 @@ public class UACalculator2 extends JFrame implements UACalc {
     addOpButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             addOpButtonActionPerformed(evt);
+        }
+    });
+    
+    makeBasicAlgButton.setText("Make into Basic Alg");
+    makeBasicAlgButton.setToolTipText("Make a basic (editable) copy");
+    makeBasicAlgButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          makeBasicAlgButtonActionPerformed(evt);
         }
     });
 
@@ -1050,7 +1061,8 @@ xxx;
     upper.add(new JLabel("Operations:"));
     upper.add(opsComboBox);
     upper.add(delOpButton);
-    upper.add(addOpButton, "wrap 15");
+    upper.add(addOpButton);
+    upper.add(makeBasicAlgButton, "wrap 15");
     upper.add(opTableScrollPane, "width 300:2000:, span, wrap");
     upper.add(idempotentCB, "gapx 50");
     upper.add(new JLabel("Default Element:"), "gapx 50");
@@ -1269,6 +1281,20 @@ xxx;
     return tabbedPane;
   }
   
+  public JButton getAddOpButton() {
+    return addOpButton;
+  }
+  
+  public JButton getDelOpButton() {
+    return delOpButton;
+  }
+  
+  public JButton getMakeBasicAlgButton() {
+    // TODO: fix this 
+    return makeBasicAlgButton;
+  }
+  
+  
   // Actions:
   private void cancelCompButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelCompButtonActionPerformed
     getComputationsController().cancelOrRemoveCurrentTask();
@@ -1309,6 +1335,10 @@ xxx;
 
   private void addOpButtonActionPerformed(java.awt.event.ActionEvent evt) {
     getAlgebraEditorController().addOp();
+  }
+  
+  private void makeBasicAlgButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    getAlgebraEditorController().makeBasicAlg();
   }
 
   private void idempotentCBActionPerformed(java.awt.event.ActionEvent evt) {

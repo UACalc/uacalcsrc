@@ -486,6 +486,7 @@ public class  BasicLattice extends GeneralAlgebra
     return AlgebraType.BASIC_LATTICE;
   }
 
+  
   /**
    * An optional operation returning the list of join irreducible elements.
    */

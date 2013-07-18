@@ -27,9 +27,12 @@ public class OperationWithDefaultValue extends AbstractOperation {
   
   public OperationWithDefaultValue(Operation op) {
     super(op.symbol(), op.getSetSize());
+    op.makeTable();
+    
     this.defaultValue = -1;
     this.op = op;
     this.valueTable = op.getTable();
+    //System.out.println(valueTable);
     setDiagDiv();
   }
   
@@ -48,6 +51,7 @@ public class OperationWithDefaultValue extends AbstractOperation {
 
   public OperationWithDefaultValue(Operation op, int algSize) {
     super(op.symbol(), algSize);
+    this.makeTable();
     this.valueTable = getTable();
     this.defaultValue = -1;
     op = Operations.makeIntOperation(op.symbol(), algSize, valueTable);

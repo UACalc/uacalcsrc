@@ -67,6 +67,13 @@ public class OperationTableModel extends AbstractTableModel {
     this.setSize = op.getSetSize();
     this.arity = op.arity();
     //setDiagDiv();
+    
+    /// Not sure why but this screwed things up bad.
+    /// when you tried to change a value in the table it popped 
+    /// back to the original. ans: op.makeTable() did not
+    /// force it to use it.
+    //op.makeTable();  
+
     valueTable = op.getTable();
     final int n = valueTable.length;
     final int k = arity == 0 ? 1 : n / setSize;
