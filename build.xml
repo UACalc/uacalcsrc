@@ -136,7 +136,7 @@
 
   <target name="javadoc" depends="compile-dist">
     <mkdir dir="${javadoc.dir}"/>
-    <javadoc packagenames="org.uacalc.alg,org.uacalc.alg.conlat,org.uacalc.alg.sublat,org.uacalc.alg.op,org.uacalc.alg.example,org.uacalc.io,org.uacalc.util,org.uacalc.ui,org.uacalc.ui.images,org.uacalc.ui.table,org.uacalc.ui.tm,org.uacalc.lat,org.uacalc.terms,org.uacalc.eq,org.uacalc.nbui" 
+    <javadoc packagenames="org.uacalc.alg,org.uacalc.alg.conlat,org.uacalc.alg.sublat,org.uacalc.alg.op,org.uacalc.alg.example,org.uacalc.io,org.uacalc.util,org.uacalc.ui,org.uacalc.ui.util,org.uacalc.ui.images,org.uacalc.ui.table,org.uacalc.ui.tm,org.uacalc.lat,org.uacalc.terms,org.uacalc.eq,org.uacalc.nbui" 
              sourcepath="${src.dir}"
              destdir="${javadoc.dir}"
              author="true"
