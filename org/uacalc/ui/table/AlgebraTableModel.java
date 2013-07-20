@@ -5,7 +5,7 @@ import java.util.*;
 import java.io.*;
 import org.uacalc.alg.SmallAlgebra;
 
-import org.uacalc.ui.util.*;;
+import org.uacalc.ui.util.*;
 
 public class AlgebraTableModel extends AbstractTableModel {
   
