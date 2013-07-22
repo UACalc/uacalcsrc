@@ -54,11 +54,13 @@ public class ElemKeyTableModel extends AbstractTableModel {
       return sAlg.getSubuniverseArray()[rowIndex];
     }
     
-    if (algType == AlgebraType.PRODUCT) {
+    //if (algType == AlgebraType.PRODUCT) {
       // use Horner; check if too big
-    }
+    //}
     
-    return null;
+    
+    
+    return rowIndex; // will just be x | x table.
   }
 
 }
