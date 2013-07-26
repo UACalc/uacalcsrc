@@ -258,7 +258,7 @@ public class OperationTableModel extends AbstractTableModel {
     return "" + (col -1);
   }
   
-  public Class<?> getColumnClass(int col) {
+  public Class getColumnClass(int col) {
     if (col == 0) return String.class;
     return Integer.class;
   }

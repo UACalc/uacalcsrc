@@ -388,11 +388,11 @@ public class AlgebraEditorController {
       for (Operation op : opList) {
         symbolList.add(op.symbol());
         opMap.put(op.symbol(), op);
-        uacalc.getAddOpButton().setEnabled(true);
-        uacalc.getDelOpButton().setEnabled(true);
-        uacalc.getMakeBasicAlgButton().setEnabled(false);
-        setOpsCB();
       }
+      uacalc.getAddOpButton().setEnabled(true);
+      uacalc.getDelOpButton().setEnabled(true);
+      uacalc.getMakeBasicAlgButton().setEnabled(false);
+      setOpsCB();
       return;
     }
     else {
@@ -450,6 +450,8 @@ public class AlgebraEditorController {
       GUIAlgebra gAlg 
         = getMainController().addAlgebra(new BasicAlgebra(name, card, new ArrayList<Operation>()));
       getMainController().setCurrentAlgebra(gAlg);
+      // 07/25/2013: added setAlgebra
+      setAlgebra(gAlg);
       setOperationTable(new OperationInputTable());
       gAlg.setNeedsSave(true);
       //getActions().setDirty(true);
