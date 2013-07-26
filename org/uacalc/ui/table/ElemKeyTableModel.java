@@ -23,6 +23,7 @@ public class ElemKeyTableModel extends AbstractTableModel {
     this.gAlg = gAlg;
     this.alg = gAlg.getAlgebra();
     this.algType = alg.algebraType();
+    gAlg.setElemKey(this);
   }
   
   

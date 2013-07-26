@@ -3,6 +3,7 @@ package org.uacalc.ui.util;
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.*;
 import org.uacalc.lat.*;
+import org.uacalc.ui.table.*;
 import java.io.File;
 import java.util.*;
 
@@ -27,6 +28,7 @@ public class GUIAlgebra {
 
   private List<GUIAlgebra> parents = new ArrayList<GUIAlgebra>(); // may be empty or a singleton
   
+  private ElemKeyTableModel elemKey;
   /**
    * Only edited and new algebras will get this mark. 
    * Things like quotient algebras won't even though they 
@@ -147,6 +149,14 @@ public class GUIAlgebra {
     lats = null;
   }
   
+  public ElemKeyTableModel getElemKey() {
+    return elemKey;
+  }
+
+  public void setElemKey(ElemKeyTableModel elemKey) {
+    this.elemKey = elemKey;
+  }
+
   public String toString() {
     return toString(false);
   }

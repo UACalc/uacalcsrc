@@ -49,14 +49,16 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JPanel drawingMainPanel;
   private javax.swing.JMenu drawingMenu;
   private javax.swing.JPanel drawingPanel;
+  private javax.swing.JPanel editorPanel;
+  private javax.swing.JMenu editMenu;
+  private javax.swing.JTable elemKeyTable;
+  private javax.swing.JScrollPane elemKeyScrollPane;
+  private javax.swing.JMenu fileMenu;
+  private javax.swing.JMenuItem freeAlgMI;
   private javax.swing.JMenu helpMenu;
   private javax.swing.JMenuItem helpInstructionsMI;
   private javax.swing.JMenuItem helpAlgorithmsMI;
   private javax.swing.JMenuItem helpDescriptionMI;
-  private javax.swing.JMenu editMenu;
-  private javax.swing.JPanel editorPanel;
-  private javax.swing.JMenu fileMenu;
-  private javax.swing.JMenuItem freeAlgMI;
   private javax.swing.JMenu hspMenu;
   private javax.swing.JCheckBox idempotentCB;
   private javax.swing.JLabel jLabel1;
@@ -244,6 +246,26 @@ public class UACalculator2 extends JFrame implements UACalc {
     algebrasPanel = new javax.swing.JPanel();
     currentAlgPanel = new javax.swing.JPanel();
     computationsPanel = new javax.swing.JPanel();
+    
+    elemKeyScrollPane = new javax.swing.JScrollPane();
+    elemKeyTable = new javax.swing.JTable();
+    elemKeyTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+    elemKeyTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null},
+            {null, null, null, null}
+        },
+        new String [] {
+            "Title 1", "Title 2", "Title 3", "Title 4"
+        }
+    ));
+    elemKeyTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    elemKeyScrollPane.setViewportView(resultTable);
+    
+    
+    
     resultPane = new javax.swing.JPanel();
     jScrollPane4 = new javax.swing.JScrollPane();
     
@@ -1045,6 +1067,7 @@ xxx;
   
   private void initEditorPanel() {
     MigLayout uLM = new MigLayout("nogrid");
+    
     JPanel upper = new JPanel(uLM);
     JPanel lower = new JPanel();
     Dimension zeroSize = new Dimension(0, 0);
@@ -1067,7 +1090,10 @@ xxx;
     upper.add(idempotentCB, "gapx 50");
     upper.add(new JLabel("Default Element:"), "gapx 50");
     upper.add(defaultEltComboBox, "wrap");
-    lower.add(new JLabel("An element table will be here"), "align center");
+    //lower.add(new JLabel("An element table will be here"), "align center");
+    JPanel xxx = new JPanel();
+    xxx.add(elemKeyScrollPane);
+    lower.add(xxx, "align center");
     
     JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
     edSplitPane.setDividerLocation(0.5);
@@ -1224,6 +1250,10 @@ xxx;
    
   public JPanel getDrawingMainPanel() {
     return drawingMainPanel;
+  }
+  
+  public JTable getElemKeyTable() {
+    return elemKeyTable;
   }
 
    
