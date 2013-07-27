@@ -2590,5 +2590,9 @@ private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
       // TODO: fix this 
       return null;
     }
+    
+    public javax.swing.JTable getElemKeyTable() {
+      return null;
+    }
   
 }

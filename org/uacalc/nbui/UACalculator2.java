@@ -262,7 +262,7 @@ public class UACalculator2 extends JFrame implements UACalc {
         }
     ));
     elemKeyTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-    elemKeyScrollPane.setViewportView(resultTable);
+    elemKeyScrollPane.setViewportView(elemKeyTable);
     
     
     
@@ -1070,10 +1070,12 @@ xxx;
     
     JPanel upper = new JPanel(uLM);
     JPanel lower = new JPanel();
+    lower.setLayout(new BorderLayout());
     Dimension zeroSize = new Dimension(0, 0);
     Dimension minSize = new Dimension(100, 100);
     upper.setMinimumSize(minSize);
     upper.setPreferredSize(new Dimension(300, 300));
+    lower.setPreferredSize(new Dimension(300, 300));
     lower.setMinimumSize(zeroSize);
     upper.add(new JLabel("Name:"));
     upper.add(algNameTextField, "width 100:120:200, grow 75");
@@ -1090,10 +1092,10 @@ xxx;
     upper.add(idempotentCB, "gapx 50");
     upper.add(new JLabel("Default Element:"), "gapx 50");
     upper.add(defaultEltComboBox, "wrap");
-    //lower.add(new JLabel("An element table will be here"), "align center");
-    JPanel xxx = new JPanel();
-    xxx.add(elemKeyScrollPane);
-    lower.add(xxx, "align center");
+    lower.add(new JLabel("Element Key Table"), BorderLayout.NORTH);
+    //JPanel xxx = new JPanel();
+    //xxx.add(elemKeyScrollPane);
+    lower.add(elemKeyScrollPane, BorderLayout.WEST);
     
     JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
     edSplitPane.setDividerLocation(0.5);

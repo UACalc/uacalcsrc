@@ -72,7 +72,7 @@ public interface UACalc {
   
   public JButton getMakeBasicAlgButton();
   
-  
+  public JTable getElemKeyTable();
   
   
   

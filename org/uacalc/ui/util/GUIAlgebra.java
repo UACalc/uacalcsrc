@@ -150,6 +150,7 @@ public class GUIAlgebra {
   }
   
   public ElemKeyTableModel getElemKey() {
+    if (elemKey == null) elemKey = new ElemKeyTableModel(this);
     return elemKey;
   }
 

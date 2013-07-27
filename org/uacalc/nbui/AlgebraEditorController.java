@@ -371,6 +371,8 @@ public class AlgebraEditorController {
     
   public void setAlgebra(GUIAlgebra gAlg) {
     this.gAlg = gAlg;
+    ElemKeyTableModel ektm = gAlg.getElemKey();
+    uacalc.getElemKeyTable().setModel(ektm);
     SmallAlgebra alg = gAlg.getAlgebra();
     setCurrentAlgType(alg.algebraType());
     symbolList = new ArrayList<OperationSymbol>();
