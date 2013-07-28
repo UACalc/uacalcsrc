@@ -182,7 +182,7 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
    * @param v
    * @return   true if the generators have been decomposed and thinned
    */
-  public boolean getDecompose(boolean v) { return decompose; }
+  public boolean getDecompose() { return decompose; }
 
   public List<IntArray> thinGenerators() {
     List<IntArray> projs = transpose(gens);

@@ -55,12 +55,28 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
   
   public BasicPartition(String str) {
-    this.array = stringToPartition(str);
+    this(str, -1);
+  }
+  
+  /**
+   * If length is nonnegative, this converts str into a 
+   * partition on 0 to length - 1, ignoring any any interger
+   * in str greater than length - 1. Str can either use
+   * bracket or bar notation: [[1 2][3 4 5]] or 
+   * |1 2|3 4 5|. Commas or spaces can be used to separate 
+   * numbers. If length is negative, str must be a full partition
+   * on 0 up some n-1.
+   * 
+   * @param str
+   * @param length
+   */
+  public BasicPartition(String str, int length) {
+    this.array = stringToPartition(str, length);
     this.size = array.length;
     normalize();
   }
   
-  public static int[] stringToPartition(String str) {
+  public static int[] stringToPartition(String str, int length) {
     final String vert = "|";
     final String lbrack = "[";
     final String rbrack = "]";
@@ -87,12 +103,16 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       for (int i = 0; i < blkCount; i++) {
         blocks.add(blkStringToSet(strings[i]));
       }
-      int size = 0;
-      for (TreeSet<Integer> blk : blocks) {
-        size = size + blk.size();
+      int size = length;
+      if (length < 0) {
+        size = 0;
+        for (TreeSet<Integer> blk : blocks) {
+          size = size + blk.size();
+        }
       }
       int[] ans = new int[size];
       for (int i = 0; i < size; i++) {
+        ans[i] = -1;
         for (TreeSet<Integer> blk : blocks) {
           if (blk.contains(i)) {
             if (blk.first().equals(i)) ans[i] = - blk.size();
@@ -1384,6 +1404,10 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   static boolean endNow = true;
   
   public static void main(String[] args) {
+    
+    BasicPartition partition = new BasicPartition("|1 2 |3 4|", 8);
+    System.out.println(partition);
+    
     
     BasicPartition rfu0 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3});
     BasicPartition rfu1 = new BasicPartition(new int[] {-2, -2, -2, 0,1, 2});

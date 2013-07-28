@@ -1690,8 +1690,14 @@ public class ComputationsController {
           return;
         }
         if (!cancelled) {
+          String substr = Arrays.toString(BGenerators);
+          // liked it better with the [1, 4] notation.
+          //substr = substr.substring(1, substr.length() - 1);
           if (eq == null) {
-            report.addEndingLine(gB.toString() + "is in V(" + gA.toString() + ")");
+            report.addLine("The map from the generators to the elemements " 
+                         + substr + " of " + gB.toString()
+                         + " extends to a homomorphism.");
+            report.addEndingLine(gB.toString() + " is in V(" + gA.toString() + ").");
             ttm.setDescription(desc + ": it is!");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
@@ -1700,7 +1706,7 @@ public class ComputationsController {
             report.addEndingLine(gB.toString() + "is not in V(" + gA.toString() + ")");
             ttm.setDescription("An equation of " + gA.toString() 
                 + " that fails in " + gB.toString() 
-                + " by substituting " + ArrayString.toString(BGenerators) 
+                + " by substituting " + substr 
                 + " for the variables");
             updateResultTextField(this, ttm);
             java.util.List<Term> terms = new ArrayList<Term>(2);

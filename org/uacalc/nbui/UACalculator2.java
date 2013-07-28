@@ -1067,15 +1067,17 @@ xxx;
   
   private void initEditorPanel() {
     MigLayout uLM = new MigLayout("nogrid");
+    MigLayout lLM = new MigLayout("nogrid");
     
     JPanel upper = new JPanel(uLM);
     JPanel lower = new JPanel();
     lower.setLayout(new BorderLayout());
+    lower.setLayout(lLM);
     Dimension zeroSize = new Dimension(0, 0);
     Dimension minSize = new Dimension(100, 100);
     upper.setMinimumSize(minSize);
     upper.setPreferredSize(new Dimension(300, 300));
-    lower.setPreferredSize(new Dimension(300, 300));
+    lower.setPreferredSize(new Dimension(200, 200));
     lower.setMinimumSize(zeroSize);
     upper.add(new JLabel("Name:"));
     upper.add(algNameTextField, "width 100:120:200, grow 75");
@@ -1095,7 +1097,7 @@ xxx;
     lower.add(new JLabel("Element Key Table"), BorderLayout.NORTH);
     //JPanel xxx = new JPanel();
     //xxx.add(elemKeyScrollPane);
-    lower.add(elemKeyScrollPane, BorderLayout.WEST);
+    lower.add(elemKeyScrollPane, "width 300:2000:, span, wrap");
     
     JSplitPane edSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, upper, lower);
     edSplitPane.setDividerLocation(0.5);

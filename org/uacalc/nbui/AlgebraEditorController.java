@@ -13,6 +13,7 @@ import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
 import org.uacalc.ui.table.*;
+import org.uacalc.ui.table.TermTableModel.ResultTableType;
 import org.uacalc.ui.util.*;
 
 public class AlgebraEditorController {
@@ -373,6 +374,7 @@ public class AlgebraEditorController {
     this.gAlg = gAlg;
     ElemKeyTableModel ektm = gAlg.getElemKey();
     uacalc.getElemKeyTable().setModel(ektm);
+    setResultTableColWidths();
     SmallAlgebra alg = gAlg.getAlgebra();
     setCurrentAlgType(alg.algebraType());
     symbolList = new ArrayList<OperationSymbol>();
@@ -411,6 +413,21 @@ public class AlgebraEditorController {
       uacalc.getMakeBasicAlgButton().setEnabled(true);
       setOpsCB();
       return;
+    }
+  }
+  
+  /**
+   * This should be called after the ElemKeyTableModel has been set.
+   */
+  private void setResultTableColWidths() {
+    final JTable elemKeyTable = uacalc.getElemKeyTable();
+    final int cols = elemKeyTable.getColumnCount();
+    //System.out.println("col count xxx = " + cols);
+    for (int i = 0; i < cols; i++) {
+      TableColumn col = elemKeyTable.getColumnModel().getColumn(i);
+      if (i == 0) col.setPreferredWidth(60);
+      else if (i == 1) col.setPreferredWidth(700);  // was 900; TODO: fix
+      else col.setPreferredWidth(40);
     }
   }
   

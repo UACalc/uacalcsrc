@@ -26,7 +26,7 @@ public class ElemKeyTableModel extends AbstractTableModel {
     if (alg instanceof SubProductAlgebra) {
       SubProductAlgebra tAlg = (SubProductAlgebra)alg;
       terms = tAlg.getTerms();
-      universeList = tAlg.getUniverseList();
+      if (!tAlg.getDecompose()) universeList = tAlg.getUniverseList();
     }
     gAlg.setElemKey(this);
   }
