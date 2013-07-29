@@ -1484,11 +1484,11 @@ xxx;
   }//GEN-LAST:event_primalMIActionPerformed
 
   private void quotMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotMIActionPerformed
-  // TODO add your handling code here:
+    getComputationsController().formQuotientAlgebra();
   }//GEN-LAST:event_quotMIActionPerformed
 
   private void subMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMIActionPerformed
-  // TODO add your handling code here:
+    getComputationsController().formSubAlgebra();
   }//GEN-LAST:event_subMIActionPerformed
 
   private void prodMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prodMIActionPerformed

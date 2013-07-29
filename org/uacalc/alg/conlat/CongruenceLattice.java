@@ -962,6 +962,19 @@ public class CongruenceLattice implements Lattice {
     return new BasicPartition(part);
   }
   
+  public Partition Cg(Partition part) {
+    Partition ans = zero();
+    int[][] blocks = part.getBlocks();
+    for (int i = 0; i < blocks.length; i++) {
+      int[] blk = blocks[i];
+      int r = blk[0];
+      for (int j = 1; j < blk.length; j++) {
+        ans = ans.join(makeCg(r, blk[j]));
+      }
+    }
+    return ans;
+  }
+  
   public BinaryRelation Tg(int a, int b) {
     if (principalCongruencesLookup != null) {
       BinaryRelation rel =  principalTolerancesLookup.get(new int[] {a, b});

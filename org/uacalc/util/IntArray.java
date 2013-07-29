@@ -188,6 +188,23 @@ public class IntArray implements Cloneable {
     }
     return true;
   }
+  
+  /**
+   * If str is a sequence of ints separated by either commas
+   * or spaces, this puts them into an array.
+   * 
+   * @param str
+   * @return
+   */
+  public static int[] stringToArray(String str) {
+    str = str.trim();
+    final String[] elts = str.split("[,\\s]+");
+    int[] ans = new int[elts.length];
+    for (int i = 0; i < elts.length; i++) {
+      ans[i] = Integer.parseInt(elts[i]);
+    }
+    return ans;
+  }
 
 }
 

@@ -357,7 +357,7 @@ public class SubalgebraLattice implements Lattice {
   }
 
   public Subalgebra Sg(BasicSet s) {
-    return new Subalgebra("Subalgebra Of " + alg, alg,  s);
+    return new Subalgebra("Subalgebra Of " + alg.getName(), alg,  s);
   }
   
   public Subalgebra Sg(int[] gens) {
