@@ -1476,6 +1476,7 @@ public class CongruenceLattice implements Lattice {
   public boolean isIdempotent() { return true; }
 
   public static void main(String[] args) throws Exception {
+    /*
     SmallAlgebra sch0 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt0.ua");
     SmallAlgebra sch1 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt1.ua");
     //System.out.println("concon univ = " + sch0.con().con().universe());
@@ -1495,10 +1496,11 @@ public class CongruenceLattice implements Lattice {
         System.out.println(subalg.con().permutabilityLevel());
       }
     }
+    */
     
     
     
-    if (true) return;
+    //if (true) return;
     SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
     Partition one = alg.con().one();
     //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
@@ -1513,6 +1515,7 @@ public class CongruenceLattice implements Lattice {
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
     
+    if (true) return;
     //theta = new BasicPartition(new int[] {-2, -1, 0});
     //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();
