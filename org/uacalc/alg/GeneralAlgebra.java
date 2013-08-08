@@ -119,10 +119,9 @@ public class GeneralAlgebra implements Algebra {
    * This gives a list of the operations of arity 0, which is
    * a little different from the constants.
    */
-  public List constantOperations() {
-    List ans = new ArrayList();
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      final Operation op = (Operation)it.next();
+  public List<Operation> constantOperations() {
+    List<Operation> ans = new ArrayList<Operation>();
+    for (Operation op : operations()) {
       if (op.arity() == 0) ans.add(op);
     }
     return ans;
