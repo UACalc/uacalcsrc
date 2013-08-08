@@ -249,6 +249,12 @@ public class CongruenceLattice implements Lattice {
     if (universe == null) makeUniverse(report);
     return universe;
   }
+  
+  public List<Partition> getUniverseList() {
+    List<Partition> ans = new ArrayList<Partition>(universe());
+    sortByRank(ans);
+    return ans;
+  }
 
   public boolean isSimilarTo(Algebra alg) {
     return alg.similarityType().equals(similarityType());
