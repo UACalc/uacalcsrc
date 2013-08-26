@@ -18,28 +18,33 @@ public interface Partition extends BinaryRelation {
   /**
    * Printing types: the internal representation.
    */
-  public static final int INTERNAL = 0;
+  public enum PrintType {
+    INTERNAL, EWK, BLOCK, HUMAN, SQ_BRACE_BLOCK
+  }
+  
+  
+  //public static final int INTERNAL = 0;
 
   /**
    * Printing types: the algebra program representtation: a comma separated
    * sequence of ints defining a map whose kernel is the partition.
    */
-  public static final int EWK = 1;
+  //public static final int EWK = 1;
 
   /**
    * Printing types: blocks, the useual way of writing a partition.
    */
-  public static final int BLOCK = 2;
+  //public static final int BLOCK = 2;
 
   /**
    * Printing types: blocks, plus number of blocks at the end.
    */
-  public static final int HUMAN = 3;
+  //public static final int HUMAN = 3;
 
   /**
    * Printing types: blocks using [ and ].
    */
-  public static final int SQ_BRACE_BLOCK = 4;
+  //public static final int SQ_BRACE_BLOCK = 4;
   
   /**
    * This returns the array representation of the partition as described 
@@ -68,7 +73,9 @@ public interface Partition extends BinaryRelation {
 
   public boolean isRelated(int i, int j);
 
-  public String toString(int kind);
+  public String toString(PrintType kind);
+  
+  public String toString(int maxLen);
 
   public int representative(int i);
 

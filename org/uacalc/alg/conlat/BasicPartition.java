@@ -10,6 +10,7 @@ import org.uacalc.alg.op.*; // only needed in main
 import org.uacalc.alg.*;    // only needed in main
 import org.uacalc.terms.*;
 import org.uacalc.ui.tm.ProgressReport;
+import org.uacalc.alg.conlat.Partition.PrintType;
 
 
 import java.util.*;
@@ -506,21 +507,29 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   }
 
   public String toString() {
-    return toString(BLOCK);
+    return toString(PrintType.BLOCK);
+  }
+  
+  public String toString(int maxLen) {
+    return toString(PrintType.BLOCK, maxLen);
+  }
+  
+  public String toString(PrintType kind) {
+    return toString(kind, -1);
   }
 
-  public String toString(int kind) {
+  public String toString(PrintType kind, int maxLen) {
     switch (kind) {
       case INTERNAL:
         return intArrayToString(array);
       case EWK:
         return partToKissString(array);
       case BLOCK:
-        return partToBlockString(array);
+        return partToBlockString(array, maxLen);
       case SQ_BRACE_BLOCK:
-        return partToBlockString(array, "[[", "],[", "]]");
+        return partToBlockString(array, "[[", "],[", "]]", maxLen);
       case HUMAN:
-        return partToBlockString(array) +
+        return partToBlockString(array, maxLen) +
 	    " (" + numberOfBlocks() + " block(s))";
     }
     return intArrayToString(array);
@@ -569,16 +578,16 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   /** EWK
    * Make String representation of the partition in block form.
    */
-  private static String partToBlockString(int [] part) {
+  private static String partToBlockString(int[] part, int maxLen) {
     final String vert = "|";
-    return partToBlockString(part, vert, vert, vert);
+    return partToBlockString(part, vert, vert, vert, maxLen);
   }
 
   /** EWK
    * Make String representation of the partition in block form.
    */
-  private static String partToBlockString(int [] part, final String left,
-                                            final String middle, final String end) {
+  private static String partToBlockString(int[] part, final String left,
+                                            final String middle, final String end, int maxLen) {
     //It is assumed that part is normalized.
 
     ArrayList[] blocks = new ArrayList[part.length];
@@ -598,6 +607,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
       Iterator it = blocks[i].iterator();
       first = true;
       while( it.hasNext() ) {
+        if (maxLen > 0 && sb.length() > maxLen) return sb.toString() + " ...";
         if ( !first ) sb.append(comma);
         else first = false;
         sb.append(it.next().toString());
@@ -1406,7 +1416,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
   public static void main(String[] args) {
     
     BasicPartition partition = new BasicPartition("|1 2 |3 4|", 8);
-    System.out.println(partition);
+    System.out.println(partition.toString(11));  // test the maxLen option
     
     
     BasicPartition rfu0 = new BasicPartition(new int[] {-3, 0, 0, -3, 3, 3});
@@ -1492,7 +1502,7 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     BasicPartition foo = new BasicPartition(new int[] {-4,  0, -4,  2,  0,  0,  2,  2, -2, 8,  -1,  -1});
     //BasicPartition foo = new BasicPartition(new int[] {-1,-1});
     System.out.println(foo);
-    System.out.println(foo.toString(SQ_BRACE_BLOCK));
+    System.out.println(foo.toString(PrintType.SQ_BRACE_BLOCK));
     System.out.println(new BasicPartition(foo.toString()));
     System.out.println(new BasicPartition("|0 4 3|1 2|"));
     

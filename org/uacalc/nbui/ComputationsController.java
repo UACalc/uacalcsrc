@@ -2624,9 +2624,17 @@ public class ComputationsController {
         "Generatoring Partition", JOptionPane.QUESTION_MESSAGE);
     if (partStr == null) return;  // user cancelled
     Partition part = new BasicPartition(partStr, n + 1);
-    Partition cong = alg.con().Cg(part);
+    Partition cong = null;
+    try {
+      cong = alg.con().Cg(part);
+    }
+    catch (OutOfMemoryError ex) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(), "Insuffient memory, aborting", 
+                                    "Insuffient Memory", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
     int ans = JOptionPane.showConfirmDialog(uacalcUI.getFrame(), 
-        "form quotient by " + cong, "Confirm", JOptionPane.OK_CANCEL_OPTION);
+        "form quotient by " + cong.toString(120), "Confirm", JOptionPane.OK_CANCEL_OPTION);
     if (ans == JOptionPane.CANCEL_OPTION) return;
     QuotientAlgebra qAlg = new QuotientAlgebra(alg, cong);
     qAlg.setDescription("Quotient of " + gAlg.toString(true) + " by " + cong);

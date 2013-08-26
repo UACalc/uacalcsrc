@@ -13,6 +13,7 @@ public class FinitelyPresentedAlg {
   static String m3File = "/home/ralph/Java/Algebra/algebras/m3.ua";
   static String m4File = "/home/ralph/Java/Algebra/algebras/m4.ua";
   static String twoFile = "/home/ralph/Java/Algebra/algebras/lat2.xml";
+  static String n5File = "/home/ralph/Java/Algebra/algebras/n5.ua";
   static int numGens = 4;
   // This should be a generating set of alg1. Make it as small as possible.
   static OperationSymbol meet = OperationSymbol.MEET;
@@ -70,7 +71,17 @@ public class FinitelyPresentedAlg {
   
   public static void main(String[] args) throws IOException, BadAlgebraFileException {
 
-    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(m4File);
+    if (true) {
+      SmallAlgebra n5 = org.uacalc.io.AlgebraIO.readAlgebraFile(n5File);
+      SmallAlgebra m3 = org.uacalc.io.AlgebraIO.readAlgebraFile(m3File);
+      relations.add(makeOrderRelation(Variable.x, Variable.y, vars4));
+      FreeAlgebra f_m3 = new FreeAlgebra(m3, 4, relations, null);
+      System.out.println("f_m3 size = " + f_m3.cardinality());
+      return;
+    }
+    
+    
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(m3File);
     //relations.add(new Equation(Variable.x, xy, vars4));  // x < y on 4  138 elements
     
     //relations.add(new Equation(Variable.x, xy, vars5)); // 2603 elements

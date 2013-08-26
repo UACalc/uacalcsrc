@@ -473,7 +473,7 @@ public final class AlgebraWriter {
   private void writeHumanPartition(Partition part) {
     writeTag(PARTITION_TAG);
     indent();
-    out.println(part.toString(Partition.BLOCK));
+    out.println(part.toString(Partition.PrintType.BLOCK));
     writeEndTag(PARTITION_END_TAG);
   }
 
