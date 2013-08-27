@@ -371,6 +371,9 @@ public class AlgebraEditorController {
   }
     
   public void setAlgebra(GUIAlgebra gAlg) {
+    final int MAX_TABLE_SIZE = 1000000;  // try
+    final String EMPTY_STRING = "";
+    final String TOO_BIG_MSG = "The tables of this algebra are too big to show.";
     this.gAlg = gAlg;
     ElemKeyTableModel ektm = gAlg.getElemKey();
     uacalc.getElemKeyTable().setModel(ektm);
@@ -385,6 +388,12 @@ public class AlgebraEditorController {
     uacalc.getDescTextField().setText(alg.getDescription());
     final JTable table = uacalc.getOpTable();
     table.setVisible(true); // this may not be necessary anymore
+    if (alg.inputSize() > MAX_TABLE_SIZE) {
+      uacalc.beep();
+      uacalc.getMsgTextField().setText(TOO_BIG_MSG);
+      return;
+    }
+    uacalc.getMsgTextField().setText(EMPTY_STRING); // clear the message field    
     if (alg.algebraType() == SmallAlgebra.AlgebraType.BASIC) {
       table.setEnabled(true);
       opList = alg.operations();

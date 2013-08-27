@@ -2623,6 +2623,11 @@ public class ComputationsController {
         + "    |2 4|3 7 6|. Numbers above " + n + " will be ignored.</html>", 
         "Generatoring Partition", JOptionPane.QUESTION_MESSAGE);
     if (partStr == null) return;  // user cancelled
+    final int BIG_INPUT_SIZE = 10000;
+    if (alg.inputSize() > BIG_INPUT_SIZE) {
+      JOptionPane.showConfirmDialog(uacalcUI.getFrame(), 
+          "This is a big algebra; it may take a long time to compute.", "Large Algebra", JOptionPane.OK_CANCEL_OPTION);
+    }
     Partition part = new BasicPartition(partStr, n + 1);
     Partition cong = null;
     try {
