@@ -238,6 +238,7 @@ public class ConController {
     conTableModel = new ConLatticeTableModel(alg, ConLatticeTableModel.DataType.ALL, getConLatDrawer().getDiagram());
     System.out.println("elems size: " + conTableModel.getElementList().size());
     conTable = new JTable(conTableModel);
+    conTable.setGridColor(Color.BLACK);
     
     // row selections transfered to the diagram.
     final ListSelectionModel listSelectionModel = conTable.getSelectionModel();
