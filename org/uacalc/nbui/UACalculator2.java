@@ -211,6 +211,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     //jPanel6 = new javax.swing.JPanel();//panel for drawing tab
     jScrollPane1 = new javax.swing.JScrollPane();
     jTable1 = new javax.swing.JTable();
+    jTable1.setGridColor(Color.BLACK);
     tabbedPane = new javax.swing.JTabbedPane();
     editorPanel = new javax.swing.JPanel();
     jToolBar1 = new javax.swing.JToolBar();
@@ -230,6 +231,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     makeBasicAlgButton.setEnabled(false);
     opTableScrollPane = new javax.swing.JScrollPane();
     opTable = new javax.swing.JTable();
+    opTable.setGridColor(Color.BLACK);
     emptyOpTableModel = new javax.swing.table.DefaultTableModel(
           new Object [][] {
               {null, null, null, null},
@@ -249,6 +251,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     
     elemKeyScrollPane = new javax.swing.JScrollPane();
     elemKeyTable = new javax.swing.JTable();
+    elemKeyTable.setGridColor(Color.BLACK);
     elemKeyTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
     elemKeyTable.setModel(new javax.swing.table.DefaultTableModel(
         new Object [][] {
@@ -270,6 +273,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     jScrollPane4 = new javax.swing.JScrollPane();
     
     resultTable = new javax.swing.JTable();
+    resultTable.setGridColor(Color.BLACK);
     resultTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
     resultTable.setModel(new javax.swing.table.DefaultTableModel(
         new Object [][] {
@@ -290,6 +294,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     computationsLogPane = new javax.swing.JPanel();
     jScrollPane2 = new javax.swing.JScrollPane();
     computationsTable = new javax.swing.JTable();
+    computationsTable.setGridColor(Color.BLACK);
     cancelCompButton = new javax.swing.JButton();
     clearLogButton = new javax.swing.JButton();
     jScrollPane3 = new javax.swing.JScrollPane();
@@ -307,6 +312,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     drawingMainPanel = new javax.swing.JPanel();
     jScrollPane5 = new javax.swing.JScrollPane();
     algListTable = new javax.swing.JTable();
+    algListTable.setGridColor(Color.BLACK);
     jLabel6 = new javax.swing.JLabel();
     msgTextField = new javax.swing.JTextField();
     delAlg = new javax.swing.JButton();
@@ -1075,8 +1081,8 @@ xxx;
     lower.setLayout(lLM);
     Dimension zeroSize = new Dimension(0, 0);
     Dimension minSize = new Dimension(100, 100);
-    upper.setMinimumSize(minSize);
-    upper.setPreferredSize(new Dimension(300, 300));
+    //upper.setMinimumSize(minSize);
+    upper.setMinimumSize(new Dimension(300, 275));
     lower.setPreferredSize(new Dimension(200, 200));
     lower.setMinimumSize(zeroSize);
     upper.add(new JLabel("Name:"));
