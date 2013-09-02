@@ -29,16 +29,7 @@ import org.uacalc.ui.tm.ProgressReport;
 
 public class MainController {
 
-  ////////////////////////////////////////////
-  // version and build date 
-  // BE SURE TO UPDATE THESES  !!!!!!!!!!!!!!
-  //////////////////////////////////////////
-  //private final String versionString = "v1.01 ";
-  //private final String buildDate = "(Nov 19, 2011)";
-  //private final String versionString = "v1.02 ";
-  //private final String buildDate = "(Jan 10, 2012)";
-  private final String versionString = "v1.03 ";
-  private final String buildDate = "(Aug 31, 2013)";
+  
   
   
   private boolean dirty = false;
@@ -50,7 +41,7 @@ public class MainController {
   //private final java.util.List<GUIAlgebra> algs = new ArrayList<GUIAlgebra>();
   private File currentFile;
   private String title = "";  // if currentFile is null this might be "New"
-  private String progName = "UACalculator  " + versionString + buildDate + "  ";
+  private String progName = "UACalculator  " + Version.versionString + Version.buildDate + "  ";
   private String currentFolder;
   private AlgebraEditorController algEditorController;
   private ComputationsController computationsController;
