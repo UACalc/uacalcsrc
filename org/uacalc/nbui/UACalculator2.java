@@ -134,6 +134,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem CDIdempotentMI;
   private javax.swing.JMenuItem CMIdempotentMI;
   private javax.swing.JMenuItem kPermIdempotentMI;
+  private javax.swing.JMenuItem fixedKPermIdempotentMI;
   private javax.swing.JMenuItem kNUIdempotentMI;
   private javax.swing.JMenuItem majorityIdempotentMI;
   private javax.swing.JMenuItem sdIdempotentMI;
@@ -369,6 +370,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     CDIdempotentMI = new javax.swing.JMenuItem();
     CMIdempotentMI = new javax.swing.JMenuItem();
     kPermIdempotentMI = new javax.swing.JMenuItem();
+    fixedKPermIdempotentMI = new javax.swing.JMenuItem();
     kNUIdempotentMI = new javax.swing.JMenuItem();
     majorityIdempotentMI = new javax.swing.JMenuItem();
     sdIdempotentMI = new javax.swing.JMenuItem();
@@ -892,6 +894,15 @@ xxx;
         }
     });
     varPropIdemMenu.add(kPermIdempotentMI);
+    
+    fixedKPermIdempotentMI.setText("Is V(A) k-perm, k given");
+    fixedKPermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            fixedKPermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(fixedKPermIdempotentMI);
+    
     
     kNUIdempotentMI.setText("k-NU for A");
     kNUIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1543,6 +1554,10 @@ xxx;
   
   private void kPermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupkPermIdempotentTask();
+  }
+  
+  private void fixedKPermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupFixedKPermIdempotentTask();
   }
   
   private void kNUIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {

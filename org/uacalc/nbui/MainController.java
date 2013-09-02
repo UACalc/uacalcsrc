@@ -35,8 +35,10 @@ public class MainController {
   //////////////////////////////////////////
   //private final String versionString = "v1.01 ";
   //private final String buildDate = "(Nov 19, 2011)";
-  private final String versionString = "v1.02 ";
-  private final String buildDate = "(Jan 10, 2012)";
+  //private final String versionString = "v1.02 ";
+  //private final String buildDate = "(Jan 10, 2012)";
+  private final String versionString = "v1.03 ";
+  private final String buildDate = "(Aug 31, 2013)";
   
   
   private boolean dirty = false;

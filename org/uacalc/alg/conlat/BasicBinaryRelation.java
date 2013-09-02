@@ -74,6 +74,20 @@ public class BasicBinaryRelation implements BinaryRelation {
     return pairs.toString();
   }
   
+  /**
+   * This gives the identity relation on n; that is the zero congruence.
+   * 
+   * @param size
+   * @return
+   */
+  public static BinaryRelation identity(int size) {
+    BasicBinaryRelation ans = new BasicBinaryRelation(size);
+    for (int i = 0; i < size; i++) {
+      ans.add(i, i);
+    }
+    return ans;
+  }
+  
   public static void main(String[] args) {
     BasicBinaryRelation alpha = new BasicBinaryRelation(5);
     BasicBinaryRelation beta = new BasicBinaryRelation(5);

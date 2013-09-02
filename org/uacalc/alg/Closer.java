@@ -943,12 +943,13 @@ if (false) {
 //System.out.println("so far: " + currentMark);
 //if (currentMark > 7) return ans;
     }
-    final String str = "done closing, size = " + ans.size();
+    
     if (reportNotNull) {
+      final String str = "done closing, size = " + ans.size();
       report.setSize(ans.size());
       report.addEndingLine(str);
     }
-    else System.out.println(str);
+    //else System.out.println(str);
     completed = true;
     return ans;
   }
