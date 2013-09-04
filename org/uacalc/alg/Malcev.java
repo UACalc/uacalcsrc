@@ -2606,7 +2606,12 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    * 
    */
   public static List<Set<Integer>> typeSetIdempotent(SmallAlgebra alg, ProgressReport report){
-    if (report != null) report.addStartLine("Finding bounds for the type set of V(A).");
+    if (report != null) {
+      report.addStartLine("Finding bounds for the type set of V(A).");
+      report.addLine("The algorithm is based on M. Valeriote, "
+          + "\"A subalgebra intersection property for congruence distributive varieties,\" "
+          + "AU 61, (2009), 451-464, and ");
+    }
     final Set<Integer> posibleTypes = new TreeSet<Integer>();
     for (int i = 1; i <= 5; i++) posibleTypes.add(i);
     List<Set<Integer>> ans = new ArrayList<Set<Integer>>(2);
