@@ -2610,7 +2610,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       report.addStartLine("Finding bounds for the type set of V(A).");
       report.addLine("The algorithm is based on M. Valeriote, "
           + "\"A subalgebra intersection property for congruence distributive varieties,\" "
-          + "AU 61, (2009), 451-464, and ");
+          + "AU 61, (2009), 451-464.");
     }
     final Set<Integer> posibleTypes = new TreeSet<Integer>();
     for (int i = 1; i <= 5; i++) posibleTypes.add(i);
