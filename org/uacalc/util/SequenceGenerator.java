@@ -61,7 +61,7 @@ public final class SequenceGenerator {
   }
 
   /**
-   * his increments an array in place through all strictly increasing sequences
+   * This increments an array in place through all strictly increasing sequences
    * whose entries lie between 0 and <tt>max</tt>, inclusive.
    * 
    * @param a
@@ -108,6 +108,30 @@ public final class SequenceGenerator {
       };
   }
 
+  /**
+   * This just increments the array through all possible tuples
+   * with entries between 0 and max. This increments from the right:
+   * [0,0,0], [0,0,1], ...,[maxs[0],maxs[1],maxs[2]].
+   */
+  public static ArrayIncrementor sequenceIncrementor(
+                                            final int[] a, final int[] maxs) {
+    return new ArrayIncrementor() {
+        public boolean increment() {
+          final int len = a.length;
+          for (int i = len - 1; i >= 0; i--) {
+            if (a[i] < maxs[i]) {
+              a[i]++;
+              for (int j = i + 1; j < len; j++) {
+                a[j] = 0;
+              }
+              return true;
+            }
+          }
+          return false;
+        }
+      };
+  }
+  
   /**
    * This just increments the array through all possible tuples
    * with entries between 0 and <code>max</code> and having at 
@@ -196,7 +220,6 @@ public final class SequenceGenerator {
                                             final int[] a, final int max) {
     return new ArrayIncrementor() {
         public boolean increment() {
-          boolean ans = false;
           final int len = a.length;
           for (int i = 0; i < len; i++) {
             if (a[i] < max) {
@@ -210,6 +233,103 @@ public final class SequenceGenerator {
           return false;
         }
       };
+  }
+  
+  private static void setMaxs(int[] maxs, int[] roIndeces) {
+    int index = 0;
+    int max = 0;
+    for (int i = 1; i < roIndeces.length; i++) {
+      final int k = roIndeces[i] - roIndeces[i-1] - 1;
+      for (int j = 0; j < k; j++) {
+        maxs[index++] = max;
+      }
+      max++;
+    }
+    for (int i = index; i < maxs.length; i++) {
+      maxs[i] = max;
+    }
+  }
+  
+  public static int[] initialPartition(final int size, final int numBlocks) {
+    int[] ans = new int[size];
+    for (int i = 0; i < numBlocks; i++) {
+      ans[i] = i;
+    }
+    return ans;
+  }
+  
+  /**
+   * 
+   * 
+   * @param a
+   * @param size
+   * @param numBlocks
+   * @return
+   */
+  public static ArrayIncrementor partitionArrayIncrementor(
+                                     final int[] a, final int numBlocks) {
+    final int size = a.length;
+    final int[] rootIndeces = new int[numBlocks];
+    int index = 0;
+    for (int i = 0; i < size; i++) {
+      if (a[i] == i)
+      rootIndeces[index++] = i;
+    }
+    final int numNonRoots = size - numBlocks; 
+    final int[] nonRootIndeces = new int[numNonRoots];
+    index = 0;
+    for (int i = 0; i < size; i++) {
+      if (a[i] != i) nonRootIndeces[index++] = i;
+    }
+    final int[] maxs = new int[numNonRoots];
+    setMaxs(maxs, rootIndeces);
+    final int[] nonRootsRootIndeces = new int[numNonRoots];
+    final ArrayIncrementor rootsinc = increasingSequenceIncrementor(rootIndeces, size - 1);
+    
+    return new ArrayIncrementor() {
+      public boolean increment() {
+        for (int i = numNonRoots - 1; i >= 0; i--) {
+          if (nonRootsRootIndeces[i] < maxs[i]) {
+            nonRootsRootIndeces[i]++;
+            a[nonRootIndeces[i]] = rootIndeces[nonRootsRootIndeces[i]];
+            for (int j = i + 1; j < numNonRoots; j++) {
+              a[nonRootIndeces[j]] = 0;
+              nonRootsRootIndeces[j] = 0;
+            }
+            return true;
+          }
+          
+          //int k = nonRootIndeces[i];
+          //if (a[k] < rootIndeces[maxs[i]]) {
+          //  a[k] = rootIndeces[]
+          //  for (int j = i + 1; j < numNonRoots; j++) {
+          //    a[nonRootIndeces[j]] = 0;
+          //  }
+          //  return true;
+          //}
+        }
+        if (!rootsinc.increment()) return false;
+        if (rootIndeces[0] != 0) return false;
+        for (int i = 0; i < size; i++) {
+          a[i] = 0;
+        }
+        for (int i = 0; i < numBlocks; i++) {
+          a[rootIndeces[i]] = rootIndeces[i];
+        }
+        int index = 0;
+        for (int i = 0; i < size; i++) {
+          if (a[i] != i) nonRootIndeces[index++] = i;
+        }
+        for (int i = 0; i < numNonRoots; i++) {
+          nonRootsRootIndeces[i] = 0;
+        }
+        
+        System.out.println("here a: "+ ArrayString.toString(a));
+        System.out.println("roots: " + ArrayString.toString(rootIndeces));
+        setMaxs(maxs, rootIndeces);
+        return true;    
+      }
+    };
   }
 
   /**
@@ -227,6 +347,34 @@ public final class SequenceGenerator {
   }
 
   public static void main(String[] args) {
+    int blocks = 2;
+    int[] aa = initialPartition(5, blocks);
+    System.out.println("init: " + ArrayString.toString(aa));
+    ArrayIncrementor incaa = partitionArrayIncrementor(aa, blocks);
+    while (incaa.increment()) {
+      System.out.println(ArrayString.toString(aa));
+    }
+    if (true) return;
+    
+    
+    
+    int[] ax = new int[] {0,0,0};
+    ArrayIncrementor incy = sequenceIncrementor(ax, 4);
+    while (true) {
+      if (!incy.increment()) break;
+      System.out.println(ArrayString.toString(ax));
+    }
+    if (true) return;
+    
+    int[] maxs = new int[] {1,3,3,4,4};
+    ArrayIncrementor incx = sequenceIncrementor(ax, maxs);
+    while (true) {
+      if (!incx.increment()) break;
+      System.out.println(ArrayString.toString(ax));
+    }
+    System.out.println("");
+    if (true) return;
+    
     //int[] a = new int[] {0,0,0,0,0};
     //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
     //ArrayIncrementor inc = nondecreasingSequenceIncrementor(a, 3, 2);
@@ -247,6 +395,7 @@ public final class SequenceGenerator {
       System.out.print(ArrayString.toString(a));
       System.out.print("  ");
       if (!inc2.increment()) break;
+      
       System.out.println(ArrayString.toString(a2));
     }
     System.out.println("");
