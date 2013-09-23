@@ -250,6 +250,15 @@ public final class SequenceGenerator {
     }
   }
   
+  /**
+   * This returns the initial partition on <tt>size</tt> with
+   * <tt>numBlocks</tt> blocks in JB form. Should be used when using
+   * {@link #partitionArrayIncrementor(int[], int) partitionArrayIncrementor}.
+   * 
+   * @param size
+   * @param numBlocks
+   * @return
+   */
   public static int[] initialPartition(final int size, final int numBlocks) {
     int[] ans = new int[size];
     for (int i = 0; i < numBlocks; i++) {
@@ -259,10 +268,14 @@ public final class SequenceGenerator {
   }
   
   /**
-   * 
+   * This returns an ArrayIncrementor that increments through
+   * all partitions with <tt>numBlocks</tt> blocks in JB form.
+   * JB form is an array <tt>a</tt> with <tt>a[a[i]] = a[i]</tt>
+   * and <tt>{@literal a[i] <= i}</tt>. The initial <tt>a</tt> must be the
+   * first valid partition. It can be obtained using 
+   * {@link #initialPartition(int, int) initialPartition}.
    * 
    * @param a
-   * @param size
    * @param numBlocks
    * @return
    */
@@ -298,15 +311,6 @@ public final class SequenceGenerator {
             }
             return true;
           }
-          
-          //int k = nonRootIndeces[i];
-          //if (a[k] < rootIndeces[maxs[i]]) {
-          //  a[k] = rootIndeces[]
-          //  for (int j = i + 1; j < numNonRoots; j++) {
-          //    a[nonRootIndeces[j]] = 0;
-          //  }
-          //  return true;
-          //}
         }
         if (!rootsinc.increment()) return false;
         if (rootIndeces[0] != 0) return false;

@@ -240,6 +240,24 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return(blockCount);
   }
 
+  /**
+   * Takes a partition in JB form and return
+   * the corresponding Partition. 
+   * JB form is an array <tt>a</tt> with <tt>a[a[i]] = a[i]</tt>
+   * and <tt>{@literal a[i] <= i}</tt>.
+   * 
+   * @param a
+   * @return
+   */
+  public static BasicPartition jbToPartition(int[] a) {
+    int[] ans = new int[a.length];
+    for (int i = 0; i < a.length; i++) {
+      final int k = a[i];
+      if (k < i) ans[k]--;
+    }
+    return new BasicPartition(ans);
+  }
+  
   public int rank() {
     return array.length - numberOfBlocks();
   }
