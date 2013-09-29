@@ -25,7 +25,7 @@ public final class SequenceGenerator {
   /**
    * This increments an array in place through all nondecreasing sequences
    * whose entries lie between 0 and <tt>max</tt>, inclusive,
-   * subject to the restrction that last coordiate is at 
+   * subject to the restriction that last coordinate is at 
    * least <tt>lastMin</tt> (useful when the first part of a list is 
    * known to be closed). 
    */
@@ -68,7 +68,7 @@ public final class SequenceGenerator {
    * @param max
    * @return
    */
-  public static ArrayIncrementor increasingSequenceIncrementor(final int[] a, final int max) {
+  public static ArrayIncrementor increasingSequenceIncrementorOld(final int[] a, final int max) {
     final int len = a.length;
     final int[] a2 = new int[len];
     final ArrayIncrementor nondecInc = nondecreasingSequenceIncrementor(a2, max + 1 - len);
@@ -83,6 +83,39 @@ public final class SequenceGenerator {
         }
     };
   }
+  
+  /**
+   * This increments an array in place through all strictly increasing sequences
+   * whose entries lie between 0 and <tt>max</tt>, inclusive. This is reentrant:
+   * you can start with any valid a and it will increment all those above it.
+   * 
+   * @param a
+   * @param max
+   * @return
+   */
+  public static ArrayIncrementor increasingSequenceIncrementor(final int[] a, final int max) {
+    final int len = a.length;
+    final int[] maxs = new int[len];
+    int value = max;
+    for (int i = len - 1; i >= 0; i--) {
+      maxs[i] = value--;
+    }
+    return new ArrayIncrementor() {
+        public boolean increment() {
+          for (int i = len - 1; i >= 0; i--) {
+            if (a[i] < maxs[i]) {
+              int v = a[i] + 1;
+              for (int j = i; j < len; j++) {
+                a[j] = v++;
+              }
+              return true;
+            }
+          }
+          return false;
+        }
+    };
+  }
+  
   
   /**
    * This just increments the array through all possible tuples
@@ -328,8 +361,8 @@ public final class SequenceGenerator {
           nonRootsRootIndeces[i] = 0;
         }
         
-        System.out.println("here a: "+ ArrayString.toString(a));
-        System.out.println("roots: " + ArrayString.toString(rootIndeces));
+        //System.out.println(": "+ ArrayString.toString(a));
+        //System.out.println("roots: " + ArrayString.toString(rootIndeces));
         setMaxs(maxs, rootIndeces);
         return true;    
       }
@@ -351,10 +384,34 @@ public final class SequenceGenerator {
   }
 
   public static void main(String[] args) {
+    if (false) {
+      int[] axxx = new int[] {0,1,2};
+      ArrayIncrementor incxxx = increasingSequenceIncrementor(axxx, 5);
+      while (true) {
+        System.out.println(ArrayString.toString(axxx));
+        if (!incxxx.increment()) break;
+      }
+      System.out.println("start with [1,2,4].");
+      axxx = new int[] {1,2,4};
+      incxxx = increasingSequenceIncrementor(axxx, 5);
+      while (true) {
+        System.out.println(ArrayString.toString(axxx));
+        if (!incxxx.increment()) break;
+      }
+    }
+    
+    
+    
     int blocks = 2;
     int[] aa = initialPartition(5, blocks);
     System.out.println("init: " + ArrayString.toString(aa));
     ArrayIncrementor incaa = partitionArrayIncrementor(aa, blocks);
+    while (incaa.increment()) {
+      System.out.println(ArrayString.toString(aa));
+    }
+    System.out.println("--------");
+    aa = new int[] {0,0,2,0,2};
+    incaa = partitionArrayIncrementor(aa, blocks);
     while (incaa.increment()) {
       System.out.println(ArrayString.toString(aa));
     }
