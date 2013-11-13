@@ -462,15 +462,17 @@ public class MainController {
     SmallAlgebra alg = getCurrentAlgebra().getAlgebra();
     if (alg == null) return false;
     for (Operation op : alg.operations()) {
-      if (!((OperationWithDefaultValue)op).isTotal()) {
-        uacalcUI.beep();
-        JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-            "<html><center>Not all operations are total.<br>" 
-            + "Fill in the tables<br>"
-            + "or set a default value.</center></html>",
-            "Incomplete operation(s)",
-            JOptionPane.WARNING_MESSAGE);
-        return false;
+      if (op instanceof OperationWithDefaultValue) {
+        if (!((OperationWithDefaultValue)op).isTotal()) {
+          uacalcUI.beep();
+          JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+              "<html><center>Not all operations are total.<br>" 
+                  + "Fill in the tables<br>"
+                  + "or set a default value.</center></html>",
+                  "Incomplete operation(s)",
+                  JOptionPane.WARNING_MESSAGE);
+          return false;
+        }
       }
     }
     alg.setName(uacalcUI.getAlgNameTextField().getText());

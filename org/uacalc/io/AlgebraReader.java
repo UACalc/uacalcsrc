@@ -72,7 +72,10 @@ public final class AlgebraReader extends DefaultHandler {
   private Algebra bigAlgebra;
   private Partition congruence;
   private int[] subUniverse;
-
+  private Map<String,String> nameDescMap = new HashMap<String,String>();
+  //private Deque<String> descStack = new LinkedList<String>();
+  private Deque<String> algNameStack = new LinkedList<String>();
+  
   public AlgebraReader(File file) throws IOException {
     this.file = file;
   }
@@ -264,9 +267,18 @@ public final class AlgebraReader extends DefaultHandler {
       algebraList.add(algebra);
       clearStrings();
     }
-    if ("algName".equals(elemName)) algName = algNameString.trim();
+    if ("algName".equals(elemName)) {
+      algName = algNameString.trim();
+      algNameStack.push(algName);
+      nameDescMap.put(algName, null);
+    }
     if ("opName".equals(elemName)) opName = opNameString.trim();
-    if ("desc".equals(elemName)) desc = descString.trim();
+    if ("desc".equals(elemName)) {
+      desc = descString.trim();
+      // note for this to work desc, if it exists, should come after algName 
+      nameDescMap.put(algName, desc);
+      descString = EMPTY_STRING;
+    }
     if ("cardinality".equals(elemName)) 
             cardinality = Integer.parseInt(cardinalityString.trim());
     if ("arity".equals(elemName)) arity = Integer.parseInt(arityString.trim());
@@ -300,13 +312,10 @@ public final class AlgebraReader extends DefaultHandler {
 
     if ("basicAlgebra".equals(elemName)) {
       // need to see if universe exists
-
-//System.out.println("cardinality is " + cardinality);
-//System.out.println("ops has length " + ops.size());
-      algebra = new BasicAlgebra(algName, cardinality, ops);
+      String tmp = algNameStack.peekFirst();
+      algebra = new BasicAlgebra(tmp, cardinality, ops);
       addDescription();
       ops = new ArrayList<Operation>();
-      algName = null;
     }
     if ("factor".equals(elemName)) {
       factors.add(algebra);
@@ -318,55 +327,58 @@ public final class AlgebraReader extends DefaultHandler {
       superAlgebra = algebra;
     }
     if ("powerAlgebra".equals(elemName)) {
-      if (algName == null) {
+      String tmp = algNameStack.peekFirst();
+      if (tmp == null) {
         algebra = new PowerAlgebra(rootAlgebra, power);
       }
-      else algebra = new PowerAlgebra(algName, rootAlgebra, power);
-      algName = null;
+      else algebra = new PowerAlgebra(tmp, rootAlgebra, power);
       addDescription();
     }
       
-    if ("productAlgebra".equals(elemName)) {      
-      if (algName != null) algebra = new ProductAlgebra(algName, factors);
+    if ("productAlgebra".equals(elemName)) {
+      String tmp = algNameStack.peekFirst();
+      if (tmp != null) algebra = new ProductAlgebra(tmp, factors);
       else  algebra = new ProductAlgebra(factors);
       addDescription();
-      algName = null;
       factors = new ArrayList<SmallAlgebra>();
     }
     if ("bigProductAlgebra".equals(elemName)) {
-      if (algName != null) bigAlgebra = new BigProductAlgebra(algName, 
+      String tmp = algNameStack.peekFirst();
+      if (tmp != null) bigAlgebra = new BigProductAlgebra(tmp, 
                                                (List<SmallAlgebra>)factors, powers);
       else  bigAlgebra = new BigProductAlgebra((List<SmallAlgebra>)factors, powers);
       addDescription();
-      algName = null;
       factors = new ArrayList<SmallAlgebra>();
     }
     if ("subProductAlgebra".equals(elemName)) {
       // we hack around the super tag by just skipping it since
       // the BigProductAlgebra cannot be cast into a SmallAlgebra.
-      algebra = new SubProductAlgebra(algName, (BigProductAlgebra)bigAlgebra, 
+      String tmp = algNameStack.peekFirst();
+      
+      algebra = new SubProductAlgebra(tmp, (BigProductAlgebra)bigAlgebra, 
                            (List<IntArray>)generators, (List<IntArray>)universe);
       addDescription();      
     }
     if ("subAlgebra".equals(elemName)) {
-      System.out.println("superAlgebra size = " + superAlgebra.cardinality());
-      System.out.println("subUniv size = " + subUniverse.length);
-      System.out.println("subUniv = " + Arrays.toString(subUniverse));
-      if (algName == null) {
+      //System.out.println("superAlgebra size = " + superAlgebra.cardinality());
+      //System.out.println("subUniv size = " + subUniverse.length);
+      //System.out.println("subUniv = " + Arrays.toString(subUniverse));
+      String tmp = algNameStack.peekFirst();
+      if (tmp == null) {
         algebra = new Subalgebra(superAlgebra, subUniverse);
       }
-      else algebra = new Subalgebra(algName, superAlgebra, subUniverse);
+      else algebra = new Subalgebra(tmp, superAlgebra, subUniverse);
       System.out.println("algebra size = " + algebra.cardinality());
-      algName = null;
       addDescription();
     }
     if ("quotientAlgebra".equals(elemName)) {
-      if (algName == null) {
+      System.out.println("|" + algName + "|");
+      String tmp = algNameStack.peekFirst();
+      if (tmp == null) {
         algebra = new QuotientAlgebra(superAlgebra, congruence);
       }
-      else algebra = new QuotientAlgebra(algName, superAlgebra, congruence);
+      else algebra = new QuotientAlgebra(tmp, superAlgebra, congruence);
       addDescription();
-      algName = null;
     }
     //if (algebra != null && !EMPTY_STRING.equals(descString)) {
     //  algebra.setDescription(descString);
@@ -374,11 +386,24 @@ public final class AlgebraReader extends DefaultHandler {
     //}
   }
 
+  /**
+   * This also does some clean up: 
+   * pop'ing the algNameStack and setting algName to null.
+   */
   private void addDescription() {
-    if (algebra != null && !EMPTY_STRING.equals(descString)) {
-      algebra.setDescription(descString);
-      descString = EMPTY_STRING;
+    //System.out.println(nameDescMap);
+    if (algebra != null) {
+      String tmp = nameDescMap.get(algebra.getName());
+      //System.out.println(algebra.getName());
+      //System.out.println("tmp: " + tmp);
+      if (tmp != null) algebra.setDescription(tmp);
+      algNameStack.pop();
+      algName = null;
     }
+    //if (algebra != null && !EMPTY_STRING.equals(descString)) {
+    //  algebra.setDescription(descString);
+    //  descString = EMPTY_STRING;
+    //}
   }
  
   public static void main(String[] args) throws ParserConfigurationException, 
