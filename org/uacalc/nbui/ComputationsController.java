@@ -2062,9 +2062,10 @@ public class ComputationsController {
           return;
         }
         if (!cancelled) {
-          String str = "The type set is " + bounds.get(0);
+          String str = "The type set is " + bounds.get(0) + ".";
           if (!bounds.get(0).equals(bounds.get(1))) {
-            str = "The type set contains " + bounds.get(0) + " and is contained in " + bounds.get(1);
+            str = "The type set contains " + bounds.get(0) 
+                + " and is contained in " + bounds.get(1) + ".";
           }
           report.addEndingLine(str);
           ttm.setDescription(desc + " " + str);
@@ -2236,7 +2237,8 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Set<Integer> typesFound = Malcev.typesInSofAIdempotent(alg, null);// suppress report's output
+        Set<Integer> typesFound = new TreeSet<Integer>();
+        typesFound = Malcev.typesInSofASimpleIdempotent(alg, typesFound, null);// suppress report's output
         //List<Set<Integer>> bounds = Malcev.typeSetIdempotent(alg, report);
         //Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
         boolean isKPerm = true;

@@ -796,7 +796,6 @@ public class MainController {
     SmallAlgebra a = null;
     try {
       a = AlgebraIO.readAlgebraFromStream(is);
-      // TODO: add to list of algs
     }
     catch (BadAlgebraFileException e) {
       e.printStackTrace();
