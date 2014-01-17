@@ -72,8 +72,11 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     numberOfFactors = algs.size();
     sizes = new int[numberOfFactors];
     int k = 0;
-    for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
-      sizes[k] = it.next().cardinality();
+    //for (Iterator<SmallAlgebra> it = algs.iterator(); it.hasNext(); k++) {
+    //  sizes[k] = it.next().cardinality();
+    //}
+    for (SmallAlgebra alg : algs) {
+      sizes[k++] = alg.cardinality();
     }
     makeOperations();
   }
@@ -141,6 +144,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
   }
 
   /**
+   * Most of the rest of this is out of date.
    * For speed we have make all operations on the coordinates into
    * int operations with a lookup table. This could cause space problems. 
    * And we directly generate the Horner encoding for the lookup to speed
@@ -156,8 +160,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
     List<Operation> ops = new ArrayList<Operation>(k);
     //operations = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
-      final int arity = 
-           ((Operation)algebras.get(0).operations().get(i)).arity();
+      final int arity = algebras.get(0).operations().get(i).arity();
       final List<Operation> opList = new ArrayList<Operation>(numberOfFactors);
       for (int j = 0; j < numberOfFactors; j++) {
         // changed 2008/7/29 to make the int op.
@@ -167,17 +170,22 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
         opList.add(op);
         //opList.add(Operations.makeIntOperation(algebras.get(j).operations().get(i)));
       }
-      final int[] arg = new int[arity];
+      // 12/11/2013: Try to make this thread-safe.
+      //final int[] arg = new int[arity];
       Operation op = new AbstractOperation(opList.get(0).symbol(), size) {
           // this will act on a list of IntArray's representing elments of
           // the product and return an IntArray.
           // does this need code for zeroary ops??
           public Object valueAt(List args) {
             final int[] ans = new int[numberOfFactors];
+            final int[] arg = new int[arity];
             for (int j = 0; j < numberOfFactors; j++) {
-              int index = 0;
-              for (Iterator it = args.iterator(); it.hasNext(); index++) {
-                arg[index] = ((IntArray)it.next()).get(j);
+              //int index = 0;
+              //for (Iterator it = args.iterator(); it.hasNext(); index++) {
+              //  arg[index] = ((IntArray)it.next()).get(j);
+              //}
+              for (int index = 0; index < args.size(); index++) {
+                arg[index] = ((IntArray)args.get(index)).get(j); 
               }
               ans[j] = opList.get(j).intValueAt(arg);
             }
@@ -186,6 +194,7 @@ public class BigProductAlgebra extends GeneralAlgebra implements Algebra {
           // old
           
           public int[] valueAt(int[][] args) {
+            final int[] arg = new int[arity];
             //System.out.println("called with args: " + ArrayString.toString(args));
             //final int[] ans = new int[numberOfFactors];
             final int[] ans2 = new int[numberOfFactors];
