@@ -5,7 +5,7 @@ import java.util.*;
 
 /** 
  * A single global ForkJoinPool. (They say it is bad
- * to create several pool.)
+ * to create several pools.)
  * 
  * @author ralph
  *
