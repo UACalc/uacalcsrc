@@ -384,6 +384,30 @@ public final class SequenceGenerator {
   }
 
   public static void main(String[] args) {
+    int[] a = new int[] {0, 0, 4};
+    int[] a2 = new int[] {0, 0, 5};
+    int[] a3 = new int[] {0, 1, 4};
+    ArrayIncrementor inc = sequenceIncrementor(a, 5, 4, 3);
+    ArrayIncrementor inc2 = sequenceIncrementor(a2, 5, 4, 3);
+    ArrayIncrementor inc3 = sequenceIncrementor(a3, 5, 4, 3);
+    System.out.println(ArrayString.toString(a) + "  " + ArrayString.toString(a2) + "  " + ArrayString.toString(a3));
+    while (true) {
+      if (!inc.increment()) break;
+      System.out.print(ArrayString.toString(a));
+      System.out.print("  ");
+      
+      if (!inc2.increment()) break;
+      System.out.print(ArrayString.toString(a2));
+      System.out.print("  ");
+      
+      if (!inc3.increment()) break;
+      
+      System.out.println(ArrayString.toString(a3));
+    }
+    System.out.println("");
+    
+    if (true) return;
+    
     if (false) {
       int[] axxx = new int[] {0,1,2};
       ArrayIncrementor incxxx = increasingSequenceIncrementor(axxx, 5);
@@ -446,20 +470,7 @@ public final class SequenceGenerator {
     //}
     //int[] a = new int[] {0,1,2};
     //ArrayIncrementor inc = increasingSequenceIncrementor(a, 4);
-    int[] a = new int[] {0, 4};
-    int[] a2 = new int[] {0, 5};
-    ArrayIncrementor inc = sequenceIncrementor(a, 5, 4, 2);
-    ArrayIncrementor inc2 = sequenceIncrementor(a2, 5, 4, 2);
-    System.out.println(ArrayString.toString(a) + "  " + ArrayString.toString(a2));
-    while (true) {
-      if (!inc.increment()) break;
-      System.out.print(ArrayString.toString(a));
-      System.out.print("  ");
-      if (!inc2.increment()) break;
-      
-      System.out.println(ArrayString.toString(a2));
-    }
-    System.out.println("");
+    
   }
 
 
