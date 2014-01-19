@@ -59,16 +59,49 @@ public class SingleClose extends RecursiveTask<Map<IntArray,Integer>> {
   // it will also serve as id
   final Map<IntArray,Integer> map;
   final Operation op;
+  //final int closedMark;
+  final int min;
+  final int max;
+  final List<int[]> arrays;
   
-  public SingleClose(int inc, Map<IntArray,Integer> map, Operation op) {
+  public SingleClose(Map<IntArray,Integer> map, Operation op, int min) {
+    this.map = map;
+    this.op = op;
+    this.min = min;
+    this.max = map.size() - 1;
+    this.increment = calculateInc();
+    this.arrays = new ArrayList<>(increment);
+    setArrays();
+  }
+  
+  public SingleClose(int inc, Map<IntArray,Integer> map, Operation op, int min) {
     this.increment = inc;
     this.map = map;
     this.op = op;
+    this.min = min;
+    this.max = map.size() - 1;
+    this.arrays = new ArrayList<>(increment);
+    setArrays();
+  }
+  
+  private int calculateInc() {
+    return 4;
+  }
+  
+  private void setArrays() {
+    final int k = op.arity();
+    int[] a = new int[k];
+    a[k-1] = min;
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(a, max, min, increment);
+    for (int i = 0; i < increment; i++) {
+      final int[] b = Arrays.copyOf(a, a.length);
+      arrays.set(i, b);
+      inc.increment();
+    }
   }
   
   
-  
-  
+  @Override
   protected Map<IntArray,Integer> compute() {
     return null;
   }
