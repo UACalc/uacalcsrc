@@ -5,7 +5,28 @@ import java.util.*;
 
 import org.uacalc.util.*;
 import org.uacalc.alg.op.*;
+import org.uacalc.terms.*;
 
+// Notes:
+// The map below should be either a ConcurrentHashMap or a
+// ConcurrentSkipListMap. The latter uses the natural order
+// of the keys, IntArray in our case, for lookups, and so
+// may be faster. 
+//
+// In either case we should use putIfAbsent(key, value). This will 
+// return null if the entry is new. 
+//
+// The univList should have a Collections.unmodifiable wrapper.
+//
+// The individual threads should all modify the map but keep the
+// new elements found on a private list that should be returned
+// and the fork part should concatenate these list of new elements
+// serially.
+//
+// Note the univList may have already started this pass with another
+// operation and so may be larger than the "max" in the incrementor
+// but that doesn't matter: we don't have to worry about that.
+//
 
 // this version, based on 
 //    oracle.com/technetwork/articles/java/fork-join-422606.html
@@ -42,7 +63,63 @@ import org.uacalc.alg.op.*;
 //                       with 32 threads 23.5 seconds,
 //                       with 64 threads 34.6 seconds,
 
-
+class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
+  
+  final ConcurrentMap<IntArray,Term> map;
+  final List<IntArray> univList;
+  final Operation op;
+  
+  final int[] argIndeces;
+  
+  /**
+   * An incrementor associated with argIndeces.
+   */
+  final ArrayIncrementor incrementor;
+  
+  final int arity;
+  
+  final List<IntArray> newElts = new ArrayList<>();
+  
+  SingleCloseSerial(List<IntArray> univList, ConcurrentMap<IntArray,Term> map, 
+                    Operation op, int[] argIndeces, ArrayIncrementor incrementor) {
+    this.univList = univList;
+    this.map = map;
+    this.op = op;
+    this.argIndeces = argIndeces;
+    this.incrementor = incrementor;
+    this.arity = op.arity();
+  }
+  
+  @Override
+  protected List<IntArray> compute() {
+    final int[][] arg = new int[arity][];
+    while (true) {
+      for (int i = 0; i < arity; i++) {
+        arg[i] = univList.get(argIndeces[i]).getArray();
+      }
+      int[] vRaw = op.valueAt(arg);
+      IntArray v = new IntArray(vRaw);
+      // this is subtle: we don't want to build the term
+      // if this element has already been found. But 
+      // because of threading it may get added just after
+      // this so we need to check again and only add v to
+      // newElts if it was not added.
+      if (!map.containsKey(v)) {
+        List<Term> children = new ArrayList<Term>(arity);
+        for (int j = 0; j < arity; j++) {
+          children.add(map.get(univList.get(argIndeces[j])));
+        }
+        Term term = map.putIfAbsent(v, new NonVariableTerm(op.symbol(), children));
+        if (term == null) newElts.add(v);
+      }
+      
+      if (!incrementor.increment()) return newElts;
+    }
+    
+    
+  }
+  
+}
 
 /**
  * This will will do one pass partial closure with a single 
@@ -53,7 +130,7 @@ import org.uacalc.alg.op.*;
  * @author ralph
  *
  */
-public class SingleClose extends RecursiveTask<Map<IntArray,Integer>> {
+public class SingleClose extends RecursiveTask<List<IntArray>> {
   
   final int increment;  // this is also the number of processes that will be used
   // it will also serve as id
@@ -65,17 +142,11 @@ public class SingleClose extends RecursiveTask<Map<IntArray,Integer>> {
   final List<int[]> arrays;
   
   public SingleClose(Map<IntArray,Integer> map, Operation op, int min) {
-    this.map = map;
-    this.op = op;
-    this.min = min;
-    this.max = map.size() - 1;
-    this.increment = calculateInc();
-    this.arrays = new ArrayList<>(increment);
-    setArrays();
+    this(map, op, min, -1);
   }
   
-  public SingleClose(int inc, Map<IntArray,Integer> map, Operation op, int min) {
-    this.increment = inc;
+  public SingleClose(Map<IntArray,Integer> map, Operation op, int min, int inc) {
+    this.increment = inc > 0 ? inc : calculateInc();
     this.map = map;
     this.op = op;
     this.min = min;
@@ -102,7 +173,7 @@ public class SingleClose extends RecursiveTask<Map<IntArray,Integer>> {
   
   
   @Override
-  protected Map<IntArray,Integer> compute() {
+  protected List<IntArray> compute() {
     return null;
   }
   
@@ -111,8 +182,7 @@ public class SingleClose extends RecursiveTask<Map<IntArray,Integer>> {
    * @param args
    */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
-
+    //SingleClose foo = new SingleClose()
     
   }
 
