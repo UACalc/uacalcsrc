@@ -115,8 +115,6 @@ class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
       
       if (!incrementor.increment()) return newElts;
     }
-    
-    
   }
   
 }
@@ -134,47 +132,72 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
   
   final int increment;  // this is also the number of processes that will be used
   // it will also serve as id
-  final Map<IntArray,Integer> map;
+  final List<IntArray> univList;
+  final ConcurrentMap<IntArray,Term> map;
   final Operation op;
   //final int closedMark;
   final int min;
   final int max;
   final List<int[]> arrays;
+  final List<ArrayIncrementor> incrementorList;
+  final List<List<IntArray>> results;
   
-  public SingleClose(Map<IntArray,Integer> map, Operation op, int min) {
-    this(map, op, min, -1);
+  public SingleClose(List<IntArray> univList, ConcurrentMap<IntArray,Term> map, Operation op, int min, int max) {
+    this(univList, map, op, min, max, -1);
   }
   
-  public SingleClose(Map<IntArray,Integer> map, Operation op, int min, int inc) {
+  public SingleClose(List<IntArray> univList, ConcurrentMap<IntArray,Term> map, Operation op, int min, 
+                                    int max, int inc) {
     this.increment = inc > 0 ? inc : calculateInc();
+    this.univList = univList;
     this.map = map;
     this.op = op;
     this.min = min;
-    this.max = map.size() - 1;
+    // this.max = map.size() - 1; // Can't do this since univList may have elements added from other ops.
+    this.max = max;
     this.arrays = new ArrayList<>(increment);
-    setArrays();
+    this.incrementorList = new ArrayList<>(increment);
+    this.results = new ArrayList<>(increment);
+    setArraysAndIncrementors();
   }
   
   private int calculateInc() {
     return 4;
   }
-  
-  private void setArrays() {
+  // fix this; also check if the size is too small.
+  private void setArraysAndIncrementors() {
     final int k = op.arity();
     int[] a = new int[k];
     a[k-1] = min;
-    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(a, max, min, increment);
+    ArrayIncrementor tmpInc = SequenceGenerator.sequenceIncrementor(a, max, min);
     for (int i = 0; i < increment; i++) {
       final int[] b = Arrays.copyOf(a, a.length);
-      arrays.set(i, b);
-      inc.increment();
+      arrays.add(b);
+      incrementorList.add(SequenceGenerator.sequenceIncrementor(b, max, min, increment));
+      tmpInc.increment();
     }
   }
   
   
   @Override
   protected List<IntArray> compute() {
-    return null;
+    List<RecursiveTask<List<IntArray>>> forks = new ArrayList<>();
+    for (int i = 0; i < increment - 1; i++) {
+      SingleCloseSerial task = new SingleCloseSerial(univList, map, op, arrays.get(i), incrementorList.get(i));
+      forks.add(task);
+      task.fork();
+    }
+    final int last = arrays.size(); 
+    SingleCloseSerial lastTask = new SingleCloseSerial(univList, map, op, 
+                                   arrays.get(last), incrementorList.get(last));
+    results.add(lastTask.compute());    
+    for (int i = increment - 2; i >= 0; i--) {
+      results.add(forks.get(i).join());
+    }
+    for (int i = 0; i < results.size(); i++) {
+      univList.addAll(results.get(i));
+    }
+    return univList;
   }
   
 
