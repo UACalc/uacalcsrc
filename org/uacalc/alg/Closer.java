@@ -530,6 +530,13 @@ if (false) {
     return ans;
   }
   
+  public List<IntArray> sgCloseParallel(List<IntArray> elems, int closedMark, 
+      Map<IntArray,Term> termMap) {
+    //here;
+    
+    return null;
+  }
+  
   /**
    * Closure of <tt>elems</tt> under the operations. (Worry about
    * nullary ops later.)
@@ -543,7 +550,7 @@ if (false) {
    *
    * @return a List of IntArray's.
    */
-  public List<IntArray> sgCloseParallel(List<IntArray> elems, int closedMark, 
+  public List<IntArray> sgCloseParallel_Old(List<IntArray> elems, int closedMark, 
                                         Map<IntArray,Term> termMap) {
     
     if (algebra.isPower()) {

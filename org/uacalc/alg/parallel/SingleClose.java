@@ -200,7 +200,13 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
     return univList;
   }
   
+  public static List<IntArray> doOneStep(List<IntArray> univList, 
+         ConcurrentMap<IntArray,Term> map, Operation op, int min, int max) {
+    return Pool.fjPool.invoke(new SingleClose(univList, map, op, min, max));
+  }
 
+  
+  
   /**
    * @param args
    */
