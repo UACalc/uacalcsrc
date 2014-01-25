@@ -292,7 +292,7 @@ public class Closer {
    * @return a List of IntArray's.
    */
   
-  boolean doParallel = false;
+  boolean doParallel = true;
   
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                                      final Map<IntArray,Term> termMap) {
@@ -300,7 +300,9 @@ public class Closer {
       System.out.println("got to parallel");
       ConcurrentMap<IntArray,Term> concurrentTermMap = new ConcurrentHashMap<>(termMap.size());
       concurrentTermMap.putAll(termMap);
-      return sgCloseParallel(elems, closedMark, concurrentTermMap);
+      List<IntArray> ans = sgCloseParallel(elems, closedMark, concurrentTermMap);
+      termMap.putAll(concurrentTermMap);
+      return ans;
     }
     if (algebra.isPower()) {
       SmallAlgebra alg = algebra.rootFactors().get(0);
