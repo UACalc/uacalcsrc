@@ -16,6 +16,7 @@ import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
+import org.uacalc.alg.parallel.SingleClose;
 
 /**
  * A class for finding the closure with configurations for several options
@@ -290,8 +291,17 @@ public class Closer {
    *
    * @return a List of IntArray's.
    */
+  
+  boolean doParallel = false;
+  
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                                      final Map<IntArray,Term> termMap) {
+    if (doParallel) {
+      System.out.println("got to parallel");
+      ConcurrentMap<IntArray,Term> concurrentTermMap = new ConcurrentHashMap<>(termMap.size());
+      concurrentTermMap.putAll(termMap);
+      return sgCloseParallel(elems, closedMark, concurrentTermMap);
+    }
     if (algebra.isPower()) {
       SmallAlgebra alg = algebra.rootFactors().get(0);
       alg.makeOperationTables();
@@ -531,11 +541,82 @@ if (false) {
   }
   
   public List<IntArray> sgCloseParallel(List<IntArray> elems, int closedMark, 
-      Map<IntArray,Term> termMap) {
-    //here;
+      ConcurrentMap<IntArray,Term> termMap) {
     
-    return null;
+    if (report != null) report.addStartLine("subpower closing ...");
+
+    final int numOfOps = algebra.operations().size();  
+    List<Operation> imgOps = null;
+    if (homomorphism != null) {
+      imgOps = new ArrayList<Operation>(numOfOps);
+      for (Operation op : algebra.operations()) {
+        imgOps.add(imageAlgebra.getOperation(op.symbol()));
+      }
+    }
+    
+    // these final boolean are meant to help the jit compiler.
+    final boolean reportNotNull = report == null ? false : true;
+    final boolean imgAlgNull = imgOps == null ? true : false;
+    final boolean eltToFindNotNull = eltToFind == null ? false : true;
+    final boolean eltsToFindNotNull = eltsToFind == null ? false : true;
+    final boolean operationsNotNull = operations == null ? false : true;
+    
+    if (operationsNotNull) termMapForOperations = new HashMap<Operation,Term>();
+    int operationsFound = 0;
+
+    ans = new ArrayList<IntArray>(elems);// IntArrays
+    final List<IntArray> constants = algebra.getConstants();// add the constants, if any
+    for (IntArray arr : constants) {
+      if (!termMap.containsKey(arr)) {
+        ans.add(arr);
+        if (termMap != null) {
+          termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+        }
+      }
+    }
+
+    int currentMark = ans.size();
+    int pass = 0;
+    CloserTiming timing = null; 
+    if (reportNotNull) timing = new CloserTiming(algebra, report);
+    while (closedMark < currentMark) {
+      if (reportNotNull) timing.updatePass(ans.size());
+      String str = "pass: " + pass + ", size: " + ans.size();
+      if (reportNotNull) {
+        report.setPass(pass);
+        report.setPassSize(ans.size());
+        if (!suppressOutput) report.addLine(str);
+      }
+      else {
+        if (!suppressOutput) System.out.println(str);
+      }
+      pass++;
+      if (Thread.currentThread().isInterrupted()) {
+        if (reportNotNull) report.addEndingLine("cancelled ...");
+        return null;
+      }
+      for (int i = 0; i < numOfOps; i++) {
+        Operation f = algebra.operations().get(i);
+
+        if (Thread.currentThread().isInterrupted()) {
+          if (reportNotNull) {
+            report.addEndingLine("cancelled ...");
+            report.setSize(ans.size());
+          }
+          return null;
+        }
+        SingleClose.doOneStep(ans, termMap, f, closedMark, currentMark - 1);
+      }
+      closedMark = currentMark;
+      currentMark = ans.size();
+      if (imgAlgNull && algebra.cardinality() > 0 && currentMark >= algebra.cardinality()) break;
+    }
+    if (reportNotNull) report.addEndingLine("closing done, size = " + ans.size());
+    completed = true;
+    return ans;
   }
+    
+
   
   /**
    * Closure of <tt>elems</tt> under the operations. (Worry about

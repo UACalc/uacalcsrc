@@ -63,6 +63,7 @@ import org.uacalc.terms.*;
 //                       with 32 threads 23.5 seconds,
 //                       with 64 threads 34.6 seconds,
 
+@SuppressWarnings("serial")
 class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
   
   final ConcurrentMap<IntArray,Term> map;
@@ -130,7 +131,15 @@ class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
  */
 public class SingleClose extends RecursiveTask<List<IntArray>> {
   
+  /**
+   * The computaiton size is the number of application of op times
+   * the length of the vectors (the length of each element of univList).
+   */
+  final static int MIN_COMPUTATION_SIZE = 10; //10000000;
+  int computationSize;
+  boolean tooSmall = false;
   final int increment;  // this is also the number of processes that will be used
+  final int skip;  // will be 1 if tooSmall is true
   // it will also serve as id
   final List<IntArray> univList;
   final ConcurrentMap<IntArray,Term> map;
@@ -155,9 +164,14 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
     this.min = min;
     // this.max = map.size() - 1; // Can't do this since univList may have elements added from other ops.
     this.max = max;
+    this.computationSize = op.arity() * univList.get(0).getArray().length;// TODO: fix this
     this.arrays = new ArrayList<>(increment);
     this.incrementorList = new ArrayList<>(increment);
     this.results = new ArrayList<>(increment);
+    this.tooSmall = computationSize < MIN_COMPUTATION_SIZE ? true : false;
+    this.skip = tooSmall ? 1 : increment;
+    System.out.println("computationSize: " + computationSize);
+    System.out.println("skip: " + skip);
     setArraysAndIncrementors();
   }
   
@@ -170,28 +184,29 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
     int[] a = new int[k];
     a[k-1] = min;
     ArrayIncrementor tmpInc = SequenceGenerator.sequenceIncrementor(a, max, min);
-    for (int i = 0; i < increment; i++) {
+    for (int i = 0; i < skip; i++) {
       final int[] b = Arrays.copyOf(a, a.length);
       arrays.add(b);
-      incrementorList.add(SequenceGenerator.sequenceIncrementor(b, max, min, increment));
+      ArrayIncrementor incrementor = tooSmall ? SequenceGenerator.sequenceIncrementor(b, max, min) 
+                                              : SequenceGenerator.sequenceIncrementor(b, max, min, skip);
+      incrementorList.add(incrementor);
       tmpInc.increment();
     }
   }
   
-  
   @Override
   protected List<IntArray> compute() {
     List<RecursiveTask<List<IntArray>>> forks = new ArrayList<>();
-    for (int i = 0; i < increment - 1; i++) {
+    for (int i = 0; i < skip - 1; i++) {
       SingleCloseSerial task = new SingleCloseSerial(univList, map, op, arrays.get(i), incrementorList.get(i));
       forks.add(task);
       task.fork();
     }
-    final int last = arrays.size(); 
+    final int last = arrays.size() - 1; 
     SingleCloseSerial lastTask = new SingleCloseSerial(univList, map, op, 
                                    arrays.get(last), incrementorList.get(last));
     results.add(lastTask.compute());    
-    for (int i = increment - 2; i >= 0; i--) {
+    for (int i = skip - 2; i >= 0; i--) {
       results.add(forks.get(i).join());
     }
     for (int i = 0; i < results.size(); i++) {
