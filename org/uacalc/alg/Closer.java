@@ -3,6 +3,7 @@ package org.uacalc.alg;
 import java.util.*;
 import java.util.logging.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 import java.math.BigInteger;
 
 import org.uacalc.ui.tm.ProgressReport;
@@ -577,11 +578,14 @@ if (false) {
       }
     }
 
+    ForkJoinPool pool = new ForkJoinPool();
+    AtomicInteger eltsFound = new AtomicInteger(ans.size());
     int currentMark = ans.size();
     int pass = 0;
     CloserTiming timing = null; 
     if (reportNotNull) timing = new CloserTiming(algebra, report);
     while (closedMark < currentMark) {
+      System.out.println("closedMark: " + closedMark + ", currentMark: " + currentMark + ", pass: " + pass);
       if (reportNotNull) timing.updatePass(ans.size());
       String str = "pass: " + pass + ", size: " + ans.size();
       if (reportNotNull) {
@@ -599,15 +603,18 @@ if (false) {
       }
       for (int i = 0; i < numOfOps; i++) {
         Operation f = algebra.operations().get(i);
+        if (f.arity() == 0) continue;
 
         if (Thread.currentThread().isInterrupted()) {
           if (reportNotNull) {
+            //System.out.println("cancelled ... size = " + ans.size());
             report.addEndingLine("cancelled ...");
             report.setSize(ans.size());
           }
           return null;
         }
-        SingleClose.doOneStep(ans, termMap, f, closedMark, currentMark - 1);
+        SingleClose singleClose = new SingleClose(ans, termMap, f, closedMark, currentMark - 1, eltsFound);
+        singleClose.doOneStep(pool, Thread.currentThread(), report, timing);
       }
       closedMark = currentMark;
       currentMark = ans.size();

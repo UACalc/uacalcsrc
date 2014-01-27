@@ -5,9 +5,13 @@ import org.uacalc.alg.op.*;
 import org.uacalc.ui.tm.ProgressReport;
 import java.util.*;
 import java.math.*;
+import java.util.concurrent.atomic.*;
 
 /**
- * A class to hold the data for the timing information in the UI.
+ * A class to hold the data for the timing information in the UI. 
+ * We are using AtomicInteger's and AtomicLong's to help with thread
+ * safety but more work is needed. To get full safety it may be a 
+ * good idea to move this functionality into ProgressReport.
  * 
  * @author ralph
  *
@@ -18,14 +22,14 @@ public class CloserTiming {
   private final long projs;
   
   private int pass = 0;
-  private int nextPassSize = 0;
+  private AtomicInteger nextPassSize = new AtomicInteger();
   private int currPassSize = 0; // for time left
   private int lastPassSize = 0; // for time left
   private final int[] arities;
   
   private long appsNeeded;
   private long appsThisPass = 0;
-  private long localApps = 0;
+  private AtomicLong localApps = new AtomicLong();
   //private long appsSoFar = 0;
    
   private long passStartTime = -1;
@@ -51,7 +55,7 @@ public class CloserTiming {
   }
   
   public void updatePass(int size) {
-    nextPassSize = 0;
+    nextPassSize.set(0);
     appsThisPass = 0;  
     updateTime = true;
     atBeginning = true;
@@ -73,14 +77,15 @@ public class CloserTiming {
   public void incrementApps() {
     //appsSoFar = appsSoFar + projs;
     appsThisPass = appsThisPass + projs;
-    localApps = localApps + projs;
+    localApps.addAndGet(projs);
+    //localApps = localApps + projs;
     if (atBeginning  && appsThisPass > initCount) {
       atBeginning = false;
       realInitCount = appsThisPass;
       startNanoTime = System.nanoTime();
     }
     else if (updateTime  && appsThisPass > secondCount) {
-      localApps = 0;
+      localApps.set(0);
       updateTime = false;
       double del = (double)(System.nanoTime() - startNanoTime) / 1000000;
       msPerApp = del / (appsThisPass - realInitCount);
@@ -91,21 +96,21 @@ public class CloserTiming {
       System.out.println("funcAppsNeeded: " + appsNeeded);
       System.out.println("appsSoFar: " + appsThisPass);
     }
-    else if (localApps > thirdCount) {
-      localApps = 0;
+    else if (localApps.get() > thirdCount) {
+      localApps.set(0);
       double del = (double)(System.nanoTime() - startNanoTime) / 1000000;
       msPerApp = del / (appsThisPass - realInitCount);
       long t = (long)((appsNeeded - appsThisPass) * msPerApp);
       report.setTimeLeft(msToString(t));
       //System.out.println("Time Left: " + msToString(t));
-      long nextApps = countFuncApplications(currPassSize, nextPassSize + currPassSize);
+      long nextApps = countFuncApplications(currPassSize, nextPassSize.get() + currPassSize);
       t = (long)(nextApps * msPerApp);
       report.setTimeNext(msToString(t));
     }
   }
   
   public void incrementNextPassSize() {
-    nextPassSize++;
+    nextPassSize.incrementAndGet();
   }
   
   private long countFuncApplications(int size0, int size1) {
