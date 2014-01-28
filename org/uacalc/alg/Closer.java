@@ -586,6 +586,8 @@ if (false) {
     if (reportNotNull) timing = new CloserTiming(algebra, report);
     while (closedMark < currentMark) {
       System.out.println("closedMark: " + closedMark + ", currentMark: " + currentMark + ", pass: " + pass);
+      Collection<IntArray> noDups = new HashSet(ans);
+      System.out.println("ans size: " + ans.size() + ", noDups size: " + noDups.size() + ", pass: " + pass);
       if (reportNotNull) timing.updatePass(ans.size());
       String str = "pass: " + pass + ", size: " + ans.size();
       if (reportNotNull) {
