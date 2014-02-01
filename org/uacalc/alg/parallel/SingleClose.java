@@ -201,13 +201,14 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
   
   public SingleClose(List<IntArray> univList, ConcurrentMap<IntArray,Term> map, Operation op, int min, 
                                     int max, AtomicInteger eltsFound, int inc) {
-    this.increment = inc > 0 ? inc : calculateInc();
+    
     this.univList = univList;
     this.map = map;
     this.op = op;
     this.min = min;
     // this.max = map.size() - 1; // Can't do this since univList may have elements added from other ops.
     this.max = max;
+    this.increment = inc > 0 ? inc : calculateInc();
     this.eltsFound = eltsFound;
     this.computationSize = op.arity() * univList.get(0).getArray().length;// TODO: fix this
     this.arrays = new ArrayList<>(increment);
@@ -221,6 +222,7 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
   }
   
   private int calculateInc() {
+    if (max - min < 6) return 1;
     return 4;
   }
   // fix this; also check if the size is too small.
@@ -298,9 +300,9 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
   /**
    * @param args
    */
-  //public static void main(String[] args) {
-    //SingleClose foo = new SingleClose()
+  public static void main(String[] args) {
     
-  //}
+    
+  }
 
 }

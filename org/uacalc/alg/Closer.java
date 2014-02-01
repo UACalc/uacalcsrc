@@ -293,7 +293,7 @@ public class Closer {
    * @return a List of IntArray's.
    */
   
-  boolean doParallel = true;
+  public static boolean doParallel = true;
   
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                                      final Map<IntArray,Term> termMap) {
@@ -546,6 +546,9 @@ if (false) {
   public List<IntArray> sgCloseParallel(List<IntArray> elems, int closedMark, 
       ConcurrentMap<IntArray,Term> termMap) {
     
+    System.out.println(elems);
+    System.out.println(termMap);
+    
     if (report != null) report.addStartLine("subpower closing ...");
 
     final int numOfOps = algebra.operations().size();  
@@ -577,6 +580,9 @@ if (false) {
         }
       }
     }
+    
+    System.out.println(ans);
+    System.out.println(termMap);
 
     ForkJoinPool pool = new ForkJoinPool();
     AtomicInteger eltsFound = new AtomicInteger(ans.size());
@@ -586,7 +592,7 @@ if (false) {
     if (reportNotNull) timing = new CloserTiming(algebra, report);
     while (closedMark < currentMark) {
       System.out.println("closedMark: " + closedMark + ", currentMark: " + currentMark + ", pass: " + pass);
-      Collection<IntArray> noDups = new HashSet(ans);
+      Collection<IntArray> noDups = new HashSet<>(ans);
       System.out.println("ans size: " + ans.size() + ", noDups size: " + noDups.size() + ", pass: " + pass);
       if (reportNotNull) timing.updatePass(ans.size());
       String str = "pass: " + pass + ", size: " + ans.size();
@@ -604,6 +610,7 @@ if (false) {
         return null;
       }
       for (int i = 0; i < numOfOps; i++) {
+        System.out.println("in loop ans size: " +  ans.size());
         Operation f = algebra.operations().get(i);
         if (f.arity() == 0) continue;
 
@@ -617,6 +624,7 @@ if (false) {
         }
         SingleClose singleClose = new SingleClose(ans, termMap, f, closedMark, currentMark - 1, eltsFound);
         singleClose.doOneStep(pool, Thread.currentThread(), report, timing);
+        System.out.println("in loop ans size: " +  ans.size());
       }
       closedMark = currentMark;
       currentMark = ans.size();
@@ -1198,6 +1206,8 @@ if (false) {
     }
     
   }
+  
+  
   
   
 }
