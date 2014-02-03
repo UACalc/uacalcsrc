@@ -623,8 +623,13 @@ if (false) {
           return null;
         }
         SingleClose singleClose = new SingleClose(ans, termMap, f, closedMark, currentMark - 1, eltsFound);
-        singleClose.doOneStep(pool, Thread.currentThread(), report, timing);
-        System.out.println("in loop ans size: " +  ans.size());
+        List<List<IntArray>> results = singleClose.doOneStep(pool, Thread.currentThread(), report, timing);
+        for (List<IntArray> lst : results) {
+          System.out.println("lst size: " + lst.size());
+          ans.addAll(lst);
+          
+        }
+        System.out.println("in loop ans size: " +  ans.size() + ", term map size: " + termMap.size());
       }
       closedMark = currentMark;
       currentMark = ans.size();

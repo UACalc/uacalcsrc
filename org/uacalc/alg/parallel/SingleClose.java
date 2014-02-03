@@ -3,6 +3,7 @@ package org.uacalc.alg.parallel;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.*;
+import java.math.*;
 
 import org.uacalc.util.*;
 import org.uacalc.alg.op.*;
@@ -129,7 +130,11 @@ class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
       for (int i = 0; i < arity; i++) {
         arg[i] = univList.get(argIndeces[i]).getArray();
       }
-      int[] vRaw = op.valueAt(arg);
+      //int[] vRaw = op.valueAt(arg);
+      int[] vRaw;
+      synchronized (this) {  // TODO need to change this back !!!!! It didn't solve the problem.
+        vRaw = op.valueAt(arg);
+      }
       IntArray v = new IntArray(vRaw);
       if (report != null) timing.incrementApps();  // is the apps count thread safe???????
       // this is subtle: we don't want to build the term
@@ -142,7 +147,11 @@ class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
         for (int j = 0; j < arity; j++) {
           children.add(map.get(univList.get(argIndeces[j])));
         }
-        Term term = map.putIfAbsent(v, new NonVariableTerm(op.symbol(), children));
+        Term term = null;
+        synchronized (this) {  // this synchronized does not seem to help.
+          term = new NonVariableTerm(op.symbol(), children);
+          term = map.putIfAbsent(v, term);
+        }
         if (term == null) {
           newElts.add(v);
           eltsFound.getAndIncrement();
@@ -168,20 +177,20 @@ class SingleCloseSerial extends RecursiveTask<List<IntArray>> {
  * @author ralph
  *
  */
-public class SingleClose extends RecursiveTask<List<IntArray>> {
+public class SingleClose extends RecursiveTask<List<List<IntArray>>> {
   
   /**
    * The computaiton size is the number of application of op times
    * the length of the vectors (the length of each element of univList).
    */
-  final static int MIN_COMPUTATION_SIZE = 10; //10000000;
+  final static long MIN_COMPUTATION_SIZE = 1000000;
   Thread callingThread;  // so we can see if it was cancelled
   ProgressReport report;
   CloserTiming timing;
-  int computationSize;
+  long computationSize;
   boolean tooSmall = false;
   final int increment;  // this is also the number of processes that will be used
-  final int skip;  // will be 1 if tooSmall is true
+  //final int skip;  // will be 1 if tooSmall is true
   // it will also serve as id
   final List<IntArray> univList;
   final ConcurrentMap<IntArray,Term> map;
@@ -208,22 +217,33 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
     this.min = min;
     // this.max = map.size() - 1; // Can't do this since univList may have elements added from other ops.
     this.max = max;
-    this.increment = inc > 0 ? inc : calculateInc();
+    this.computationSize = computationSize();
+    this.increment = calculateInc();  // TODO remove inc from arg list
     this.eltsFound = eltsFound;
-    this.computationSize = op.arity() * univList.get(0).getArray().length;// TODO: fix this
+    
     this.arrays = new ArrayList<>(increment);
     this.incrementorList = new ArrayList<>(increment);
     this.results = new ArrayList<>(increment);
     this.tooSmall = computationSize < MIN_COMPUTATION_SIZE ? true : false;
-    this.skip = tooSmall ? 1 : increment;
+    //this.skip = tooSmall ? 1 : increment;
     //System.out.println("computationSize: " + computationSize);
-    //System.out.println("skip: " + skip);
+    System.out.println("increment: " + increment);
     setArraysAndIncrementors();
   }
   
+  private long computationSize() {
+    BigInteger sizeBI = BigInteger.valueOf(max + 1);
+    BigInteger markBI = BigInteger.valueOf(min);
+    final int r = op.arity();
+    BigInteger ans = sizeBI.pow(r).subtract(markBI.pow(r));
+    if (ans.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) return -1;
+    return ans.longValue() * univList.get(0).getArray().length;
+  }
+  
   private int calculateInc() {
+    if (computationSize < MIN_COMPUTATION_SIZE) return 1;
     if (max - min < 6) return 1;
-    return 4;
+    return 2;  // 4   !!!!!!!!!!!!
   }
   // fix this; also check if the size is too small.
   private void setArraysAndIncrementors() {
@@ -231,26 +251,26 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
     int[] a = new int[k];
     a[k-1] = min;
     ArrayIncrementor tmpInc = SequenceGenerator.sequenceIncrementor(a, max, min);
-    for (int i = 0; i < skip; i++) {
+    for (int i = 0; i < increment; i++) {
       final int[] b = Arrays.copyOf(a, a.length);
       arrays.add(b);
       ArrayIncrementor incrementor = tooSmall ? SequenceGenerator.sequenceIncrementor(b, max, min) 
-                                              : SequenceGenerator.sequenceIncrementor(b, max, min, skip);
+                                              : SequenceGenerator.sequenceIncrementor(b, max, min, increment);
       incrementorList.add(incrementor);
       tmpInc.increment();
     }
   }
   
   @Override
-  protected List<IntArray> compute() {
+  protected List<List<IntArray>> compute() {
     List<RecursiveTask<List<IntArray>>> forks = new ArrayList<>();
-    for (int i = 0; i < skip - 1; i++) {
+    for (int i = 0; i < increment - 1; i++) {
       SingleCloseSerial task = new SingleCloseSerial(univList, map, op, 
           arrays.get(i), incrementorList.get(i), report, timing, eltsFound, callingThread);
       forks.add(task);
       if (callingThread.isInterrupted()) {
         System.out.println("interrupted a A");
-        return univList;
+        return null;
       }
       task.fork();
     }
@@ -259,22 +279,35 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
                                    arrays.get(last), incrementorList.get(last),
                                    report, timing, eltsFound, callingThread);
     results.add(lastTask.compute());    
-    for (int i = skip - 2; i >= 0; i--) {
+    for (int i = increment - 2; i >= 0; i--) {
       if (callingThread.isInterrupted()) {
         System.out.println("interrupted a B");
-        return univList; // return null ???
+        return null; // return null ???
       }
       results.add(forks.get(i).join());
     }
+    
+    if (results.size() > 1) {
+      List<IntArray> results0 = results.get(0);
+      List<IntArray> results1 = results.get(1);
+      for (int i = 0; i < results0.size(); i++) {
+        IntArray ia = results0.get(i);
+        int index = results1.indexOf(ia);
+        if (index >= 0) {
+          System.out.println(ia + " at " + i + " = element in second at " + index );
+        }
+      }
+    }
+    
     for (int i = 0; i < results.size(); i++) {
       if (callingThread.isInterrupted()) {
         System.out.println("interrupted a C");
-        return univList; // return null ???
+        return null; // return null ???
       }
-      univList.addAll(results.get(i));
+      //univList.addAll(results.get(i));
     }
     if (report != null) report.setSize(univList.size());
-    return univList;
+    return results;
   }
   
   //public static List<IntArray> doOneStep(List<IntArray> univList, 
@@ -286,7 +319,7 @@ public class SingleClose extends RecursiveTask<List<IntArray>> {
    * 
    * @return
    */
-  public List<IntArray> doOneStep(ForkJoinPool pool, Thread callingThread, 
+  public List<List<IntArray>> doOneStep(ForkJoinPool pool, Thread callingThread, 
                                   ProgressReport report, CloserTiming timing) {
     this.report = report;
     this.timing = timing;
