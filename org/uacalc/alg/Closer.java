@@ -293,7 +293,7 @@ public class Closer {
    * @return a List of IntArray's.
    */
   
-  public static boolean doParallel = true;
+  public static boolean doParallel = false;
   
   public List<IntArray> sgClose(List<IntArray> elems, int closedMark, 
                                      final Map<IntArray,Term> termMap) {
