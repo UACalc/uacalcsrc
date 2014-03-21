@@ -1700,7 +1700,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
 
   /**
-   * Use the polynomial type algorithm from Freese-Valeriote to 
+   * Use the polynomial time algorithm from Freese-Valeriote to 
    * test if <code>alg</code> generates a CM variety. This seaches 
    * for a Day quadruple in the square of <code>alg</code>.
    * 
@@ -1940,7 +1940,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    */
   public static IntArray cpIdempotent(SmallAlgebra alg, ProgressReport report) {
     if (report != null) {
-      report.addStartLine("Using Thm 5.1 of Freese-Valeriote to test if V(A) is SD-meet");
+      report.addStartLine("Using Thm 5.1 of Freese-Valeriote to test if V(A) is Congruence Permutable");
     }
     final int n = alg.cardinality();
     if (n == 1) {
