@@ -114,21 +114,28 @@
     <jar jarfile="${dist.dir}/lib/uacalc.jar" 
          manifest="${manifest.file}"
          basedir="${class.dir}"/>
+<!--
     <signjar jar="${dist.dir}/lib/uacalc.jar"
+             storetype="${signjar.storetype}"
              keystore="${signjar.keystore}" tsaurl="${signjar.tsaurl}"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/LatDraw.jar"
              keystore="${signjar.keystore}" tsaurl="${signjar.tsaurl}"
+             storetype="${signjar.storetype}"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/groovy-all-1.0.jar"
              keystore="${signjar.keystore}" tsaurl="${signjar.tsaurl}"
+             storetype="${signjar.storetype}"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/groovy-engine.jar"
              keystore="${signjar.keystore}" tsaurl="${signjar.tsaurl}"
+             storetype="${signjar.storetype}"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
     <signjar jar="${dist.dir}/lib/miglayout-3.7-swing.jar"
              keystore="${signjar.keystore}" tsaurl="${signjar.tsaurl}"
+             storetype="${signjar.storetype}"
              alias="${signjar.alias}" storepass="${signjar.storepass}" />
+-->
   </target>
 
   <target name="dist-jar" depends="clean,dist-files,compile-dist-src">
