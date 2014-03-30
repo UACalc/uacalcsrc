@@ -784,11 +784,13 @@ public class MainController {
     if ((algName == null) || (algName.length() == 0)) return;
     System.out.println(algName + " choosen");
     //ClassLoader cl = this.getClass().getClassLoader();
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
+    
     String theFileName = "algebras/" + algName + ".ua";
     System.out.println("file: " + theFileName);
-    InputStream is = ClassLoader.getSystemResourceAsStream(theFileName);
-    //InputStream is = cl.getResourceAsStream(theFileName);
+    //InputStream is = ClassLoader.getSystemResourceAsStream(theFileName);
+    InputStream is = cl.getResourceAsStream(theFileName);
     if (is == null) {
       System.out.println("null InputStream");
       return;
