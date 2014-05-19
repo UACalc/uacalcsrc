@@ -2670,9 +2670,11 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     Set upper = new TreeSet<Integer>();
     Set typesFound = new TreeSet<Integer>();
     typesInSofAIdempotent(alg, typesFound, report);
+    System.out.println("xxxxxxxxxxxxxx types found = " + typesFound);
     //Set typesFound = typesInSofASimpleIdempotent(alg, report);
     ans.add(typesFound);// first part of the pair is typesFound 
     Set omittedIdl = omittedIdealIdempotent(alg, typesFound, report);
+    System.out.println("xxxxxxxxxxxxxx omittedIdl = " + omittedIdl);
     Set<Integer> types12 = new TreeSet<Integer>();
     types12.add(1);
     types12.add(2);
@@ -2750,7 +2752,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
         ans.add(5);
         if (!typesFound.contains(4)) {
           ans.add(4);
-          if (!typesFound.contains(3)) ans.add(3);
+          //if (!typesFound.contains(3)) ans.add(3);
         }
       }
     }
