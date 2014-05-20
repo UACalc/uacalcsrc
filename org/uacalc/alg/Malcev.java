@@ -2587,7 +2587,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
 
     
     for (Partition th : decomp) {
-      typesInSofASimpleIdempotent(new QuotientAlgebra(alg, th), typesFound, report);
+      typesInSofAStrictlySimpleIdempotent(new QuotientAlgebra(alg, th), typesFound, report);
     }
     return typesFound;
   }
@@ -2610,7 +2610,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     System.out.println("quot: " + decomp.getQuotientAlgebra());
     System.out.println("blks: " + decomp.getBlockAlgebras());
     
-    typesInSofASimpleIdempotent(decomp.getQuotientAlgebra(), typesFound, report);
+    typesInSofAStrictlySimpleIdempotent(decomp.getQuotientAlgebra(), typesFound, report);
     for (SmallAlgebra blk : decomp.getBlockAlgebras()) {
       System.out.println("***** %%%%%% blk size: " + blk.cardinality());
       if (blk.cardinality() > 1) typesInSofAIdempotent(blk, typesFound, report);
@@ -2620,13 +2620,13 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   
   
   /**
-   * Find all TCT types occurring in subalgebras of <code>alg</code>.
+   * Find all TCT types occurring in strictly simple algebras in HS(<code>alg</code>).
    * 
    * @param alg    Assumed to be idempotent
    * @param report
    * @return
    */
-  public static Set<Integer> typesInSofASimpleIdempotent(SmallAlgebra alg, 
+  public static Set<Integer> typesInSofAStrictlySimpleIdempotent(SmallAlgebra alg, 
                                 Set typesFound,
                                 ProgressReport report) {
     //Set typesFound = new TreeSet<Integer>();
@@ -2652,9 +2652,11 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
   
   /**
-   * This finds two subsets of the set of types; the first is 
-   * the types found in S(A) (so the types must contain this)
-   * and a set of types such that the type set is contained in it.
+   * This finds two subsets of the set of types, lower and upper; lower is 
+   * the types found in strictly simple algebras in  HS(A) union the type set
+   * of A (so the types must contain this). Upper is a set of types containing
+   * typ(V(A)).
+   * 
    * 
    */
   public static List<Set<Integer>> typeSetIdempotent(SmallAlgebra alg, ProgressReport report){
@@ -2664,12 +2666,17 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
           + "\"A subalgebra intersection property for congruence distributive varieties,\" "
           + "AU 61, (2009), 451-464.");
     }
+    // do solvable first
+    
+    
     final Set<Integer> posibleTypes = new TreeSet<Integer>();
     for (int i = 1; i <= 5; i++) posibleTypes.add(i);
     List<Set<Integer>> ans = new ArrayList<Set<Integer>>(2);
     Set upper = new TreeSet<Integer>();
     Set typesFound = new TreeSet<Integer>();
     typesInSofAIdempotent(alg, typesFound, report);
+    Set typesOfA = alg.con().typeSet();
+    typesFound.addAll(typesOfA);
     System.out.println("xxxxxxxxxxxxxx types found = " + typesFound);
     //Set typesFound = typesInSofASimpleIdempotent(alg, report);
     ans.add(typesFound);// first part of the pair is typesFound 
@@ -2678,6 +2685,19 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     Set<Integer> types12 = new TreeSet<Integer>();
     types12.add(1);
     types12.add(2);
+    if (types12.containsAll(typesOfA)) { // A is solvable
+      if (typesOfA.contains(1)) {
+        if (typesOfA.contains(2)) {
+          ans.add(types12);
+          return ans;
+        }
+        ans.add(typesOfA);
+        return ans;
+      }
+      
+    }
+    
+    
     if (typesFound.contains(1)) {
       if (typesFound.size() == 1) {
         ans.add(typesFound);
@@ -2750,10 +2770,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       if (!typesFound.contains(2)) ans.add(2);
       if (!typesFound.contains(5)) {
         ans.add(5);
-        if (!typesFound.contains(4)) {
-          ans.add(4);
-          //if (!typesFound.contains(3)) ans.add(3);
-        }
+        if (!typesFound.contains(4)) ans.add(4);
       }
     }
     return ans;
@@ -2769,7 +2786,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       report.addStartLine("Finding the largest order ideal of omitted types in V(A).");
     }
     Set typesFound = new TreeSet<Integer>();
-    typesFound = typesInSofASimpleIdempotent(alg, typesFound, report);
+    typesFound = typesInSofAStrictlySimpleIdempotent(alg, typesFound, report);
     Set omittedIdeal = omittedIdealIdempotent(alg, typesFound, report);
     if (report != null) {
       report.addLine("The types found in subalgebras of A are " + typesFound + ".");
