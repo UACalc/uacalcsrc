@@ -2238,7 +2238,7 @@ public class ComputationsController {
         report.addStartLine(desc);
         report.setDescription(desc);
         Set<Integer> typesFound = new TreeSet<Integer>();
-        typesFound = Malcev.typesInSofASimpleIdempotent(alg, typesFound, null);// suppress report's output
+        typesFound = Malcev.typesInSofAStrictlySimpleIdempotent(alg, typesFound, null);// suppress report's output
         //List<Set<Integer>> bounds = Malcev.typeSetIdempotent(alg, report);
         //Set<Integer> omittedTypes = Malcev.omittedIdealIdempotent(alg, report);
         boolean isKPerm = true;

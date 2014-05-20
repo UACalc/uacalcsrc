@@ -2666,51 +2666,53 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
           + "\"A subalgebra intersection property for congruence distributive varieties,\" "
           + "AU 61, (2009), 451-464.");
     }
-    // do solvable first
-    
-    
-    final Set<Integer> posibleTypes = new TreeSet<Integer>();
-    for (int i = 1; i <= 5; i++) posibleTypes.add(i);
     List<Set<Integer>> ans = new ArrayList<Set<Integer>>(2);
-    Set upper = new TreeSet<Integer>();
+    // do solvable first
+    final Set<Integer> types12 = new TreeSet<Integer>();
+    types12.add(1);
+    types12.add(2);
+    final Set<Integer> types1 = new TreeSet<Integer>();
+    types1.add(1);
+    final Set<Integer> types2 = new TreeSet<Integer>();
+    types1.add(2);
+    final Set typesOfA = alg.con().typeSet();
+    if (typesOfA.equals(types1)) {
+      ans.add(types1);
+      ans.add(types1);
+      return ans;
+    }
+    if (typesOfA.equals(types12)) {
+      ans.add(types12);
+      ans.add(types12);
+      return ans;
+    }
     Set typesFound = new TreeSet<Integer>();
     typesInSofAIdempotent(alg, typesFound, report);
-    Set typesOfA = alg.con().typeSet();
+    if (typesOfA.equals(types2)) {
+      if (typesFound.contains(1)) {
+        ans.add(types12);
+        ans.add(types12);
+        return ans;
+      }
+      ans.add(types2);
+      ans.add(types2);
+      return ans;
+    }
+    final Set<Integer> posibleTypes = new TreeSet<Integer>();
+    for (int i = 1; i <= 5; i++) posibleTypes.add(i);
+    Set upper = new TreeSet<Integer>();
+    // add typesOfA to typesFound
     typesFound.addAll(typesOfA);
     System.out.println("xxxxxxxxxxxxxx types found = " + typesFound);
-    //Set typesFound = typesInSofASimpleIdempotent(alg, report);
     ans.add(typesFound);// first part of the pair is typesFound 
     Set omittedIdl = omittedIdealIdempotent(alg, typesFound, report);
     System.out.println("xxxxxxxxxxxxxx omittedIdl = " + omittedIdl);
-    Set<Integer> types12 = new TreeSet<Integer>();
-    types12.add(1);
-    types12.add(2);
-    if (types12.containsAll(typesOfA)) { // A is solvable
-      if (typesOfA.contains(1)) {
-        if (typesOfA.contains(2)) {
-          ans.add(types12);
-          return ans;
-        }
-        ans.add(typesOfA);
-        return ans;
-      }
-      
-    }
-    
-    
     if (typesFound.contains(1)) {
-      if (typesFound.size() == 1) {
-        ans.add(typesFound);
-      }
-      else {
-        if (typesFound.contains(2) && typesFound.size() == 2) {  // found 1 and 2 only
-          ans.add(types12);
-        }
-        else {
-        ans.add(posibleTypes);
-        }
-      }
+      ans.add(posibleTypes);
+      return ans;
     }
+    
+    // here
     else {
       if (typesFound.contains(2) && typesFound.size() == 1) { // only 2 found so type set is at most 1,2
         ans.add(types12);
