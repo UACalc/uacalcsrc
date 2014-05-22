@@ -2572,7 +2572,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
   
   /**
-   * Find all TCT types occurring in subalgebras of <code>alg</code>.
+   * Find all TCT types occurring in strictly simple algebras in HS(alg).
    * 
    * @param alg    Assumed to be idempotent and nontrivial
    * @param report
@@ -2679,11 +2679,13 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     if (typesOfA.equals(types1)) {
       ans.add(types1);
       ans.add(types1);
+      reportTypeBounds(ans, report);
       return ans;
     }
     if (typesOfA.equals(types12)) {
       ans.add(types12);
       ans.add(types12);
+      reportTypeBounds(ans, report);
       return ans;
     }
     Set typesFound = new TreeSet<Integer>();
@@ -2692,67 +2694,82 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
       if (typesFound.contains(1)) {
         ans.add(types12);
         ans.add(types12);
+        reportTypeBounds(ans, report);
         return ans;
       }
       ans.add(types2);
       ans.add(types2);
+      reportTypeBounds(ans, report);
       return ans;
     }
-    final Set<Integer> posibleTypes = new TreeSet<Integer>();
-    for (int i = 1; i <= 5; i++) posibleTypes.add(i);
+    final Set<Integer> possibleTypes = new TreeSet<Integer>();
+    for (int i = 1; i <= 5; i++) possibleTypes.add(i);
     Set upper = new TreeSet<Integer>();
     // add typesOfA to typesFound
     typesFound.addAll(typesOfA);
-    System.out.println("xxxxxxxxxxxxxx types found = " + typesFound);
+    //System.out.println("xxxxxxxxxxxxxx types found = " + typesFound);
     ans.add(typesFound);// first part of the pair is typesFound 
-    Set omittedIdl = omittedIdealIdempotent(alg, typesFound, report);
-    System.out.println("xxxxxxxxxxxxxx omittedIdl = " + omittedIdl);
+    //Set omittedIdl = omittedIdealIdempotent(alg, typesFound, report);
+    //System.out.println("xxxxxxxxxxxxxx omittedIdl = " + omittedIdl);
     if (typesFound.contains(1)) {
-      ans.add(posibleTypes);
+      ans.add(possibleTypes);
+      reportTypeBounds(ans, report);
       return ans;
     }
-    
-    // here
-    else {
-      if (typesFound.contains(2) && typesFound.size() == 1) { // only 2 found so type set is at most 1,2
-        ans.add(types12);
+    possibleTypes.remove(1);
+    if (typesFound.contains(5)) {
+      if (typesFound.contains(2)) {
+        ans.add(possibleTypes);
+        reportTypeBounds(ans, report);
+        return ans;
       }
       else {
-        if (omittedIdl.contains(5)) { // since it is an ideal and has 5, it has 1
-          // Note that since 1 and 5 are omitted, if 3 is in typesFound then 
-          // typesFound *is* the type set of V(A). Putting this test here
-          // allows us to avoid the test for CM. 
-          if (typesFound.contains(3)) {
-            ans.add(typesFound);
-          }
-          else {
-            if (congruenceModularForIdempotent(alg, report)) {
-              if (report != null) {
-                report.addLine("This algebra lies in a CM variety. By ");
-                report.addLine("R. Freese, \"Subdirectly irreducible algebras in modular varieties,\" "
-                    + "Springer Lecture notes in Mathematics, 1004, 142-152,");
-                report.addLine("the type set of V(A) equals that of S(A) in a CM variety.");
-              }
-              ans.add(typesFound);
-            } 
-            else {
-              if (report != null) report.addLine("This algebra does not lie in a CM variety.");  
-              posibleTypes.removeAll(omittedIdl);
-              ans.add(posibleTypes);
-            }
-          }
-        }
-        else {
-          posibleTypes.removeAll(omittedIdl);
-          ans.add(posibleTypes);
-        }
+        possibleTypes.remove(2);
+        ans.add(possibleTypes);
+        reportTypeBounds(ans, report);
+        return ans;
       }
     }
-    if (report != null) report.addEndingLine("type set includes " + ans.get(0) 
-        + " is contained in " + ans.get(1) + ".");
+    possibleTypes.remove(5);
+    if (typesFound.contains(3)) {
+      if (typesFound.contains(2) && typesFound.contains(4)) {
+        ans.add(possibleTypes);
+        reportTypeBounds(ans, report);
+        return ans;
+      }
+      if (typesFound.contains(2)) {
+        possibleTypes.remove(4);
+        ans.add(possibleTypes);
+        reportTypeBounds(ans, report);
+        return ans;
+      }
+      if (typesFound.contains(4)) {
+        possibleTypes.remove(2);
+        ans.add(possibleTypes);
+        reportTypeBounds(ans, report);
+        return ans;
+      }
+      possibleTypes.remove(2);
+      possibleTypes.remove(4);
+      ans.add(possibleTypes);
+      reportTypeBounds(ans, report);
+      return ans;             // just type 3
+    }
+    // skipping the test for CM and finding
+    // typ(S(A)) if it is for now.
+    upper.add(3);
+    ans.add(upper);
+    reportTypeBounds(ans, report);
     return ans;
   }
-  
+
+  private static void reportTypeBounds(List<Set<Integer>> ans, ProgressReport report) {
+    if (report != null) {
+      if (ans.get(0).equals(ans.get(1))) report.addEndingLine("type set is " + ans.get(0));
+      else report.addEndingLine("type set includes " + ans.get(0)
+          + " is contained in " + ans.get(1) + ".");
+    }
+  }
   
   /**
    * The largest order ideal of the poset of TCT types omitted by the 
