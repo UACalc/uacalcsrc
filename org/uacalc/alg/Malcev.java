@@ -2655,7 +2655,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
    * This finds two subsets of the set of types, lower and upper; lower is 
    * the types found in strictly simple algebras in  HS(A) union the type set
    * of A (so the types must contain this). Upper is a set of types containing
-   * typ(V(A)).
+   * typ(V(A)). This is explained in the white paper "Bounds on the TCT type set."
    * 
    * 
    */
@@ -2732,31 +2732,13 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     }
     possibleTypes.remove(5);
     if (typesFound.contains(3)) {
-      if (typesFound.contains(2) && typesFound.contains(4)) {
-        ans.add(possibleTypes);
-        reportTypeBounds(ans, report);
-        return ans;
-      }
-      if (typesFound.contains(2)) {
-        possibleTypes.remove(4);
-        ans.add(possibleTypes);
-        reportTypeBounds(ans, report);
-        return ans;
-      }
-      if (typesFound.contains(4)) {
-        possibleTypes.remove(2);
-        ans.add(possibleTypes);
-        reportTypeBounds(ans, report);
-        return ans;
-      }
-      possibleTypes.remove(2);
-      possibleTypes.remove(4);
-      ans.add(possibleTypes);
+      ans.add(typesFound);
       reportTypeBounds(ans, report);
-      return ans;             // just type 3
+      return ans;
     }
     // skipping the test for CM and finding
     // typ(S(A)) if it is for now.
+    upper.addAll(typesFound);
     upper.add(3);
     ans.add(upper);
     reportTypeBounds(ans, report);
