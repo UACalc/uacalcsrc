@@ -2754,6 +2754,11 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupEquationCheckTask() {
+    
+  }
+  
+  
   public void formPowerAlgebra() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

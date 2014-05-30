@@ -140,6 +140,8 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem sdIdempotentMI;
   private javax.swing.JMenuItem sdMeetIdempotentMI;
   private javax.swing.JMenuItem permIdempotentMI;
+  private javax.swing.JMenu equationsMenu;
+  private javax.swing.JMenuItem equationCheckerMI;
 
 
 
@@ -376,6 +378,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     sdIdempotentMI = new javax.swing.JMenuItem();
     sdMeetIdempotentMI = new javax.swing.JMenuItem();
     permIdempotentMI = new javax.swing.JMenuItem();
+    equationsMenu = new javax.swing.JMenu();
+    equationCheckerMI = new javax.swing.JMenuItem();
     
     
     
@@ -948,6 +952,19 @@ xxx;
     
     jMenuBar1.add(varPropIdemMenu);
     
+    equationsMenu.setText("Equations");
+    equationsMenu.setToolTipText("Check equations in A");
+
+    equationCheckerMI.setText("check equation");
+    equationCheckerMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          equationCheckerMIActionPerformed(evt);
+        }
+    });
+    equationsMenu.add(equationCheckerMI);
+ 
+    jMenuBar1.add(equationsMenu);
+ 
     
     drawingMenu.setText("Drawing");
 
@@ -1578,6 +1595,11 @@ xxx;
   
   private void permIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupPermIdempotentTask();
+  }
+  
+  private void equationCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {
+    //System.out.println("eq check");
+    getComputationsController().setupEquationCheckTask();
   }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
