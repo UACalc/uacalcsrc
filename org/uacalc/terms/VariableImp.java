@@ -50,6 +50,10 @@ public class VariableImp implements Variable {
   public List<Term> getChildren() { return null; }
 
   public OperationSymbol leadingOperationSymbol() { return null; }
+  
+  public Set<OperationSymbol> getOperationSymbols() { 
+    return new HashSet<OperationSymbol>();
+  }
 
   public Object eval(Algebra alg, Map map) {
     return map.get(this);

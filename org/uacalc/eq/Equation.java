@@ -42,6 +42,14 @@ public class Equation {
     }
   }
   
+  public Set<OperationSymbol> getOperationSymbols() {
+    Set<OperationSymbol> set = leftSide().getOperationSymbols();
+    for (OperationSymbol sym : rightSide().getOperationSymbols()) {
+      set.add(sym);
+    }
+    return set;
+  }
+  
   /**
    * Check if this equation holds in <code>alg</code>, 
    * returning a place where it fails

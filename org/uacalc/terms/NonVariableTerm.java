@@ -167,7 +167,20 @@ public class NonVariableTerm implements Term {
       }
     }
   }
-
+  public Set<OperationSymbol> getOperationSymbols() {
+    Set<OperationSymbol> set = new HashSet<>();
+    fillOpSymSet(this, set);
+    return set;
+  }
+  
+  private static final void fillOpSymSet(Term term, Set<OperationSymbol> set) {
+    if (term.isaVariable()) return;
+    for (Term subterm : term.getChildren()) {
+      fillOpSymSet(subterm, set);
+    }
+    set.add(term.leadingOperationSymbol());
+  }
+  
 
 
   public int length() {

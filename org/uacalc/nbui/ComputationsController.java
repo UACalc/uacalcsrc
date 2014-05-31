@@ -2210,6 +2210,7 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(CMTask);
   }
   
+  
   public void setupkPermIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
@@ -2754,13 +2755,19 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  private Equation lastEquation = null;
+  private boolean warned = false;
+  
   public void setupEquationCheckTask() {
-    int ok = JOptionPane.showConfirmDialog(uacalcUI.getFrame(), 
-        "<html>This is experimental and may crash the program.<br>" 
-          + "Choose cancel if you need to save your work before trying this.</html>", 
-        "Beta Version", 
-        JOptionPane.OK_CANCEL_OPTION);
-    if (ok == JOptionPane.CANCEL_OPTION) return;
+    if (!warned) {
+      warned = true;
+      int ok = JOptionPane.showConfirmDialog(uacalcUI.getFrame(), 
+          "<html>This is experimental and may crash the program.<br>" 
+              + "Choose cancel if you need to save your work before trying this.</html>", 
+              "Beta Version", 
+              JOptionPane.OK_CANCEL_OPTION);
+      if (ok == JOptionPane.CANCEL_OPTION) return;
+    }
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
@@ -2785,7 +2792,7 @@ public class ComputationsController {
         JOptionPane.PLAIN_MESSAGE,
         null,//icon
         null,
-        null);
+        lastEquation == null ? null : lastEquation.leftSide().toString());
     if (s == null) return; // the user cancelled
     Term left = Terms.stringToTerm(s);
     String r = (String)JOptionPane.showInputDialog(
@@ -2801,10 +2808,22 @@ public class ComputationsController {
         JOptionPane.PLAIN_MESSAGE,
         null,//icon
         null,
-        null);
+        lastEquation == null ? null : lastEquation.rightSide().toString());
     if (r == null) return; // the user cancelled
     Term right = Terms.stringToTerm(r);
     final Equation eq = new Equation(left, right);
+    lastEquation = eq;
+    Set<OperationSymbol> eqOpSyms = eq.getOperationSymbols();
+    for (OperationSymbol opSym : eqOpSyms) {
+      if (!opList.contains(opSym)) {
+        JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+            "<html>The symbol <font color=\"red\">" + 
+              opSym + "</font> is not in the similarity type of A.<br>Try again.</html>",
+            "Invalid Operation Symbol",
+            JOptionPane.WARNING_MESSAGE);
+        return;
+      }
+    }
     
     
     

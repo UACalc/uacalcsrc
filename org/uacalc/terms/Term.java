@@ -28,6 +28,13 @@ public interface Term {
    * The leading operation symbol or null if this term is a variable.
    */
   public OperationSymbol leadingOperationSymbol();
+  
+  /**
+   * The set of operation symbols or null for a variable.
+   * 
+   * @return set of operation symbols
+   */
+  public Set<OperationSymbol> getOperationSymbols();
 
   /**
    * A list of terms which are the immediate children.
