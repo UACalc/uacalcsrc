@@ -2755,8 +2755,125 @@ public class ComputationsController {
   }
   
   public void setupEquationCheckTask() {
+    int ok = JOptionPane.showConfirmDialog(uacalcUI.getFrame(), 
+        "<html>This is experimental and may crash the program.<br>" 
+          + "Choose cancel if you need to save your work before trying this.</html>", 
+        "Beta Version", 
+        JOptionPane.OK_CANCEL_OPTION);
+    if (ok == JOptionPane.CANCEL_OPTION) return;
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    List<OperationSymbol> opList = alg.similarityType().getSortedOperationSymbols();
+    if (opList == null || opList.size() == 0) return;  // give a warning !!!
+    StringBuffer buf = new StringBuffer();
+    final String sep = ", ";
+    for (int i = 0; i < opList.size() - 1; i++) {
+      buf.append(opList.get(i).toString(true));
+      buf.append(sep);
+    }
+    buf.append(opList.get(opList.size() - 1).toString(true));
+    String s = (String)JOptionPane.showInputDialog(
+        uacalcUI.getFrame(),
+        "<html>Enter term in symbols (arities in parentheses):<br>"
+            + buf.toString() + "<br>"
+            + "Use parentheses for constants like <font color=\"red\">c()</font>" 
+            + "</html>",
+        //"Complete the sentence:\n"
+        //+ "\"Green eggs and...\"",
+        "Enter the Left Side",
+        JOptionPane.PLAIN_MESSAGE,
+        null,//icon
+        null,
+        null);
+    if (s == null) return; // the user cancelled
+    Term left = Terms.stringToTerm(s);
+    String r = (String)JOptionPane.showInputDialog(
+        uacalcUI.getFrame(),
+        "<html>Left: " + left + "<br>"
+            + "Enter a term in symbols (arities in parentheses):<br>"
+            + buf.toString() + "<br>"
+            + "Use parentheses for constants like <font color=\"red\">c()</font>" 
+            + "</html>",
+        //"Complete the sentence:\n"
+        //+ "\"Green eggs and...\"",
+        "Enter the Right Side",
+        JOptionPane.PLAIN_MESSAGE,
+        null,//icon
+        null,
+        null);
+    if (r == null) return; // the user cancelled
+    Term right = Terms.stringToTerm(r);
+    final Equation eq = new Equation(left, right);
     
+    
+    
+    System.out.println("s: " + s);
+    System.out.println("left: " + left);
+    System.out.println("right: " + right);
+    //System.out.println("map: " + map);
+    
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+ 
+    final String desc = "Test if " + " " + left + " = " + right + " in " +gAlg.toString();
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Map<Variable,Integer>>  eqCheckTask = new BackgroundTask<Map<Variable,Integer>>(report) {
+      public Map<Variable,Integer> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Map<Variable,Integer> map = eq.findFailureMap(alg);
+        return map;
+      }
+      public void onCompletion(Map<Variable,Integer> map, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          java.util.List<Term> terms = new ArrayList<Term>(2);
+          terms.add(eq.leftSide());
+          terms.add(eq.rightSide());
+          ttm.setTerms(terms);
+          if (map == null) {
+            report.addEndingLine(eq + " holds in " + gAlg.toString());
+            ttm.setDescription(desc + ": it does!");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(eq + " fails in " + gAlg.toString() + " under " + map);
+            ttm.setDescription(desc + ": it fails under " + map);
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(eqCheckTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(eqCheckTask);
   }
+  
   
   
   public void formPowerAlgebra() {

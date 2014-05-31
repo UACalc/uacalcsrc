@@ -39,7 +39,12 @@ public class OperationSymbol implements Comparable<OperationSymbol> {
 
   public String name() { return name; }
 
-  public String toString() { return name; }
+  public String toString() { return toString(false); }
+  
+  public String toString(boolean showArity) {
+    if (showArity) return name + "(" + arity + ")";
+    return name; 
+  }
 
   /**
    * Get an OperationSymbol in a uniform manner so that algebras that
