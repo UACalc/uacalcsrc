@@ -546,7 +546,8 @@ xxx;
     
     jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Algebras"));
     
-    msgTextField.setText("Welcome to the Universal Algebra Calculator!");
+    msgTextField.setText("Welcome to the Universal Algebra Calculator! " 
+        + "For instructions use Help -> Instructions.");
     
     delAlg.setText("Delete");
     delAlg.addActionListener(new java.awt.event.ActionListener() {
