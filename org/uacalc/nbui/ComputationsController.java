@@ -2755,6 +2755,7 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  
   private Equation lastEquation = null;
   private boolean warned = false;
   
