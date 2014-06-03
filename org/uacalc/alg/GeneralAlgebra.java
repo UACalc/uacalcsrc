@@ -8,7 +8,6 @@ import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.op.OperationSymbol;
 import org.uacalc.alg.op.Operations;
-import org.uacalc.alg.op.OperationWithDefaultValue;
 import org.uacalc.alg.op.SimilarityType;
 import org.uacalc.alg.sublat.*;
 import org.uacalc.ui.tm.ProgressReport;
@@ -108,8 +107,7 @@ public class GeneralAlgebra implements Algebra {
   }
 
   public boolean isUnary() {
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      final Operation op = (Operation)it.next();
+    for (Operation op : operations()) {
       if (op.arity() > 1) return false;
     }
     return true;
@@ -129,9 +127,9 @@ public class GeneralAlgebra implements Algebra {
 
   public SimilarityType similarityType() {
     if (similarityType == null) {
-      List lst = new ArrayList(operations.size());
-      for (Iterator it = operations().iterator(); it.hasNext(); ) {
-        lst.add(((Operation)it.next()).symbol());
+      List<OperationSymbol> lst = new ArrayList<>(operations.size());
+      for (Operation op : operations()) {
+        lst.add(op.symbol());
       }
       similarityType = new SimilarityType(lst);
     }
@@ -202,9 +200,8 @@ public class GeneralAlgebra implements Algebra {
   }
 
   public boolean isIdempotent() {
-    for (Iterator it = operations().iterator(); it.hasNext(); ) {
-      final Operation op = (Operation)it.next();
-      if (!(op.isIdempotent())) return false; 
+    for (Operation op : operations()) {
+      if (!(op.isIdempotent())) return false;
     }
     return true;
   } 
