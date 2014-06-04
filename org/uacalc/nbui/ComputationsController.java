@@ -2795,7 +2795,19 @@ public class ComputationsController {
         null,
         lastEquation == null ? null : lastEquation.leftSide().toString());
     if (s == null) return; // the user cancelled
-    Term left = Terms.stringToTerm(s);
+    Term left = null;
+    try{
+      left = Terms.stringToTerm(s);
+    }
+    catch(IllegalArgumentException ex) {
+      System.out.println(ex.getMessage());
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          ex.getMessage() + " Aborting.",
+          "Illegal Argument Exception",
+          JOptionPane.WARNING_MESSAGE);
+      return;
+    }
+    
     String r = (String)JOptionPane.showInputDialog(
         uacalcUI.getFrame(),
         "<html>Left: " + left + "<br>"
@@ -2811,7 +2823,18 @@ public class ComputationsController {
         null,
         lastEquation == null ? null : lastEquation.rightSide().toString());
     if (r == null) return; // the user cancelled
-    Term right = Terms.stringToTerm(r);
+    Term right = null;
+    try {
+      right = Terms.stringToTerm(r);
+    }
+    catch(IllegalArgumentException ex) {
+      System.out.println(ex.getMessage());
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          ex.getMessage() + " Aborting.",
+          "Illegal Argument Exception",
+          JOptionPane.WARNING_MESSAGE);
+      return;
+    }
     final Equation eq = new Equation(left, right);
     lastEquation = eq;
     Set<OperationSymbol> eqOpSyms = eq.getOperationSymbols();
@@ -2825,13 +2848,6 @@ public class ComputationsController {
         return;
       }
     }
-    
-    
-    
-    System.out.println("s: " + s);
-    System.out.println("left: " + left);
-    System.out.println("right: " + right);
-    //System.out.println("map: " + map);
     
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
