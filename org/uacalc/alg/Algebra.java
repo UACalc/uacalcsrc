@@ -110,6 +110,11 @@ public interface Algebra {
   public void setDescription(String desc);
 
   public SimilarityType similarityType();
+  
+  /**
+   * Use the operations list to update the SimilarityType.
+   */
+  public void updateSimilarityType();
 
   public boolean isSimilarTo(Algebra alg);
 

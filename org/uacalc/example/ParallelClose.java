@@ -141,7 +141,7 @@ class ParallelClose extends RecursiveTask<Map<Integer,Integer>> {
     try {
       inc = Integer.parseInt(args[0]);
     } catch (Exception ex) {}
-    if (inc == -1) inc = 8;
+    if (inc == -1) inc = 4;
     
     long t0 = System.currentTimeMillis();
     fixMap(new Function(), map, inc);

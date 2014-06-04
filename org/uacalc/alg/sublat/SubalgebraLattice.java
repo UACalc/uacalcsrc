@@ -181,6 +181,11 @@ public class SubalgebraLattice implements Lattice {
   public SimilarityType similarityType() {
     return SimilarityType.LATTICE_SIMILARITY_TYPE;
   }
+  
+  /**
+   * Not allowed.
+   */
+  public void updateSimilarityType() { }
 
   public Iterator<BasicSet> iterator() { return universe().iterator(); }
 

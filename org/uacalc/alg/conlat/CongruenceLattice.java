@@ -276,6 +276,11 @@ public class CongruenceLattice implements Lattice {
   public SimilarityType similarityType() {
     return SimilarityType.LATTICE_SIMILARITY_TYPE;
   }
+  
+  /**
+   * Not allowed, of course.
+   */
+  public void updateSimilarityType() { }
 
   public Iterator<Partition> iterator() { return universe().iterator(); }
 

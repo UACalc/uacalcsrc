@@ -277,6 +277,7 @@ public class AlgebraEditorController {
     opMap.put(op.symbol(), op);
     symbolList.add(sym);
     opMap.put(sym, op);
+    getMainController().getCurrentAlgebra().getAlgebra().updateSimilarityType();
     uacalc.getOpsComboBox().addItem(makeOpItem(sym));
     uacalc.getOpsComboBox().setSelectedIndex(opList.size() - 1);
     uacalc.repaint();
@@ -322,6 +323,7 @@ public class AlgebraEditorController {
     opList.remove(op);
     symbolList.remove(sym);
     opMap.remove(sym);
+    getMainController().getCurrentAlgebra().getAlgebra().updateSimilarityType();
     setOpsCB();
     // TODO: check this
     if (opList.size() == 0 && uacalc.getOpTable() != null) {
@@ -565,6 +567,14 @@ public class AlgebraEditorController {
 
   private void setCurrentAlgType(SmallAlgebra.AlgebraType currentAlgType) {
     this.currentAlgType = currentAlgType;
+  }
+  
+  private void setSimilarityType() {
+    GUIAlgebra gAlg = getMainController().getCurrentAlgebra();
+    SmallAlgebra alg = gAlg.getAlgebra();
+    alg.updateSimilarityType();
+    
+    //gAlg.getAlgebra().sim
   }
   
 }

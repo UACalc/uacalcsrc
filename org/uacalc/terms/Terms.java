@@ -19,7 +19,10 @@ public class Terms {
     String[] strings = str.split("\\(", 2);
     // check on the sanity of the token.
     // it should not be or start with a digit.
-    if (strings.length == 1) return new VariableImp(str);
+    if (strings.length == 1) {
+      if (isValidVarString(str)) return new VariableImp(str);
+      throw new IllegalArgumentException("The string " + str + " cannot be made into a variable.");
+    }
     // get rid of final ")" 
     String argsString = strings[1].substring(0, strings[1].length() - 1);
     List<String> argStrings = getArgumentStrings(argsString);
@@ -55,6 +58,19 @@ public class Terms {
     return ans;
   }
   
+  public static boolean isValidVarString (String str) {
+    if (str.length() == 0) return false;
+    if (!str.substring(0,1).matches("[A-Za-z]")) return false;
+    if (str.matches("\\s")) return false;
+    if (str.contains(",")) return false;
+    if (str.contains("(")) return false;
+    if (str.contains(")")) return false;
+    return true;
+  }
+  
+  public static boolean isValidOpNameString (String str) {
+    return isValidVarString(str);  // use the sane for both
+  }
   
   
   /**
@@ -67,6 +83,7 @@ public class Terms {
     System.out.println(getArgumentStrings(test));
     Term term = stringToTerm(test3);
     System.out.println(term);
+    System.out.println(isValidVarString(test1));
   }
 
   

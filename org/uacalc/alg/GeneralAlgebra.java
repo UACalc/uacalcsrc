@@ -127,13 +127,17 @@ public class GeneralAlgebra implements Algebra {
 
   public SimilarityType similarityType() {
     if (similarityType == null) {
-      List<OperationSymbol> lst = new ArrayList<>(operations.size());
-      for (Operation op : operations()) {
-        lst.add(op.symbol());
-      }
-      similarityType = new SimilarityType(lst);
+      updateSimilarityType();
     }
     return similarityType;
+  }
+  
+  public void updateSimilarityType() {
+    List<OperationSymbol> lst = new ArrayList<>(operations.size());
+    for (Operation op : operations()) {
+      lst.add(op.symbol());
+    }
+    similarityType = new SimilarityType(lst);
   }
 
   public String getName() {
