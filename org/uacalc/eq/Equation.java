@@ -4,6 +4,7 @@ import java.util.*;
 import org.uacalc.terms.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.*;
+import org.uacalc.ui.tm.ProgressReport;
 
 /**
  * A class to represent equations, that is, pairs of terms.
@@ -50,6 +51,10 @@ public class Equation {
     return set;
   }
   
+  public int[] findFailure(SmallAlgebra alg) {
+    return findFailure(alg, null);
+  }
+  
   /**
    * Check if this equation holds in <code>alg</code>, 
    * returning a place where it fails
@@ -58,11 +63,15 @@ public class Equation {
    * @param alg
    * @return
    */
-  public int[] findFailure(SmallAlgebra alg) {
+  public int[] findFailure(SmallAlgebra alg, ProgressReport report) {
     Operation leftOp = leftSide.interpretation(alg, getVariableList(), true);
     Operation rightOp = rightSide.interpretation(alg, getVariableList(), true);
-    int[] diff = Operations.findDifference(leftOp, rightOp);
+    int[] diff = Operations.findDifference(leftOp, rightOp, report);
     return diff; // may want to return a map from variable to ints
+  }
+  
+  public Map<Variable,Integer> findFailureMap(SmallAlgebra alg) {
+    return findFailureMap(alg, null);
   }
   
   /**
@@ -73,8 +82,8 @@ public class Equation {
    * @param alg
    * @return
    */
-  public Map<Variable,Integer> findFailureMap(SmallAlgebra alg) {
-    int[] diff = findFailure(alg);
+  public Map<Variable,Integer> findFailureMap(SmallAlgebra alg, ProgressReport report) {
+    int[] diff = findFailure(alg, report);
     if (diff == null) return null;
     Map<Variable,Integer> map = new HashMap<Variable,Integer>();
     int k = 0;

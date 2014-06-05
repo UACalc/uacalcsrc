@@ -167,7 +167,8 @@ public class ProgressReport {
   public void addEndingLine(final String line) {
     if (dontOutput) return;
     GuiExecutor.instance().execute(new Runnable() {
-      public void run() {  
+      public void run() {
+        if (times.isEmpty()) return;
         long time = System.currentTimeMillis() - times.removeFirst();
         indent--;
         final String str = getIndentString() + line + "  (" + time + " ms)";

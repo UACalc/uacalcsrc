@@ -4,9 +4,12 @@ package org.uacalc.alg.op;
 
 import java.util.*;
 import java.util.logging.*;
+
 import javax.script.*;
+
 import org.uacalc.util.*;
 import org.uacalc.alg.conlat.BasicPartition;
+import org.uacalc.ui.tm.ProgressReport;
 
 /**
  * This is a factory class with static methods to make Operations.
@@ -207,6 +210,11 @@ public class Operations {
     return true;
   }
 
+  public static final int[] findDifference(Operation op0, Operation op1) {
+    return findDifference(op0, op1, null);
+  }
+  
+  
   /**
    * Find an argument where these operations differ. 
    * 
@@ -216,7 +224,7 @@ public class Operations {
    * @param op1
    * @return an int[] as a witness or null if they agree.
    */
-  public static final int[] findDifference(Operation op0, Operation op1) {
+  public static final int[] findDifference(Operation op0, Operation op1, ProgressReport report) {
     final int n = op0.getSetSize();
     if (n != op1.getSetSize()) 
       throw new IllegalArgumentException("Ops have different set sizes");
@@ -226,7 +234,18 @@ public class Operations {
     final int[] arr = new int[arity];
     ArrayIncrementor inc = 
       SequenceGenerator.sequenceIncrementor(arr, n - 1);
+    int size = 1;
+    for (int i = 0; i < arity; i++) size = size * n;
+    int k = 1;
+    if (report != null) report.addLine("Done when Size field gets to " + (size - 1) + " (or sooner if it fails)" );
     while (inc.increment()) {
+      if (report != null) {
+        report.setSize(k++);
+        if (Thread.currentThread().isInterrupted()) {
+          report.addEndingLine("cancelled ...");
+          return null;
+        }
+      }
       if (op0.intValueAt(arr) != op1.intValueAt(arr)) return arr;
     }
     return null;

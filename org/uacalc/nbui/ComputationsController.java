@@ -2755,6 +2755,31 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupAssociativeCheckTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    List<OperationSymbol> opList = alg.similarityType().getSortedOperationSymbols();
+    if (opList == null || opList.size() == 0) return;  // give a warning !!!
+    List<OperationSymbol> binOps = new ArrayList<>();
+    for (OperationSymbol sym : opList) {
+      if (sym.arity() == 2) binOps.add(sym);
+    }
+    if (binOps.isEmpty()) {
+      // TODO: A warning here
+      return;
+    }
+    Object[] opsArr = binOps.toArray();
+    // here
+    
+    StringBuffer buf = new StringBuffer();
+    final String sep = ", ";
+    for (int i = 0; i < opList.size() - 1; i++) {
+      buf.append(opList.get(i).toString(true));
+      buf.append(sep);
+    }
+    buf.append(opList.get(opList.size() - 1).toString(true));
+  }
   
   private Equation lastEquation = null;
   private boolean warned = false;
@@ -2815,8 +2840,6 @@ public class ComputationsController {
             + buf.toString() + "<br>"
             + "Use parentheses for constants like <font color=\"red\">c()</font>" 
             + "</html>",
-        //"Complete the sentence:\n"
-        //+ "\"Green eggs and...\"",
         "Enter the Right Side",
         JOptionPane.PLAIN_MESSAGE,
         null,//icon
@@ -2848,13 +2871,16 @@ public class ComputationsController {
         return;
       }
     }
-    
+    eqTask(gAlg, eq);
+  }
+  
+  private void eqTask(final GUIAlgebra gAlg, final Equation eq) {
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
  
-    final String desc = "Test if " + " " + left + " = " + right + " in " +gAlg.toString();
+    final String desc = "Test if " + " " + eq.leftSide() + " = " + eq.rightSide() + " in " +gAlg.toString();
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Map<Variable,Integer>>  eqCheckTask = new BackgroundTask<Map<Variable,Integer>>(report) {
@@ -2862,7 +2888,7 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Map<Variable,Integer> map = eq.findFailureMap(alg);
+        Map<Variable,Integer> map = eq.findFailureMap(gAlg.getAlgebra(), report);
         return map;
       }
       public void onCompletion(Map<Variable,Integer> map, Throwable exception, 
