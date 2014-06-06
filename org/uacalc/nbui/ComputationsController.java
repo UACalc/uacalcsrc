@@ -2766,7 +2766,7 @@ public class ComputationsController {
       if (sym.arity() == 2) binOps.add(sym);
     }
     if (binOps.isEmpty()) {
-      // TODO: A warning here
+      // TODO: A warning here  !!!!!!!!!!!!!!!!!
       return;
     }
     Object[] opsArr = binOps.toArray();
