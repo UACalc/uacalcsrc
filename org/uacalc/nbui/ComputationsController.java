@@ -2766,7 +2766,7 @@ public class ComputationsController {
       if (sym.arity() == 2) binOps.add(sym);
     }
     if (binOps.isEmpty()) {
-      // TODO: A warning here  !!!!!!!!!!!!!!!!!
+      // TODO: A warning here
       return;
     }
     Object[] opsArr = binOps.toArray();
@@ -2871,16 +2871,23 @@ public class ComputationsController {
         return;
       }
     }
-    eqTask(gAlg, eq);
+    List<Equation> eqs = new ArrayList<>(1);
+    eqs.add(eq);
+    eqTask(gAlg, eqs);
   }
   
-  private void eqTask(final GUIAlgebra gAlg, final Equation eq) {
+  private void eqTask(final GUIAlgebra gAlg, final List<Equation> eqs) {
+    final int numEqs = eqs.size();
+    if (numEqs == 0) return;  // shouldn't happen; this is a private method
+    final Equation eq = eqs.get(0);
     final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
  
-    final String desc = "Test if " + " " + eq.leftSide() + " = " + eq.rightSide() + " in " +gAlg.toString();
+    final String desc = numEqs == 1 
+        ? "Test if " + " " + eq.leftSide() + " = " + eq.rightSide() + " in " +gAlg.toString()
+            : "Testing " + numEqs + " equations in " + gAlg + ".";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
     final BackgroundTask<Map<Variable,Integer>>  eqCheckTask = new BackgroundTask<Map<Variable,Integer>>(report) {
