@@ -2895,7 +2895,17 @@ public class ComputationsController {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
-        Map<Variable,Integer> map = eq.findFailureMap(gAlg.getAlgebra(), report);
+        Map<Variable,Integer> map = null;
+        if (numEqs == 1) {
+          map = eq.findFailureMap(gAlg.getAlgebra(), report);
+          return map;
+        }
+        for (Equation equ : eqs) {
+          report.addStartLine("Testing if " + equ);
+          map = eq.findFailureMap(gAlg.getAlgebra(), report);
+          if (map == null) report.addEndingLine(equ + " holds in " + gAlg.toString());
+          else report.addEndingLine(eq + " fails in " + gAlg.toString() + " under " + map);
+        }
         return map;
       }
       public void onCompletion(Map<Variable,Integer> map, Throwable exception, 
