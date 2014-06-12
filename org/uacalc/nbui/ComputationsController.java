@@ -2759,26 +2759,83 @@ public class ComputationsController {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
     final SmallAlgebra alg = gAlg.getAlgebra();
-    List<OperationSymbol> opList = alg.similarityType().getSortedOperationSymbols();
-    if (opList == null || opList.size() == 0) return;  // give a warning !!!
-    List<OperationSymbol> binOps = new ArrayList<>();
-    for (OperationSymbol sym : opList) {
-      if (sym.arity() == 2) binOps.add(sym);
+    List<OperationSymbol> symList = alg.similarityType().getSortedOperationSymbols();
+    final List<Equation> eqs = new ArrayList<>();
+    for (OperationSymbol sym : symList) {
+      if (sym.arity() == 2) eqs.add(Equations.associativeLaw(sym));
     }
-    if (binOps.isEmpty()) {
-      // TODO: A warning here
-      return;
-    }
-    Object[] opsArr = binOps.toArray();
-    // here
-    
-    StringBuffer buf = new StringBuffer();
-    final String sep = ", ";
-    for (int i = 0; i < opList.size() - 1; i++) {
-      buf.append(opList.get(i).toString(true));
-      buf.append(sep);
-    }
-    buf.append(opList.get(opList.size() - 1).toString(true));
+    final int numEqs = eqs.size();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+ 
+    final String desc = 
+        "Test which of the " + numEqs + " binary basic operations of " + gAlg + " are associative";
+    ttm.setDescription(desc + ".");
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<OperationSymbol>>  assocCheckTask 
+                = new BackgroundTask<List<OperationSymbol>>(report) {
+      public List<OperationSymbol> compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<OperationSymbol> ans = new ArrayList<OperationSymbol>();
+        for (Equation equ : eqs) {
+          OperationSymbol sym = equ.leftSide().leadingOperationSymbol();
+          report.addStartLine("Testing if " + equ);
+          Map<Variable,Integer> map = equ.findFailureMap(gAlg.getAlgebra(), report);
+          if (map == null) {
+            report.addEndingLine(equ + " holds in " + gAlg.toString());
+            ans.add(sym);
+          }
+          else {
+            report.addEndingLine(equ + " fails in " + gAlg.toString() + " under " + map);
+          }
+        }
+        return ans;
+      }
+      public void onCompletion(List<OperationSymbol> ans, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          //List<OperationSymbol> assocOps = 
+          if (ans.isEmpty()) {
+            report.addEndingLine(gAlg.toString() + " has no associative, binary, basic operations.");
+            ttm.setDescription(desc + ": there are none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(" associative, binary, basic operations of " + gAlg.toString() + ": " + ans);
+            ttm.setDescription(desc + ": " + ans);
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+            // if there is only one op and it is associate, report this is a semigroup 
+            // and maybe test if it is a semilattice.
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(assocCheckTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(assocCheckTask);
   }
   
   private Equation lastEquation = null;

@@ -142,6 +142,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem permIdempotentMI;
   private javax.swing.JMenu equationsMenu;
   private javax.swing.JMenuItem equationCheckerMI;
+  private javax.swing.JMenuItem assocCheckerMI;
 
 
 
@@ -380,6 +381,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     permIdempotentMI = new javax.swing.JMenuItem();
     equationsMenu = new javax.swing.JMenu();
     equationCheckerMI = new javax.swing.JMenuItem();
+    assocCheckerMI = new javax.swing.JMenuItem();
+
     
     
     
@@ -963,6 +966,14 @@ xxx;
         }
     });
     equationsMenu.add(equationCheckerMI);
+    
+    assocCheckerMI.setText("associative ops");
+    assocCheckerMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          assocCheckerMIActionPerformed(evt);
+        }
+    });
+    equationsMenu.add(assocCheckerMI);
  
     jMenuBar1.add(equationsMenu);
  
@@ -1599,8 +1610,11 @@ xxx;
   }
   
   private void equationCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {
-    //System.out.println("eq check");
     getComputationsController().setupEquationCheckTask();
+  }
+  
+  private void assocCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupAssociativeCheckTask();
   }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
