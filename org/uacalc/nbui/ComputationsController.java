@@ -2755,6 +2755,94 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupGenCommutivityCheckTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    List<OperationSymbol> symList = alg.similarityType().getSortedOperationSymbols();
+    final List<OperationSymbol> symList2 = new ArrayList<>();
+    for (OperationSymbol sym : symList) {
+      if (sym.arity() > 1) symList2.add(sym);
+    }
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = 
+        "Test which basic operations of " + gAlg + " are cyclic or totally symmetric";
+    ttm.setDescription(desc + ".");
+    uacalcUI.getResultTextField().setText(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Map<OperationSymbol,Boolean>>  assocCheckTask 
+                = new BackgroundTask<Map<OperationSymbol,Boolean>>(report) {
+      public Map<OperationSymbol,Boolean> compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Map<OperationSymbol,Boolean> ans = new HashMap<>();
+        
+        for (OperationSymbol sym : symList2) {
+          Map<Variable,Integer> map = Equations.cyclicLaw(sym).findFailureMap(alg, report);
+          if (sym.arity() == 2) {
+            report.addStartLine("Testing if " + sym + " is commutative.");
+            if (map == null) {
+              report.addEndingLine(sym + " is commutative.");
+              ans.put(sym, true);
+            }
+            else {
+              report.addEndingLine(sym + " fails commutivity: " +  map);
+            }
+          }
+          else {
+            if (map == null) {
+              
+            }
+          }
+        }
+ 
+        return ans;
+      }
+      public void onCompletion(List<OperationSymbol> ans, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          //List<OperationSymbol> assocOps = 
+          if (ans.isEmpty()) {
+            report.addEndingLine(gAlg.toString() + " has no associative, binary, basic operations.");
+            ttm.setDescription(desc + ": there are none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(" associative, binary, basic operations of " + gAlg.toString() + ": " + ans);
+            ttm.setDescription(desc + ": " + ans);
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+            // if there is only one op and it is associate, report this is a semigroup 
+            // and maybe test if it is a semilattice.
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+      
+    };
+  }
+  
+  
   public void setupAssociativeCheckTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
