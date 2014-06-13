@@ -2773,7 +2773,7 @@ public class ComputationsController {
     ttm.setDescription(desc + ".");
     uacalcUI.getResultTextField().setText(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Map<OperationSymbol,Boolean>>  assocCheckTask 
+    final BackgroundTask<Map<OperationSymbol,Boolean>>  commutivityCheckTask 
                 = new BackgroundTask<Map<OperationSymbol,Boolean>>(report) {
       public Map<OperationSymbol,Boolean> compute() {
         report.addStartLine(desc);
