@@ -16,7 +16,8 @@ public class Version {
 //public static final String buildDate = "(Mar 22, 2014)";
 //public static final String versionString = "v1.06 ";
 //public static final String buildDate = "(May 21, 2014)";
-  public static final String versionString = "v1.07 ";
-  public static final String buildDate = "(May 31, 2014)";  
-  
+//public static final String versionString = "v1.07 ";
+//public static final String buildDate = "(May 31, 2014)";  
+  public static final String versionString = "v1.08 ";
+  public static final String buildDate = "(Jun 13, 2014)";
 }
