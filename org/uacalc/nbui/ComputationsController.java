@@ -2781,27 +2781,43 @@ public class ComputationsController {
         Map<OperationSymbol,Boolean> ans = new HashMap<>();
         
         for (OperationSymbol sym : symList2) {
-          Map<Variable,Integer> map = Equations.cyclicLaw(sym).findFailureMap(alg, report);
+          
           if (sym.arity() == 2) {
             report.addStartLine("Testing if " + sym + " is commutative.");
+            Map<Variable,Integer> map = Equations.cyclicLaw(sym).findFailureMap(alg, report);
             if (map == null) {
               report.addEndingLine(sym + " is commutative.");
               ans.put(sym, true);
             }
             else {
-              report.addEndingLine(sym + " fails commutivity: " +  map);
+              report.addEndingLine(sym + " fails commutivity under: " +  map);
             }
           }
           else {
+            report.addStartLine("Testing if " + sym + " is cyclic.");
+            Map<Variable,Integer> map = Equations.cyclicLaw(sym).findFailureMap(alg, report);
             if (map == null) {
-              
+              report.addEndingLine(sym + " is cyclic.");
+              report.addStartLine("Testing if " + sym + " is totally symmetric.");
+              Map<Variable,Integer> map2 = Equations.firstSecondSymmetricLaw(sym).findFailureMap(alg, report);
+              if (map2 == null) {
+                report.addEndingLine(sym + " is totally symmetric.");
+                ans.put(sym, true);
+              }
+              else {
+                report.addEndingLine(sym + " fails total symmetry under: " +  map2);
+                ans.put(sym,false);
+              }
+            }
+            else {
+              report.addEndingLine(sym + " is not cyclic, witness: " +  map);
             }
           }
         }
  
         return ans;
       }
-      public void onCompletion(List<OperationSymbol> ans, Throwable exception, 
+      public void onCompletion(Map<OperationSymbol,Boolean> ans, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
         if (exception != null) {
           System.out.println("execption: " + exception);
@@ -2816,14 +2832,23 @@ public class ComputationsController {
         if (!cancelled) {
           //List<OperationSymbol> assocOps = 
           if (ans.isEmpty()) {
-            report.addEndingLine(gAlg.toString() + " has no associative, binary, basic operations.");
+            report.addEndingLine(gAlg.toString() + " has no cyclic basic operations.");
             ttm.setDescription(desc + ": there are none.");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine(" associative, binary, basic operations of " + gAlg.toString() + ": " + ans);
-            ttm.setDescription(desc + ": " + ans);
+            List<OperationSymbol> cyclicOps = new ArrayList<>();
+            List<OperationSymbol> totSymOps = new ArrayList<>();
+            for (OperationSymbol sym : ans.keySet()) {
+              if (ans.get(sym)) totSymOps.add(sym);
+              else cyclicOps.add(sym);
+            }
+            String totOpsString = totSymOps.isEmpty() ? "" : "Totally sym basic ops: " + totSymOps + ". ";
+            String cycOpsString = cyclicOps.isEmpty() ? "" : "Cyclic Ops " + cyclicOps + ".";
+            String ansStr = totOpsString + cycOpsString;
+            report.addEndingLine(ansStr);
+            ttm.setDescription(desc + ": " + ansStr);
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
             // if there is only one op and it is associate, report this is a semigroup 
@@ -2840,6 +2865,10 @@ public class ComputationsController {
       }
       
     };
+    addTask(commutivityCheckTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(commutivityCheckTask);
   }
   
   

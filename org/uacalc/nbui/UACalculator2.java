@@ -143,6 +143,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenu equationsMenu;
   private javax.swing.JMenuItem equationCheckerMI;
   private javax.swing.JMenuItem assocCheckerMI;
+  private javax.swing.JMenuItem commutivityCheckerMI;
 
 
 
@@ -382,6 +383,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     equationsMenu = new javax.swing.JMenu();
     equationCheckerMI = new javax.swing.JMenuItem();
     assocCheckerMI = new javax.swing.JMenuItem();
+    commutivityCheckerMI = new javax.swing.JMenuItem();
 
     
     
@@ -974,6 +976,14 @@ xxx;
         }
     });
     equationsMenu.add(assocCheckerMI);
+    
+    commutivityCheckerMI.setText("gen commutative ops");
+    commutivityCheckerMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          commutivityCheckerMIActionPerformed(evt);
+        }
+    });
+    equationsMenu.add(commutivityCheckerMI);
  
     jMenuBar1.add(equationsMenu);
  
@@ -1615,6 +1625,10 @@ xxx;
   
   private void assocCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupAssociativeCheckTask();
+  }
+  
+  private void commutivityCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupGenCommutivityCheckTask();
   }
 
   private void delAlgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delAlgActionPerformed
