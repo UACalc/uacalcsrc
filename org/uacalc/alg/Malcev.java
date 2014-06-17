@@ -665,6 +665,30 @@ public class Malcev {
     return true;
   }
 
+  /**
+   * This implements an algorithm of Valeriote and Willard for testing if 
+   * the algebra has a cyclic term of a given arity.
+   */
+  public static boolean cyclicTermIdempotent(SmallAlgebra alg, int arity) {
+    return cyclicTermIdempotent(alg, arity, null);
+  }
+  
+  /**
+   * This implements an algorithm of Valeriote and Willard for testing if 
+   * the algebra has a cyclic term of a given arity.
+   */
+  public static boolean cyclicTermIdempotent(SmallAlgebra alg, int arity, ProgressReport report) {
+    if (alg.cardinality() == 1) return true;
+    final int max = alg.cardinality() - 1;
+    int[] v = new int[arity];
+    ArrayIncrementor incr = SequenceGenerator.sequenceIncrementor(v, max);
+    //while (true) {
+      //if 
+    //}
+    
+    
+    return true;
+  }
   
   /**
    * This will find a near unamimity term of the given arity
