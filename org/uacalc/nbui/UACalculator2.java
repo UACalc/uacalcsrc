@@ -140,6 +140,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem sdIdempotentMI;
   private javax.swing.JMenuItem sdMeetIdempotentMI;
   private javax.swing.JMenuItem permIdempotentMI;
+  private javax.swing.JMenuItem cyclicTermIdempotentMI;
   private javax.swing.JMenu equationsMenu;
   private javax.swing.JMenuItem equationCheckerMI;
   private javax.swing.JMenuItem assocCheckerMI;
@@ -380,6 +381,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     sdIdempotentMI = new javax.swing.JMenuItem();
     sdMeetIdempotentMI = new javax.swing.JMenuItem();
     permIdempotentMI = new javax.swing.JMenuItem();
+    cyclicTermIdempotentMI = new javax.swing.JMenuItem();
     equationsMenu = new javax.swing.JMenu();
     equationCheckerMI = new javax.swing.JMenuItem();
     assocCheckerMI = new javax.swing.JMenuItem();
@@ -954,6 +956,14 @@ xxx;
         }
     });
     varPropIdemMenu.add(permIdempotentMI);
+    
+    cyclicTermIdempotentMI.setText("Does A support a cyclic term");
+    cyclicTermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          cyclicTermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(cyclicTermIdempotentMI);
     
     
     jMenuBar1.add(varPropIdemMenu);
@@ -1617,6 +1627,10 @@ xxx;
   
   private void permIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupPermIdempotentTask();
+  }
+  
+  private void cyclicTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupCyclicTermIdempotentTask();
   }
   
   private void equationCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {

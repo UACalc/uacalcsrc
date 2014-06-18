@@ -2755,6 +2755,66 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
   
+  public void setupCyclicTermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The current algebra must be idempotent.<br>",
+              "Non idempotent algebra error",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final int arity = getNumberDialog(2, "What arity (at least 2)?", "Arity");
+    if (arity < 2) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Does " + gAlg.toString(true) + " have a cyclic term of arity " + arity + ".";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Boolean>  cyclicTermTask = new BackgroundTask<Boolean>(report) {
+      public Boolean compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        boolean ans = Malcev.cyclicTermIdempotent(alg, arity, report);
+        return ans;
+      }
+      public void onCompletion(Boolean ans, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          String extra = ans ? " It does have a cyclic term." : " It does not have a cyclic term.";
+          ttm.setDescription(desc + " " + extra);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(cyclicTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(cyclicTermTask);
+  }
+
+  
   public void setupGenCommutivityCheckTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

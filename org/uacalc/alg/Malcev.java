@@ -675,19 +675,79 @@ public class Malcev {
   
   /**
    * This implements an algorithm of Valeriote and Willard for testing if 
-   * the algebra has a cyclic term of a given arity.
+   * the idempotent algebra has a cyclic term of a given arity.
    */
-  public static boolean cyclicTermIdempotent(SmallAlgebra alg, int arity, ProgressReport report) {
-    if (alg.cardinality() == 1) return true;
+  public static boolean cyclicTermIdempotent(final SmallAlgebra alg, final int arity, ProgressReport report) {
+    if (alg.cardinality() < 2) return true;
+    if (report != null) report.addStartLine("Testing for a cyclic of arity " + arity 
+        + " using an algorithm of Valeriote and Willard.");
+    final BigProductAlgebra bigProd = new BigProductAlgebra(alg, arity);
+    int[] block = new int[arity];
+    for (int i = 0; i < arity; i++) {
+      block[i] = i;
+    }
+    int[][] blocks = new int[1][];
+    blocks[0] = block;
     final int max = alg.cardinality() - 1;
     int[] v = new int[arity];
     ArrayIncrementor incr = SequenceGenerator.sequenceIncrementor(v, max);
-    //while (true) {
-      //if 
-    //}
-    
-    
+    int s = 0;
+    while (true) {
+      s++;
+      if (report != null) report.setPass(s);
+      else System.out.println("size: " + s);
+      if (isGoodForCyclic(v)) {
+        List<IntArray> gens = makeCyclicGens(v);
+        Closer closer = new Closer(bigProd, gens);
+        //if (report != null) closer.setProgressReport(report);
+        closer.setBlocks(blocks);
+        List<IntArray> lst = closer.sgClose();
+        int[] last = lst.get(lst.size() - 1).getArray();
+        final int c = last[0];
+        for (int i = 1; i < arity; i++) {
+          if (last[i] != c) {
+            report.addEndingLine("This algebra does not support a cyclic term of arity " + arity);
+            return false;
+          }
+        }
+      }
+      if (!incr.increment()) break;
+    }
+    report.addEndingLine("This algebra does support a cyclic term of arity " + arity);
     return true;
+  }
+  
+  /**
+   * This is true if the first entry of v is
+   * the smallest and v is not constant.
+   * 
+   * @param v
+   * @return
+   */
+  private static boolean isGoodForCyclic(int[] v) {
+    final int n = v.length;
+    final int a0 = v[0];
+    boolean ok = false;
+    for (int i = 1; i < n; i++) {
+      if (a0 > v[i]) return false;
+      if (a0 < v[i]) ok = true;
+    }
+    return ok;
+  }
+  
+  public static List<IntArray> makeCyclicGens(int[] v) {
+    final int k = v.length;
+    int[] u = Arrays.copyOf(v, k);
+    List<IntArray> ans = new ArrayList<>();
+    ans.add(new IntArray(u));
+    for (int i = 1; i < k; i++) {
+      int[] w = new int[k];
+      for (int j = 0; j < k; j++) {
+        w[j] = u[(j+i) % k]; // u shifted by i mod k
+        ans.add(new IntArray(w));
+      }
+    }
+    return ans;
   }
   
   /**
@@ -2834,10 +2894,14 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   
   static boolean foo = true;
   public static void main(String[] args) throws Exception {
-    SmallAlgebra pol = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/3polidpent2.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/directoidNonCom.ua");
+    //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/cyclicTest.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
-    System.out.println(permLevelIdempotent(pol, null));
+    //System.out.println(permLevelIdempotent(pol, null));
+    int arity = 4;
+    boolean hasCyc = cyclicTermIdempotent(A, arity);
+    System.out.println(A.getName() + " has cyclic term of arity " + arity +": " + hasCyc);
     
     if (foo) return;
     SmallAlgebra alg = null;
