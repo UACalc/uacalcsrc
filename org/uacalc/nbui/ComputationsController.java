@@ -2784,6 +2784,7 @@ public class ComputationsController {
       }
       public void onCompletion(Boolean ans, Throwable exception, 
                                boolean cancelled, boolean outOfMemory) {
+        System.out.println("exception: " + exception);
         if (outOfMemory) {
           report.addEndingLine("Out of memory!!!");
           ttm.setDescription(desc + " (insufficient memory)");
