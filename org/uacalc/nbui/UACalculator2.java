@@ -141,6 +141,8 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem sdMeetIdempotentMI;
   private javax.swing.JMenuItem permIdempotentMI;
   private javax.swing.JMenuItem cyclicTermIdempotentMI;
+  private javax.swing.JMenuItem nuTermIdempotentMI;
+  private javax.swing.JMenuItem edgeTermIdempotentMI;
   private javax.swing.JMenu equationsMenu;
   private javax.swing.JMenuItem equationCheckerMI;
   private javax.swing.JMenuItem assocCheckerMI;
@@ -382,6 +384,8 @@ public class UACalculator2 extends JFrame implements UACalc {
     sdMeetIdempotentMI = new javax.swing.JMenuItem();
     permIdempotentMI = new javax.swing.JMenuItem();
     cyclicTermIdempotentMI = new javax.swing.JMenuItem();
+    nuTermIdempotentMI = new javax.swing.JMenuItem();
+    edgeTermIdempotentMI = new javax.swing.JMenuItem();
     equationsMenu = new javax.swing.JMenu();
     equationCheckerMI = new javax.swing.JMenuItem();
     assocCheckerMI = new javax.swing.JMenuItem();
@@ -923,6 +927,23 @@ xxx;
         }
     });
     varPropIdemMenu.add(kNUIdempotentMI);
+    
+    nuTermIdempotentMI.setText("NU for some k");
+    nuTermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            nuTermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(nuTermIdempotentMI);
+  
+    edgeTermIdempotentMI.setText("Edge term");
+    edgeTermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            edgeTermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(edgeTermIdempotentMI);
+  
     
     majorityIdempotentMI.setText("Does A have a maj term");
     majorityIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1631,6 +1652,14 @@ xxx;
   
   private void cyclicTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupCyclicTermIdempotentTask();
+  }
+  
+  private void nuTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupNUTermIdempotentTask();
+  }
+  
+  private void edgeTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupEdgeTermIdempotentTask();
   }
   
   private void equationCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {

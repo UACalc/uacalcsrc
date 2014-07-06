@@ -706,14 +706,14 @@ public class Malcev {
         final int c = last[0];
         for (int i = 1; i < arity; i++) {
           if (last[i] != c) {
-            report.addEndingLine("This algebra does not support a cyclic term of arity " + arity);
+            if (report != null) report.addEndingLine("This algebra does not support a cyclic term of arity " + arity);
             return false;
           }
         }
       }
       if (!incr.increment()) break;
     }
-    report.addEndingLine("This algebra does support a cyclic term of arity " + arity);
+    if (report != null) report.addEndingLine("This algebra does support a cyclic term of arity " + arity);
     return true;
   }
   
@@ -2888,13 +2888,129 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return omittedIdeal;
   }
   
+  /**
+   * Find a cube term blocker for V(A) if there is one; null otherwise.
+   * 
+   * @param alg
+   * @param report
+   * @return   a list of two basic sets that form a cuber term blocker or null
+   */
+  public static List<BasicSet> cubeTermBlockerIdempotent(final SmallAlgebra alg, final ProgressReport report) {
+    if (report != null) {
+      report.addStartLine("Looking for a cube term blocker  using A. Kazda's new polynomial time algorithm.");
+    }
+    for (int c = 0; c < alg.cardinality(); c++) {
+      Set<Integer> S = new TreeSet<>();
+      S.add(c);
+      BasicSet ce = null;
+      for (int e = 0; e < alg.cardinality(); e++) {
+        if (!S.contains(e)) {
+          System.out.println("c: " + c + ", e: " + e);
+          BasicSet ce2 = alg.sub().sg(new int[] {c,e});
+          System.out.println("ce2: " + ce2);
+          if (ce == null || ce2.leq(ce)) ce = ce2;
+        }
+      }
+      if (ce != null) {
+        List<Integer> intersection = new ArrayList<>();
+        final int[] ceArr = ce.getArray();
+        for (int i = 0; i < ceArr.length; i++) {
+          if (S.contains(ceArr[i])) {
+            intersection.add(ceArr[i]);
+          }
+        }
+        int[] intersectionArr = new int[intersection.size()];
+        for (int i = 0; i < intersectionArr.length; i++) {
+          intersectionArr[i] = intersection.get(i);
+        }
+        BasicSet C = new BasicSet(intersectionArr);
+        if (cubeTermBlockerIdempotent(alg, C, ce)) {
+          List<BasicSet> blocker = new ArrayList<>(2);
+          blocker.add(C);
+          blocker.add(ce);
+          if (report != null) report.addEndingLine(blocker 
+              + " is a cube term blocker so A does not have an edge term.");
+          return blocker;
+        }
+        for (int i = 0; i < ce.universeSize(); i++) {
+          S.add(ce.get(i));
+        }
+      }
+    }
+    if (report != null) report.addEndingLine("There is no cube term blocker so A does have an edge term.");
+    return null;
+  }
   
+  public static boolean cubeTermBlockerIdempotent(SmallAlgebra alg, BasicSet C, BasicSet D) {
+    for (Operation op : alg.operations()) {
+      if (cubeTermBlockerIdempotent(op, C, D) < 0) return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Returns the j so that C, D is a cube term blocker at position j
+   * or -1 if C, D is not a cube term blocker.
+   * 
+   * @param op
+   * @param C
+   * @param D
+   * @return
+   */
+  public static int cubeTermBlockerIdempotent(Operation op, BasicSet C, BasicSet D) {
+    final int arity = op.arity();
+    for (int j = 0; j < arity; j++) {
+      if (cubeTermBlockerIdempotent(op, j, C, D)) return j;
+    }
+    return -1;
+  }
+  
+  /**
+   * Tests if op(D,...,D,C,D,...D) is a subset of C (where the 
+   * C is in the jth coordinate). 
+   * 
+   * @param op  the operation to test
+   * @param j   the coord to test
+   * @param C   the smaller subuniverse
+   * @param D   the large subuniverse
+   * @return    
+   */
+  public static boolean cubeTermBlockerIdempotent(Operation op, final int j, BasicSet C, BasicSet D) {
+    final int arity = op.arity();
+    if (arity < 2) return true;
+    System.out.println("C: " + C + ", D: " + D);
+    final int Csize = C.universeSize();
+    final int Dsize = D.universeSize();
+    final int[] Carray = C.getArray();
+    final int[] Darray = D.getArray();
+    int[] arr = new int[arity - 1];
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, D.universeSize() - 1);
+    while (true) {
+      int[] args = new int[arity];
+      for (int k = 0; k < j; k++) {
+        args[k] = D.get(arr[k]);
+      }
+      for (int k = j+1; k < arity; k++) {
+        System.out.println("arity: " + arity + ", j: " + j + ", k: " + k + ", arr: " 
+                                  + Arrays.toString(arr) + ", D.universeSize: " + D.universeSize());
+        args[k] = D.get(arr[k-1]);
+      }
+      for (int i = 0; i < Csize; i++) {
+        args[j] = C.get(i); 
+        if (!C.contains(op.intValueAt(args))) return false;
+      }
+      if (!inc.increment()) break;
+    }
+    return true;
+  }
 
   
   
   static boolean foo = true;
   public static void main(String[] args) throws Exception {
-    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/directoidNonCom.ua");
+    //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/directoidNonCom.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
+    
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/cyclicTest.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
@@ -2902,6 +3018,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     int arity = 4;
     boolean hasCyc = cyclicTermIdempotent(A, arity);
     System.out.println(A.getName() + " has cyclic term of arity " + arity +": " + hasCyc);
+    
+    System.out.println(A.getName() + " has cube term blocker: " + cubeTermBlockerIdempotent(A, null));
     
     if (foo) return;
     SmallAlgebra alg = null;

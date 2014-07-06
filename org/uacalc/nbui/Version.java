@@ -20,7 +20,9 @@ public class Version {
 //public static final String buildDate = "(May 31, 2014)";  
 //public static final String versionString = "v1.08 ";
 //public static final String buildDate = "(Jun 13, 2014)";
-  public static final String versionString = "v1.09 ";
-  public static final String buildDate = "(Jun 17, 2014)";
-  
+//public static final String versionString = "v1.09 ";
+//public static final String buildDate = "(Jun 17, 2014)";
+  // Kazda's algorithm for test for an edge term for idempotent algebras
+  public static final String versionString = "v1.10 ";
+  public static final String buildDate = "(Jul 5, 2014)";
 }

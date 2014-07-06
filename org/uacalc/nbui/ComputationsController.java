@@ -18,6 +18,7 @@ import org.uacalc.ui.table.TermTableModel.ResultTableType;
 import org.uacalc.ui.tm.*;
 import org.uacalc.ui.util.*;
 import org.uacalc.util.*;
+import org.uacalc.alg.sublat.BasicSet;
 
 public class ComputationsController {
   
@@ -2754,6 +2755,134 @@ public class ComputationsController {
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
+  
+  public void setupEdgeTermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The current algebra must be idempotent.<br>",
+          "Non idempotent algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Does " + gAlg.toString(true) + " have an edge term.";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<BasicSet>>  edgeTermTask = new BackgroundTask<List<BasicSet>>(report) {
+      public List<BasicSet> compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<BasicSet> ans = Malcev.cubeTermBlockerIdempotent(alg, report);
+        return ans;
+      }
+      public void onCompletion(List<BasicSet> ans, Throwable exception, 
+          boolean cancelled, boolean outOfMemory) {
+        System.out.println("exception: " + exception);
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          String extra = ans == null ? " It does have an edge term." : 
+            " It does not have an edge term. Cube term blocker: " + ans;
+          ttm.setDescription(desc + " " + extra);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(edgeTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(edgeTermTask);
+  }
+    
+  public void setupNUTermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The current algebra must be idempotent.<br>",
+          "Non idempotent algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Does " + gAlg.toString(true) + " have an near unamimity term.";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<BasicSet>>  nuTermTask = new BackgroundTask<List<BasicSet>>(report) {
+      public List<BasicSet> compute() {
+        report.addStartLine(desc);
+        report.addLine("Testing for both an edge term and congruence SD-meet.");
+        report.setDescription(desc);
+        List<BasicSet> ans = Malcev.cubeTermBlockerIdempotent(alg, report);
+        if (ans != null) return ans;
+        if (Malcev.sdMeetIdempotent(alg, report) != null) {
+          return new ArrayList<BasicSet>(); // return an empty list to indicate it is not SD-meet.
+        }
+        return ans;
+      }
+      public void onCompletion(List<BasicSet> ans, Throwable exception, 
+          boolean cancelled, boolean outOfMemory) {
+        System.out.println("exception: " + exception);
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          String extra;
+          if (ans == null) extra  = " It does have an NU term.";
+          else {
+            if (ans.isEmpty()) extra = " V(A) is not congruence SD-meet so cannot have an NU term.";
+            else extra = " V(A) has a cube term blocker: " + ans + ", so cannot have an NU term.";
+          }
+          ttm.setDescription(desc + " " + extra);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(nuTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(nuTermTask);
+  }
+
   
   public void setupCyclicTermIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();

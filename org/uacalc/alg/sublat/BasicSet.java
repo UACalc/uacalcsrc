@@ -128,6 +128,36 @@ public class BasicSet extends IntArray implements Comparable {
     }
     return new BasicSet(arr);
   }
+  
+  public BasicSet intersection(BasicSet set2) {
+    return intersection(this, set2);
+  }
+  
+  public static BasicSet intersection(BasicSet set1, BasicSet set2) {
+    List<Integer> lst = new ArrayList<>();
+    for (int i = 0; i < set1.universeSize(); i++) {
+      if (set2.contains(set1.get(i))) lst.add(set1.get(i));
+    }
+    int[] arr = new int[lst.size()];
+    for (int i = 0; i < arr.length; i++) arr[i] = lst.get(i);
+    return new BasicSet(arr);
+  }
+  
+  public BasicSet union(BasicSet set2) {
+    return union(this, set2);
+  }
+  
+  public static BasicSet union(BasicSet set1, BasicSet set2) {
+    List<Integer> lst = new ArrayList<>();
+    for (int i = 0; i < set1.universeSize(); i++) lst.add(set1.get(i));
+    for (int i = 0; i < set2.universeSize(); i++) {
+      if (!lst.contains(i)) lst.add(set2.get(i));
+    }
+    int[] arr = new int[lst.size()];
+    for (int i = 0; i < arr.length; i++) arr[i] = lst.get(i);
+    return new BasicSet(arr);
+  }
+  
 
   /**
    * Print this subset using alg's elements.
