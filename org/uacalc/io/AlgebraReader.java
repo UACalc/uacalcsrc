@@ -397,7 +397,10 @@ public final class AlgebraReader extends DefaultHandler {
       //System.out.println(algebra.getName());
       //System.out.println("tmp: " + tmp);
       if (tmp != null) algebra.setDescription(tmp);
-      algNameStack.pop();
+      // pop if a name was given
+      // this is not a perfect solution: if some but not all algebras in a
+      // product are missing names, the names may go in the wrong places.
+      if (!algNameStack.isEmpty()) algNameStack.pop(); 
       algName = null;
     }
     //if (algebra != null && !EMPTY_STRING.equals(descString)) {

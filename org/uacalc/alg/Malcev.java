@@ -461,7 +461,7 @@ public class Malcev {
       if (!isCongruenceDistIdempotent(alg, report)) return null;
       if (report != null) {
         // may want to add a test for distributivity here.
-        report.addStartLine("Using Horitz's algorithm to if an NU term exists");
+        report.addStartLine("Using J. Horowitz's algorithm to if an NU term exists");
       }
       if (!nuTermIdempotent(alg, arity, report)) {
         if (report != null) {
@@ -664,6 +664,8 @@ public class Malcev {
     if (report != null) report.addEndingLine("There is a " + arity + "-ary NU.");
     return true;
   }
+  
+  
 
   /**
    * This implements an algorithm of Valeriote and Willard for testing if 
