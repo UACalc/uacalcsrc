@@ -97,6 +97,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem newMI;
   private javax.swing.JMenuItem nuMI;
   private javax.swing.JMenuItem wnuMI;
+  private javax.swing.JMenuItem edgeMI;
   private javax.swing.JTable opTable;
   private TableModel emptyOpTableModel;
   private javax.swing.JScrollPane opTableScrollPane;
@@ -143,6 +144,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem cyclicTermIdempotentMI;
   private javax.swing.JMenuItem nuTermIdempotentMI;
   private javax.swing.JMenuItem edgeTermIdempotentMI;
+  private javax.swing.JMenuItem fixedKEdgeTermIdempotentMI;
   private javax.swing.JMenu equationsMenu;
   private javax.swing.JMenuItem equationCheckerMI;
   private javax.swing.JMenuItem assocCheckerMI;
@@ -363,6 +365,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     wnuMI = new javax.swing.JMenuItem();
     mmstMI = new javax.swing.JMenuItem();
     w3edgeTermMI = new javax.swing.JMenuItem();
+    edgeMI = new javax.swing.JMenuItem();
     drawingMenu = new javax.swing.JMenu();
     drawConMI = new javax.swing.JMenuItem();
     drawSubMI = new javax.swing.JMenuItem();
@@ -386,6 +389,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     cyclicTermIdempotentMI = new javax.swing.JMenuItem();
     nuTermIdempotentMI = new javax.swing.JMenuItem();
     edgeTermIdempotentMI = new javax.swing.JMenuItem();
+    fixedKEdgeTermIdempotentMI = new javax.swing.JMenuItem();
     equationsMenu = new javax.swing.JMenu();
     equationCheckerMI = new javax.swing.JMenuItem();
     assocCheckerMI = new javax.swing.JMenuItem();
@@ -830,6 +834,14 @@ xxx;
         }
     });
     maltsevMenu.add(pixleyMI);
+    
+    edgeMI.setText("edge term");
+    edgeMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          edgeMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(edgeMI);
 
     nuMI.setText("near unanimity term");
     nuMI.addActionListener(new java.awt.event.ActionListener() {
@@ -935,8 +947,16 @@ xxx;
         }
     });
     varPropIdemMenu.add(nuTermIdempotentMI);
+    
+    fixedKEdgeTermIdempotentMI.setText("k Edge term");
+    fixedKEdgeTermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            fixedKEdgeTermIdempotentMIActionPerformed(evt);
+        }
+    });
+    varPropIdemMenu.add(fixedKEdgeTermIdempotentMI);
   
-    edgeTermIdempotentMI.setText("Edge term");
+    edgeTermIdempotentMI.setText("Edge term some k");
     edgeTermIdempotentMI.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             edgeTermIdempotentMIActionPerformed(evt);
@@ -1510,6 +1530,10 @@ xxx;
     getComputationsController().setupHagemannMitschkeTermsTask();
   }//GEN-LAST:event_nPermMIActionPerformed
 
+  private void edgeMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
+    getComputationsController().setupEdgeTermTask();
+  }//GEN-LAST:event_nuMIActionPerformed
+  
   private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
     getComputationsController().setupNUTermTask();
   }//GEN-LAST:event_nuMIActionPerformed
@@ -1660,6 +1684,10 @@ xxx;
   
   private void edgeTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupEdgeTermIdempotentTask();
+  }
+  
+  private void fixedKEdgeTermIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupFixedKEdgeTermIdempotentTask();
   }
   
   private void equationCheckerMIActionPerformed(java.awt.event.ActionEvent evt) {

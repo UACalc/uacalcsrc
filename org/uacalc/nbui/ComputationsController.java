@@ -1362,6 +1362,66 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(wnuTask);
   }
   
+  public void setupEdgeTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int k = getNumberDialog(2, "k edge term: what k (at least 2). Arity will be k + 1.", "k Edge term");
+    if (!(k > 1)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "k edge term (arity " + (k+1) +  ") over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  edgeTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term edgeTerm = Malcev.fixedKEdgeTerm(alg, k, report);
+        return edgeTerm;
+      }
+      public void onCompletion(Term edgeTerm, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (edgeTerm == null) {
+            report.addEndingLine("The variety has no " + k + " edge term ");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found an edge term: " + edgeTerm);
+            ttm.setDescription(desc + " " + edgeTerm);
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(edgeTerm);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(edgeTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(edgeTask);
+  }
+  
+  
   public void setupJICongruencesTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
@@ -2814,7 +2874,67 @@ public class ComputationsController {
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(edgeTermTask);
   }
-    
+
+  public void setupFixedKEdgeTermIdempotentTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    if (!alg.isIdempotent()) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The current algebra must be idempotent.<br>",
+              "Non idempotent algebra error",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final int k = getNumberDialog(2, "k edge term: what k (at least 2). Arity will be k + 1.", "k Edge term");
+    if (!(k > 1)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Does " + gAlg.toString(true) + " have a " + k + " edge term (arity " + (k+1) + ").";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Boolean>  edgeTermTask = new BackgroundTask<Boolean>(report) {
+      public Boolean compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        boolean ans = Malcev.fixedKEdgeIdempotent(alg, k, report);
+        return ans;
+      }
+      public void onCompletion(Boolean ans, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        System.out.println("exception: " + exception);
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          String extra = ans ? " It does have a " + k + " edge term." : " It does not have a " + k + " edge term.";
+          ttm.setDescription(desc + " " + extra);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(edgeTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(edgeTermTask);
+  }
+  
   public void setupNUTermIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
