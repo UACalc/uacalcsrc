@@ -9,29 +9,33 @@ import org.uacalc.ui.tm.*;
 
 public class Michalewski {
 
+  /**
+   * This looks for a, b in A^k, the universe of A^[k], such that
+   * the two element set {a,b} has polynomials for join and meet
+   * in A[k]. The algorithm is described in Emil's email of 28 Jul 2014.
+   */
   public static List<IntArray> findJoinMeetMatPower(SmallAlgebra alg, int k) {
     final int n = alg.cardinality();
     List<IntArray> consts = new ArrayList<>(n);
     for (int i = 0; i < n; i++) {
       consts.add(new IntArray(new int[] {i,i,i,i}));
     }
-    int[] as = new int[k];
-    
-    ArrayIncrementor ainc = SequenceGenerator.sequenceIncrementor(as, n-1);
+    int[] a = new int[k];
+    ArrayIncrementor ainc = SequenceGenerator.sequenceIncrementor(a, n-1);
     while (true) {
-      int[] bs = new int[k];
-      ArrayIncrementor binc = SequenceGenerator.sequenceIncrementor(bs, n-1);
+      int[] b = new int[k];
+      ArrayIncrementor binc = SequenceGenerator.sequenceIncrementor(b, n-1);
       while (true) {
-        if (!Arrays.equals(as, bs)) {
-          if (testJoinMeetMatPower(as, bs, alg, consts)) {
-            System.out.println("Join meet term for the element corresponding to a = " + Arrays.toString(as) + ", b = " + Arrays.toString(bs));
+        if (compare(a, b) < 0) {
+          if (testJoinMeetMatPower(a, b, alg, consts)) {
+            System.out.println("Join meet term for the element corresponding to a = " + Arrays.toString(a) + ", b = " + Arrays.toString(b));
             List<IntArray> ans = new ArrayList<IntArray>(2);
-            ans.add(new IntArray(as));
-            ans.add(new IntArray(bs));
+            ans.add(new IntArray(a));
+            ans.add(new IntArray(b));
             return ans;
           }
           else {
-            System.out.println("No join meet term for the element corresponding to a = " + Arrays.toString(as) + ", b = " + Arrays.toString(bs));
+            System.out.println("No join meet term for the element corresponding to a = " + Arrays.toString(a) + ", b = " + Arrays.toString(b));
           }
         }
         if (!binc.increment()) break;
@@ -41,17 +45,19 @@ public class Michalewski {
     return null;
   }
   
-  
-  
   /**
-   * 
-   * 
-   * @param a      vector with elements in alg of length k
-   * @param b
-   * @param alg
-   * @param consts
-   * @return
+   * lexicographic ordering.
    */
+  private static int compare(int[] a, int[] b) {
+    final int k = a.length;
+    if (Arrays.equals(a, b)) return 0;
+    for (int i = 0; i < k; i++) {
+      if (a[i] < b[i]) return -1;
+      if (a[i] > b[i]) return 1;
+    }
+    return 0;
+  }
+  
   public static boolean testJoinMeetMatPower(int[] a, int[] b, SmallAlgebra alg, List<IntArray> consts) {
     final int k = a.length;
     BigProductAlgebra big = new BigProductAlgebra(alg, 4);
@@ -100,9 +106,9 @@ public class Michalewski {
   
 	
   public static void main(String[] args) throws Exception {    
-    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/rps4.ua");
-    //SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/polin.ua");
-    findJoinMeetMatPower(alg, 6);
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/rps4.ua");
+    //SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin.ua");
+    findJoinMeetMatPower(alg, 3);
   }
 
 }

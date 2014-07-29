@@ -25,7 +25,12 @@ public class Version {
   // Kazda's algorithm for test for an edge term for idempotent algebras
 //public static final String versionString = "v1.10 ";
 //public static final String buildDate = "(Jul 5, 2014)";
+  
   // Matt's code for edge terms both idempotent and not
-  public static final String versionString = "v1.11 ";
-  public static final String buildDate = "(Jul 28, 2014)";
+  //public static final String versionString = "v1.11 ";
+  //public static final String buildDate = "(Jul 28, 2014)";
+  
+  // removed duplicates in Closer.setEltsToFind.
+  public static final String versionString = "v1.12 ";
+  public static final String buildDate = "(Jul 29, 2014)";
 }
