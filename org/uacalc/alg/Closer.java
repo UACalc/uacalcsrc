@@ -220,10 +220,23 @@ public class Closer {
   
   public List<IntArray> getElementsToFind() { return eltsToFind; }
   
+  /**
+   * This takes <code>e</code> and deletes duplicates, maintaining the order,
+   * before setting <code>eltsToFind</code>.
+   * 
+   * @param e
+   * @param gens
+   */
   public void setElementsToFind(List<IntArray> e, List<IntArray> gens) {
-    eltsToFind = e;
-    indecesMapOfFoundElts = new HashMap<IntArray,Integer>(e.size());
+    eltsToFind = new ArrayList<IntArray>(e.size());
+    final Set<IntArray> hs = new HashSet<IntArray>(e.size());
     for (IntArray ia : e) {
+      if (hs.add(ia)) {
+        eltsToFind.add(ia);
+      }
+    }
+    indecesMapOfFoundElts = new HashMap<IntArray,Integer>(eltsToFind.size());
+    for (IntArray ia : eltsToFind) {
       indecesMapOfFoundElts.put(ia, minusOne);
     }
     for (int i = 0; i < gens.size(); i++) {
