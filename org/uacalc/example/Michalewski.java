@@ -72,7 +72,7 @@ public class Michalewski {
     gens.addAll(consts);
     Closer closer = new Closer(big, gens, true);
     closer.setElementsToFind(eltsToFind, gens);
-    closer.setProgressReport(new ProgressReport());
+    //closer.setProgressReport(new ProgressReport());
     closer.sgClose();
     if (closer.allElementsFound()) return true;
     return false;
@@ -106,9 +106,9 @@ public class Michalewski {
   
 	
   public static void main(String[] args) throws Exception {    
-    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/rps4.ua");
-    //SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/polin.ua");
-    findJoinMeetMatPower(alg, 3);
+    //SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/rps4.ua");
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/emil2y.ua");
+    findJoinMeetMatPower(alg, 2);
   }
 
 }
