@@ -317,7 +317,8 @@ public class Algebras {
     //for (Operation op : ops2) {
     //  System.out.println(ArrayString.toString(op.getTable()));
     //}
-    SmallAlgebra ans = new BasicAlgebra("matrixPower", Operations.power(alg.cardinality(), k), ops2);
+    String str = alg.getName() != null? alg.getName() + "^[" + k + "]" : k + "-matrix pwoer";
+    SmallAlgebra ans = new BasicAlgebra(str, Operations.power(alg.cardinality(), k), ops2);
     //try {
     //  org.uacalc.io.AlgebraIO.writeAlgebraFile(ans, "/home/ralph/Java/Algebra/algebras/upow.ua");
     //}

@@ -22,7 +22,7 @@ import org.uacalc.alg.sublat.SubalgebraLattice;
 public interface SmallAlgebra extends Algebra {
 
   public static enum AlgebraType {
-    BASIC, BASIC_LATTICE, QUOTIENT, SUBALGEBRA, PRODUCT, POWER,
+    BASIC, BASIC_LATTICE, QUOTIENT, SUBALGEBRA, PRODUCT, POWER, MATRIX_POWER,
     REDUCT, SUBPRODUCT, FREE, POLIN_LIKE, UNARY_TERMS_MONOID
   }
   

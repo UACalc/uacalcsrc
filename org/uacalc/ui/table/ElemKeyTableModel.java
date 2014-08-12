@@ -70,6 +70,11 @@ public class ElemKeyTableModel extends AbstractTableModel {
        //use Horner; check if too big
     }
     
+    if (algType == AlgebraType.MATRIX_POWER) {
+      MatrixPowerAlgebra mAlg = (MatrixPowerAlgebra)alg;
+      return Arrays.toString((int[])mAlg.getPowerAlgebra().getElement(rowIndex));
+    }
+    
     if (alg instanceof SubProductAlgebra) {
       if (columnIndex == 1) return terms[rowIndex];
       if (getColumnCount() > 2) {
