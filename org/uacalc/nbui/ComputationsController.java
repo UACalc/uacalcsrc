@@ -3614,9 +3614,10 @@ public class ComputationsController {
       uacalcUI.getMainController().setUserWarning("power should be at least 2", false);
       return;
     }
-    //SmallAlgebra matPowAlg = Algebras.matrixPower(alg, pow);
-    SmallAlgebra matPowAlg = new MatrixPowerAlgebra("", alg, pow);  // MatrixPowerAlgebra needs fixing
-    //matPowAlg.convertToDefaultValueOps();
+    // The MatrixPowerAlgebra class has some errors that I can't fix right now so going back to basic
+    //SmallAlgebra matPowAlg = new MatrixPowerAlgebra("", alg, pow);  // MatrixPowerAlgebra needs fixing
+    SmallAlgebra matPowAlg = Algebras.matrixPower(alg, pow);
+    matPowAlg.convertToDefaultValueOps();
     MainController mc = uacalcUI.getMainController();
     mc.addAlgebra(matPowAlg, true);
   }

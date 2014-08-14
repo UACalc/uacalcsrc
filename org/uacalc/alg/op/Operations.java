@@ -527,6 +527,47 @@ public class Operations {
     return shift;
   }
   
+  /**
+   * This maps a pair of vectors (x,y) to (y_{k-1},x_0, ..., x_{k-2}); see
+   * McKenzie's finite forbidden lattices. 
+   * 
+   */
+  public static Operation makeBinaryLeftShift(final int vecSize, final int rootSize) {
+ 
+    final int algSize = power(rootSize, vecSize);
+    
+    Operation shift = new AbstractOperation("binrightshift", 2, algSize) {
+      
+      // TODO: complete the code below
+      private int[] blendedShiftArray(int[] arr0, int[] arr1) {
+        final int size = arr0.length;
+        int[] ans = new int[size];
+        for (int i = 1; i < size; i++) {
+          ans[i] = arr0[i-1];
+        }
+        ans[0] = arr1[size - 1];
+        return ans;
+      }
+      // do we need a getTable() ? 
+      public Object valueAt(List args) {
+        final int[] arg0 = ((IntArray)args.get(0)).getArray();
+        final int[] arg1 = ((IntArray)args.get(1)).getArray();
+        int[] shifted = blendedShiftArray(arg0, arg1);
+        return new IntArray(shifted);
+      }
+      
+      public int intValueAt(int[] args) {
+        final int arg0 = args[0];
+        final int arg1 = args[1];
+        final int[] arr0 = Horner.hornerInv(arg0, rootSize, vecSize);
+        final int[] arr1 = Horner.hornerInv(arg1, rootSize, vecSize);
+        return Horner.horner(blendedShiftArray(arr0, arr1), rootSize);
+      }
+    };
+    return shift;
+  }
+  
+  
   public static Operation makeMatrixDiagonalOp(final int vecSize, final int rootSize) {
     final int algSize = power(rootSize, vecSize);
     
