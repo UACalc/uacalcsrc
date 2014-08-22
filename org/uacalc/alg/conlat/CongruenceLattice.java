@@ -45,10 +45,6 @@ import java.util.logging.*;
  */ 
 public class CongruenceLattice implements Lattice {
 
-  static Logger logger = Logger.getLogger("org.uacalc.alg.CongruenceLattice");
-  static {
-    logger.setLevel(Level.FINER);
-  }
   
   public static ProgressReport monitor;// make it static and public for now
                                 // change it later. TODO
@@ -1779,6 +1775,27 @@ public class CongruenceLattice implements Lattice {
   public Partition[] getPermutabilityLevelWitnesses() {
     return permutabilityLevelWitnesses;
   }
+  /**
+   * Find the nonconstant, idempotent member of Pol1(A).
+   * 
+   * @return
+   */
+  public List<IntArray> idempotentPolynomials() {
+    final BigProductAlgebra prodAlg = new BigProductAlgebra(getAlgebra(), 1);
+    final int[] gen = new int[algSize];
+    final List<IntArray> gens = new ArrayList<>();
+    gens.add(new IntArray(gen));
+    for (int i = 0; i <algSize; i++) gen[i] = i;
+    SubProductAlgebra subpow = new SubProductAlgebra("", prodAlg, gens, false, true, null);
+    List<IntArray> univ = subpow.getUniverseList();
+    List<IntArray> ans = new ArrayList<>();
+    for (IntArray ia : univ) {
+      if (ia.isIdempotent() && !ia.isConstant()) ans.add(ia);
+    }
+    return ans;
+  }
+  
+  
   
   
   
@@ -1839,3 +1856,4 @@ public class CongruenceLattice implements Lattice {
 
   
 }
+
