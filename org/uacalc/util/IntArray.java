@@ -140,6 +140,15 @@ public class IntArray implements Cloneable {
     return true;
   }
   
+  public boolean isConstant() {
+    if (size == 0) return true;
+    int a = array[0];
+    for (int i = 1; i < size; i++) {
+      if (array[i] != a) return false;
+    }
+    return true;
+  }
+  
   public static Comparator<IntArray> lexicographicComparitor() {
     return new Comparator<IntArray>() {
       public int compare(IntArray ia0, IntArray ia1) {
