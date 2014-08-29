@@ -4,6 +4,7 @@ import org.uacalc.alg.*;
 import org.uacalc.alg.op.*;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
+import org.uacalc.io.*;
 import java.util.*;
 
 
@@ -31,13 +32,20 @@ public class Type1 {
       varList.add(var);
     }
     Closer closer = new Closer(bigProd, gens, termMap);
-    List<IntArray> lst = closer.close();
+    List<IntArray> lst = closer.sgClose();
+    System.out.println("lst: " + lst);
     IntArray ia0 = new IntArray(new int[]{0,1,2,3});
     IntArray ia1 = new IntArray(new int[]{0,4,3,7});
     Term t0 = termMap.get(ia0);
     Term t1 = termMap.get(ia1);
-    Operation h = t0.interpretation(matpow, varList, false);
-    Operation k = t1.interpretation(matpow, varList, false);
+    System.out.println("t0 = " + t0);
+    System.out.println("t1 = " + t1);
+    //Operation h = t0.interpretation(matpow, varList, false);  // the false is not working
+    Operation h = t0.interpretation(matpow);
+    
+    System.out.println("h arity: " + h.arity());
+    //Operation k = t1.interpretation(matpow, varList, false);
+    Operation k = t1.interpretation(matpow);
     List<Operation> ops = new ArrayList<>(2);
     ops.add(h);
     ops.add(k);
@@ -47,9 +55,10 @@ public class Type1 {
   
   
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     SmallAlgebra two = new BasicAlgebra("two", 2, new ArrayList<Operation>());
     SmallAlgebra ans = reductAlg(two);
+    AlgebraIO.writeAlgebraFile(ans, "/tmp/two-reduct.ua");
 
   }
 
