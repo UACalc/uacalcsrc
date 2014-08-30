@@ -390,7 +390,7 @@ public class FreeAlgebra extends SubProductAlgebra implements SmallAlgebra {
     final int k = getVariables().size();
     if (k < 2) return null;  // TODO: give an error
     final int n = cardinality();
-    Map<Term,Integer> substMap = new HashMap<Term,Integer>(k);
+    Map<Variable,Integer> substMap = new HashMap<>(k);
     substMap.put(getVariables().get(0), 1);
     substMap.put(getVariables().get(1), 0);
     for (int i = 2; i < k; i++) {

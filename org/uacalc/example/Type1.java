@@ -40,12 +40,12 @@ public class Type1 {
     Term t1 = termMap.get(ia1);
     System.out.println("t0 = " + t0);
     System.out.println("t1 = " + t1);
-    //Operation h = t0.interpretation(matpow, varList, false);  // the false is not working
-    Operation h = t0.interpretation(matpow);
+    Operation h = t0.interpretation(matpow, varList, false);  // the false is not working
+    //Operation h = t0.interpretation(matpow);
     
     System.out.println("h arity: " + h.arity());
-    //Operation k = t1.interpretation(matpow, varList, false);
-    Operation k = t1.interpretation(matpow);
+    Operation k = t1.interpretation(matpow, varList, false);
+    //Operation k = t1.interpretation(matpow);
     List<Operation> ops = new ArrayList<>(2);
     ops.add(h);
     ops.add(k);

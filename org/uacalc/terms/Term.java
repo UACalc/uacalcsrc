@@ -53,7 +53,7 @@ public interface Term {
    * The int evaluation of this term in an algebra using <code>map</code> as
    * the variable assignment.
    */
-  public int intEval(Algebra alg, Map map);
+  public int intEval(Algebra alg, Map<Variable,Integer> map);
 
   /**
    * The interpretation of this term in an algebra; that is, the

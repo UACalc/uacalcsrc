@@ -76,7 +76,7 @@ public class NonVariableTerm implements Term {
     //@mike implemented this
     final Operation op = alg.getOperation(leadingOperationSymbol());
     final List args = new ArrayList(op.arity());
-    List children = getChildren();
+    List<Term> children = getChildren();
     for (int i = 0; i < op.arity(); i++ ) {
       Term t = (Term)children.get(i);
       args.add(t.eval(alg, map));
@@ -84,10 +84,10 @@ public class NonVariableTerm implements Term {
     return op.valueAt(args);
   }
 
-  public int intEval(Algebra alg, Map map) {
+  public int intEval(Algebra alg, Map<Variable,Integer> map) {
     final Operation op = alg.getOperation(leadingOperationSymbol());
     int[] arg = new int[op.arity()];
-    List children = getChildren();
+    List<Term> children = getChildren();
     for (int i = 0; i < op.arity(); i++ ) { 
       Term t = (Term)children.get(i);
       arg[i] = t.intEval(alg, map);
@@ -98,8 +98,19 @@ public class NonVariableTerm implements Term {
   // should be TermOperation but having trouble with casting
   public Operation interpretation(final SmallAlgebra alg, 
                                       final List<Variable> varlist, 
-                                      final boolean all) {
-    final int arity = varlist.size(); // if no varlist ??
+                                      final boolean useAll) {
+    List<Variable> termVarList = getVariableList();
+    if (!varlist.containsAll(termVarList)) {
+      throw new IllegalArgumentException("varlist must have all the variable of the term");
+    }
+    final int arity = useAll ? varlist.size() : termVarList.size();
+    final List<Variable> ansVarList = new ArrayList<>(arity);
+    for (Variable var : varlist) {
+      if (useAll) ansVarList.add(var);
+      else {
+        if (termVarList.contains(var)) ansVarList.add(var);
+      }
+    }
     final int size = alg.cardinality();
     Operation op = new AbstractOperation("Op_" + this,
                                          arity, size) {
@@ -139,7 +150,7 @@ public class NonVariableTerm implements Term {
           if (tableOp != null) return tableOp.intValueAt(args);
           Map<Variable,Integer> map = new  HashMap<Variable,Integer>();
           for (int i = 0; i < args.length; i++) {
-            map.put(varlist.get(i), new Integer(args[i]));
+            map.put(ansVarList.get(i), new Integer(args[i]));
           }
           return intEval(alg, map);
         }

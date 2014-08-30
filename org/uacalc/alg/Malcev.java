@@ -85,7 +85,7 @@ public class Malcev {
   
   private static int involutionAuto(int i, FreeAlgebra f2, Map<Integer,Integer> auto) {
     if (auto.get(i) == null) {
-      Map<Term,Integer> substMap = new HashMap<Term,Integer>(2);
+      Map<Variable,Integer> substMap = new HashMap<>(2);
       substMap.put(Variable.x, 1); // 1 is the y generator
       substMap.put(Variable.y, 0);
       Term t = f2.getTerm((IntArray)f2.getElement(i));
