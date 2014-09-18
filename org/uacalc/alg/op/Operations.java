@@ -568,6 +568,8 @@ public class Operations {
   }
   
   
+  
+  
   public static Operation makeMatrixDiagonalOp(final int vecSize, final int rootSize) {
     final int algSize = power(rootSize, vecSize);
     
@@ -796,6 +798,44 @@ public class Operations {
     return makeConstantIntOperation("c", algSize, elt);
   }
   
+  /**
+   * Make a unary operation interchanging a0 and a1.
+   * 
+   * @param algSize
+   * @param a0
+   * @param a1
+   * @return
+   */
+  public static Operation makeTransposition(final int algSize, final int a0, final int a1) {
+    OperationSymbol sym = new OperationSymbol("transpostion" + a0 + "-" + a1, 1);
+    
+    Operation op = new AbstractOperation(sym, algSize) {
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+      public int intValueAt(final int[] args) {
+        if (args[0] == a0) return a1;
+        if (args[0] == a1) return a0;
+        return args[0];
+      }
+    };
+    return op;
+  }
+  
+  public static Operation makeFullCycle(final int algSize) {
+    OperationSymbol sym = new OperationSymbol("cycle" + algSize, 1);
+    
+    Operation op = new AbstractOperation(sym, algSize) {
+      public Object valueAt(List args) {
+        throw new UnsupportedOperationException();
+      }
+      public int intValueAt(final int[] args) {
+        return (args[0] + 1) % algSize;
+      }
+    };
+    return op;
+  }
+  
   public static Operation makeConstantIntOperation(final String symbolPrefix, final int algSize, final int elt) {
     OperationSymbol sym = new OperationSymbol(symbolPrefix + elt, 0);
     final int[] values = new int[] {elt};
@@ -816,6 +856,15 @@ public class Operations {
     };
     return op;
   }
+  
+  public static List<Operation> makeConstantIntOperations(final int algSize) {
+    List<Operation> ans = new ArrayList<>(algSize);
+    for (int i = 0; i < algSize; i++) {
+      ans.add(makeConstantIntOperation(algSize, i));
+    }
+    return ans;
+  }
+  
   
   public static void binaryOpToCSV(String desc, Operation binop, java.io.PrintStream out) {
     if (binop.arity() != 2) throw new IllegalArgumentException();

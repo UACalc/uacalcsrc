@@ -10,6 +10,16 @@ import java.util.*;
 
 public class Type1 {
   
+  public static SmallAlgebra minType1 (int algSize) {
+    List<Operation> ops = new ArrayList<>(2);
+    ops.add(Operations.makeFullCycle(algSize));
+    ops.add(Operations.makeTransposition(algSize, 0, 1));
+    ops.addAll(Operations.makeConstantIntOperations(algSize));
+    SmallAlgebra ans = new BasicAlgebra("minType1-" + algSize, algSize, ops);
+    return ans;
+  }
+  
+  
   public static SmallAlgebra reductAlg (SmallAlgebra alg) {
     SmallAlgebra matpow = Algebras.matrixPower(alg, 3);
     BigProductAlgebra bigProd = new BigProductAlgebra(matpow, 4);
