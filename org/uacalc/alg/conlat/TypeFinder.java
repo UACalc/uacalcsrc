@@ -146,6 +146,25 @@ public final class TypeFinder {
     }
     return typeSet;
   }
+  
+  /**
+   * Test if <code>ia</code> is a beta subtrace.
+   * 
+   * @param ia
+   * @param beta
+   * @return
+   */
+  public boolean isSubtrace(IntArray ia, Partition beta) {
+    Partition betaStar = con.lowerStar(beta);
+    if (betaStar == null) throw new IllegalArgumentException(
+                         "beta = " + beta + " is not join irreducible");
+    alpha = (Partition)alpha.join(betaStar);
+    if (beta.leq(alpha)) throw new IllegalArgumentException(
+                         "beta is below its lower cover join alpha");
+    setAlpha(alpha);
+    Subtrace subtr = findSubtrace(ia);
+    return subtr.getSubtraceUniverse().contains(ia);
+  }
 
   public Subtrace findSubtrace(Partition beta) { 
     return findSubtrace(beta, con.lowerStar(beta));

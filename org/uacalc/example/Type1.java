@@ -1,6 +1,7 @@
 package org.uacalc.example;
 
 import org.uacalc.alg.*;
+import org.uacalc.alg.conlat.*;
 import org.uacalc.alg.op.*;
 import org.uacalc.util.*;
 import org.uacalc.terms.*;
@@ -9,11 +10,32 @@ import java.util.*;
 
 
 public class Type1 {
-  
-  public static SmallAlgebra minType1 (int algSize) {
+  /**
+   * Make a unary algebra of size <code>algSize</code> with all permutations 
+   * and all constants.
+   * 
+   * @param algSize
+   * @return
+   */
+  public static SmallAlgebra fullPermutationAlgebra (int algSize) {
     List<Operation> ops = new ArrayList<>(2);
     ops.add(Operations.makeFullCycle(algSize));
     ops.add(Operations.makeTransposition(algSize, 0, 1));
+    ops.addAll(Operations.makeConstantIntOperations(algSize));
+    SmallAlgebra ans = new BasicAlgebra("minType1-" + algSize, algSize, ops);
+    return ans;
+  }
+  
+  /**
+   * Make a unary algebra of size <code>algSize</code> with the
+   * shift permutation and all constants.
+   * 
+   * @param algSize
+   * @return
+   */
+  public static SmallAlgebra cyclicPermutationAlgebra (int algSize) {
+    List<Operation> ops = new ArrayList<>(2);
+    ops.add(Operations.makeFullCycle(algSize));
     ops.addAll(Operations.makeConstantIntOperations(algSize));
     SmallAlgebra ans = new BasicAlgebra("minType1-" + algSize, algSize, ops);
     return ans;
@@ -63,13 +85,29 @@ public class Type1 {
     return ans;
   }
   
+  public static List<IntArray> subtraces (SmallAlgebra alg, Partition beta) {
+    TypeFinder tfinder = new TypeFinder(alg);
+    Subtrace subtr = tfinder.findSubtrace(beta);
+    return subtr.getSubtraceUniverse();
+  }
   
 
   public static void main(String[] args) throws Exception {
-    SmallAlgebra two = new BasicAlgebra("two", 2, new ArrayList<Operation>());
-    SmallAlgebra ans = reductAlg(two);
-    AlgebraIO.writeAlgebraFile(ans, "/tmp/two-reduct.ua");
-
+    //SmallAlgebra two = new BasicAlgebra("two", 2, new ArrayList<Operation>());
+    //SmallAlgebra ans = reductAlg(two);
+    //AlgebraIO.writeAlgebraFile(ans, "/tmp/two-reduct.ua");
+    int size = 5;
+    SmallAlgebra alg = cyclicPermutationAlgebra(size);
+    SmallAlgebra matrixPower = Algebras.matrixPower(alg, 2);
+    Partition one = matrixPower.con().one();
+    List<IntArray> subtraces = subtraces(matrixPower, one);
+    System.out.println(subtraces);
+    int a = subtraces.get(0).get(0);
+    int b = subtraces.get(0).get(1);
+    Algebra big = new BigProductAlgebra(matrixPower, 4);
+    
+    
+    
   }
 
 }
