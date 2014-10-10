@@ -101,13 +101,28 @@ public class Type1 {
     SmallAlgebra matrixPower = Algebras.matrixPower(alg, 2);
     Partition one = matrixPower.con().one();
     List<IntArray> subtraces = subtraces(matrixPower, one);
+    for (IntArray subtr : subtraces) {
+      if (subtr.get(0) == 0) System.out.println(subtr);
+    }
     System.out.println(subtraces);
     int a = subtraces.get(0).get(0);
     int b = subtraces.get(0).get(1);
-    Algebra big = new BigProductAlgebra(matrixPower, 4);
-    
-    
-    
+    System.out.println("a = " + a + ", b = " + b);
+    BigProductAlgebra big = new BigProductAlgebra(matrixPower, 4);
+    IntArray g0 = new IntArray(new int[] {a,a,b,b});
+    IntArray g1 = new IntArray(new int[] {a,b,a,b});
+    List<IntArray> gens = new ArrayList<>(2);
+    gens.add(g0);
+    gens.add(g1);
+    Map<IntArray,Term> termMap = new HashMap<>();
+    termMap.put(g0, Variable.x);
+    termMap.put(g1, Variable.y);
+    List<IntArray> Tab = big.sgClose(gens, termMap);
+    List<IntArray> aFirst = new ArrayList<>();
+    for (IntArray ia : Tab) { 
+      if (ia.get(0) == a) aFirst.add(ia);
+    }
+    System.out.println(aFirst);
   }
 
 }
