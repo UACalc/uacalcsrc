@@ -98,7 +98,7 @@ public class SubalgebraLattice implements Lattice {
 
   public boolean isTotal() { return true; }
   
-  public List constantOperations() { return SimpleList.EMPTY_LIST; }
+  public List<Operation> constantOperations() { return new ArrayList<Operation>(); }
 
   public SmallAlgebra getAlgebra() { return alg; }
 
