@@ -4,9 +4,10 @@ package org.uacalc.alg;
 
 import java.util.*;
 import java.util.logging.*;
-import org.uacalc.util.*;
 
+import org.uacalc.util.*;
 import org.uacalc.alg.conlat.*;
+import org.uacalc.alg.op.Operation;
 import org.uacalc.alg.sublat.SubalgebraLattice;
 
 /**
@@ -85,9 +86,33 @@ public class PowerAlgebra extends ProductAlgebra implements SmallAlgebra {
                                    org.uacalc.io.BadAlgebraFileException {
     if (args.length == 0) {
       SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
-          "/home/ralph/Java/Algebra/algebras/m3.ua");
+          "/Users/ralph/Java/Algebra/algebras/m3.ua");
       SmallAlgebra alg2 = new PowerAlgebra(alg, 3);
+      List<SmallAlgebra> algs = new ArrayList<>(3);
+      algs.add(alg);
+      algs.add(alg);
+      algs.add(alg);
+      BigProductAlgebra alg3 = new BigProductAlgebra(algs);
       System.out.println("parents: " + alg2.parents());
+      int[][] arg = new int[][] {{2,3,1},{1,2,0}};
+      Operation op = alg2.operations().get(0);
+      System.out.println(Arrays.toString(op.valueAt(arg)));
+      SmallAlgebra pow = new PowerAlgebra(alg, 2);
+      op = pow.operations().get(0);
+      //ArrayList<int[]> argsPow = new ArrayList<>();
+      List<Integer> a0 = new ArrayList<>();
+      List<Integer> a1 = new ArrayList<>();
+      a0.add(2); a0.add(3); a0.add(1);
+      a1.add(1); a1.add(2); a1.add(0);
+      List<List<Integer>> argsInt = new ArrayList<>();
+      argsInt.add(a0);
+      argsInt.add(a1);
+      
+      //argsPow.add(new int[] {2,3,1});
+      //argsPow.add(new int[] {1,3,0});
+      
+      
+      System.out.println(op.valueAt(argsInt));
       return;
     }
     System.out.println("reading " + args[0]);

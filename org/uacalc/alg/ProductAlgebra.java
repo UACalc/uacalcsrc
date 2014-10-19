@@ -66,21 +66,19 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
     final int k = algebras.get(0).operations().size();
     List<Operation> ops = new ArrayList<Operation>(k);
     for (int i = 0; i < k; i++) {
-      final int arity = 
-           ((Operation)((Algebra)algebras.get(0)).operations().get(i)).arity();
-      final List<Operation> opList = new ArrayList<Operation>(numberOfProducts);
+      final int arity = algebras.get(0).operations().get(i).arity();
+      final List<Operation> opList = new ArrayList<>(numberOfProducts);
       for (int j = 0; j < numberOfProducts; j++) {
-        opList.add(((Algebra)algebras.get(j)).operations().get(i));
+        opList.add(algebras.get(j).operations().get(i));
       }
       final int[][] argsExpanded = new int[arity][numberOfProducts];
       final int[] arg = new int[arity];
-      Operation op = new AbstractOperation(
-                              ((Operation)opList.get(0)).symbol(), size) {
+      Operation op = new AbstractOperation(opList.get(0).symbol(), size) {
           // this is not tested yet
           public Object valueAt(List args) {
             List ans = new ArrayList();
             for (int i = 0; i < opList.size(); i++) {
-              Operation opx = (Operation)opList.get(i);
+              Operation opx = opList.get(i);
               List arg = new ArrayList();
               for (Iterator it = args.iterator(); it.hasNext(); ) {
                 arg.add(((List)it.next()).get(i));

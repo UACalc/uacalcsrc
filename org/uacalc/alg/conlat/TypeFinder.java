@@ -6,7 +6,6 @@ import org.uacalc.util.*;
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.Operation;
 
-
 import java.util.*;
 import java.util.logging.*;
 
@@ -62,6 +61,8 @@ public final class TypeFinder {
   public static final boolean printSubtrace = true;
 
   private final SmallAlgebra A;
+  private final BigProductAlgebra Asquared;  // A^2
+  private final BigProductAlgebra Afourth;   // A^4
   private final int algSize;
   private final CongruenceLattice con;
 
@@ -76,13 +77,13 @@ public final class TypeFinder {
   private int[] roots;
   private int rootsSize;
   private final HashSet<IntArray> diagonalHS;
-  //private ArrayList diagonal;
-  private SimpleList diagonal;
+  private List<IntArray> diagonal;
+  //private SimpleList diagonal;
   private final HashSet<IntArray> diagonal4HS;
-  //private ArrayList diagonal4;
-  private SimpleList diagonal4;
-  private int diagonalSize = 0;
-  private int diagonal4Size = 0;
+  private List<IntArray> diagonal4;
+  //private SimpleList diagonal4;
+  //private int diagonalSize = 0;
+  //private int diagonal4Size = 0;
 
   private HashSet<Integer> typeSet;
 
@@ -92,12 +93,16 @@ public final class TypeFinder {
 
   public TypeFinder(SmallAlgebra alg, Partition alpha) {
     A = alg;
+    Asquared = new BigProductAlgebra(alg, 2);
+    Afourth = new BigProductAlgebra(alg, 4);
     con = A.con();
     algSize = A.cardinality();
     visited = new HashSet<IntArray>();
-    diagonal = SimpleList.EMPTY_LIST;
+    //diagonal = SimpleList.EMPTY_LIST;
+    diagonal = new ArrayList<>();
     diagonalHS = new HashSet<IntArray>();
-    diagonal4 = SimpleList.EMPTY_LIST;
+    //diagonal4 = SimpleList.EMPTY_LIST;
+    diagonal4 = new ArrayList<>();
     diagonal4HS = new HashSet<IntArray>();
     if (alpha == null) alpha = con.zero();
     setAlpha(alpha);
@@ -110,21 +115,23 @@ public final class TypeFinder {
     this.alpha = alpha;
     roots = alpha.representatives();
     rootsSize = roots.length;
-    diagonalSize = 0;
-    diagonal4Size = 0;
-    diagonal = SimpleList.EMPTY_LIST;
-    diagonal4 = SimpleList.EMPTY_LIST;
+    diagonal = new ArrayList<>();
+    diagonal4 = new ArrayList<>();
+    //diagonal = SimpleList.EMPTY_LIST;
+    //diagonal4 = SimpleList.EMPTY_LIST;
     diagonalHS.clear();
     diagonal4HS.clear();
     for (int i = 0; i < rootsSize; i++) {
-      int[] tmp = new int[] {roots[i], roots[i]};
-      int[] tmp2 = new int[] {roots[i], roots[i], roots[i], roots[i]};
-      diagonal = diagonal.cons(tmp);
-      diagonalSize++;
-      diagonalHS.add(new IntArray(tmp));
-      diagonal4 = diagonal4.cons(tmp2);
-      diagonal4Size++;
-      diagonal4HS.add(new IntArray(tmp2));
+      IntArray tmp = new IntArray(new int[] {roots[i], roots[i]});
+      IntArray tmp2 = new IntArray(new int[] {roots[i], roots[i], roots[i], roots[i]});
+      diagonal.add(tmp);
+      //diagonal = diagonal.cons(tmp);
+      //diagonalSize++;
+      diagonalHS.add(tmp);
+      diagonal4.add(tmp2);
+      //diagonal4 = diagonal4.cons(tmp2);
+      //diagonal4Size++;
+      diagonal4HS.add(tmp2);
     }
   }
 
@@ -193,180 +200,114 @@ public final class TypeFinder {
   }
 
   /**
-   * Now this is recursive so it might make sense to make it iterative.
-   *
    * This looks at the image of the ordered pair under Pol_1(A). If 
    * this image is has not been visited in a previous call, this call
-   * is abondoned and a recursive call is make on the image pair.
+   * is abandoned and a recursive call is make on the image pair.
    * Otherwise it builds up Pol_1(A) restricted to the pair. This is
-   * the local varaible called <tt>universe</tt>. Note 
+   * the local variable called <tt>universe</tt>. Note 
    *
    *      Pol_1(A) | pair = sg({pair, and (x,x), x in A})
    *
    * so the method calculates universe as it goes. If we never reach
-   * an univisited pair, the this pair is a subtrace. 
+   * an unvisited pair, the this pair is a subtrace. 
    *
    * If the reverse pair is visited, there is an involution (ruling out
    * type 4 and 5). This is recorded.
    *
    */
-  private Subtrace findSubtrace(IntArray pairIA) {
-    logger.info("calling IntArray with org pair " +  pairIA);
-    int[] pair = pairIA.getArray();
-    visited.add(pairIA);
-    SimpleList universe = diagonal;
-
-    HashSet<IntArray> genHashSet = (HashSet<IntArray>)diagonalHS.clone();
-    genHashSet.add(pairIA);
-    universe = universe.cons(pair);
-    SimpleList newElems = universe;
-    SimpleList oldElems = universe;
-
-    // a fixed holder for the result of an operatrion.
-    IntArray resIA = new IntArray(2);
-    int[] res = resIA.getArray();    // Note writting to res changes resIA
-    // a separate holder for the unordered pair
-    IntArray unorderedResIA = new IntArray(2);
-    int[] unorderedRes = unorderedResIA.getArray(); // Note  (see above)
-
-    HashMap argIteratorMap = new HashMap();
-    HashMap argMap = new HashMap();
-    HashMap argvMap = new HashMap();
-    for (Iterator opIt = A.operations().iterator(); opIt.hasNext(); ) {
-      int ar = ((Operation)opIt.next()).arity();
-      if (ar == 0) continue;
-      Integer arInt = new Integer(ar);
-      if (argIteratorMap.get(arInt) == null) {
-        argIteratorMap.put(arInt, new Iterator[ar]); 
-        argMap.put(arInt, new int[ar][]);
-        argvMap.put(arInt, new int[ar]);
-      }
-    }
-
-
+  public Subtrace findSubtrace(IntArray pairIA) {
+    Set<IntArray> univHS = new HashSet<>();
+    Set<IntArray> unorderedUnivHS = new HashSet<>();
+    IntArray oldPair;
+    List<IntArray> univ;
     while (true) {
-      logger.finer("subtr u size " + universe.size());
-      for (Iterator opIt = A.operations().iterator(); opIt.hasNext(); ) {
-        Operation f = (Operation)opIt.next();
-        int ar = f.arity();
-        if (ar == 0) continue;
-        Integer arInt = new Integer(ar);
-        //Iterator[] argIterators = new Iterator[ar];
-        Iterator[] argIterators = (Iterator[])argIteratorMap.get(arInt);
-        //int[][] arg = new int[ar][];
-        int[][] arg = (int[][])argMap.get(arInt);
-        //int argv[] = new int[ar];
-        int argv[] = (int[])argvMap.get(arInt);
-        for (int i = 0; i < ar; i++) {
-          //Perform operation f for the arguments
-          //given in Iterator[].
-          //In the i-th step,
-          //  the first i arguments are in old;
-          //  the i-th argument is in lastNew;
-          //  the rest of the arguments is in universe
-          for (int j = 0; j < i; j++) {
-            argIterators[j] = oldElems.iterator();
-            arg[j] = (int[])argIterators[j].next();
-          }
-          argIterators[i] = newElems.frontIterator(oldElems);
-          arg[i] = (int[])argIterators[i].next();
-          for(int j = i + 1; j < ar; j++) {
-            argIterators[j] = newElems.iterator();
-            arg[j] = (int[])argIterators[j].next();
-          }
-          while(true) {//through arguments
-            //perform operation f:
-            for(int k = 0; k < 2; k++ ) {
-              for(int j = 0; j < ar; j++) {
-                argv[j] = arg[j][k];
-              }
-              res[k] = alpha.representative(f.intValueAt(argv));
-            }
-            // ignore res if it is in alpha:
-            if (res[0] != res[1]) {
-              logger.finer("op is " + f.symbol());
-              logger.finer("arg = " + ArrayString.toString(arg));
-              logger.finer(", res = " + ArrayString.toString(res));
-            }
-
-            if (res[0] != res[1]) {
-              if (res[1] < res[0]) {
-                unorderedRes[0] = res[1];
-                unorderedRes[1] = res[0];
-              }
-              else {
-                unorderedRes[0] = res[0];
-                unorderedRes[1] = res[1];
-              }
-              if (!visited.contains(unorderedResIA)) {
-                logger.finer("op is " + f.symbol());
-                return findSubtrace((IntArray)unorderedResIA.clone());
-              }
-              else {
-                if( !genHashSet.contains( resIA ) ) {
-                  int [] res2 = new int[2];
-                  for (int v = 0; v < 2; v++) {
-                    res2[v] = res[v];
-                  }
-                  genHashSet.add(new IntArray(res2));
-                  universe = universe.cons(res2);
-                  logger.finer("adding to universe " 
-                                     + ArrayString.toString(res2));
-                  logger.finer("universe size is " + universe.size());
-                }
-              }
-            }
-
-            //increment the argumentlist
-            int j = 0;
-            for(j = 0; j < ar; j++ ) {
-              if( !argIterators[j].hasNext() ) {
-                if( j < i ) {
-                  argIterators[j] = oldElems.iterator();
-                } else if( j == i ) {
-                  argIterators[j] = newElems.frontIterator(oldElems);
-                } else {
-                  argIterators[j] = newElems.iterator();
-                }
-                arg[j] = (int[])argIterators[j].next();
-                continue; //increment next coordinate
-              }
-              arg[j] = (int[])argIterators[j].next();
-              break;//argIterators[j] has been increased
-            }
-            if ( j == ar ) { //all arguments done
-              break;
-            }
-          } //arguments cycle
-        }
-      } //operations cycle
-      if (universe == newElems) {  // nothing was added so we are done
-        if (printSubtrace) {  // hack for now
-          logger.fine("subtrace univ " + universe.size());
-          logger.fine("orig pair " + pairIA);
-          logger.fine("subtr " + new IntArray(pair));
-          logUniv(universe);
-
-          System.out.println("subtraces: ");
-          for (Iterator it = universe.iterator(); it.hasNext(); ) {
-            System.out.println(ArrayString.toString(it.next()));
-          }
-        }
-        Subtrace subtrace = new Subtrace(pair[0], pair[1], 
-          genHashSet.contains(new IntArray(new int[] {pair[1], pair[0]})));
-        List<int[]> univ = new ArrayList<int[]>(universe);
-        List<IntArray> subtrUniv = new ArrayList<IntArray>(univ.size());
-        for (int[] arr : univ) {
-          subtrUniv.add(new IntArray(arr));
-        }
-        subtrace.setSubtraceUniverse(subtrUniv);
-        return subtrace;
-      }
-      oldElems = newElems;
-      newElems = universe;
+      oldPair = pairIA;
+      univ = new ArrayList<IntArray>();  // so we can keep it.
+      pairIA = nextPairForSubtrace(pairIA, univHS, unorderedUnivHS, univ);
+      if (pairIA == null) break;
     }
+    int a = oldPair.get(0);
+    int b = oldPair.get(1);
+    Subtrace subtrace = new Subtrace(a, b, 
+        univHS.contains(new IntArray(new int[] {b, a})));
+    subtrace.setSubtraceUniverse(univ);
+    return subtrace;
   }
+  
+  /**
+   * Looks for another pair in the subalgebra of A^2 generated by
+   * the given pair and the constants, whose unordered pair has not been 
+   * visited before and returns it. Returns null if there is none which
+   * implies the original pair is a subtrace. <code>univHS</code> 
+   * and <code>univ</code> are passed 
+   * from caller so it can check if there is an involution and save 
+   * the <code>univ</code> on the subtrace object. 
+   * 
+   * @param pair
+   * @param univHS
+   * @param undorderedUnivHS
+   * @param univ
+   * @return
+   */
+  public IntArray nextPairForSubtrace(IntArray pair, Set<IntArray> univHS,  
+         Set<IntArray> unorderedUnivHS, List<IntArray> univ) {
+    univHS.clear();
+    //List<IntArray> univ = new ArrayList<>();
+    univ.add(pair);
+    for (int i = 0; i < A.cardinality(); i++) {
+      univ.add(new IntArray(new int[] {i,i}));
+    }
+    univHS.addAll(univ);
+    int closedMark = 0;
+    int currentMark = univ.size();
+    while (closedMark < currentMark) {
+      if (Thread.currentThread().isInterrupted()) return null;  // ProgressReport ??
+      for (Operation f : Asquared.operations()) {
+        final int arity = f.arity();
+        if (arity == 0) continue;
+        int[] argIndeces = new int[arity];
+        for (int j = 0; j < arity - 1; j++) {
+          argIndeces[j] = 0;
+        }
+        argIndeces[arity - 1] = closedMark;
+        ArrayIncrementor inc =
+            SequenceGenerator.sequenceIncrementor(
+                argIndeces, currentMark - 1, closedMark);
 
+        final int[][] arg = new int[arity][];
+        while (true) {
+          if (Thread.currentThread().isInterrupted()) return null;  // ProgressReport ??
+          for (int j = 0; j < arity; j++) {
+            arg[j] = univ.get(argIndeces[j]).getArray();
+          }
+
+          int[] vRaw = f.valueAt(arg);
+          IntArray v = new IntArray(vRaw);
+          if (!alpha.isRelated(v.get(0), v.get(1))) {
+            IntArray vUnordered = new IntArray(2);
+            if (v.get(0) < v.get(1)) {
+              vUnordered.set(0, v.get(0));
+              vUnordered.set(1, v.get(1));
+            }
+            else {
+              vUnordered.set(0, v.get(1));
+              vUnordered.set(1, v.get(0));
+            }
+            if (unorderedUnivHS.add(vUnordered)) {  // v is new; start over with it
+              return v;
+            }
+            if (univHS.add(v)) univ.add(v);  // otherwise it is already there; don't add two copies to univ.
+          }
+          if (!inc.increment()) break;
+        }
+      }
+      closedMark = currentMark;
+      currentMark = univ.size();
+    }
+    return null;
+  }
+  
+  
   public int findType(Partition beta) { 
     return findType(beta, con.lowerStar(beta));
   }
@@ -404,236 +345,142 @@ public final class TypeFinder {
    *
    */
   public int findType(Subtrace subtrace) {
+    System.out.println("calling findType with " + subtrace);
     int c = subtrace.first();
     int d = subtrace.second();
-    //boolean has2snag = false;      // (c,d) is a 2-snag
-    //boolean has2snagRev = false;   // (d,c) is a 2-snag
-    //boolean has1snag = false;
     boolean meet = false;
     boolean join = false;
     boolean oneSnag = false;
-    int wx,wy,wu,wv;
+    List<IntArray> universe = new ArrayList<>();
+    universe.addAll(diagonal4);
+    Set<IntArray> univHashSet = new HashSet<>();
+    univHashSet.addAll(universe);
 
-    SimpleList universe = diagonal4;
-    SimpleList oldElems = universe;
-    HashSet genHashSet = (HashSet)diagonal4HS.clone();
-
-    int[] tmp = new int[] {c,c,d,d};
-    universe = universe.cons(tmp);
-    genHashSet.add(new IntArray(tmp));
-    tmp = new int[] {c,d,c,d};
-    universe = universe.cons(tmp);
-    genHashSet.add(new IntArray(tmp));
-    SimpleList newElems = universe;
-
-    // a fixed holder for the result of an operatrion.
-    IntArray resIA = new IntArray(4);
-    int[] res = resIA.getArray();    // Note writting to res changes resIA
-
-
-    HashMap argIteratorMap = new HashMap();
-    HashMap argMap = new HashMap();
-    HashMap argvMap = new HashMap();
-    for (Iterator opIt = A.operations().iterator(); opIt.hasNext(); ) {
-      int ar = ((Operation)opIt.next()).arity();
-      if (ar == 0) continue;
-      Integer arInt = new Integer(ar);
-      if (argIteratorMap.get(arInt) == null) {
-        argIteratorMap.put(arInt, new Iterator[ar]); 
-        argMap.put(arInt, new int[ar][]);
-        argvMap.put(arInt, new int[ar]);
-      }
-    }
-
-    while (true) {
-      for (Iterator opIt = A.operations().iterator(); opIt.hasNext(); ) {
-        Operation f = (Operation)opIt.next();
-        int ar = f.arity();
-        if (ar == 0) continue;
-
-        Integer arInt = new Integer(ar);
-        Iterator[] argIterators = (Iterator[])argIteratorMap.get(arInt);
-        int[][] arg = (int[][])argMap.get(arInt);
-        int argv[] = (int[])argvMap.get(arInt);
-
-        //Iterator[] argIterators = new Iterator[ar];
-        //int[][] arg = new int[ar][];
-        //int argv[] = new int[ar];
-        for (int i = 0; i < ar; i++) {
-          //Perform operation f for the arguments
-          //given in Iterator[].
-          //In the i-th step,
-          //  the first i arguments are in old;
-          //  the i-th argument is in lastNew;
-          //  the rest of the arguments is in universe
-          for (int j = 0; j < i; j++) {
-            argIterators[j] = oldElems.iterator();
-            arg[j] = (int[])argIterators[j].next();
-          }
-          argIterators[i] = newElems.frontIterator(oldElems);
-          arg[i] = (int[])argIterators[i].next();
-          for(int j = i + 1; j < ar; j++) {
-            argIterators[j] = newElems.iterator();
-            arg[j] = (int[])argIterators[j].next();
-          }
-          while(true) {//through arguments
-            //perform operation f:
-            for(int k = 0; k < 4; k++ ) {     // note 4 here. change
-              for(int j = 0; j < ar; j++) {
-                argv[j] = arg[j][k];
-              }
-              res[k] = alpha.representative(f.intValueAt(argv));
-            }
-            // ignore res if it is in alpha:
-            logger.finer("op is " + f.symbol());
-            logger.finer("arg = " + ArrayString.toString(arg));
-            logger.finer(", res = " + ArrayString.toString(res));
-            if (!genHashSet.contains(resIA)) {
-            //System.out.println("got here");
-            logUniv(universe);
-
-
-              int [] res2 = new int[4];
-              for (int v = 0; v < 4; v++) {
-                res2[v] = res[v];
-              }
-              genHashSet.add(new IntArray(res2));
-              universe = universe.cons(res2);
-              int x = res2[0];
-              int y = res2[1];
-              int u = res2[2];
-              int v = res2[3];
-              if (!join && (((x!=y) && (u==v)) || 
-                            ((x!=u) && (y==v)))) { /* join found */
-                if (subtrace.hasInvolution()) {
-                  logger.info("found 3");
-                  logUniv(universe);
-                  subtrace.setMatrixUniverse(convertUniverse(universe));
-                  subtrace.setType(3);
-                  return 3;
-                }
-                if (meet) {
-                  logger.info("found 4");
-                  logUniv(universe);
-                  //printUniv(universe); // maybe delete this
-                  subtrace.setMatrixUniverse(convertUniverse(universe));
-                  subtrace.setType(4);
-                  return 4;
-                }
-                join = true;
-                oneSnag = true;
-              }
-              else {
-                if (!meet && (((x==y) && (u!=v)) || 
-                              ((x==u) && (y!=v)))) { /* meet found */
-                  if (subtrace.hasInvolution()) {
-                  logger.info("found 3");
-                  logUniv(universe);
-                    subtrace.setType(3);
-                    return 3;
-                  }
-                  if (join) {
-                    logger.info("found 4");
-                    subtrace.setMatrixUniverse(convertUniverse(universe));
-                    subtrace.setType(4);
-                    return 4;
-                  }
-                  meet = true;
-                  oneSnag = true;
-                }
-              }
-              //So not a meet, not a join. Is it an other kind of one-snag?
-              if(!oneSnag) {
-                if (((x==v) && ((x!=y) || (u!=v))) ||
-                    ((y==u) && ((x!=y) || (u!=v)))) {
-                    oneSnag=true;
-                }
-              }
-            }
-
-            //increment the argumentlist
-            int j = 0;
-            for (j = 0; j < ar; j++) {
-              if (!argIterators[j].hasNext()) {
-                if (j < i) {
-                  argIterators[j] = oldElems.iterator();
-                } else if (j == i) {
-                  argIterators[j] = newElems.frontIterator(oldElems);
-                } else {
-                  argIterators[j] = newElems.iterator();
-                }
-                arg[j] = (int[])argIterators[j].next();
-                continue; //increment next coordinate
-              }
-              arg[j] = (int[])argIterators[j].next();
-              break;//argIterators[j] has been increased
-            }
-            if ( j == ar ) { //all arguments done
-              break;
-            }
-          } //arguments cycle
+    IntArray rows = new IntArray(new int[] {c,c,d,d});
+    IntArray cols = new IntArray(new int[] {c,d,c,d});
+    universe.add(rows);
+    universe.add(cols);
+    univHashSet.add(rows);
+    univHashSet.add(cols);
+    int closedMark = 0;
+    int currentMark = universe.size();
+    while (closedMark < currentMark) {
+      System.out.println("currMark: " + currentMark + ", closedMark: " + closedMark);
+      if (Thread.currentThread().isInterrupted()) return -1;  // ProgressReport ??
+      for (Operation f : Afourth.operations()) {
+        System.out.println("f: " + f);
+        final int arity = f.arity();
+        if (arity == 0) continue;
+        int[] argIndeces = new int[arity];
+        for (int j = 0; j < arity - 1; j++) {
+          argIndeces[j] = 0;
         }
-      } //operations cycle
-      if (universe == newElems) {  // nothing was added so we are done
-        if (printSubtrace) {
-          logUniv(universe);
-          logger.info("universe size is " + universe.size());
-          logger.info("orig pair c = " + c + ", d = " + d);
-          System.out.println("matrices: ");
-          for (Iterator it = universe.iterator(); it.hasNext(); ) {
-            System.out.println(ArrayString.toString(it.next()));
+        argIndeces[arity - 1] = closedMark;
+        ArrayIncrementor inc =
+            SequenceGenerator.sequenceIncrementor(
+                argIndeces, currentMark - 1, closedMark);
+
+        final int[][] arg = new int[arity][];
+        while (true) {
+          System.out.println("argIndeces: " + Arrays.toString(argIndeces));
+          if (Thread.currentThread().isInterrupted()) return -1;  // ProgressReport ??
+          for (int j = 0; j < arity; j++) {
+            arg[j] = universe.get(argIndeces[j]).getArray();
           }
-        }
-        subtrace.setMatrixUniverse(convertUniverse(universe));
-        if (join || meet) {
-          logger.info("found 5");
-          subtrace.setType(5);
-          logger.info("subtrace is " + subtrace);
-          return 5;
-        }
-        else {
-          if (oneSnag) {
-            logger.info("found 2");
-            subtrace.setMatrixUniverse(convertUniverse(universe));
-            subtrace.setType(2);
-            return 2;
+
+          int[] vRaw = f.valueAt(arg);
+          IntArray vec = new IntArray(vRaw);
+          if (univHashSet.add(vec)) universe.add(vec);
+          else {
+            if (!inc.increment()) break;
+            continue;
+          }
+          int[] vRawModAlpha = new int[4];
+          for (int i = 0; i < 4; i++) {
+            vRawModAlpha[i] = alpha.representative(vRaw[i]);
+          }
+          int x = vRawModAlpha[0];
+          int y = vRawModAlpha[1];
+          int u = vRawModAlpha[2];
+          int v = vRawModAlpha[3];
+          if (!join && (((x!=y) && (u==v)) || 
+              ((x!=u) && (y==v)))) { /* join found */
+            if (subtrace.hasInvolution()) {
+              subtrace.setMatrixUniverse(universe);
+              subtrace.setType(3);
+              return 3;
+            }
+            if (meet) {
+              subtrace.setMatrixUniverse(universe);
+              subtrace.setType(4);
+              return 4;
+            }
+            join = true;
+            oneSnag = true;
           }
           else {
-            logger.info("found 1");
-            subtrace.setMatrixUniverse(convertUniverse(universe));
-            subtrace.setType(1);
-            return 1;
+            if (!meet && (((x==y) && (u!=v)) || 
+                ((x==u) && (y!=v)))) { /* meet found */
+              if (subtrace.hasInvolution()) {
+                subtrace.setType(3);
+                return 3;
+              }
+              if (join) {
+                subtrace.setMatrixUniverse(universe);
+                subtrace.setType(4);
+                return 4;
+              }
+              meet = true;
+              oneSnag = true;
+            }
           }
+          //So not a meet, not a join. Is it an other kind of one-snag?
+          System.out.println("here");
+          if(!oneSnag) {
+            if (((x==v) && ((x!=y) || (u!=v))) ||
+                ((y==u) && ((x!=y) || (u!=v)))) {
+              oneSnag=true;
+            }
+          }
+          System.out.println("about to increment");
+          if (!inc.increment()) break;
         }
       }
-      oldElems = newElems;
-      newElems = universe;
+      closedMark = currentMark;
+      currentMark = universe.size();
+    }  
+    if (printSubtrace) {
+      System.out.println("matrices: ");
+      for (IntArray ia : universe) {
+        System.out.println(ArrayString.toString(ia));
+      }
+    }
+    subtrace.setMatrixUniverse(universe);
+    if (join || meet) {
+      subtrace.setType(5);
+      return 5;
+    }
+    else {
+      if (oneSnag) {
+        subtrace.setMatrixUniverse(universe);
+        subtrace.setType(2);
+        return 2;
+      }
+      else {
+        subtrace.setMatrixUniverse(universe);
+        subtrace.setType(1);
+        return 1;
+      }
     }
   }
   
-  private List<IntArray> convertUniverse(List universe) {
-    List<int[]> univ = new ArrayList<int[]>(universe);
-    List<IntArray> mUniv = new ArrayList<IntArray>(univ.size());
-    for (int[] arr : univ) {
-      mUniv.add(new IntArray(arr));
-    }
-    return mUniv;
-  }
-
-  public void logUniv(List universe) {
-    logUniv(universe, Level.FINE);
-  }
-
-  public void logUniv(List universe, Level level) {
-    for (Iterator it = universe.iterator(); it.hasNext(); ) {
-      logger.log(level, ArrayString.toString(it.next()));
-    }
-  }
-
-  public void printUniv(List universe) {
-    for (Iterator it = universe.iterator(); it.hasNext(); ) {
-      System.out.println(ArrayString.toString(it.next()));
-    }
+  public static final void main(String[] args) throws Exception {
+    SmallAlgebra alg = org.uacalc.io.AlgebraIO.readAlgebraFile(
+        "/Users/ralph/Java/Algebra/algebras/m3.ua");
+    SmallAlgebra algSq = new PowerAlgebra(alg, 2);
+    int[][] arg = new int[][] {{2,3},{1,2}};
+    Operation op = algSq.operations().get(0);
+    System.out.println(Arrays.toString(op.valueAt(arg)));
   }
 
 }

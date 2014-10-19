@@ -97,8 +97,9 @@ public class Type1 {
     //SmallAlgebra ans = reductAlg(two);
     //AlgebraIO.writeAlgebraFile(ans, "/tmp/two-reduct.ua");
     int size = 5;
-    SmallAlgebra alg = cyclicPermutationAlgebra(size);
-    SmallAlgebra matrixPower = Algebras.matrixPower(alg, 2);
+    //SmallAlgebra alg = cyclicPermutationAlgebra(size);
+    SmallAlgebra alg =fullPermutationAlgebra(size);
+    SmallAlgebra matrixPower = Algebras.matrixPower(alg, 3);
     Partition one = matrixPower.con().one();
     List<IntArray> subtraces = subtraces(matrixPower, one);
     for (IntArray subtr : subtraces) {
@@ -107,6 +108,8 @@ public class Type1 {
     System.out.println(subtraces);
     int a = subtraces.get(0).get(0);
     int b = subtraces.get(0).get(1);
+    //a = 0;
+    //b = 4;
     System.out.println("a = " + a + ", b = " + b);
     BigProductAlgebra big = new BigProductAlgebra(matrixPower, 4);
     IntArray g0 = new IntArray(new int[] {a,a,b,b});
@@ -123,6 +126,7 @@ public class Type1 {
       if (ia.get(0) == a) aFirst.add(ia);
     }
     System.out.println(aFirst);
+    System.out.println("size aFirst is " + aFirst.size());
   }
 
 }
