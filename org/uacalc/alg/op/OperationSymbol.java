@@ -10,8 +10,8 @@ import java.util.Set;
 
 
 /**
- * An oration symbol. It has both a String for it printed name and 
- * and arity. 
+ * An oration symbol. It has both a String for its printed name and 
+ * and an arity. 
  */
 public class OperationSymbol implements Comparable<OperationSymbol> {
 
@@ -21,15 +21,22 @@ public class OperationSymbol implements Comparable<OperationSymbol> {
   public static final OperationSymbol INVERSE = new OperationSymbol("inv", 1);
   public static final OperationSymbol IDENTITY = new OperationSymbol("id", 0);
   
+  private boolean associative = false;
+  
   static final Map<Integer, Integer> currentSymIndexMap = new HashMap<Integer, Integer>();
   //static final Set<OperationSymbol> currentSymbols = new HashSet<OperationSymbol>();
 
   String name;
   int arity;
-
+  
   public OperationSymbol(String name, int arity) {
+    this(name, arity, false);
+  }
+
+  public OperationSymbol(String name, int arity, boolean assoc) {
     this.name = name;
     this.arity = arity;
+    setAssociative(assoc);
   }
 
   /**
@@ -38,6 +45,21 @@ public class OperationSymbol implements Comparable<OperationSymbol> {
   public int arity() { return arity; }
 
   public String name() { return name; }
+  
+  /**
+   * A binary operation symbol can be marked as associative to allow
+   * for a more compact representation and better printing of terms 
+   * containing it.
+   * 
+   * @return
+   */
+  public boolean isAssociative() { return associative; }
+  
+  public void setAssociative(boolean assoc) {
+    if (assoc && arity != 2)  throw new IllegalArgumentException("Only binary terms can be associative.");
+    if (assoc && arity == 2) associative = true;
+    else associative = false;
+  }
 
   public String toString() { return toString(false); }
   
