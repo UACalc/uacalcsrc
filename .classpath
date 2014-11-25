@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="resources/" kind="src" path=""/>
-	<classpathentry excluding="algebras/" kind="src" path="resources"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="lib" path="jars/LatDraw.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-all-1.0.jar"/>
 	<classpathentry kind="lib" path="jars/groovy-engine.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_10"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jars/miglayout-3.7-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
