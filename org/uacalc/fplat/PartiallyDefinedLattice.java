@@ -8,6 +8,10 @@ import org.uacalc.terms.*;
 import java.util.List;
 
 /**
+ * Partially defined lattices as defined in the 
+ * chapter "Free and finitely presented lattices"
+ * in Gratzer's STA book.
+ * 
  * @author ralph
  *
  */
