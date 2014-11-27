@@ -21,7 +21,7 @@ public class PartiallyDefinedLattice implements Order<Variable> {
   List<List<Variable>> definedJoins; 
   List<List<Variable>> definedMeets;
   
-  public PartiallyDefinedLattice(String name, Order order, 
+  public PartiallyDefinedLattice(String name, Order<Variable> order, 
       List<List<Variable>> joins, List<List<Variable>> meets) {
     this.order = order;
     this.definedJoins = joins;
