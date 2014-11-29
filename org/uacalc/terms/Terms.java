@@ -107,7 +107,7 @@ public class Terms {
     if (!leadingOpSym.isAssociative()) return new NonVariableTerm(leadingOpSym, flatChildren);
     List<Term> args = new ArrayList<Term>();
     for (Term arg : flatChildren) {
-      if (arg.isaVariable() || !arg.leadingOperationSymbol().isAssociative()) {
+      if (arg.isaVariable() || !arg.leadingOperationSymbol().equals(leadingOpSym)) {
         args.add(arg);
       }
       else args.addAll(arg.getChildren());
@@ -117,11 +117,13 @@ public class Terms {
   
   public static void testFlatten() {
     OperationSymbol f = new OperationSymbol("f", 2, true);
+    OperationSymbol g = new OperationSymbol("g", 2, true);
     List<Term> args = new ArrayList<>();
     List<Term> args2 = new ArrayList<>();
     args.add(Variable.x);
     args.add(Variable.x);
-    Term foo = new NonVariableTerm(f, args);
+    //Term foo = new NonVariableTerm(f, args);
+    Term foo = new NonVariableTerm(g, args);
     args2.add(Variable.x);
     args2.add(foo);
     Term bar = new NonVariableTerm(f, args2);
