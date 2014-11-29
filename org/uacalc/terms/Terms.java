@@ -96,7 +96,40 @@ public class Terms {
     return str.substring(0, str.length() + depth);  // depth is negative
   }
   
-
+  public static Term flatten(Term term) {
+    if (term.isaVariable()) return term;
+    List<Term> children = term.getChildren();
+    List<Term> flatChildren = new ArrayList<Term>();
+    for (Term t : children) {
+      flatChildren.add(flatten(t));
+    }
+    OperationSymbol leadingOpSym = term.leadingOperationSymbol();
+    if (!leadingOpSym.isAssociative()) return new NonVariableTerm(leadingOpSym, flatChildren);
+    List<Term> args = new ArrayList<Term>();
+    for (Term arg : flatChildren) {
+      if (arg.isaVariable() || !arg.leadingOperationSymbol().isAssociative()) {
+        args.add(arg);
+      }
+      else args.addAll(arg.getChildren());
+    }
+    return new NonVariableTerm(leadingOpSym, args);
+  }
+  
+  public static void testFlatten() {
+    OperationSymbol f = new OperationSymbol("f", 2, true);
+    List<Term> args = new ArrayList<>();
+    List<Term> args2 = new ArrayList<>();
+    args.add(Variable.x);
+    args.add(Variable.x);
+    Term foo = new NonVariableTerm(f, args);
+    args2.add(Variable.x);
+    args2.add(foo);
+    Term bar = new NonVariableTerm(f, args2);
+    System.out.println(bar);
+    System.out.println(flatten(bar));
+    System.out.println(foo);
+    System.out.println(flatten(foo));
+  }
   
   /**
    * @param args
@@ -111,6 +144,7 @@ public class Terms {
     System.out.println(isValidVarString(test1));
     String foo = adjustParens(test1);
     System.out.println("adjust test1 is " + foo);
+    testFlatten();
   }
 
   
