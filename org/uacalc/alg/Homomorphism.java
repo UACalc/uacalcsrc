@@ -29,14 +29,15 @@ public class Homomorphism<K,V> {
     final int size = domain.cardinality();
     Partition par = BasicPartition.zero(size);
     for (int i = 0; i < size; i++) {
+      int r = par.representative(i);
       for (int j = i+1; j < size; j++) {
         if (map.get(domain.getElement(i)) == map.get(domain.getElement(j))) {
-          // here
+          //using low level partition stuff
+          int s = par.representative(j);
+          if (r != s) par.joinBlocks(r, s);
         }
       }
     }
-    
-    // TODO: complete this
     return par;
   }
 
