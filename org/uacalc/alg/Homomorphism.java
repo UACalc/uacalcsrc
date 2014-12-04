@@ -65,5 +65,8 @@ public class Homomorphism<K,V> {
     this.map = map;
   }
   
-
+  public String toString() {
+    return "homomorphism: " + getDomain().getName() + " --> " + getRange().getName() + " : " + getMap();
+  }
+  
 }
