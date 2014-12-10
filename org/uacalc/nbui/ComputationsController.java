@@ -1873,11 +1873,11 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Find congruences with A/theta quasi-critical.";
+    final String desc = "Find congruences theta with A/theta quasi-critical.";
           // + gAlg.toString() + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<List<Partition>>  quasiCriticalTask = new BackgroundTask<List<Partition>>(report) {
+    final BackgroundTask<List<Partition>>  quasiCriticalCongruenceTask = new BackgroundTask<List<Partition>>(report) {
       public List<Partition> compute() {
         report.addStartLine(desc);
         report.setDescription(desc);
@@ -1898,16 +1898,20 @@ public class ComputationsController {
         }
         // here !!!!!!!!
         if (!cancelled) {
-          if (lst == null) {
-            report.addEndingLine(gAlg.toString() + " is quasicritical");
-            ttm.setDescription(desc + ": it isn't! (so it is quasicritical)");
+          if (lst != null) {
+            report.addStartLine("congruences theta with A/theta quasicritical: ");
+            for (Partition theta : lst) {
+              report.addLine(theta.toString());              
+            }
+            report.addEndingLine("");
+            report.addEndingLine("Done");
+            ttm.setDescription(desc + ". See the log area.");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine(gAlg.toString() 
-                + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ") ( so it is not quasicritical)");
-            ttm.setDescription(desc + ": it is! (so it isn't quasicritical)");
+            report.addEndingLine("none found (shouldn't happen)."); 
+            ttm.setDescription(desc + ". None found (shouldn't happen).");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();
           }
@@ -1921,10 +1925,10 @@ public class ComputationsController {
         }
       }
     };
-    addTask(quasiCriticalTask);
+    addTask(quasiCriticalCongruenceTask);
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
-    BackgroundExec.getBackgroundExec().execute(quasiCriticalTask);
+    BackgroundExec.getBackgroundExec().execute(quasiCriticalCongruenceTask);
   }
   
   

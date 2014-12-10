@@ -109,6 +109,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem matrixPowMI;
   private javax.swing.JMenuItem primalMI;
   private javax.swing.JMenuItem quasiCriticalMI;
+  private javax.swing.JMenuItem quasiCriticalCongruencesMI;
   private javax.swing.JMenuItem prodMI;
   private javax.swing.JMenuItem quitMI;
   private javax.swing.JMenuItem quotMI;
@@ -352,6 +353,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     subPowerMI = new javax.swing.JMenuItem();
     primalMI = new javax.swing.JMenuItem();
     quasiCriticalMI = new javax.swing.JMenuItem();
+    quasiCriticalCongruencesMI = new javax.swing.JMenuItem();
     maltsevMenu = new javax.swing.JMenu();
     distributivityMI = new javax.swing.JMenuItem();
     semidistributivityMI = new javax.swing.JMenuItem();
@@ -765,6 +767,14 @@ xxx;
         }
     });
     tasksMenu.add(quasiCriticalMI);
+    
+    quasiCriticalCongruencesMI.setText("quasicritical congruences");
+    quasiCriticalCongruencesMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          quasiCriticalCongruencesMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(quasiCriticalCongruencesMI);
 
 
     jMenuBar1.add(tasksMenu);
@@ -1593,6 +1603,10 @@ xxx;
   private void quasiCriticalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
     getComputationsController().setupQuasiCriticalTask();
   }//GEN-LAST:event_primalMIActionPerformed
+  
+  private void quasiCriticalCongruencesMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed
+    getComputationsController().setupQuasiCriticalCongruencesTask();
+  }
 
   private void quotMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotMIActionPerformed
     getComputationsController().formQuotientAlgebra();
