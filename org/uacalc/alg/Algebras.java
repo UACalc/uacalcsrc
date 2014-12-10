@@ -472,7 +472,7 @@ public class Algebras {
    * @param report
    * @return
    */
-  public static List<Homomorphism<Integer, Integer>> memberOfQuasivariety(SmallAlgebra A, 
+  public static List<Homomorphism> memberOfQuasivariety(SmallAlgebra A, 
       SmallAlgebra B, ProgressReport report) {
     List<SmallAlgebra> algs = new ArrayList<>(1);
     return memberOfQuasivariety(A, algs, report);    
@@ -488,7 +488,7 @@ public class Algebras {
    * @param genAlgs  the list of algebras
    * @return
    */
-  public static List<Homomorphism<Integer, Integer>> memberOfQuasivariety(SmallAlgebra A, 
+  public static List<Homomorphism> memberOfQuasivariety(SmallAlgebra A, 
       List<SmallAlgebra> genAlgs, ProgressReport report) {
     final Partition zero = A.con().zero();
     Partition phi = A.con().one();
@@ -497,14 +497,14 @@ public class Algebras {
     if (report != null) {
       report.addLine("gens of A: " + Arrays.toString(gens));
     }
-    List<Homomorphism<Integer,Integer>> homos = new ArrayList<>(); 
+    List<Homomorphism> homos = new ArrayList<>(); 
     for (SmallAlgebra B : genAlgs) {
       int[] arr = new int[genSize];
       ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, B.cardinality() - 1);  
       while (true) {
         Map<Integer,Integer> map = SubalgebraLattice.extendToHomomorphism(gens, arr, A, B);
         if (map != null) {
-          Homomorphism<Integer,Integer> homo = new Homomorphism<>(A, B, map);
+          Homomorphism homo = new Homomorphism(A, B, map);
           Partition kernel = homo.kernel();
           if (!phi.leq(kernel)) {
             phi = phi.meet(kernel);
@@ -529,7 +529,7 @@ public class Algebras {
    * @param report
    * @return
    */
-  public static List<Homomorphism<Integer, Integer>> memberOfQuasivarietyGenByProperSubs(SmallAlgebra A, 
+  public static List<Homomorphism> memberOfQuasivarietyGenByProperSubs(SmallAlgebra A, 
       ProgressReport report) {
     final Partition zero = A.con().zero();
     Partition phi = A.con().one();
@@ -538,13 +538,13 @@ public class Algebras {
     if (report != null) {
       report.addLine("gens of A: " + Arrays.toString(gens));
     }
-    List<Homomorphism<Integer,Integer>> homos = new ArrayList<>(); 
+    List<Homomorphism> homos = new ArrayList<>(); 
     int[] arr = new int[genSize];
     ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, A.cardinality() - 1);  
     while (true) {
       Map<Integer,Integer> map = SubalgebraLattice.extendToHomomorphism(gens, arr, A, A);
       if (map != null) {
-        Homomorphism<Integer,Integer> homo = new Homomorphism<>(A, A, map);
+        Homomorphism homo = new Homomorphism(A, A, map);
         Partition kernel = homo.kernel();
         // if kernel = 0 this is an isomorphism but we only want proper subalgebras
         if (!kernel.equals(zero) && !phi.leq(kernel)) {
@@ -561,12 +561,32 @@ public class Algebras {
     return null;
   }
   
+  public static List<Partition> quasiCriticalCongruences(SmallAlgebra A, ProgressReport report) {
+    List<Partition> criticalCongs = new ArrayList<>();
+    Partition one = A.con().one();
+    Partition zero = A.con().zero();
+    Partition meetOfNonZeros = one;
+    for (Partition par : A.con().getUniverseList()) {
+      if (par.equals(one)) continue;
+      SmallAlgebra B = new QuotientAlgebra(A, par);
+      if (memberOfQuasivarietyGenByProperSubs(B, report) == null) {
+        criticalCongs.add(par);
+        if (!par.equals(zero)) meetOfNonZeros = meetOfNonZeros.meet(par); 
+      }
+    }
+    if (report != null) report.addLine("The meet of nonzero q-critical congruences is " + meetOfNonZeros);
+    else System.out.println("The meet of nonzero q-critical congruences is " + meetOfNonZeros);
+    return criticalCongs;
+  }
+  
+  
   /**
    * Determine if an algebra is quasicritical: is not
    * a subdirect product of proper subalgebras. Returns 
    * a map from a set of congruences of A whose intersection 
    * is zero to subuniverses of A. A modulo the congruence is
-   * isomorphic to the subalgebra.
+   * isomorphic to the subalgebra. This has been replaced
+   * by memberOfQuasivarietyGenBySubs.
    * 
    * @param A
    * @return a map from congruences to subalgebras
@@ -575,7 +595,13 @@ public class Algebras {
     return quasiCritical(A, null);
   }
   
-  
+  /**
+   * This has been replaced by memberOf QuasivarietyGenBySubs.
+   * 
+   * @param A
+   * @param report
+   * @return
+   */
   public static Map<Partition,IntArray> quasiCritical(SmallAlgebra A, ProgressReport report) {
     final Partition zero = A.con().zero();
     Partition phi = A.con().one();
@@ -622,8 +648,6 @@ public class Algebras {
       else {
         boolean dupFound = false;
         for (int[] genset : subGens) {
-          //System.out.println("arr: " + Arrays.toString(arr));
-          //System.out.println("genset: " + Arrays.toString(genset));
           if (SubalgebraLattice.extendToHomomorphism(arr, genset, A, A) != null) {
             dupFound = true;
             break;
@@ -673,7 +697,6 @@ public class Algebras {
       }
       if (par.equals(A.con().zero())  || phi.leq(par)) continue;
           
-      //System.out.println("par: " + par);
       QuotientAlgebra quot = new QuotientAlgebra(A, par);
       if (cardToGens.get(quot.cardinality()) == null) continue;
       int[] quotGens = new int[genSize];
@@ -717,21 +740,41 @@ public class Algebras {
   }
 
   static boolean endNow = true;
+  static boolean debug = true;
   
   public static void main(String[] args) throws Exception {
     
     SmallAlgebra lat2 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat2.ua");
     SmallAlgebra lat3 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat3.ua");
-
-    List genalgs = new ArrayList();
+    SmallAlgebra polin = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/polin.ua");
+    
+    List<SmallAlgebra> genalgs = new ArrayList<>();
     genalgs.add(lat2);
-    List<Homomorphism<Integer,Integer>> homos = memberOfQuasivariety(lat3, genalgs, null);
-    for (int i = 0; i < homos.size(); i++) {
-      System.out.println(homos.get(i).getMap());
-    }
+    List<Homomorphism> homos = memberOfQuasivariety(lat3, genalgs, null);
+    //for (int i = 0; i < homos.size(); i++) {
+     // System.out.println(homos.get(i).getMap());
+    //}
     System.out.println(homos);
     homos = memberOfQuasivarietyGenByProperSubs(lat3, null);
     System.out.println(homos);
+    
+    System.out.println("lat2: " + memberOfQuasivarietyGenByProperSubs(lat2, null));
+    System.out.println("lat3: " + memberOfQuasivarietyGenByProperSubs(lat3, null));
+    SmallAlgebra lat3mod0 = new QuotientAlgebra(lat3, lat3.con().zero());
+    System.out.println("lat3mod0: " + memberOfQuasivarietyGenByProperSubs(lat3mod0, null));
+    //SmallAlgebra lat3mod0basic = new BasicAlgebra(null, 3, lat3mod0.operations());
+    //System.out.println("lat3mod0basic: " + memberOfQuasivarietyGenByProperSubs(lat3mod0basic, null));
+    
+    List<Partition> lst = quasiCriticalCongruences(lat3, null);
+    System.out.println("q-critical congruences: " + lst);
+    
+    List<Partition> lst2 = quasiCriticalCongruences(polin, null);
+    System.out.println("q-critical congruences for polin: " + lst2);
+    
+    SmallAlgebra polinquot = new QuotientAlgebra("", polin, polin.con().Cg(0,2));
+    lst2 = quasiCriticalCongruences(polinquot, null);
+    System.out.println("q-critical congruences for polin quot: " + lst2);
+    
     
     if (endNow) return;
     

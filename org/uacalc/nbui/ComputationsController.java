@@ -3,10 +3,10 @@ package org.uacalc.nbui;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.*;
+
 //import java.awt.*;
 //import java.awt.event.*;
 import java.util.*;
-//import java.io.*;
 
 import org.uacalc.alg.*;
 import org.uacalc.alg.op.*;
@@ -1805,12 +1805,155 @@ public class ComputationsController {
     final String desc = "Test if " + gAlg.toString() + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Map<Partition,IntArray>>  quasiCriticalTask = new BackgroundTask<Map<Partition,IntArray>>(report) {
-      public Map<Partition,IntArray> compute() {
+    //final BackgroundTask<Map<Partition,IntArray>>  quasiCriticalTask = new BackgroundTask<Map<Partition,IntArray>>(report) 
+    final BackgroundTask<java.util.List<Homomorphism>>  quasiCriticalTask = new BackgroundTask<java.util.List<Homomorphism>>(report) {
+      public List<Homomorphism> compute() {
         //monitorPanel.getProgressMonitor().reset();
         report.addStartLine(desc);
         report.setDescription(desc);
+        List<Homomorphism> lst = Algebras.memberOfQuasivarietyGenByProperSubs(A, report);
+        return lst;
+      }
+      public void onCompletion(java.util.List<Homomorphism> lst, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (lst == null) {
+            report.addEndingLine(gAlg.toString() + " is quasicritical");
+            ttm.setDescription(desc + ": it isn't! (so it is quasicritical)");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(gAlg.toString() 
+                + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ") ( so it is not quasicritical)");
+            ttm.setDescription(desc + ": it is! (so it isn't quasicritical)");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(quasiCriticalTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(quasiCriticalTask);
+  }
+  
+  public void setupQuasiCriticalCongruencesTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    
+    final SmallAlgebra A = gAlg.getAlgebra();
+    
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Find congruences with A/theta quasi-critical.";
+          // + gAlg.toString() + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<Partition>>  quasiCriticalTask = new BackgroundTask<List<Partition>>(report) {
+      public List<Partition> compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<Partition> lst = Algebras.quasiCriticalCongruences(A, report);
+        return lst;
+      }
+      public void onCompletion(List<Partition> lst, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        // here !!!!!!!!
+        if (!cancelled) {
+          if (lst == null) {
+            report.addEndingLine(gAlg.toString() + " is quasicritical");
+            ttm.setDescription(desc + ": it isn't! (so it is quasicritical)");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(gAlg.toString() 
+                + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ") ( so it is not quasicritical)");
+            ttm.setDescription(desc + ": it is! (so it isn't quasicritical)");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(quasiCriticalTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(quasiCriticalTask);
+  }
+  
+  
+  public void setupQuasiCriticalTask_old() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+          + "Use the file menu or make a new one.</html>",
+          "No algebra error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    
+    final SmallAlgebra A = gAlg.getAlgebra();
+    
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Test if " + gAlg.toString() + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Map<Partition,IntArray>>  quasiCriticalTask = new BackgroundTask<Map<Partition,IntArray>>(report) {
+      public Map<Partition,IntArray> compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
         Map<Partition,IntArray> map = Algebras.quasiCritical(A, report);
+        //List<Homomorphism<Integer, Integer>> homomorphisms = memberOfQuasivarietyGenByProperSubs(A, report);
         return map;
       }
       public void onCompletion(Map<Partition,IntArray> map, Throwable exception, 
