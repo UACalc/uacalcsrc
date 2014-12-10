@@ -740,13 +740,18 @@ public class Algebras {
   }
 
   static boolean endNow = true;
-  static boolean debug = true;
+
+  static String home = "/home/";
+  static {
+	  String os = System.getProperty("os.name");
+	  if (os.equals("mac")) home = "/Users/";
+  }
   
   public static void main(String[] args) throws Exception {
     
-    SmallAlgebra lat2 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat2.ua");
-    SmallAlgebra lat3 = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat3.ua");
-    SmallAlgebra polin = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/polin.ua");
+    SmallAlgebra lat2 = org.uacalc.io.AlgebraIO.readAlgebraFile(home + "ralph/Java/Algebra/algebras/lat2.ua");
+    SmallAlgebra lat3 = org.uacalc.io.AlgebraIO.readAlgebraFile(home + "ralph/Java/Algebra/algebras/lat3.ua");
+    SmallAlgebra polin = org.uacalc.io.AlgebraIO.readAlgebraFile(home + "ralph/Java/Algebra/algebras/polin.ua");
     
     List<SmallAlgebra> genalgs = new ArrayList<>();
     genalgs.add(lat2);
