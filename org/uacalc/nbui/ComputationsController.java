@@ -1873,7 +1873,7 @@ public class ComputationsController {
     final TermTableModel ttm = new TermTableModel();
     termTableModels.add(ttm);
     setResultTableColWidths();
-    final String desc = "Find congruences theta with A/theta quasi-critical.";
+    final String desc = "Find congruences theta with " + gAlg + "/theta quasi-critical.";
           // + gAlg.toString() + " is in SP(S(" + gAlg.toString() + ") - " + gAlg.toString() + ")";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
@@ -1899,7 +1899,7 @@ public class ComputationsController {
         // here !!!!!!!!
         if (!cancelled) {
           if (lst != null) {
-            report.addStartLine("congruences theta with A/theta quasicritical: ");
+            report.addStartLine("congruences theta with " + gAlg + "/theta quasicritical: ");
             for (Partition theta : lst) {
               report.addLine(theta.toString());              
             }
