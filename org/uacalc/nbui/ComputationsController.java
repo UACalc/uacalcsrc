@@ -1865,17 +1865,33 @@ public class ComputationsController {
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine(gB.toString() + "is in SP(" + gA.toString() + ")");
-            /////////////////   here  !!!!!!!!!!!!!
-            ttm.setDescription("An equation of " + gA.toString() 
-                + " that fails in " + gB.toString() 
-                + " by substituting " //+ substr 
-                + " for the variables");
-            updateResultTextField(this, ttm);
-            java.util.List<Term> terms = new ArrayList<Term>(2);
-            //terms.add(eq.leftSide());
-            //terms.add(eq.rightSide());
+            report.addLine(gB.toString() + " is a subalgebra of " + gA.toString() + "^" + lst.size());
+            report.addEndingLine(gB.toString() + " is in SP(" + gA.toString() + ")");
+            ttm.setDescription(desc + ": it is! " + gB.toString() + " is a subalgebra of " 
+                                                  + gA.toString() + "^" + lst.size() + ". The table gives the embedding." );
+            List<IntArray> vectors = Homomorphism.productHomo(lst);
+            List<Variable> variables = new ArrayList<>(B.cardinality());
+            List<Term> terms = new ArrayList<>(B.cardinality());
+            for (int i = 0; i < B.cardinality(); i++) {
+              Variable var = new VariableImp("x" + i);
+              variables.add(var);
+              terms.add(var);
+            }
             ttm.setTerms(terms);
+            ttm.setVariables(variables);
+            ttm.setUniverse(vectors);
+            updateResultTextField(this, ttm);
+            
+            
+            if (this.equals(getCurrentTask())) {
+              uacalcUI.getResultTable().setModel(ttm);
+              ttm.fireTableStructureChanged();
+              ttm.fireTableDataChanged();
+              //System.out.println("table cc = " + uacalcUI.getResultTable().getColumnCount());
+              setResultTableColWidths();
+              uacalcUI.repaint();
+            }
+            setResultTableColWidths();
             uacalcUI.repaint();
           }
           if ( this.equals(getCurrentTask())) setResultTableColWidths();

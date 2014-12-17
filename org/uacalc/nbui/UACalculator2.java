@@ -88,6 +88,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem maltsevMI;
   private javax.swing.JMenu maltsevMenu;
   private javax.swing.JMenuItem membershipTestMI;
+  private javax.swing.JMenuItem qmembershipTestMI;
   private javax.swing.JMenuItem mmstMI;
   private javax.swing.JMenuItem w3edgeTermMI;
   private javax.swing.JMenuItem modularityMI;
@@ -350,6 +351,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     tasksMenu = new javax.swing.JMenu();
     freeAlgMI = new javax.swing.JMenuItem();
     membershipTestMI = new javax.swing.JMenuItem();
+    qmembershipTestMI = new javax.swing.JMenuItem();
     subPowerMI = new javax.swing.JMenuItem();
     primalMI = new javax.swing.JMenuItem();
     quasiCriticalMI = new javax.swing.JMenuItem();
@@ -743,6 +745,14 @@ xxx;
         }
     });
     tasksMenu.add(membershipTestMI);
+    
+    qmembershipTestMI.setText("B in SP(A) ?");
+    qmembershipTestMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            qmembershipTestMIActionPerformed(evt);
+        }
+    });
+    tasksMenu.add(qmembershipTestMI);
 
     subPowerMI.setText("Sub Power");
     subPowerMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1520,6 +1530,10 @@ xxx;
     getComputationsController().setupBinVATask();
   }//GEN-LAST:event_membershipTestMIActionPerformed
 
+  private void qmembershipTestMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_membershipTestMIActionPerformed
+    getComputationsController().setupBinQATask();
+  }
+  
   private void distributivityMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distributivityMIActionPerformed
     getComputationsController().setupJonssonTermsTask();
   }//GEN-LAST:event_distributivityMIActionPerformed

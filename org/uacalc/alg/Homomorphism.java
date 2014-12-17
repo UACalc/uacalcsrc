@@ -48,24 +48,25 @@ public class Homomorphism {
   }
   
   /**
-   * Make the product map from a list of maps all with the
-   * same domain.
+   * Make a list of elements (IntArray's) of a subpower from a list of maps all with the
+   * same domain. Note the map i goes to the ith element of the list is
+   * the product homomorphism.
    * 
    * @param lst  a list of Homomorphisms all with the same domain
    * @return
    */
-  public static Map<Integer,IntArray> productHomo(List<Homomorphism> lst) {
+  public static List<IntArray> productHomo(List<Homomorphism> lst) {
     int domainSize = lst.get(0).getDomain().cardinality();
-    Map<Integer,IntArray> map = new HashMap<>(domainSize);
+    List<IntArray> ans = new ArrayList<>(domainSize);
     for (int i = 0; i < domainSize; i++) {
       IntArray ia = new IntArray(lst.size());
       for (int k = 0; k < lst.size(); k++) {
         Homomorphism homo = lst.get(k);
         ia.set(k, homo.map.get(i));
       }
-      map.put(i, ia);
+      ans.add(ia);
     }
-    return map;
+    return ans;
   }
 
   public Algebra getDomain() {
