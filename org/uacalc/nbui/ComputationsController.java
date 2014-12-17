@@ -1707,7 +1707,7 @@ public class ComputationsController {
     final SmallAlgebra B = gB.getAlgebra();
     if (!A.isSimilarTo(B)) {
       JOptionPane.showMessageDialog(uacalcUI.getFrame(),
-          "<html>Ths algebras must have the same similarity type.<br>",
+          "<html>The algebras must have the same similarity type.<br>",
           "Algebras Not Similar",
           JOptionPane.ERROR_MESSAGE);
       return;
@@ -1784,6 +1784,116 @@ public class ComputationsController {
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(nuBinVATask);
   }
+  
+  /**
+   * A background task to test if B is in SP(A) = Q(A).
+   */
+  public void setupBinQATask() {
+    final GUIAlgebra gAlg2 = uacalcUI.getMainController().getCurrentAlgebra();
+    if (gAlg2 == null) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>You must have an algebra loaded.<br>"
+              + "Use the file menu or make a new one.</html>",
+              "No algebra error",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    GUIAlgebra[] algs = new GUIAlgebra[getMainControler().getAlgebraList().size()];
+    int i = 0;
+    for (GUIAlgebra a : getMainControler().getAlgebraList()) {
+      algs[i++] = a;
+    }
+    final GUIAlgebra gA = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+        "<html><center>B in Q(<font color=\"red\">A</font>) = SP(<font color=\"red\">A</font>)?<br>" 
+            + "Choose <font color=\"red\">A</font></center></html>", 
+            "B in SP(A)",
+            JOptionPane.QUESTION_MESSAGE, null, algs, algs[0]);
+    //System.out.println("gA = " + gA);
+    if (gA == null) return;
+    final GUIAlgebra gB = (GUIAlgebra)JOptionPane.showInputDialog(uacalcUI.getFrame(),
+        "<html><center><font color=\"red\">B</font> in SP(A)?" 
+            + "<br>Choose <font color=\"red\">B</font></center></html>", 
+            "B in V(A)",
+            JOptionPane.QUESTION_MESSAGE, null,
+            algs, algs[0]);
+    if (gB == null) return;
+    final SmallAlgebra A = gA.getAlgebra();
+    final SmallAlgebra B = gB.getAlgebra();
+    if (!A.isSimilarTo(B)) {
+      JOptionPane.showMessageDialog(uacalcUI.getFrame(),
+          "<html>The algebras must have the same similarity type.<br>",
+          "Algebras Not Similar",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    //final String nameA = A.getName() != null ? A.getName() : gA.toString();
+    //final String nameB = B.getName() != null ? B.getName() : gB.toString();
+    final String desc = "Test if " + gB.toString() + " in SP(" + gA.toString() + ")";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<List<Homomorphism>>  isBinQATask = new BackgroundTask<List<Homomorphism>>(report) {
+      public List<Homomorphism> compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        List<Homomorphism> lst = Algebras.memberOfQuasivariety(B, A, report);
+        return lst;
+      }
+      public void onCompletion(List<Homomorphism> lst, Throwable exception, 
+          boolean cancelled, boolean outOfMemory) {
+        if (exception != null) {
+          System.out.println("execption: " + exception);
+          exception.printStackTrace();
+        }
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          // liked it better with the [1, 4] notation.
+          //substr = substr.substring(1, substr.length() - 1);
+          if (lst == null) {
+            report.addEndingLine(gB.toString() + " is not in SP(" + gA.toString() + ").");
+            ttm.setDescription(desc + ": it is not");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine(gB.toString() + "is in SP(" + gA.toString() + ")");
+            /////////////////   here  !!!!!!!!!!!!!
+            ttm.setDescription("An equation of " + gA.toString() 
+                + " that fails in " + gB.toString() 
+                + " by substituting " //+ substr 
+                + " for the variables");
+            updateResultTextField(this, ttm);
+            java.util.List<Term> terms = new ArrayList<Term>(2);
+            //terms.add(eq.leftSide());
+            //terms.add(eq.rightSide());
+            ttm.setTerms(terms);
+            uacalcUI.repaint();
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(isBinQATask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(isBinQATask);
+  }
+
   
   public void setupQuasiCriticalTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();

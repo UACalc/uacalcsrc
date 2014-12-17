@@ -3,12 +3,15 @@ package org.uacalc.alg;
 import java.util.*;
 
 import org.uacalc.alg.conlat.*;
+import org.uacalc.util.*;
 
 /**
  * A homomorphism from the domain algebra into
  * the range algebra. Previously we had parameterize
  * this with with K and V but not this is based on
- * the index of the elements.
+ * the index of the elements. It might make sense to
+ * require the domain keys be Integers but have
+ * parameterize values. 
  * 
  * @author ralph
  *
@@ -42,6 +45,27 @@ public class Homomorphism {
       }
     }
     return par;
+  }
+  
+  /**
+   * Make the product map from a list of maps all with the
+   * same domain.
+   * 
+   * @param lst  a list of Homomorphisms all with the same domain
+   * @return
+   */
+  public static Map<Integer,IntArray> productHomo(List<Homomorphism> lst) {
+    int domainSize = lst.get(0).getDomain().cardinality();
+    Map<Integer,IntArray> map = new HashMap<>(domainSize);
+    for (int i = 0; i < domainSize; i++) {
+      IntArray ia = new IntArray(lst.size());
+      for (int k = 0; k < lst.size(); k++) {
+        Homomorphism homo = lst.get(k);
+        ia.set(k, homo.map.get(i));
+      }
+      map.put(i, ia);
+    }
+    return map;
   }
 
   public Algebra getDomain() {

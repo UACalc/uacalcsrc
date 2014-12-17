@@ -475,6 +475,7 @@ public class Algebras {
   public static List<Homomorphism> memberOfQuasivariety(SmallAlgebra A, 
       SmallAlgebra B, ProgressReport report) {
     List<SmallAlgebra> algs = new ArrayList<>(1);
+    algs.add(B);
     return memberOfQuasivariety(A, algs, report);    
   }
   
