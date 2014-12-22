@@ -28,6 +28,7 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
   public final static String UAC_EXT = "uac";
   public final static String UA_EXT = "ua";
   public final static String CSV_EXT = "csv";
+  public final static String TXT_EXT = "txt";
 
   public final static List<String> UA_EXTS = new ArrayList<String>();
   static {

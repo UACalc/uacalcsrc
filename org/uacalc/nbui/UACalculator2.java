@@ -129,6 +129,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem subpowMI;
   private javax.swing.JTabbedPane tabbedPane;
   private javax.swing.JMenuItem tableCSVMI;
+  private javax.swing.JMenuItem logTextAreaMI;
   private javax.swing.JMenu tasksMenu;
   private javax.swing.JMenuItem uaFileMI;
   private javax.swing.JMenu varPropIdemMenu;
@@ -338,6 +339,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     uaFileMI = new javax.swing.JMenuItem();
     algFileMI = new javax.swing.JMenuItem();
     tableCSVMI = new javax.swing.JMenuItem();
+    logTextAreaMI = new javax.swing.JMenuItem();
     quitMI = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     hspMenu = new javax.swing.JMenu();
@@ -652,6 +654,15 @@ xxx;
         }
     });
     fileMenu.add(tableCSVMI);
+    
+    logTextAreaMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/uacalc/ui/images/Save16.gif"))); // NOI18N
+    logTextAreaMI.setText("Save Log Text Area");
+    logTextAreaMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            logTextAreaMIActionPerformed(evt);
+        }
+    });
+    fileMenu.add(logTextAreaMI);
 
     quitMI.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, 
         Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -1608,6 +1619,10 @@ xxx;
 
   private void tableCSVMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCSVMIActionPerformed
     getMainController().writeCSVTable();
+  }//GEN-LAST:event_tableCSVMIActionPerformed
+  
+  private void logTextAreaMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableCSVMIActionPerformed
+    getMainController().writeLogTextArea();
   }//GEN-LAST:event_tableCSVMIActionPerformed
 
   private void primalMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_primalMIActionPerformed

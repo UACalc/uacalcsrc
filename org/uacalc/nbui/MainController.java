@@ -586,6 +586,58 @@ public class MainController {
     }
     return false;
   }
+  
+  public boolean writeLogTextArea() {
+    JTextArea textArea = uacalcUI.getLogTextArea();
+    if (textArea == null) return false;
+    String text = textArea.getText();
+    if (text == null) return false;
+    String pwd = getPrefs().get("algebraDir", null);
+    if (pwd == null) pwd = System.getProperty("user.dir");
+    JFileChooser fileChooser;
+    if (pwd != null)
+      fileChooser = new JFileChooser(pwd);
+    else
+      fileChooser = new JFileChooser();
+
+    fileChooser.addChoosableFileFilter(
+        new ExtFileFilter("csv files (*.txt)",  ExtFileFilter.TXT_EXT));
+     
+    int option = fileChooser.showSaveDialog(uacalcUI.getFrame());
+    if (option == JFileChooser.APPROVE_OPTION) {
+      // save original user selection
+      File selectedFile = fileChooser.getSelectedFile();
+      File f = selectedFile;
+      try {
+        String extension = ExtFileFilter.getExtension(f);
+        String ext = ExtFileFilter.TXT_EXT;
+        if (extension == null || !extension.equals(ext)) {
+          f = new File(f.getCanonicalPath() + "." + ext);
+        }
+        if (f.exists()) {
+          Object[] options = { "Yes", "No" };
+          int n = JOptionPane.showOptionDialog(uacalcUI.getFrame(),
+              "The file already exists. Overwrite?", "File Exists",
+              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+              options, options[0]);
+          if (n == JOptionPane.NO_OPTION) {
+            return false;
+          }
+        }
+        //tableToCSV(desc, model, new PrintStream(f));
+        PrintStream out = new PrintStream(f);
+        out.print(text);
+        
+        setTimedMessage("" + f + " saved");
+        return true;
+      }
+      catch (IOException e) {
+        beep();
+        return false;
+      }
+    }
+    return false;
+  }
 
   public boolean writeCSVTable() {
     TermTableModel model = uacalcUI.getComputationsController().getCurrentTermTableModel();
@@ -972,7 +1024,7 @@ public class MainController {
     delayer.setRepeats(false);
     delayer.start();
   }
-
+  
   public static void tableToCSV(String desc, TermTableModel model, PrintStream out) {
     final String comma = ",";
     final String dquote = "\"";
