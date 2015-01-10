@@ -26,13 +26,15 @@ public class FilteringAlgebras {
 				algebras.add(AlgebraIO.readAlgebraFile(algebras_dir + "CIB4-" + i + ".ua"));
 		}
 
-		// Of those algebras in the list above, we know from earlier experiments that 
-		// those with indices 201, 217, 233, 457, 1017 are non-SD-meet algebras.
 		// The method Malcev.sdMeetIdempotent returns an IntArray witnessing the 
 		// failure of sdMeet, and null if there is no failure.
 		// That is, null is returned when the algebra is congruence SD-meet.
 		// Therefore, to filter for non-SD-meet algebras, check when sdMeetIdempotent is non-null.
 		List<Algebra> nonSDmeet = filter(algebras, (Algebra a) -> (Malcev.sdMeetIdempotent((SmallAlgebra) a, null)!=null) );
+
+		// Of those algebras in the list above, we know from earlier experiments that 
+		// those with indices 201, 217, 233, 457, 1017 are non-SD-meet algebras.
+		// Check that there are 5 algebras in the result of the filter:
 		System.out.println("There are " + nonSDmeet.size() + " non-SD-Meet algebras (should be 5)");
 	}
 	
