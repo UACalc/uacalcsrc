@@ -24,6 +24,24 @@ public class TupleStream {
     return stream;
   }
   
+  public static Stream<int[]> intTupleStream(int size, int length, int min) {
+    return intTupleStream(size, length).filter(arr -> maxOfArray(arr) >= min);
+  }
+  
+  /**
+   * The largest entry of an array.
+   * 
+   * @param arr an array of length at least 1.
+   * @return
+   */
+  public static int maxOfArray(int[] arr) {
+    int ans = arr[0];
+    for (int i = 1; i < arr.length; i++) {
+      if (arr[i] > ans) ans = arr[i]; 
+    }
+    return ans;
+  }
+  
   /**
    * Returns the int array corresponding to this Horner encoding.
    * This is for the args of an operation. It is assume len (the arity)
@@ -59,8 +77,9 @@ public class TupleStream {
   public static void main(String[] args) {
     int size = 10000;
     int len = 2;
+    int min = 8000;
     for (int i = 0; i < 3; i++) {
-      Stream<int[]> stream = intTupleStream(size, len);
+      Stream<int[]> stream = intTupleStream(size, len, min);
       //stream.forEach(a -> System.out.println(Arrays.toString(a)));
       long time = System.currentTimeMillis();
       long count = 0; 
@@ -69,7 +88,7 @@ public class TupleStream {
       System.out.println("count = " + count);
       System.out.println("---------");
       
-      stream = intTupleStream(size, len);
+      stream = intTupleStream(size, len, min);
       stream.parallel();
       time = System.currentTimeMillis();
       count = stream.count();
@@ -93,6 +112,9 @@ public class TupleStream {
       
       System.out.println("=========");
     }
+    System.out.println(pow(size, 2) - pow(min,2));
+    Stream<int[]> str = intTupleStream(5,2,3);
+    str.forEach(a -> System.out.println(Arrays.toString(a)));
   }
   
 }
