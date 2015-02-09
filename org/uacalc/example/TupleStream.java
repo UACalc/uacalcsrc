@@ -6,14 +6,66 @@ import java.util.stream.*;
 import org.uacalc.util.*;
 
 /**
- * Despite the name this is just some static methods to get streams
- * of tuples. To get a stream of all (fixed length) tuples, use the stream
- * intTupleStream as the indices.
+ * Methods to get streams of tuples from a list or just of int's. 
  * 
  * @author ralph
  *
  */
-public class TupleStream {
+public class TupleStream<T> {
+  
+  private final List<T> sourceList;
+  
+  public TupleStream(List<T> lst) {
+    this.sourceList = lst;
+  }
+  
+  public Stream<List<T>> tupleStream(Stream<int[]> intTupleStream) {
+    return intTupleStream.map(arr -> makeTuple(arr));
+  }
+  
+  
+  public Stream<List<T>> tupleStream(int length) {
+    Stream<int[]> intStream = intTupleStream(sourceList.size(), length);
+    return tupleStream(intStream);
+  }
+  
+  public Stream<List<T>> tupleStream(int length, int min) {
+    Stream<int[]> intStream = intTupleStream(sourceList.size(), length, min);
+    return tupleStream(intStream);
+  }
+  
+  private List<T> makeTuple(final int[] arr) {
+    List<T> ans = new ArrayList<>(arr.length);
+    for (int i = 0; i < arr.length; i++){
+      ans.add(sourceList.get(arr[i]));
+    }
+    return ans;
+  }
+  
+  
+  /**
+   * Since int[] does not mix well with generics, we 
+   * need a separate method to stream tuples of int[]'s
+   * int the form int[][].
+   * 
+   * 
+   * @param lst
+   * @param length
+   * @param min
+   * @return
+   */
+  public static Stream<int[][]> tupleStream(final List<int[]> lst, int length, int min) {
+    return intTupleStream(lst.size(), length, min).map(arr -> makeArrayTuple(arr, lst));
+  }
+  
+  private static int[][] makeArrayTuple(final int[] arr, List<int[]> lst) {
+    int[][] ans = new int[arr.length][];
+    for (int i = 0; i < arr.length; i++){
+      ans[i] = lst.get(arr[i]);
+      }
+    return ans;
+  }
+  
 
   public static Stream<int[]> intTupleStream (int size, int length) {
     long range = pow(size, length);
@@ -65,6 +117,32 @@ public class TupleStream {
     return ans;
   }
   
+  /**
+   * This is supposed to give the kth tuple in 
+   * the list of all tuples of nonnegative 
+   * int with max = n-1 and having at least
+   * one coord at least m but it is not clear
+   * this would improve the stream we use
+   * intTupleStream so I am not implementing
+   * it right now.
+   *  
+   * @param k
+   * @param size
+   * @param len
+   * @param min
+   * @return
+   */
+  public static final int[] hornerInvLong(long k, int size, int len, int min) {
+    final int[] ans = new int[len];
+    if (len == 0) return ans;
+    hornerInvLongAux(0, k, size, min, ans);
+    return ans;
+  }
+  
+  public static final void hornerInvLongAux(int index, long k, int size, int min, int[] arr){
+    // TODO: write this
+  }
+  
   public static long pow(int base, int exponent) {
     long ans = 1;
     while (exponent > 0) {
@@ -78,7 +156,7 @@ public class TupleStream {
     int size = 10000;
     int len = 2;
     int min = 8000;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       Stream<int[]> stream = intTupleStream(size, len, min);
       //stream.forEach(a -> System.out.println(Arrays.toString(a)));
       long time = System.currentTimeMillis();
