@@ -60,9 +60,9 @@ public class TupleStream<T> {
   
   private static int[][] makeArrayTuple(final int[] arr, List<int[]> lst) {
     int[][] ans = new int[arr.length][];
-    for (int i = 0; i < arr.length; i++){
+    for (int i = 0; i < arr.length; i++) {
       ans[i] = lst.get(arr[i]);
-      }
+    }
     return ans;
   }
   
