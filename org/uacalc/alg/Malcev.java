@@ -3062,16 +3062,16 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     for (int c = 0; c < alg.cardinality(); c++) {
       Set<Integer> S = new TreeSet<>();
       S.add(c);
-      BasicSet ce = null;
-      for (int e = 0; e < alg.cardinality(); e++) {
-        if (!S.contains(e)) {
-          System.out.println("c: " + c + ", e: " + e);
-          BasicSet ce2 = alg.sub().sg(new int[] {c,e});
-          System.out.println("ce2: " + ce2);
-          if (ce == null || ce2.leq(ce)) ce = ce2;
+      while (S.size() < alg.cardinality()) {
+        BasicSet ce = null;
+        for (int e = 0; e < alg.cardinality(); e++) {
+          if (!S.contains(e)) {
+            System.out.println("c: " + c + ", e: " + e);
+            BasicSet ce2 = alg.sub().sg(new int[] {c,e});
+            System.out.println("ce2: " + ce2);
+            if (ce == null || ce2.leq(ce)) ce = ce2;
+          }
         }
-      }
-      if (ce != null) {
         List<Integer> intersection = new ArrayList<>();
         final int[] ceArr = ce.getArray();
         for (int i = 0; i < ceArr.length; i++) {
@@ -3169,8 +3169,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   static boolean foo = true;
   public static void main(String[] args) throws Exception {
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/directoidNonCom.ua");
-    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
-    
+    //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/williamdemeo/git/UACalc-Team/AlgebraFiles/Bergman/CIB4-no-edge-term.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/cyclicTest.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
