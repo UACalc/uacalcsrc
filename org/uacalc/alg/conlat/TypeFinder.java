@@ -58,7 +58,7 @@ public final class TypeFinder {
     logger.setLevel(Level.FINER);
   }
 
-  public static final boolean printSubtrace = true;
+  public static final boolean printSubtrace = false;
 
   private final SmallAlgebra A;
   private final BigProductAlgebra Asquared;  // A^2
@@ -382,7 +382,7 @@ public final class TypeFinder {
 
         final int[][] arg = new int[arity][];
         while (true) {
-          System.out.println("argIndeces: " + Arrays.toString(argIndeces));
+          //System.out.println("argIndeces: " + Arrays.toString(argIndeces));
           if (Thread.currentThread().isInterrupted()) return -1;  // ProgressReport ??
           for (int j = 0; j < arity; j++) {
             arg[j] = universe.get(argIndeces[j]).getArray();
@@ -435,14 +435,14 @@ public final class TypeFinder {
             }
           }
           //So not a meet, not a join. Is it an other kind of one-snag?
-          System.out.println("here");
+          //System.out.println("here");
           if(!oneSnag) {
             if (((x==v) && ((x!=y) || (u!=v))) ||
                 ((y==u) && ((x!=y) || (u!=v)))) {
               oneSnag=true;
             }
           }
-          System.out.println("about to increment");
+          //System.out.println("about to increment");
           if (!inc.increment()) break;
         }
       }
