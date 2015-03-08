@@ -31,6 +31,11 @@ public class Version {
   //public static final String buildDate = "(Jul 28, 2014)";
   
   // removed duplicates in Closer.setEltsToFind.
-  public static final String versionString = "v1.12 ";
-  public static final String buildDate = "(Jul 29, 2014)";
+  //public static final String versionString = "v1.12 ";
+  //public static final String buildDate = "(Jul 29, 2014)";
+  
+  // quasi variety stull; Kazda's edge test; bug fixes.
+  public static final String versionString = "v1.13 ";
+  public static final String buildDate = "(Feb 28, 2015)";
+  
 }
