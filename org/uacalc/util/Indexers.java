@@ -1,6 +1,10 @@
 package org.uacalc.util;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+import org.uacalc.util.*;
 
 /**
  * Since parallel algorithms in Java 8 work best if they are stateless,
@@ -88,10 +92,36 @@ public class Indexers {
   }
   
   public static void main(String[] args) {
-    for (int i = 0; i < 369; i++) {
-      int[] arr = arrayIndexerWithMin(i, 4, 5, 4);
+    for (int i = 0; i < 56; i++) {
+      int[] arr = arrayIndexerWithMin(i, 3, 4, 2);
       System.out.println("arr: " + Arrays.toString(arr));
     }
+    
+    long size = 1000;
+    long min = 800;
+    int arity = 3;
+    long range = size*size*size - min*min*min;
+    System.out.println("range: " + range);
+    Stream<int[]> stream = LongStream.range(0, range).mapToObj(i -> arrayIndexerWithMin(i, arity, (int)size, (int)min));
+    stream.parallel();
+    long time = System.currentTimeMillis();
+    long count = stream.count();
+    //stream.forEach(a -> System.out.println(Arrays.toString(a)));
+    System.out.println("parallel time: " + (System.currentTimeMillis() - time));
+    System.out.println("count = " + count);
+    
+    int[] arr = new int[]{0,0,0};
+    // using an AtomicLong since accumulation of the result needs to be synchronized.
+    // This makes it about 4 times slower but without this the comparison is unfair.
+    AtomicLong  c = new AtomicLong(0);  
+    ArrayIncrementor inc = SequenceGenerator.sequenceIncrementor(arr, (int)size - 1, (int)min);
+    time = System.currentTimeMillis();
+    while(inc.increment()) {
+      c.getAndIncrement();
+    }
+    System.out.println("increment time: " + (System.currentTimeMillis() - time));
+    System.out.println("count = " + c.get());
+    
   }
 
 }
