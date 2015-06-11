@@ -12,6 +12,6 @@ Freese's uacalcsrc cvs repository from sourceforge using the following command:
 
 2. The authorfile.txt contains names and email addresses of authors who
 contributed to the cvs source tree. This is needed in order to preserve the
-contribution in the resulting git repo.
+contribution in the resulting git repository.
 
 
