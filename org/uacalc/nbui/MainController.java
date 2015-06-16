@@ -695,6 +695,8 @@ public class MainController {
     else fileChooser = new JFileChooser();
     fileChooser.addChoosableFileFilter(
         new ExtFileFilter("Algebra Files (*.ua, *.alg)", ExtFileFilter.ALL_ALG_EXTS));
+    fileChooser.addChoosableFileFilter(
+        new ExtFileFilter("Mace4 Models (*.m4)", ExtFileFilter.MACE4_EXTS));
     AlgebraPreviewer algPreviewer = new AlgebraPreviewer(uacalcUI);
     fileChooser.setPreferredSize(new Dimension(850,500));
     fileChooser.setAccessory(algPreviewer);

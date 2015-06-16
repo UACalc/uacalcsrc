@@ -43,6 +43,11 @@ public class ExtFileFilter extends javax.swing.filechooser.FileFilter {
     ALL_ALG_EXTS.add(ALG_EXT);
   }
   
+  public final static List<String> MACE4_EXTS = new ArrayList<String>();
+  static {
+	MACE4_EXTS.add("m4");
+  }
+
   List<String> exts;
   String description;
 
