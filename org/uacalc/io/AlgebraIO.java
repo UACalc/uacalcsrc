@@ -50,6 +50,10 @@ public final class AlgebraIO {
         throw new BadAlgebraFileException("Bad xml file");
       }
     }
+    else if (ext != null && ExtFileFilter.MACE4_EXTS.contains(ext.toLowerCase())) {
+      Mace4Reader reader = new Mace4Reader(new FileInputStream(f));
+      return reader.parseAlgebra();
+    }
 
     BufferedReader in = new BufferedReader(new FileReader(f));
     String line = in.readLine();
@@ -102,6 +106,10 @@ public final class AlgebraIO {
       catch (javax.xml.parsers.ParserConfigurationException parEx) {
         throw new BadAlgebraFileException("Bad xml file");
       }
+    }
+    else if (ext != null && ExtFileFilter.MACE4_EXTS.contains(ext.toLowerCase())) {
+      Mace4Reader reader = new Mace4Reader(new FileInputStream(f));
+      return reader.parseAlgebraList();
     }
     return null;
   }
