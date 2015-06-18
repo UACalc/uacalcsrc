@@ -6,13 +6,17 @@ Calculator](http://uacalc.org) (UACalc).
 For the GUI version of the program, please visit
 [the main UACalc webpage: http://uacalc.org](http://uacalc.org).
 
-## Notes on importing, using, and collaborating on uacalcsrc
+## Importing, browsing, and collaborating
 
-The instructions that follow will require entering commands into a terminal
+The page is meant to provide some hints and advice about downloading, importing,
+browsing, and modifying the source code in the uacalcsrc repository. Much of it
+concerns the use of git and GitHub, and there are plenty of better sources
+for this information, such as [the GitHub help pages](https://help.github.com/).
+
+The instructions below will require entering commands in a terminal
 window with some sort of Unix style shell, like bash.
-
-If you are cloning this repository to your local machine, the steps below 
-will assume the repository lives in a directory called `~/git/uacalcsrc`, so
+If you will be copying the repository to your local machine, these steps
+assume the repository lives in a directory called `~/git/uacalcsrc`, so
 this first command creates a `~/git` directory, if it doesn't already exists
 (and does nothing if it does exist):
 
@@ -21,8 +25,9 @@ this first command creates a `~/git` directory, if it doesn't already exists
 ### Browsing the source code
 
 If you merely want to browse the UACalc source code, you can do so using the
-GitHub webpages, or you can clone the repository to your local drive with a
-command like: 
+GitHub webpages, or you can
+[clone](https://help.github.com/articles/fetching-a-remote/) the repository to
+your local drive with a command like: 
 
     $ git clone git@github.com:UACalc/uacalcsrc.git ~/git/uacalcsrc
 
@@ -34,8 +39,9 @@ or
 ### Contributing using fork and pull requests
 
 If you expect to contribute improvements to the source code, instead of cloning
-directly it is advisable to first fork the repository to your own GitHub
-account, and then clone your own fork.  To do so, login to your GitHub account,
+directly it is advisable to first
+[fork](https://help.github.com/articles/fork-a-repo/) the repository to your own
+GitHub account, and then clone your own fork.  To do so, login to your GitHub account,
 navigate to the [UACalc/uacalcsrc](https://github.com/UACalc/uacalcsrc)
 repository, then click the
 [Fork link](https://github.com/UACalc/uacalcsrc#fork-destination-box) on the
@@ -112,16 +118,18 @@ fork of the repository, as explained in the previous section.
 
 When improvements are made to the "upstream" UACalc/uacalcsrc repository,
 you will probably want to update your fork to incorporate these
-changes.  Below is a list of the commands that accomplish this, but see the page
-[here](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and
-[here](https://help.github.com/articles/syncing-a-fork/)
-for details.
+changes.  Below is a list of the commands that accomplish this, but see 
+[this page](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and
+[this page](https://help.github.com/articles/syncing-a-fork/)
+for more details.
 
-1. Specify the upstream repository.
+1. Change to the working directory of your local copy of the repository and
+   specify the upstream repository. 
 
+        $ cd ~/git/uacalcsrc
         $ git remote add upstream git@github.com:UACalc/uacalcsrc.git
 
-2. Verify the new upstream repository you've specified for your fork.
+2. Verify that it worked.
 
         $ git remote -v
 
@@ -160,6 +168,8 @@ for details.
    and check that the GitHub page for your fork's repo shows the message,
    "This branch is even with UACalc:master." 
 
+7. If there are other branches besides `master` that you want to update, repeat
+   steps 4--6, replacing `master` with another branch name.
 
 ## History
 
