@@ -4,11 +4,13 @@ This is the main repository for the source code of the [Universal Algebra
 Calculator](http://uacalc.org) (UACalc).
 
 For the GUI version of the program, please visit
-[the main UACalc webpage: http://uacalc.org](http://uacalc.org).
+the [UACalc webpage (uacalc.org)](http://uacalc.org).
+
+--------------------------------------------------
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
+**Contents**
 
   - [Importing, browsing, and collaborating](#importing-browsing-and-collaborating)
     - [Browsing the source code](#browsing-the-source-code)
@@ -25,7 +27,7 @@ For the GUI version of the program, please visit
 The page is meant to provide some hints and advice about downloading, importing,
 browsing, and modifying the source code in the uacalcsrc repository. Much of it
 concerns the use of git and GitHub, and there are plenty of better sources
-for this information, such as [the GitHub help pages](https://help.github.com/).
+for this information, such as the [GitHub help pages](https://help.github.com/).
 
 The instructions below will require entering commands in a terminal
 window with some sort of Unix style shell, like bash.
@@ -81,8 +83,12 @@ repository, you should follow these steps:
 
 		$ git push origin master
 		
-3. Navigate to the GitHub webpage of your fork and click on the `Pull
-   Request` link.  Be sure to include an informative comment justifying the
+3. [Create a pull request](https://help.github.com/articles/creating-a-pull-request/)
+   by navigating to your fork's GitHub page and clicking the `Pull
+   Request` link (which appears next to a message like, "This branch is 1 commit
+   ahead of UACalc:master"). 
+
+   Be sure to include an informative comment justifying the
    recommendation to merge your changes into the main respository.
 
 To keep your fork current with the main UACalc/uacalcsrc repository, see the
