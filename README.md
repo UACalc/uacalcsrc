@@ -6,6 +6,20 @@ Calculator](http://uacalc.org) (UACalc).
 For the GUI version of the program, please visit
 [the main UACalc webpage: http://uacalc.org](http://uacalc.org).
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+  - [Importing, browsing, and collaborating](#importing-browsing-and-collaborating)
+    - [Browsing the source code](#browsing-the-source-code)
+    - [Contributing using fork and pull requests](#contributing-using-fork-and-pull-requests)
+    - [Importing uacalcsrc into Eclipse](#importing-uacalcsrc-into-eclipse)
+    - [Updating your fork](#updating-your-fork)
+  - [History](#history)
+  - [Citing UACalc](#citing-uacalc)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Importing, browsing, and collaborating
 
 The page is meant to provide some hints and advice about downloading, importing,
