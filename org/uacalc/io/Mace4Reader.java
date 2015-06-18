@@ -115,7 +115,7 @@ public final class Mace4Reader {
 
 		for (;;) {
 			c = peekChar();
-			if ((ordinary && !isOrdinaryCharacter(c))
+			if ((ordinary && !isOrdinaryCharacter(c) && !Character.isDigit(c))
 					|| (!ordinary && !isSpecialCharacter(c)))
 				break;
 
