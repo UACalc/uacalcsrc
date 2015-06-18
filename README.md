@@ -17,6 +17,7 @@ the [UACalc webpage (uacalc.org)](http://uacalc.org).
     - [Contributing using fork and pull requests](#contributing-using-fork-and-pull-requests)
     - [Importing uacalcsrc into Eclipse](#importing-uacalcsrc-into-eclipse)
     - [Updating your fork](#updating-your-fork)
+  - [Bugs and Other Issues](#bugs-and-other-issues)
   - [History](#history)
   - [Citing UACalc](#citing-uacalc)
 
@@ -92,7 +93,7 @@ repository, you should follow these steps:
    recommendation to merge your changes into the main respository.
 
 To keep your fork current with the main UACalc/uacalcsrc repository, see the
-section "Updating your fork" below.
+section [Updating your fork](#updating-your-fork) below.
 
 ### Importing uacalcsrc into Eclipse
 
@@ -102,7 +103,7 @@ described in this section.
 
 If you plan to make improvements to the code and expect them to be considered for
 adoption in the main UACalc/uacalcsrc repository, please create your own
-fork of the repository, as explained in the previous section.
+fork of the repository, as explained in the [previous section](#contributing-using-fork-and-pull-requests).
 
 **Steps to import into Eclipse**
 
@@ -190,6 +191,12 @@ for more details.
 
 7. If there are other branches besides `master` that you want to update, repeat
    steps 4--6, replacing `master` with another branch name.
+
+## Bugs and Other Issues
+If you think you found a bug in the calculator, if you encounter a problem with
+the instructions on this page, or if you have any other issue that you'd like to
+call attention to, please
+[create a new issue](https://github.com/UACalc/uacalcsrc/issues).
 
 ## History
 
