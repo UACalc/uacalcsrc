@@ -167,27 +167,23 @@ for more details.
 
 
 3. In the working directory of your local project, fetch the branches and their
-   respective commits from the upstream repository.
+   respective commits from the upstream repository and merge upstream/master
+   into your local master branch.
 
         git fetch upstream
-
-4. Check out your fork's local master branch.
-
         git checkout master
-
-5. Merge the changes from upstream/master into your local master branch. This
-   brings your fork's master branch into sync with the upstream repository,
-   without losing your local changes. 
-
         git merge upstream/master
 
-6. Finally, do
+   This brings your fork's master branch into sync with the upstream repository,
+   without losing your local changes. 
+
+4. Finally, commit the changes and push to your remote fork.
 
         git commit -m "merged changes from upstream"
         git push origin master
 
-   and check that the GitHub page for your fork's repo shows the message,
-   "This branch is even with UACalc:master." 
+   If you now visit the GitHub page for your fork's repo, it should show the
+   message, "This branch is even with UACalc:master." 
 
 7. If there are other branches besides `master` that you want to update, repeat
    steps 4--6, replacing `master` with another branch name.
