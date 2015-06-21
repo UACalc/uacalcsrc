@@ -3169,8 +3169,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   static boolean foo = true;
   public static void main(String[] args) throws Exception {
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/directoidNonCom.ua");
-    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
-    
+    //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/williamdemeo/git/UACalc-Team/AlgebraFiles/Bergman/CIB4-no-edge-term.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/cyclicTest.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
