@@ -366,6 +366,38 @@ public class Closer {
         rawList.add(arr.getArray());
         if (termMap != null) {
           termMap.put(arr, NonVariableTerm.makeConstantTerm(algebra.constantToSymbol.get(arr)));
+        } 
+      }
+    }
+    if (imgOps != null) {
+      for (OperationSymbol sym : algebra.similarityType().getOperationSymbols()) {
+        if (sym.arity() == 0) {
+          Operation op = algebra.getOperation(sym);
+          int imageValueOfSym = imageAlgebra.getOperation(sym).intValueAt(new int[0]);
+          final int[][] args = new int[0][];
+          IntArray ia = new IntArray(op.valueAt(args));  // will be just the value of the constant
+          Integer image = homomorphism.get(ia);
+          if (image  == null) {
+            homomorphism.put(ia, imageValueOfSym);
+          }
+          else {
+            if (image != imageValueOfSym) {
+              List<Term> children = new ArrayList<>(0);
+              failingEquation = new Equation(termMap.get(ia),
+                  new NonVariableTerm(sym, children));
+              final String line = "failing equation:\n" + failingEquation;
+              if (reportNotNull) {
+                report.setSize(ans.size());
+                report.addEndingLine(line);
+              }
+              else {
+                System.out.println("failing equation:\n" + failingEquation);
+                System.out.println("size so far: " + ans.size());
+              }
+              return ans;
+            }
+          }
+          // here
         }
       }
     }

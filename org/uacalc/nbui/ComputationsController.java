@@ -1757,7 +1757,7 @@ public class ComputationsController {
             uacalcUI.repaint();
           }
           else {
-            report.addEndingLine(gB.toString() + "is not in V(" + gA.toString() + ")");
+            report.addEndingLine(gB.toString() + " is not in V(" + gA.toString() + ")");
             ttm.setDescription("An equation of " + gA.toString() 
                 + " that fails in " + gB.toString() 
                 + " by substituting " + substr 
