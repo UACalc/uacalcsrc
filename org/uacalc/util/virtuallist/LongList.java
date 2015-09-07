@@ -3,6 +3,7 @@ package org.uacalc.util.virtuallist;
 import java.math.BigInteger;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * An interface for lists indexed by <code>long</code>'s rather 
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
  *
  * @param <E>
  */
-public interface LongList<E> {
+public interface LongList<E> extends RandomAccess {
 
   /**
    * Get the kth element.
@@ -222,6 +223,13 @@ public interface LongList<E> {
       bot = bot * (i+1);
     }
     return top / bot;
+  }
+  
+  public static void main(String[] args) {
+    LongList<int[]> llist = intTuplesWithMin(3, 4, 2);
+    llist.stream().forEach(x -> System.out.println(Arrays.toString(x)));
+    System.out.println("------------------------------");
+    llist.parallelStream().forEach(x -> System.out.println(Arrays.toString(x)));
   }
   
 }
