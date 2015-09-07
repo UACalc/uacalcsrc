@@ -91,7 +91,7 @@ public interface LongList<E> {
    * least one entry in the range <code>min</code> to
    * <code>base</code> - 1.
    * For the definition and calculation of the kth enty 
-   * see <a href="http://uacalc.org/putthepaperlinkhere">Paper name</>.
+   * see <a href="http://uacalc.org/putthepaperlinkhere">Paper name</a>.
    * 
    * 
    * @param tupleLength
