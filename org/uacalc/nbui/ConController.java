@@ -42,11 +42,11 @@ public class ConController {
           public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName().equals(ChangeSupport.VERTEX_RIGHT_PRESSED)) {
               Vertex v = (Vertex)e.getNewValue();
-              System.out.println("underlyingObj = " + v.getUnderlyingObject());
+              //System.out.println("underlyingObj = " + v.getUnderlyingObject());
             }
             if (e.getPropertyName().equals(ChangeSupport.VERTEX_PRESSED)) {
               Vertex v = (Vertex)e.getNewValue();
-              System.out.println("underlyingObj = " + v.getUnderlyingObject());
+              //System.out.println("underlyingObj = " + v.getUnderlyingObject());
               final int index = conTableModel.rowOfPartition((Partition)v.getUnderlyingObject());
               conTable.setRowSelectionInterval(index, index);
               TableUtils.scrollToVisible(conTable, index, 0);
@@ -122,7 +122,7 @@ public class ConController {
    */
   public boolean makeConInBackground(SmallAlgebra alg) {  
     
-    System.out.println("makeConInBG called");
+    //System.out.println("makeConInBG called");
     //final int maxSize = CongruenceLattice.MAX_DRAWABLE_SIZE;
     final int inputSize = alg.inputSize();
     if (inputSize < 0 || inputSize > CongruenceLattice.MAX_DRAWABLE_INPUT_SIZE) {
@@ -146,7 +146,7 @@ public class ConController {
 
   
   public void drawCon() {
-    System.out.println("drawCon() called");
+    //System.out.println("drawCon() called");
     GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (gAlg == null) return;
     SmallAlgebra alg = gAlg.getAlgebra();
@@ -162,7 +162,7 @@ public class ConController {
   public void drawCon(SmallAlgebra alg, boolean makeIfNull) {
     ////////////////////// temporary //////////////
     
-    System.out.println("univ made: " + alg.con().universeFound());
+    //System.out.println("univ made: " + alg.con().universeFound());
     if (makeIfNull) {
       if (!alg.isTotal()) {
         notTotalWarning();
@@ -236,7 +236,7 @@ public class ConController {
   
   public void setConTable(SmallAlgebra alg) {
     conTableModel = new ConLatticeTableModel(alg, ConLatticeTableModel.DataType.ALL, getConLatDrawer().getDiagram());
-    System.out.println("elems size: " + conTableModel.getElementList().size());
+    //System.out.println("elems size: " + conTableModel.getElementList().size());
     conTable = new JTable(conTableModel);
     conTable.setGridColor(Color.BLACK);
     
@@ -248,7 +248,7 @@ public class ConController {
         if (getConLatDrawer() == null || getConLatDrawer().getDiagram() == null) return;
         final ListSelectionModel lsm = (ListSelectionModel)e.getSource();
         TableUtils.updateOrderedSelection(conTable, orderedIndeces);
-        System.out.println("orderedList: " + orderedIndeces);
+        //System.out.println("orderedList: " + orderedIndeces);
         getConLatDrawer().resetSelectedElemList();
         java.util.List<Partition> elems = conTableModel.getElementList();
         for (int i = 0; i < orderedIndeces.size(); i++) {
@@ -272,7 +272,7 @@ public class ConController {
     
     
     uacalcUI.repaint();
-    System.out.println("foo: ");
+    //System.out.println("foo: ");
   }
   
   private void setColWidths() {
