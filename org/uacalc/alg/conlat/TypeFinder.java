@@ -345,7 +345,8 @@ public final class TypeFinder {
    *
    */
   public int findType(Subtrace subtrace) {
-    System.out.println("calling findType with " + subtrace);
+    // this is useful for more than just debugging
+    //System.out.println("calling findType with " + subtrace);
     int c = subtrace.first();
     int d = subtrace.second();
     boolean meet = false;
@@ -365,10 +366,10 @@ public final class TypeFinder {
     int closedMark = 0;
     int currentMark = universe.size();
     while (closedMark < currentMark) {
-      System.out.println("currMark: " + currentMark + ", closedMark: " + closedMark);
+      //System.out.println("currMark: " + currentMark + ", closedMark: " + closedMark);
       if (Thread.currentThread().isInterrupted()) return -1;  // ProgressReport ??
       for (Operation f : Afourth.operations()) {
-        System.out.println("f: " + f);
+        //System.out.println("f: " + f);
         final int arity = f.arity();
         if (arity == 0) continue;
         int[] argIndeces = new int[arity];

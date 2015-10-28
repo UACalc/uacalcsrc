@@ -24,10 +24,6 @@ import org.uacalc.io.AlgebraIO;
  */
 public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
 
-  static Logger logger = Logger.getLogger("org.uacalc.alg.ProductAlgebra");
-  static {
-    logger.setLevel(Level.FINER);
-  }
 
   protected List<SmallAlgebra> algebras;
   protected int[] sizes;
@@ -123,10 +119,11 @@ public class ProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
           public int intValueAt(int[] args) {
             if (tableOp != null) return tableOp.intValueAt(args);
             int ans = 0;
-            int [] unargs = new int[args.length];
+            // this seems to just be for debugging so eliminate it.
+            // int [] unargs = new int[args.length];
             for (int i = 0; i < args.length; i++) {
               Horner.hornerInv(args[i], sizes, argsExpanded[i]);
-              unargs[i] = Horner.horner(argsExpanded[i], sizes);
+              // unargs[i] = Horner.horner(argsExpanded[i], sizes);
             }
             
             //System.out.println("\nargs: " + ArrayString.toString(args));

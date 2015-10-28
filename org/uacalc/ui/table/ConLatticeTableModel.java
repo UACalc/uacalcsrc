@@ -55,7 +55,7 @@ public final class ConLatticeTableModel extends LatticeTableModel {
     if (diagram == null) return;
     final org.latdraw.diagram.Vertex[] verts = diagram.getVertices();
     if (verts == null || !(verts.length == elems.size())) return;
-    System.out.println("before: " + elems);
+    //System.out.println("before: " + elems);
     Collections.sort(elems, new Comparator<Partition>() {
         public int compare(Partition p0, Partition p1) {
           final int i0 = findIndex(p0, verts);
@@ -63,12 +63,12 @@ public final class ConLatticeTableModel extends LatticeTableModel {
           return i0 - i1;
         }
     });
-    System.out.println("after : " + elems);
+    //System.out.println("after : " + elems);
     List vertsPar = new ArrayList();
     for (int i = 0; i < verts.length; i++) {
       vertsPar.add(verts[i].getUnderlyingObject());
     }
-    System.out.println("verts : " + vertsPar);
+    //System.out.println("verts : " + vertsPar);
   }
   
   public int findIndex(Partition par, final org.latdraw.diagram.Vertex[] verts) {
