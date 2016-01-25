@@ -343,8 +343,7 @@ public class FiniteField extends GeneralAlgebra implements SmallAlgebra {
 
   @Override
   public AlgebraType algebraType() {
-    // TODO Auto-generated method stub
-    return null;
+    return AlgebraType.FINITE_FIELD;
   }
 
   @Override
@@ -449,11 +448,54 @@ public class FiniteField extends GeneralAlgebra implements SmallAlgebra {
    * @return
    */
   public boolean irreducibleQuadratic(int rIndex, int sIndex) {
-    for (int k = 0; k < cardinality() - 1; k++) {
+    for (int k = 0; k < cardinality() ; k++) {
       //System.out.println("rIndex = " + rIndex + ", sIndex = " + sIndex +   ", k = " + k);
       if (timesInt(k,k) == plusInt(timesInt(rIndex, k), sIndex)) return false;
     }
     return true;
+  }
+  
+  public List<IntArray> nextPair(List<IntArray> pair, IntArray s) {
+    List<IntArray> ans = new ArrayList<>(2);
+    IntArray c = pair.get(0);
+    IntArray d = pair.get(1);
+    IntArray two = plus(one(), one());
+    IntArray four = plus(two,two);
+    IntArray ds = times(d,s);
+    IntArray dSqs = times(d, ds);
+    IntArray cs = times(c,s);
+    IntArray cSq = times(c,c);
+    IntArray dSq = times(d,d);
+    if (c.equals(ds)) {
+      ans.set(0, 
+          plus(plus(times(two,cSq), c), negation((times(four, cs)))));
+      ans.set(1, 
+          plus(plus(dSqs, negation(times(two, ds))), one()));
+      return ans;
+    }
+    
+    return ans;
+  }
+  
+  public List<Integer> nextPairInt(List<Integer> pair, int sIndex) {
+    List<IntArray> foo = nextPair(Arrays.asList((IntArray)getElement(pair.get(0)), (IntArray)getElement(pair.get(1))), (IntArray)getElement(sIndex));
+    //return 
+    List<Integer> ans = new ArrayList<>(2);
+    int cIndex = pair.get(0);
+    int dIndex = pair.get(1);
+    int twoIndex = plusInt(1,1);
+    int fourIndex = plusInt(twoIndex,twoIndex);
+    int dsIndex = timesInt(dIndex,sIndex);
+    int csIndex = timesInt(cIndex,sIndex);
+    int cSqIndex = timesInt(cIndex,cIndex);
+    int dSqIndex = timesInt(dIndex,dIndex);
+    if (cIndex == dsIndex) {
+      //ans.set(0,plusInt(plusInt(c,timesInt())))
+      
+      
+      return Arrays.asList(cIndex,dIndex);
+    }
+    return ans;
   }
   
   public static void main(String[] args) {
