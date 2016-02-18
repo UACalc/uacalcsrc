@@ -391,8 +391,8 @@ public class Malcev {
     final int[][] values = new int[][] {{3,0}};
     FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
     // ** Need to put in a test if the tables will fit in memory. **
+    // No worries: this test is in SubProductAlgebra.
     f2.makeOperationTables();
-    //logger.info("f2 size is " + f2.cardinality());
     IntArray g0;
     IntArray g1;
     IntArray g2;

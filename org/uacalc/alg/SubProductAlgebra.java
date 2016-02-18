@@ -270,6 +270,8 @@ public class SubProductAlgebra extends GeneralAlgebra implements SmallAlgebra {
   }
 
   public void makeOperationTables() {
+    final int maxAlgSizeForOpTables = 8000000;
+    if (this.inputSize() < 0 || this.inputSize() > maxAlgSizeForOpTables) return;
     for (Operation op : operations()) {
       final int memReserve = 1048576;
       byte[] buf = new byte[memReserve];

@@ -89,6 +89,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenu maltsevMenu;
   private javax.swing.JMenuItem membershipTestMI;
   private javax.swing.JMenuItem qmembershipTestMI;
+  private javax.swing.JMenu taylorTermMenu;
   private javax.swing.JMenuItem mmstMI;
   private javax.swing.JMenuItem w3edgeTermMI;
   private javax.swing.JMenuItem modularityMI;
@@ -369,6 +370,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     pixleyMI = new javax.swing.JMenuItem();
     nuMI = new javax.swing.JMenuItem();
     wnuMI = new javax.swing.JMenuItem();
+    taylorTermMenu = new javax.swing.JMenu();
     mmstMI = new javax.swing.JMenuItem();
     w3edgeTermMI = new javax.swing.JMenuItem();
     edgeMI = new javax.swing.JMenuItem();
@@ -889,6 +891,18 @@ xxx;
         }
     });
     maltsevMenu.add(wnuMI);
+    
+    taylorTermMenu.setText("Taylor Term");
+    maltsevMenu.add(taylorTermMenu);
+    
+    w3edgeTermMI.setText("Weak 3-edge term (faster)");
+    w3edgeTermMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+          w3edgeTermMIActionPerformed(evt);
+        }
+    });
+    taylorTermMenu.add(w3edgeTermMI);
+    
 
     mmstMI.setText("MMS Taylor term");
     mmstMI.addActionListener(new java.awt.event.ActionListener() {
@@ -896,15 +910,9 @@ xxx;
             mmstMIActionPerformed(evt);
         }
     });
-    maltsevMenu.add(mmstMI);
+    taylorTermMenu.add(mmstMI);
     
-    w3edgeTermMI.setText("Weak 3-edge term");
-    w3edgeTermMI.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          w3edgeTermMIActionPerformed(evt);
-        }
-    });
-    maltsevMenu.add(w3edgeTermMI);
+    
 
     jMenuBar1.add(maltsevMenu);
     

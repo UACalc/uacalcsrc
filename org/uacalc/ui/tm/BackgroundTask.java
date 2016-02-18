@@ -59,6 +59,7 @@ public abstract class BackgroundTask <V> implements Runnable, Future<V> {
           catch (InterruptedException consumed) {
           } 
           finally {
+            System.out.println("thrown: " + thrown);
             buf = null;
             final boolean outOfMemory = thrown instanceof OutOfMemoryError;
             if (outOfMemory) status = Status.INS_MEMORY;
