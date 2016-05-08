@@ -104,8 +104,8 @@ public class Kearnes {
   }
 
   /**
-   * The operations are join and meet and n - 1 unary ops: p_i(y) =
-   * i if y &lt; i and i - 1 otherwise.
+   * The operations are join and meet and n - 1 unary ops: 
+   * p_i(y) = i if y &lt; i and i - 1 otherwise.
    */
   public static List makeKearnesOps(final int n) {
     List ops = new ArrayList(n + 1);
