@@ -2453,6 +2453,13 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return differenceTerm(alg, null);
   }
   
+  /**
+   * Find a difference term for the algebra, if one exists.
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
   public static Term differenceTerm(SmallAlgebra alg, ProgressReport report) {
     if (alg.cardinality() == 1)  return Variable.x;
     if (report != null) report.addStartLine(
@@ -2473,10 +2480,17 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     termMap.put(g1, Variable.y);
     termMap.put(g2, Variable.z);
     
+    if (report != null) report.addStartLine(
+        "Calculating [theta,theta] x, theta = Cg(a,b), on F_A(a,b).");
     final Partition theta = f2.con().Cg(0,1);
     final Partition thetaPrime = f2.con().commutator(theta, theta);
+    if (report != null) report.addEndingLine("Found [theta,theta]");
     
-    //f2.con().
+    if (thetaPrime.isRelated(0, 1)) {  // theta = [theta,theta]
+      if (report != null) report.addEndingLine("d(x,y,z) = z is a difference term.");
+      return Variable.z;
+    }
+    
     
     final int[][] values = new int[][] {{0,1}};
     
@@ -3220,7 +3234,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/williamdemeo/git/UACalc-Team/AlgebraFiles/Bergman/CIB4-no-edge-term.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/cyclicTest.ua");
-    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/cyclic2.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat2.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
     //System.out.println(permLevelIdempotent(pol, null));
