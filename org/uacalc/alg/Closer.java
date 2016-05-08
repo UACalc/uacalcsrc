@@ -1123,9 +1123,10 @@ if (false) {
               }
             }
             // This block of code is for when we are searching for a constrained element.
-            // At present if any constraint exists then the blocks constraint is not
-            // null. Also at most one of value constrainsts and constraintSet is defined. 
-            // If this ever changes the code below will have to be rewritten.
+            // If blocks, values and constraintCongruence are all null, then we
+            // skip this block. Otherwise we check if each non-null constraint
+            // is satisfied. If so we set the eltToFind to be the current element
+            // and stop closing.
             if (blocksNotNull || valuesNotNull || constraintCongruenceNotNull) {
               boolean ok = true;
               if (blocksNotNull && !v.satisfiesBlocksConstraint(blocks)) ok = false;
@@ -1144,7 +1145,7 @@ if (false) {
                 return ans;
               }
             }
-            /*
+            /*  Old version; delete soon. 
             System.out.println("blocksNotNull: " + blocksNotNull);
             if (blocksNotNull) {  // this assumes that if values != null then so is blocks
               System.out.println("got ere");
