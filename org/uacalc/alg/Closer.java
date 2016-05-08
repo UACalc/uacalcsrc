@@ -52,9 +52,20 @@ public class Closer {
   // a list of operations on the set of the root algebra; to test if they are in the clone. 
   List<Operation> operations;
   Map<Operation,Term> termMapForOperations;
-  // a blocks and values constraint as in IntArray.
+  
+  // blocks, values and constraintSet 
+  // are used when searching for an element satisfying specify constraints.
+  // See the constraints in IntArray.
   int[][] blocks;
   int[][] values;
+  // 
+  Set<Integer> constraintSet;
+  int indexForConstraintSet = -1;
+  //
+  private Partition congruenceForCongruenceConstraint;
+  private int indexForCongruenceConstraint;
+  private int congruenceConstraintElemIndex;
+  
   // stop closing  if we have found this many elements. 
   // only used in sgClosePower for now.
   // ned to amke a UI for this.
@@ -248,14 +259,121 @@ public class Closer {
   }
   
   public boolean allElementsFound() { return allEltsFound; }
-  
+ 
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
   public int[][] getBlocks() { return blocks; }
   
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
   public void setBlocks(int[][] blocks) { this.blocks = blocks; }
   
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
   public int[][] getValues() { return values; }
   
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
   public void setValues(int[][] values) { this.values = values; }
+  
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
+  public Set<Integer> getSetConstraint() { return constraintSet; }
+  
+  /**
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
+  public void setConstraintSet(Set<Integer> set) { constraintSet = set; }
+  
+  /**
+   * Get the index for the SetConstraint.
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
+  public int getIndexForConstraintSet() { return indexForConstraintSet; }
+  
+  /**
+   * Set the index for the SetConstraint.
+   * blocks, values and setConstraints are specified in IntArray
+   * and are used to restrict the element we are looking for.
+   * 
+   * @return
+   */
+  public void setIndexForConstraintSet(int k) { indexForConstraintSet = k; }
+  
+  /**
+   * @return the indexForCongruenceConstraint
+   */
+  public int getIndexForCongruenceConstraint() {
+    return indexForCongruenceConstraint;
+  }
+
+  /**
+   * @param indexForCongruenceConstraint the indexForCongruenceConstraint to set
+   */
+  public void setIndexForCongruenceConstraint(int indexForCongruenceConstraint) {
+    this.indexForCongruenceConstraint = indexForCongruenceConstraint;
+  }
+
+
+
+  /**
+   * @return the congruenceConstraintElemIndex
+   */
+  public int getCongruenceConstraintElemIndex() {
+    return congruenceConstraintElemIndex;
+  }
+
+  /**
+   * @param congruenceConstraintElemIndex the congruenceConstraintElemIndex to set
+   */
+  public void setCongruenceConstraintElemIndex(int congruenceConstraintElemIndex) {
+    this.congruenceConstraintElemIndex = congruenceConstraintElemIndex;
+  }
+  
+  public Partition getCongruenceForCongruenceConstraint() {
+    return congruenceForCongruenceConstraint;
+  }
+
+  /**
+   * @param alpha the congruenceConstraintAlpha to set
+   */
+  public void setCongruenceForCongruenceConstraint(Partition alpha) {
+    this.congruenceForCongruenceConstraint = alpha;
+  }
+
+  public void setupCongruenceConstraint(Partition alpha, int index, int elemIndex) {
+    setCongruenceForCongruenceConstraint(alpha);
+    setCongruenceConstraintElemIndex(elemIndex);
+    setIndexForCongruenceConstraint(index);
+  }
+
+
   
   public int getmaxSize() { return maxSize; }
   
@@ -802,8 +920,7 @@ if (false) {
   
   /**
    * A fast version for powers to compute the 
-   * closure of <tt>elems</tt> under the operations. (Worry about
-   * nullary ops later.)
+   * closure of <tt>elems</tt> under the operations. 
    *
    * @param elems a List of IntArray's
    *
@@ -860,6 +977,7 @@ if (false) {
     final boolean operationsNotNull = operations == null ? false : true;
     final boolean blocksNotNull = blocks == null ? false : true;
     final boolean valuesNotNull = values == null ? false : true;
+    final boolean constraintCongruenceNotNull = congruenceForCongruenceConstraint == null ? false : true;
     
     if (operationsNotNull) termMapForOperations = new HashMap<Operation,Term>();
     int operationsFound = 0;
@@ -1004,13 +1122,45 @@ if (false) {
                 return ans;
               }
             }
+            // This block of code is for when we are searching for a constrained element.
+            // At present if any constraint exists then the blocks constraint is not
+            // null. Also at most one of value constrainsts and constraintSet is defined. 
+            // If this ever changes the code below will have to be rewritten.
+            if (blocksNotNull || valuesNotNull || constraintCongruenceNotNull) {
+              boolean ok = true;
+              if (blocksNotNull && !v.satisfiesBlocksConstraint(blocks)) ok = false;
+              if (ok && valuesNotNull && !v.satisfiesValuesConstraint(values)) ok = false;
+              if (ok && constraintCongruenceNotNull 
+                     && !v.satisfiesCongruenceConstraint(getIndexForCongruenceConstraint(), 
+                                                     getCongruenceForCongruenceConstraint(), 
+                                                     getCongruenceConstraintElemIndex())) ok = false;
+              if (ok) {
+                eltToFind = v;
+                if (reportNotNull) {
+                  report.setSize(ans.size());
+                  report.addEndingLine("closing done, found "
+                      + eltToFind + ", at " + ans.size());
+                }
+                return ans;
+              }
+            }
+            /*
+            System.out.println("blocksNotNull: " + blocksNotNull);
             if (blocksNotNull) {  // this assumes that if values != null then so is blocks
+              System.out.println("got ere");
               boolean found = false;
               if (valuesNotNull) {  
-                if (v.satisfiesConstraint(blocks, values)) found = true;
+                if (v.satisfiesBlocksConstraint(blocks) && v.satisfiesValuesConstraint(values)) found = true;
               }
-              else {
-                if (v.satisfiesConstraint(blocks)) found = true;
+              else if (!constraintCongruenceNotNull) { // only the blocks contraint exists
+                System.out.println("here, v = " + v);
+                if (v.satisfiesBlocksConstraint(blocks)) found = true;
+              }
+              if (v.satisfiesBlocksConstraint(blocks) 
+                  && v.satisfiesCongruenceConstraint(getIndexForCongruenceConstraint(), 
+                                                     getCongruenceForCongruenceConstraint(), 
+                                                     getCongruenceConstraintElemIndex())) {
+                found = true;
               }
               if (found) {
                 eltToFind = v;
@@ -1022,7 +1172,7 @@ if (false) {
                 return ans;
               }
             }
-            
+            */
             // can't quit early if we are looking for a homomorphism
             if (imgOps == null) {
               final int size = ans.size();
@@ -1220,7 +1370,7 @@ if (false) {
     this.suppressOutput = suppressOutput;
   }
 
-
+  
 
   class ParallelWorker implements Runnable {
     

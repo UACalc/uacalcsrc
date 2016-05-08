@@ -4,6 +4,7 @@
 package org.uacalc.util;
 
 import java.util.*;
+import org.uacalc.alg.conlat.Partition;
 
 /**
  * This class is a wrapper for an array of int's mainly so we can 
@@ -33,7 +34,14 @@ public class IntArray implements Cloneable {
     this.array = new int[size];
   }
   
-  public boolean satisfiesConstraint(final int[][] blocks) {
+  /**
+   * Test if the intArray is constant on each block of the
+   * partition defined by blocks.
+   * 
+   * @param blocks    the blocks of a partition on the index set
+   * @return          true if the condition is satisfied
+   */
+  public boolean satisfiesBlocksConstraint(final int[][] blocks) {
     for (int i = 0; i < blocks.length; i++) {
       final int[] block = blocks[i];
       final int first = array[block[0]];
@@ -45,6 +53,44 @@ public class IntArray implements Cloneable {
   }
   
   /**
+   * Test if this satisfies array[i] = v for each [i,v] in values.
+   * 
+   * @param values      an array of pairs [i,v] specifying array[i] = v
+   * @return            true if the condition is satisfied
+   */
+  public boolean satisfiesValuesConstraint(final int[][] values) {
+    for (int i = 0; i < values.length; i++) {
+      if (array[values[i][0]] != values[i][1]) return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Test if this IntArray value at index is in a set
+   * of possibleValues.
+   * 
+   * @param index           the index to test
+   * @param possibleValues  a set of possible values
+   * @return
+   */
+  public boolean satisfiesSetConstraint(final int index, final Set<Integer> possibleValues) {
+    return possibleValues.contains(array[index]);
+  }
+  
+  /**
+   * Test if this IntArray's value at index is congruent mod alpha to 
+   * the element with index elemIndex.
+   * 
+   * @param index
+   * @param alpha
+   * @param elemIndex
+   * @return
+   */
+  public boolean satisfiesCongruenceConstraint(final int index, final Partition alpha, final int elemIndex) {
+    return alpha.isRelated(elemIndex, array[index]);
+  }
+  
+  /**
    * Checks if this intArray is equal on the indices of each block and
    * has the values specified by <code>values</code>.
    * 
@@ -52,6 +98,7 @@ public class IntArray implements Cloneable {
    * @param values      an array of pairs [i,v] specifying array[i] = v
    * @return            true if the condition is satisfied
    */
+  /*
   public boolean satisfiesConstraint(final int[][] blocks, final int[][] values) {
     for (int i = 0; i < blocks.length; i++) {
       final int[] block = blocks[i];
@@ -65,6 +112,7 @@ public class IntArray implements Cloneable {
     }
     return true;
   }
+  */
 
   public final boolean equals(Object obj) {
     if (obj == null) return false;

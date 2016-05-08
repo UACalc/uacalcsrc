@@ -10,23 +10,23 @@ import org.uacalc.alg.op.Operation;
 import org.uacalc.util.*;
 
 /**
- * This class for finite fields. If the order of the filed has
- * <code>p^n<code> elements, its elements are arrays ints mod p of length
+ * This class for finite fields. If the field has
+ * <code>p^n<code> elements, its elements are arrays of ints mod p of length
  * <code>n</code>. Addition is component-wise, mod p. The constructor
  * requires a polynomial of degree n irreducible over Z_p[x] and the roots
  * of this polynomial must have multiplicative order p^n - 1. If lambda
  * is a root of this polynomial, then 1, lambda, lambda^2, ..., lambda^(n-1)
  * is a basis and we view our arrays using this basis. Multiplication by lambda
  * is a shift operation combined with using the polynomial to express
- * lambda^n in terms of lower powers. We keep a map from the arrays to 
- * the powers of lambda to our arrays.
+ * lambda^n in terms of lower powers. We keep a map from  
+ * the powers of lambda to the corresponding array.
  * For a good example of how this correspondence works see the slide
  * for constructing GF(9) near the end of
  * <p>
  *   <a href="http://math.ucdenver.edu/~wcherowi/courses/m6406/finflds.pdf">
  *   math.ucdenver.edu/~wcherowi/courses/m6406/finflds.pdf</a>.
  * <p> 
- * The element order is the one abouve except 0 is first. So 1 = lamda^0 is second,
+ * The element order is the one above except 0 is first. So 1 = lamda^0 is second,
  * lambda is third. The kth element is lambda^(k-1). This makes the elements
  * of Z_p look odd.
  * 
