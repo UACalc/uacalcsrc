@@ -100,6 +100,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem nuMI;
   private javax.swing.JMenuItem wnuMI;
   private javax.swing.JMenuItem edgeMI;
+  private javax.swing.JMenuItem diffTermMI;
   private javax.swing.JTable opTable;
   private TableModel emptyOpTableModel;
   private javax.swing.JScrollPane opTableScrollPane;
@@ -374,6 +375,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     mmstMI = new javax.swing.JMenuItem();
     w3edgeTermMI = new javax.swing.JMenuItem();
     edgeMI = new javax.swing.JMenuItem();
+    diffTermMI = new javax.swing.JMenuItem();
     drawingMenu = new javax.swing.JMenu();
     drawConMI = new javax.swing.JMenuItem();
     drawSubMI = new javax.swing.JMenuItem();
@@ -867,6 +869,14 @@ xxx;
         }
     });
     maltsevMenu.add(pixleyMI);
+    
+    diffTermMI.setText("difference term");
+    diffTermMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            diffTermMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(diffTermMI);
     
     edgeMI.setText("edge term");
     edgeMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1576,6 +1586,10 @@ xxx;
   private void edgeMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
     getComputationsController().setupEdgeTermTask();
   }//GEN-LAST:event_nuMIActionPerformed
+  
+  private void diffTermMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupDiffTermTask();
+  }
   
   private void nuMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuMIActionPerformed
     getComputationsController().setupNUTermTask();

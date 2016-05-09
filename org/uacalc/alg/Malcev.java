@@ -2481,7 +2481,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     termMap.put(g2, Variable.z);
     
     if (report != null) report.addStartLine(
-        "Calculating [theta,theta] x, theta = Cg(a,b), on F_A(a,b).");
+        "Calculating [theta,theta], theta = Cg(a,b), on F_A(a,b).");
     final Partition theta = f2.con().Cg(0,1);
     final Partition thetaPrime = f2.con().commutator(theta, theta);
     if (report != null) report.addEndingLine("Found [theta,theta]");

@@ -1125,6 +1125,72 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
   
+  public void setupDiffTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A difference term over the variety of " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  diffTermTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.addLine("that is, a term satisfying  d(x,x,z) = z and " +
+                       "d(a,b,b) [theta,theta] a, where theta = Cg(a,b)");
+        report.setDescription(desc);
+        Term diffTerm = Malcev.differenceTerm(alg, report);
+        return diffTerm;
+      }
+      public void onCompletion(Term diffTerm, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (diffTerm == null) {
+            report.addEndingLine("The variety has no diff term");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a difference term.");
+            report.addLine("see Kearnes, Szendrei, Willard " 
+                + " \"A finite basis theorem for difference-term varieties " 
+                + "with a finite residual bound,\" ");
+            report.addLine("Trans AMS, 368 (2016), 2115-2143, and the references therein " 
+                + "for properties and uses of a differnce term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            ttm.setDescription(desc + ": d(x,y,z) = " + diffTerm + " is a difference term");
+            updateResultTextField(this, ttm);
+            terms.add(diffTerm);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(diffTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(diffTermTask);
+  }
+  
+  
   public void setupWeak3EdgeTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
