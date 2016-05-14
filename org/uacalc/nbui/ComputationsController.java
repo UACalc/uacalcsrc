@@ -1157,6 +1157,8 @@ public class ComputationsController {
         if (!cancelled) {
           if (diffTerm == null) {
             report.addEndingLine("The variety has no diff term");
+            report.addLine("The algebra either does not have a Taylor term or its"
+               + "variety has a type 2 tail (Kearnes, J. Alg. 177(1995).");
             ttm.setDescription(desc + ": there is none.");
             updateResultTextField(this, ttm);
             uacalcUI.repaint();

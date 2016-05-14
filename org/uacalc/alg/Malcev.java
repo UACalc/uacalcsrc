@@ -2449,6 +2449,12 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     return null;
   }
   
+  /**
+   * Find a difference term for the algebra, if one exists.
+   * 
+   * @param alg
+   * @return
+   */
   public static Term differenceTerm(SmallAlgebra alg) {
     return differenceTerm(alg, null);
   }

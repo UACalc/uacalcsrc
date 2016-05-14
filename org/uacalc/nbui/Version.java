@@ -37,7 +37,12 @@ public class Version {
   // quasi variety stull; Kazda's edge test; bug fixes.
   //public static final String versionString = "v1.13 ";
   //public static final String buildDate = "(Feb 28, 2015)";
-  public static final String versionString = "v1.14 ";
-  public static final String buildDate = "(Feb 17, 2016)";
+  //public static final String versionString = "v1.14 ";
+  //public static final String buildDate = "(Feb 17, 2016)";
+  
+  // difference term testing and bug fixes.
+  public static final String versionString = "v1.15 ";
+  public static final String buildDate = "(May 14, 2016)";
+  
   
 }
