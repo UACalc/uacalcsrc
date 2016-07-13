@@ -171,8 +171,8 @@ public class Malcev {
           if (ia.get(0) == autoXY.intValueAt(ia.get(0))) { // if a is invariant under x <--> y on F(x,y)
             ans.add(termMap.get(ia));
             if (report != null) {
-              report.addLine("found a weak nu term with s(x,x,y) = s(y,x,x)");
-              report.addLine("this cannot be modelled in modules so give SD-meet");
+              report.addLine("found a weak nu term with s(x,x,y) = s(y,y,x)");
+              report.addLine("this cannot be modelled in modules so gives SD-meet");
               report.addEndingLine("This algebra's variety is congruence SD-meet");
             }
             return ans; 
