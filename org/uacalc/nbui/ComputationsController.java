@@ -1013,6 +1013,63 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
   
+  public void setupMinorityTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A minority term over " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Term>  minorityTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        Term minorityTerm = Malcev.minorityTerm(alg, report);
+        return minorityTerm;
+      }
+      public void onCompletion(Term nu, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (nu == null) {
+            report.addEndingLine("The variety has no minority term");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a minorit term.");
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            terms.add(nu);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(minorityTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(minorityTask);
+  }
+    
+  
   public void setupPixleyTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
@@ -2982,6 +3039,7 @@ public class ComputationsController {
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(marjorityTask);
   }
+  
   
   public void setupSDIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
