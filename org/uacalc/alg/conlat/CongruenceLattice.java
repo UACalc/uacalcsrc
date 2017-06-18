@@ -1223,12 +1223,13 @@ public class CongruenceLattice implements Lattice {
     Partition ans = zero();
     SmallAlgebra B = Subalgebra.congruenceAsAlgebra(getAlgebra(), beta);
     Partition Delta = Delta(beta, alpha);
-    System.out.println("Delta: " + Delta);
+    //System.out.println("Delta: " + Delta);
+    final TreeSet<Integer> visited = new TreeSet<Integer>();
     for (int i = 0; i < getAlgebra().cardinality(); i++) {
       final int aa = B.elementIndex(new IntArray(new int[] {i,i}));
-      if (true) {
-      //if (Delta.isRepresentative(aa)) {
-        int[] block = Delta.getBlocks()[Delta.blockIndex(aa)];
+      final int aaBlockIndex = Delta.blockIndex(aa);
+      if (visited.add(aaBlockIndex)) {
+        int[] block = Delta.getBlocks()[aaBlockIndex];
         for(int j = 0; j < block.length; j++) {
           //System.out.println("type: " + B.getElement(j));
           int[] ia = (int[])B.getElement(block[j]);

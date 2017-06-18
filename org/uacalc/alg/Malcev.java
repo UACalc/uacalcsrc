@@ -2489,7 +2489,7 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     if (report != null) report.addStartLine(
         "Calculating [theta,theta], theta = Cg(a,b), on F_A(a,b).");
     final Partition theta = f2.con().Cg(0,1);
-    final Partition thetaPrime = f2.con().commutator(theta, theta);
+    final Partition thetaPrime = f2.con().commutator2(theta, theta);
     if (report != null) report.addEndingLine("Found [theta,theta]");
     
     if (thetaPrime.isRelated(0, 1)) {  // theta = [theta,theta]
