@@ -800,6 +800,7 @@ public class CongruenceLattice implements Lattice {
     universe = new LinkedHashSet<Partition>(univ);
     congruencesHash = hash;
     if (report != null) report.addEndingLine("|Con(" + getAlgebra().getName() + ")| = " + univ.size());
+    //report.addLine("univ: " + univ);
   }
 
   /**
@@ -1181,6 +1182,59 @@ public class CongruenceLattice implements Lattice {
     Partition ans = one();
     for (CentralityData cd : centralityList) {
       if (cd.getCentralityFailure() == null) ans = ans.meet(cd.getDelta());
+    }
+    return ans;
+  }
+  
+  /**
+   * The congruence on alpha as a subalgebra of A x A generated 
+   * by ((a,a),(b,b)) with (a,b) in beta.
+   * 
+   * @param alpha
+   * @param beta
+   * @return
+   */
+  public Partition Delta(Partition alpha, Partition beta) {
+    SmallAlgebra alphaAsAlg = Subalgebra.congruenceAsAlgebra(getAlgebra(), alpha);
+    Partition Delta = alphaAsAlg.con().zero();
+    int[][] blocks = beta.getBlocks();
+    for (int i = 0; i < blocks.length; i++) {
+      final int [] block = blocks[i];
+      final int lead = block[0];
+      final int aa = alphaAsAlg.elementIndex(new IntArray(new int[] {lead, lead}));
+      for (int j = 1; j < block.length; j++) {
+        final int bb = alphaAsAlg.elementIndex(new IntArray(new int[] {block[j],block[j]}));
+        final Partition cong = alphaAsAlg.con().Cg(aa, bb);
+        Delta = Delta.join(cong);
+      }
+    }
+    return Delta;
+  }
+  
+  /**
+   * Find the commutator of alpha and beta using Delta:
+   * all (x,y) with (x,y) Delta (a,a) for some a.
+   * 
+   * @param alpha
+   * @param beta
+   * @return
+   */
+  public Partition commutator2(Partition alpha, Partition beta) {
+    Partition ans = zero();
+    SmallAlgebra B = Subalgebra.congruenceAsAlgebra(getAlgebra(), beta);
+    Partition Delta = Delta(beta, alpha);
+    System.out.println("Delta: " + Delta);
+    for (int i = 0; i < getAlgebra().cardinality(); i++) {
+      final int aa = B.elementIndex(new IntArray(new int[] {i,i}));
+      if (true) {
+      //if (Delta.isRepresentative(aa)) {
+        int[] block = Delta.getBlocks()[Delta.blockIndex(aa)];
+        for(int j = 0; j < block.length; j++) {
+          //System.out.println("type: " + B.getElement(j));
+          int[] ia = (int[])B.getElement(block[j]);
+          ans = ans.join(Cg(ia[0], ia[1]));
+        }
+      }
     }
     return ans;
   }
@@ -1829,7 +1883,9 @@ public class CongruenceLattice implements Lattice {
     
     
     //if (true) return;
-    SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
+    SmallAlgebra alg = AlgebraIO.readAlgebraFile(
+        "/Users/ralph/UACalc/uacalcsrc/resources/algebras/z3.ua");
+        //"/Users/ralph/Java/Algebra/algebras/z3.xml"
     Partition one = alg.con().one();
     //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
     Partition theta = new BasicPartition(new int[] {-1, -2, 1});
@@ -1842,6 +1898,18 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_W = " + comm);
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
+    System.out.println("new commutator2 version:");
+    System.out.println(alg.con().commutator2(theta, theta));
+    System.out.println(alg.con().commutator2(theta, one));
+    System.out.println(alg.con().commutator2(one, theta));
+    System.out.println(alg.con().commutator2(one, one));
+
+    
+    
+    
+    
+    
+    
     
     if (true) return;
     //theta = new BasicPartition(new int[] {-2, -1, 0});
