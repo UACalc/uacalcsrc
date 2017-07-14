@@ -1799,7 +1799,6 @@ public class CongruenceLattice implements Lattice {
   
   
   
-  
   public void makeOperationTables() {}
 
   public boolean isIdempotent() { return true; }
@@ -1828,33 +1827,7 @@ public class CongruenceLattice implements Lattice {
     */
     
     
-    /*
-    //if (true) return;
-    SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
-    Partition one = alg.con().one();
-    //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
-    Partition theta = new BasicPartition(new int[] {-1, -2, 1});
-    System.out.println("theta: " + theta);
-    List<CentralityData> lst = alg.con().calcCentrality(one, theta, null);
-    System.out.println("lst: " + lst);
-    Partition comm = alg.con().commutator(theta, theta, lst, null);
-    System.out.println("[theta,theta] = " + comm);
-    comm = alg.con().weakCommutator(theta, theta, lst, null);
-    System.out.println("[theta,theta]_W = " + comm);
-    comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
-    System.out.println("[theta,theta]_SR = " + comm);
-    
-    if (true) return;
-    System.out.println("new commutator2 version:");
-    System.out.println(alg.con().commutator2(theta, theta));
-    System.out.println(alg.con().commutator2(theta, one));
-    System.out.println(alg.con().commutator2(one, theta));
-    System.out.println(alg.con().commutator2(one, one));
-
-    
-    
-    
-    
+   
     
     
     //theta = new BasicPartition(new int[] {-2, -1, 0});
