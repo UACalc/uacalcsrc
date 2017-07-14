@@ -1883,12 +1883,14 @@ public class CongruenceLattice implements Lattice {
     
     
     
-    
     //if (true) return;
     if (true) {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
         "/Users/ralph/UACalc/uacalcsrc/resources/algebras/z3.ua");
         //"/Users/ralph/Java/Algebra/algebras/z3.xml"
+    /*
+    //if (true) return;
+    SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
     Partition one = alg.con().one();
     //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
     Partition theta = new BasicPartition(new int[] {-1, -2, 1});
@@ -1903,6 +1905,7 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_SR = " + comm);
     
     //if (true) return;
+    if (true) return;
     System.out.println("new commutator2 version:");
     System.out.println(alg.con().commutator2(theta, theta));
     System.out.println(alg.con().commutator2(theta, one));
