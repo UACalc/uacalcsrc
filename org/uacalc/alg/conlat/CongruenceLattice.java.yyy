@@ -1882,7 +1882,7 @@ public class CongruenceLattice implements Lattice {
     */
     
     
-    /*
+    
     //if (true) return;
     if (true) {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
