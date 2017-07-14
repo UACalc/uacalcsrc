@@ -786,7 +786,7 @@ public class CongruenceLattice implements Lattice {
           sizeComputed++;
           if (stopIfBig && s >= maxSize) return;
           if ( s % 10000 == 0) {
-            System.out.println("size is " + s);
+            //System.out.println("size is " + s);
             //if (monitor != null) monitor.printlnToLog("size is " + s);
           }
           hash.add(join);
@@ -1185,11 +1185,11 @@ public class CongruenceLattice implements Lattice {
     }
     return ans;
   }
-  
+
   /**
-   * The congruence on alpha as a subalgebra of A x A generated 
+   * The congruence on alpha as a subalgebra of A x A generated
    * by ((a,a),(b,b)) with (a,b) in beta.
-   * 
+   *
    * @param alpha
    * @param beta
    * @return
@@ -1210,11 +1210,11 @@ public class CongruenceLattice implements Lattice {
     }
     return Delta;
   }
-  
+ 
   /**
    * Find the commutator of alpha and beta using Delta:
    * all (x,y) with (x,y) Delta (a,a) for some a.
-   * 
+   *
    * @param alpha
    * @param beta
    * @return
@@ -1239,7 +1239,7 @@ public class CongruenceLattice implements Lattice {
     }
     return ans;
   }
-  
+   
   /**
    * Given tolerances (or congruences) S and T, this tests, for every
    * congruence delta of A, if S centralizes T mod delta. It tests
@@ -1421,7 +1421,7 @@ public class CongruenceLattice implements Lattice {
       if (report != null) report.addStartLine("finding a subtrace of " + beta);
       st = subtrace(beta);
       //if (st.type() <= 0) getTypeFinder().findType(st);
-      if (report != null) report.addEndingLine("subtrace " + beta + " is " + st.toString(true));
+      if (report != null) report.addEndingLine("subtrace " + beta + " is " + st.toString(true) + " inv? " + st.hasInvolution());
     }
     if (st.type() <= 0) {
       if (report != null) report.addStartLine("computing TCT type of " 
@@ -1883,8 +1883,9 @@ public class CongruenceLattice implements Lattice {
     
     
     
+    
     //if (true) return;
-    if (false) {
+    if (true) {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
         "/Users/ralph/UACalc/uacalcsrc/resources/algebras/z3.ua");
         //"/Users/ralph/Java/Algebra/algebras/z3.xml"
@@ -1900,17 +1901,14 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_W = " + comm);
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
+    
+    //if (true) return;
     System.out.println("new commutator2 version:");
     System.out.println(alg.con().commutator2(theta, theta));
     System.out.println(alg.con().commutator2(theta, one));
     System.out.println(alg.con().commutator2(one, theta));
     System.out.println(alg.con().commutator2(one, one));
     }
-    
-    
-    
-    
-    
     
     
     //if (true) return;
@@ -1924,6 +1922,8 @@ public class CongruenceLattice implements Lattice {
     System.out.println("time: " + (System.currentTimeMillis() - t));
   }
 
-  
+
 }
+
+
 
