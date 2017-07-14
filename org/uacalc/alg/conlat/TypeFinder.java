@@ -387,10 +387,20 @@ public final class TypeFinder {
           if (Thread.currentThread().isInterrupted()) return -1;  // ProgressReport ??
           for (int j = 0; j < arity; j++) {
             arg[j] = universe.get(argIndeces[j]).getArray();
+            
+            if (universe.size() == 101) System.out.print(universe.get(argIndeces[j]));
+            
           }
-
+          
           int[] vRaw = f.valueAt(arg);
           IntArray vec = new IntArray(vRaw);
+          
+          if (universe.size() == 101) {
+            
+            //System.out.println("arg: " + Arrays.toString(arg));
+            System.out.println(" ->  " + vec.toString());
+          }
+
           if (univHashSet.add(vec)) universe.add(vec);
           else {
             if (!inc.increment()) break;
@@ -445,6 +455,7 @@ public final class TypeFinder {
           }
           //System.out.println("about to increment");
           if (!inc.increment()) break;
+          System.out.println("universe size: " + universe.size());   
         }
       }
       closedMark = currentMark;

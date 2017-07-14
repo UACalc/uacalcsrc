@@ -786,7 +786,7 @@ public class CongruenceLattice implements Lattice {
           sizeComputed++;
           if (stopIfBig && s >= maxSize) return;
           if ( s % 10000 == 0) {
-            System.out.println("size is " + s);
+            //System.out.println("size is " + s);
             //if (monitor != null) monitor.printlnToLog("size is " + s);
           }
           hash.add(join);
@@ -1366,7 +1366,7 @@ public class CongruenceLattice implements Lattice {
       if (report != null) report.addStartLine("finding a subtrace of " + beta);
       st = subtrace(beta);
       //if (st.type() <= 0) getTypeFinder().findType(st);
-      if (report != null) report.addEndingLine("subtrace " + beta + " is " + st.toString(true));
+      if (report != null) report.addEndingLine("subtrace " + beta + " is " + st.toString(true) + " inv? " + st.hasInvolution());
     }
     if (st.type() <= 0) {
       if (report != null) report.addStartLine("computing TCT type of " 
@@ -1827,7 +1827,7 @@ public class CongruenceLattice implements Lattice {
     */
     
     
-    
+    /*
     //if (true) return;
     SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
     Partition one = alg.con().one();
@@ -1842,8 +1842,8 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_W = " + comm);
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
-    
-    if (true) return;
+    */
+    //if (true) return;
     //theta = new BasicPartition(new int[] {-2, -1, 0});
     //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();

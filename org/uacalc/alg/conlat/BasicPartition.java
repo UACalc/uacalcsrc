@@ -1429,6 +1429,15 @@ public class BasicPartition extends IntArray implements Partition, Comparable {
     return true;
   }
   
+  public boolean isUniform() {
+    int[] arr = getArray();
+    int negBlockSize = arr[0];  // negative of the size of the first block
+    for (int i = 1; i < arr.length; i++) {
+      if (arr[i] < 0 && arr[i] != negBlockSize) return false;
+    }
+    return true;
+  }
+  
   
   static boolean endNow = true;
   

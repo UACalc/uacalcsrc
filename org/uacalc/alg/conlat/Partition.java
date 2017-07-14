@@ -88,6 +88,12 @@ public interface Partition extends BinaryRelation {
   public int[][] getBlocks();
   
   public boolean isInitialLexRepresentative();
+  
+  /**
+   * Test if all the blocks have the same size.
+   * @return
+   */
+  public boolean isUniform();
 
   public boolean isZero();
 
