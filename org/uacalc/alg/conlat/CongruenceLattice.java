@@ -1859,70 +1859,10 @@ public class CongruenceLattice implements Lattice {
   public boolean isIdempotent() { return true; }
 
   public static void main(String[] args) throws Exception {
-    /*
-    SmallAlgebra sch0 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt0.ua");
-    SmallAlgebra sch1 = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/schmidt1.ua");
-    //System.out.println("concon univ = " + sch0.con().con().universe());
-    //System.out.println("consub univ = " + sch0.con().sub().universe());
-    //if (true) return;
-    List<SmallAlgebra> algs = new ArrayList<SmallAlgebra>(3);
-    algs.add(sch0);
-    algs.add(sch0);
-    algs.add(sch1);
-    algs.add(sch1);
-    SmallAlgebra schProd = new ProductAlgebra(algs);
-    Set<org.uacalc.alg.sublat.BasicSet> subs = schProd.sub().universe();
-    for (org.uacalc.alg.sublat.BasicSet sub : subs) {
-      SmallAlgebra subalg = new Subalgebra(schProd, sub);
-      System.out.println("subalg size: " + subalg.cardinality());
-      if (subalg.cardinality() > 0) {
-        System.out.println(subalg.con().permutabilityLevel());
-      }
-    }
-    */
     
     
-    /*
-    //if (true) return;
-    if (true) {
-    SmallAlgebra alg = AlgebraIO.readAlgebraFile(
-        "/Users/ralph/UACalc/uacalcsrc/resources/algebras/z3.ua");
-        //"/Users/ralph/Java/Algebra/algebras/z3.xml"
-    /*
-    //if (true) return;
-    SmallAlgebra alg = AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/z3.xml");
-    Partition one = alg.con().one();
-    //Partition theta = new BasicPartition(new int[] {-5, 0, 0, 0, -4, 4, 0, 4, 4});
-    Partition theta = new BasicPartition(new int[] {-1, -2, 1});
-    System.out.println("theta: " + theta);
-    List<CentralityData> lst = alg.con().calcCentrality(one, theta, null);
-    System.out.println("lst: " + lst);
-    Partition comm = alg.con().commutator(theta, theta, lst, null);
-    System.out.println("[theta,theta] = " + comm);
-    comm = alg.con().weakCommutator(theta, theta, lst, null);
-    System.out.println("[theta,theta]_W = " + comm);
-    comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
-    System.out.println("[theta,theta]_SR = " + comm);
     
-    //if (true) return;
-    if (true) return;
-    System.out.println("new commutator2 version:");
-    System.out.println(alg.con().commutator2(theta, theta));
-    System.out.println(alg.con().commutator2(theta, one));
-    System.out.println(alg.con().commutator2(one, theta));
-    System.out.println(alg.con().commutator2(one, one));
-    }
-    
-    
-    //if (true) return;
-    //theta = new BasicPartition(new int[] {-2, -1, 0});
-    //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
-    long t = System.currentTimeMillis();
-    SmallAlgebra set = new BasicAlgebra("", 9, new ArrayList<Operation>());
-    System.out.println("Con size: " + set.con().cardinality());
-    List<Partition> l3 = set.con().findLPJ10Generators();
-    System.out.println("generators: " + l3);
-    System.out.println("time: " + (System.currentTimeMillis() - t));
+
   }
 
 
