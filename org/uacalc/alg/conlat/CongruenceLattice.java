@@ -786,7 +786,7 @@ public class CongruenceLattice implements Lattice {
           sizeComputed++;
           if (stopIfBig && s >= maxSize) return;
           if ( s % 10000 == 0) {
-            //System.out.println("size is " + s);
+            System.out.println("size is " + s);
             //if (monitor != null) monitor.printlnToLog("size is " + s);
           }
           hash.add(join);
@@ -800,6 +800,7 @@ public class CongruenceLattice implements Lattice {
     universe = new LinkedHashSet<Partition>(univ);
     congruencesHash = hash;
     if (report != null) report.addEndingLine("|Con(" + getAlgebra().getName() + ")| = " + univ.size());
+    //report.addLine("univ: " + univ);
   }
 
   /**
@@ -1842,8 +1843,20 @@ public class CongruenceLattice implements Lattice {
     System.out.println("[theta,theta]_W = " + comm);
     comm = alg.con().strongRectangularityCommutator(theta, theta, lst, null);
     System.out.println("[theta,theta]_SR = " + comm);
-    */
-    //if (true) return;
+    
+    if (true) return;
+    System.out.println("new commutator2 version:");
+    System.out.println(alg.con().commutator2(theta, theta));
+    System.out.println(alg.con().commutator2(theta, one));
+    System.out.println(alg.con().commutator2(one, theta));
+    System.out.println(alg.con().commutator2(one, one));
+
+    
+    
+    
+    
+    
+    
     //theta = new BasicPartition(new int[] {-2, -1, 0});
     //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();
