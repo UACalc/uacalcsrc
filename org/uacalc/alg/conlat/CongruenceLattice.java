@@ -1884,6 +1884,7 @@ public class CongruenceLattice implements Lattice {
     
     
     //if (true) return;
+    if (false) {
     SmallAlgebra alg = AlgebraIO.readAlgebraFile(
         "/Users/ralph/UACalc/uacalcsrc/resources/algebras/z3.ua");
         //"/Users/ralph/Java/Algebra/algebras/z3.xml"
@@ -1904,7 +1905,7 @@ public class CongruenceLattice implements Lattice {
     System.out.println(alg.con().commutator2(theta, one));
     System.out.println(alg.con().commutator2(one, theta));
     System.out.println(alg.con().commutator2(one, one));
-
+    }
     
     
     
@@ -1912,7 +1913,7 @@ public class CongruenceLattice implements Lattice {
     
     
     
-    if (true) return;
+    //if (true) return;
     //theta = new BasicPartition(new int[] {-2, -1, 0});
     //System.out.println("theta initial? " + theta.isInitialLexRepresentative());
     long t = System.currentTimeMillis();
