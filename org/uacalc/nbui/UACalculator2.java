@@ -84,6 +84,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JToolBar jToolBar1;
   private javax.swing.JTextArea logTextArea;
   private javax.swing.JMenuItem majorityMI;
+  private javax.swing.JMenuItem minorityMI;
   private javax.swing.JButton makeBasicAlgButton;
   private javax.swing.JMenuItem maltsevMI;
   private javax.swing.JMenu maltsevMenu;
@@ -143,6 +144,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem fixedKPermIdempotentMI;
   private javax.swing.JMenuItem kNUIdempotentMI;
   private javax.swing.JMenuItem majorityIdempotentMI;
+  private javax.swing.JMenuItem minorityIdempotentMI;
   private javax.swing.JMenuItem sdIdempotentMI;
   private javax.swing.JMenuItem sdMeetIdempotentMI;
   private javax.swing.JMenuItem permIdempotentMI;
@@ -368,6 +370,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     nPermMI = new javax.swing.JMenuItem();
     maltsevMI = new javax.swing.JMenuItem();
     majorityMI = new javax.swing.JMenuItem();
+    minorityMI = new javax.swing.JMenuItem();
     pixleyMI = new javax.swing.JMenuItem();
     nuMI = new javax.swing.JMenuItem();
     wnuMI = new javax.swing.JMenuItem();
@@ -861,6 +864,14 @@ xxx;
         }
     });
     maltsevMenu.add(majorityMI);
+    
+    minorityMI.setText("Minority term");
+    minorityMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            minorityMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(minorityMI);
 
     pixleyMI.setText("Pixley term");
     pixleyMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1607,6 +1618,10 @@ xxx;
     getComputationsController().setupMajorityTermTask();
   }//GEN-LAST:event_majorityMIActionPerformed
 
+  private void minorityMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupMinorityTermTask();
+  }
+  
   private void pixleyMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pixleyMIActionPerformed
     getComputationsController().setupPixleyTermTask();
   }//GEN-LAST:event_pixleyMIActionPerformed

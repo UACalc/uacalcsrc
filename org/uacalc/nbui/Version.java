@@ -41,8 +41,12 @@ public class Version {
   //public static final String buildDate = "(Feb 17, 2016)";
   
   // difference term testing and bug fixes.
-  public static final String versionString = "v1.15 ";
-  public static final String buildDate = "(May 14, 2016)";
+  //public static final String versionString = "v1.15 ";
+  //public static final String buildDate = "(May 14, 2016)";
+  
+  // added minority terms
+  public static final String versionString = "v1.16 ";
+  public static final String buildDate = "(Mar 19, 2017)";
   
   
 }
