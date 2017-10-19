@@ -12,18 +12,83 @@ the [UACalc webpage (uacalc.org)](http://uacalc.org).
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Contents**
 
+  - [The UACalc API](#the-uacalc-api)
+    - [Using UACalc packages in your own software](#using-uacalc-packages-in-your-own-software)
   - [Importing, browsing, and collaborating](#importing-browsing-and-collaborating)
     - [Browsing the source code](#browsing-the-source-code)
     - [Contributing using fork and pull requests](#contributing-using-fork-and-pull-requests)
     - [Importing uacalcsrc into Eclipse](#importing-uacalcsrc-into-eclipse)
     - [Updating your fork](#updating-your-fork)
-  - [The UACalc API](#the-uacalc-api)
-    - [Using UACalc packages in your own software](#using-uacalc-packages-in-your-own-software)
   - [Bugs and Other Issues](#bugs-and-other-issues)
   - [History](#history)
   - [Citing UACalc](#citing-uacalc)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+## The UACalc API
+
+In this section, we describe the quickest way to import
+and make use of UACalc Java libraries in your own
+programs. (The might be programs that you write in Java, or Scala,
+or any other language that runs on the JVM or otherwise allows importing
+of .jar files.) 
+
+Later sections will explain how to import the 
+entire UACalc source code repository in an IDE
+like Eclipse or IntelliJ IDEA, which can be useful,
+but it is not necessary if your goal is to simply 
+make use of some Java classes and methods defined 
+in the UACalc library.
+
+### Using UACalc packages in your own software
+It's possible to write programs in Scala or Jython
+(and probably other languages that runs on the jvm) that import
+and make use of java packages that make up the UACalc.
+Here we show how to obtain the UACalc jar files
+and then give an example demonstrating how to use the jars
+and import UACalc packages into a Scala project
+using the IntelliJ Idea IDE. Something similar should work
+for other languages (e.g., Jython) in other IDEs (e.g., Eclipse).
+
+1. **Getting the jar files.**
+   There are two ways to do this.  (You only need to do one of these---A or B, not both.)
+
+   + **A. Download precompiled jars.**  
+     If you just want pre-compiled (and possibly a bit out-of-date) versions of uacalc.jar and other jars, you can
+     try invoking the following at the command line:
+
+           wget http://uacalc.org/uacalc.jar
+
+     (If you don't have the `wget` program, then you could try pasting http://uacalc.org/uacalc.jar into the address field of your web browser; your browser should ask you where you want to save the `uacalc.jar` file.)
+
+     You can download other supporting jar files you might need from the links on [this page](http://www.uacalc.org/download/), or copy and paste the following into a terminal on a computer that has the `wget` program installed:
+
+           wget http://uacalc.org/download/designgridlayout-1.1p1.jar
+           wget http://uacalc.org/download/groovy-all-1.0.jar
+           wget http://uacalc.org/download/groovy-engine.jar
+           wget http://uacalc.org/download/miglayout-3.7-swing.jar
+           wget http://uacalc.org/download/swing-layout-1.0.2.jar
+
+   + **B. Roll your own.**  
+     Clone the uacalcsrc repository, e.g.,
+
+          git clone git@github.com:UACalc/uacalcsrc.git
+
+     Compile the code (see [these instructions](http://uacalc.org/download/) for more info)
+
+          cd uacalcsrc
+          ant dist
+
+     (You must install the `ant` program if you don't have it already; on an Ubuntu Linux box, do `sudo apt install ant`)
+
+     If the `ant dist` command above succeeds then all of the jar files should now be in the `../dist/lib` directory.
+
+
+
+TODO: insert example of importing and using the uacalc.jar file
+
+
 
 ## Importing, browsing, and collaborating
 
@@ -103,47 +168,59 @@ There are a number of ways to import this repository into the
 [Eclipse IDE](http://www.eclipse.org/) or [IntelliJ IDEA](https://www.jetbrains.com/idea/). 
 One such method is described in this section.
 
-1. Create your own fork of the repository, as explained in the [previous section](#contributing-using-fork-and-pull-requests).
+If you plan to make improvements to the code and expect them to be considered for
+adoption in the main UACalc/uacalcsrc repository, please create your own
+fork of the repository, as explained in the 
+section on [contributing using fork](#contributing-using-fork-and-pull-requests).
 
-2. Clone your fork of the repository to your local drive.
+**Steps to import into Eclipse**
 
-            git clone git@github.com:your-user-name/uacalcsrc.git ~/git/uacalcsrc
+1. First, clone the repository to your local drive. If you forked the repo as suggested
+   above, then use a command like
+
+        git clone git@github.com:your-user-name/uacalcsrc.git ~/git/uacalcsrc
+
    or
-            git clone https://github.com/your-user-name/uacalcsrc.git ~/git/uacalcsrc
+
+        git clone https://github.com/your-user-name/uacalcsrc.git ~/git/uacalcsrc
+
+   If you didn't create your own fork, you can clone with the command
+   
+        git clone https://github.com/UACalc/uacalcsrc.git ~/git/uacalcsrc
 
 
-  
-3. **Import into Eclipse** (for IntelliJ IDEA skip to step 4.)
+2. Launch Eclipse and use the File menu to import the source code:
 
-   + Launch Eclipse and use the File menu to import the source code:
+        File --> Import --> Git --> Projects from Git
 
-            File --> Import --> Git --> Projects from Git
+   then click Next.
 
-     then click Next.
+3. Select `Local`, click Next, then click Add and browse to the directory where
+   you clone the repository in Step 1 above (e.g., ~/git/uacalcsrc).
 
-   + Select `Local`, click Next, then click Add and browse to the directory where
-     you clone the repository in Step 1 above (e.g., `~/git/uacalcsrc`).
+4. Select the uacalcsrc repository and click Next.
 
-   + Select the `uacalcsrc` repository and click Next.
+5. Select the `Import existing project` radio button, click Next, and then
+   select the algebra project and click finish.
 
-   + Select the `Import existing project` radio button, click Next, and then
-     select the algebra project and click finish.
+**Steps to import into IntelliJ IDEA**
 
-4. **Import into IntelliJ IDEA**
+(This section is for users of the IntelliJ IDEA software.  If you are using
+Eclipse, you can skip this section.)
 
-   + Launch IDEA and close any open projects to get to the main welcome 
-     screen.
+1. Clone the `uacalcsrc` repository to your local drive as described above.
 
-   + Select `Import Project` and then navigate to the `uacalcsrc` 
-     directory (the location of your fork of the `uacalcsrc` repository).
+2. Launch the IntelliJ IDEA program.  At the main project browser/welcome window
+   (with all other projects closed), select Import Project and locate the
+   `uacalcsrc` directory that contains the repository you cloned in step 1.
+   Select OK.
+   
+3. In the "Import Project" dialog box, select "Import project from external model"
+   and make sure Eclipse is highlighted in the list of external models.
 
-   + With `uacalcsrc` selected, click the `OK` button.
-
-   + On the "Import Project" page, choose 
-     "Import project from External Model" 
-     and choose `Eclipse` and click next.
-
-*This section is under construction.*
+4. Select Next two more times and, with "algebra" checkbox checked, click "Finish."
+   
+   
 
 ### Updating your fork
 
@@ -177,77 +254,29 @@ for more details.
 
 
 3. In the working directory of your local project, fetch the branches and their
-   respective commits from the upstream repository.
+   commits from the upstream repository and merge upstream/master
+   into your local master branch.
 
         git fetch upstream
-
-4. Check out your fork's local master branch.
-
         git checkout master
-
-5. Merge the changes from upstream/master into your local master branch. This
-   brings your fork's master branch into sync with the upstream repository,
-   without losing your local changes.
-
         git merge upstream/master
 
-6. Finally, do
+   This brings your fork's master branch into sync with the upstream repository,
+   without losing your local changes. 
+
+4. Finally, commit the changes and push to your remote fork.
 
         git commit -m "merged changes from upstream"
         git push origin master
 
-   and check that the GitHub page for your fork's repo shows the message,
-   "This branch is even with UACalc:master."
+   If you now visit the GitHub page for your fork's repo, it should show the
+   message, "This branch is even with UACalc:master." 
 
-7. If there are other branches besides `master` that you want to update, repeat
+5. If there are other branches besides `master` that you want to update, repeat
    steps 4--6, replacing `master` with another branch name.
 
+
 -----------------------------------------
-
-## The UACalc API
-
-### Using UACalc packages in your own software
-It's possible to write programs in Scala or Jython
-(and probably other languages that runs on the jvm) that import
-and make use of java packages that make up the UACalc.
-Here we show how to obtain the UACalc jar files
-and then give an example demonstrating how to use the jars
-and import UACalc packages into a Scala project
-using the IntelliJ Idea IDE. Something similar should work
-for other languages (e.g., Jython) in other IDEs (e.g., Eclipse).
-
-1. **Getting the jar files.**
-   There are two ways to do this.  (You only need to do one of these---A or B, not both.)
-
-   + **A. Download precompiled jars.**  
-     If you just want pre-compiled (and possibly a bit out-of-date) versions of uacalc.jar and other jars, you can
-     try invoking the following at the command line:
-
-           wget http://uacalc.org/uacalc.jar
-
-     (If you don't have the `wget` program, then you could try pasting http://uacalc.org/uacalc.jar into the address field of your web browser; your browser should ask you where you want to save the `uacalc.jar` file.)
-
-     You can download other supporting jar files you might need from the links on [this page](http://www.uacalc.org/download/), or copy and paste the following into a terminal on a computer that has the `wget` program installed:
-
-           wget http://uacalc.org/download/designgridlayout-1.1p1.jar
-           wget http://uacalc.org/download/groovy-all-1.0.jar
-           wget http://uacalc.org/download/groovy-engine.jar
-           wget http://uacalc.org/download/miglayout-3.7-swing.jar
-           wget http://uacalc.org/download/swing-layout-1.0.2.jar
-
-   + **B. Roll your own.**  
-     Clone the uacalcsrc repository, e.g.,
-
-          git clone git@github.com:UACalc/uacalcsrc.git
-
-     Compile the code (see [these instructions](http://uacalc.org/download/) for more info)
-
-          cd uacalcsrc
-          ant dist
-
-     (You must install the `ant` program if you don't have it already; on an Ubuntu Linux box, do `sudo apt install ant`)
-
-     If the `ant dist` command above succeeds then all of the jar files should now be in the `../dist/lib` directory.
 
 ## Bugs and Other Issues
 If you think you found a bug in the calculator, if you encounter a problem with
@@ -264,32 +293,13 @@ Freese's uacalcsrc cvs repository from sourceforge using the following command:
 
 Before issuing the above `git cvsimport` command the git-cvs package must be
 installed (e.g., `sudo apt-get install git-cvs`)
+
+
 **General Notes**
 
 The authorfile.txt contains names and email addresses of authors who
 contributed to the cvs source tree. This is needed in order to preserve the
 contribution in the resulting git repo.
-
-**Eclipse Notes**
-To import the source code in Eclipse, follow these steps:
-
-1. First clone the repository to your local drive with something like
-
-        git clone https://github.com/UACalc/uacalcsrc.git ~/git/uacalcsrc
-
-2. Open Eclipse and use the File menu to import the source code:
-
-        File --> Import --> Git --> Projects from Git
-
-   then click Next.
-
-3. Select `Local`, click Next, then click Add and browse to the directory where
-   you clone the repository in Step 1 above (e.g., ~/git/uacalcsrc).
-
-4. Select the uacalcsrc repository and click Next.
-
-5. Select the `Import existing project` radio button, click Next, and then
-   select the algebra project and click finish.
 
 ## Citing UACalc
 
@@ -301,3 +311,4 @@ If you are using BibTeX, you can use the following BibTeX entry to cite UACalc:
       note =        {Available at: {\verb+www.uacalc.org+}},
       year =        {2011},
     }
+
