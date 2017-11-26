@@ -1182,6 +1182,66 @@ public class ComputationsController {
     BackgroundExec.getBackgroundExec().execute(majTask);
   }
   
+  public void setupSemilatTermTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "A semilattice term over the variety of " + gAlg.toString(true);
+    ttm.setDescription(desc);
+    final BackgroundTask<Term>  semilatTermTask = new BackgroundTask<Term>(report) {
+      public Term compute() {
+        //monitorPanel.getProgressMonitor().reset();
+        report.addStartLine(desc);
+        //report.addLine("that is, a term satisfying  d(x,x,z) = z and " +
+        //               "d(a,b,b) [theta,theta] a, where theta = Cg(a,b)");
+        report.setDescription(desc);
+        Term semilatTerm = Malcev.semilatticeTerm(alg, report);
+        return semilatTerm;
+      }
+      public void onCompletion(Term semilatfTerm, Throwable exception, 
+                               boolean cancelled, boolean outOfMemory) {
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          if (semilatfTerm == null) {
+            report.addEndingLine("The variety has no semilattice term");
+            ttm.setDescription(desc + ": there is none.");
+            updateResultTextField(this, ttm);
+            uacalcUI.repaint();
+          }
+          else {
+            report.addEndingLine("Found a semilattice term.");
+            
+            java.util.List<Term> terms = new ArrayList<Term>(1);
+            ttm.setDescription(desc + ": d(x,y,z) = " + semilatfTerm + " is a semilattice term");
+            updateResultTextField(this, ttm);
+            terms.add(semilatfTerm);
+            ttm.setTerms(terms);
+          }
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          uacalcUI.getResultTextField().setText(ttm.getDescription());
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(semilatTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(semilatTermTask);
+  }
+  
   public void setupDiffTermTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;

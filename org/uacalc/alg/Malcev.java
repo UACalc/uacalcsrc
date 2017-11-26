@@ -2450,6 +2450,42 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
   }
   
   /**
+   * Check if  alg has a semilattice term by checking all
+   * elements of F(x,y). 
+   * 
+   * @param alg
+   * @return
+   */
+  public static Term semilatticeTerm(SmallAlgebra alg) {
+    return semilatticeTerm(alg, null);
+  }
+  
+  /**
+   * Check if  alg has a semilattice term by checking all
+   * elements of F(x,y). 
+   * 
+   * @param alg
+   * @param report
+   * @return
+   */
+  public static Term semilatticeTerm(SmallAlgebra alg, ProgressReport report) {
+    if (alg.cardinality() == 1)  return Variable.x;
+    if (report != null) report.addStartLine(
+        "Looking for a semilattice term,");
+    FreeAlgebra f2 = new FreeAlgebra(alg, 2, report);
+    List<Term> idemTerms = f2.getIdempotentTerms();
+    List<Variable> varsList = new ArrayList(2);
+    varsList.add(Variable.x);
+    varsList.add(Variable.y);
+    for (Term term : idemTerms) {
+      Operation op = term.interpretation(alg, varsList, true);
+      if (op.isCommutative() && op.isAssociative()) return term;
+    }
+    return null;
+  }
+  
+  
+  /**
    * Find a difference term for the algebra, if one exists.
    * 
    * @param alg
@@ -3281,7 +3317,8 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/ralph/Java/Algebra/algebras/kearnes5.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/home/williamdemeo/git/UACalc-Team/AlgebraFiles/Bergman/CIB4-no-edge-term.ua");
     //SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/cyclicTest.ua");
-    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile("/Users/ralph/Java/Algebra/algebras/lat2.ua");
+    SmallAlgebra A = org.uacalc.io.AlgebraIO.readAlgebraFile(
+      "/Users/ralph/UACalc/uacalcsrc/resources/algebras/lat2.ua");
     //System.out.println(fixedKPermIdempotent(pol, 3, null));
     //System.out.println(fixedKPermIdempotent(pol, 4, null));
     //System.out.println(permLevelIdempotent(pol, null));
@@ -3293,6 +3330,9 @@ org.uacalc.ui.LatDrawer.drawLattice(new org.uacalc.lat.BasicLattice("", maxLevel
     
     Term diffTerm = Malcev.differenceTerm(A);
     System.out.println("diff term: " + diffTerm);
+    
+    Term semiTerm = Malcev.semilatticeTerm(A);
+    System.out.println("semilattice term: " + semiTerm);
     
     if (foo) return;
     SmallAlgebra alg = null;
