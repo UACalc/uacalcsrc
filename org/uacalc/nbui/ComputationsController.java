@@ -1221,7 +1221,7 @@ public class ComputationsController {
             report.addEndingLine("Found a semilattice term.");
             
             java.util.List<Term> terms = new ArrayList<Term>(1);
-            ttm.setDescription(desc + ": d(x,y,z) = " + semilatfTerm + " is a semilattice term");
+            ttm.setDescription(desc + ": t(x,y) = " + semilatfTerm + " is a semilattice term");
             updateResultTextField(this, ttm);
             terms.add(semilatfTerm);
             ttm.setTerms(terms);
