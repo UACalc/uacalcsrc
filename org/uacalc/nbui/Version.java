@@ -49,7 +49,10 @@ public class Version {
   //public static final String buildDate = "(Mar 19, 2017)";
 
   // added minority terms
-  public static final String versionString = "v1.17 ";
-  public static final String buildDate = "(Nov 25, 2017)";
-  
+  //  public static final String versionString = "v1.17 ";
+  //  public static final String buildDate = "(Nov 25, 2017)";
+ 
+  // added k-ary qWNU                                  
+  public static final String versionString = "v1.18 ";
+  public static final String buildDate = "(Sep 12, 2020)";
 }

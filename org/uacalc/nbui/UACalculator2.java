@@ -103,6 +103,7 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem edgeMI;
   private javax.swing.JMenuItem diffTermMI;
   private javax.swing.JMenuItem semilatTermMI;
+  private javax.swing.JMenuItem fixedKQwnuMI;
   private javax.swing.JTable opTable;
   private TableModel emptyOpTableModel;
   private javax.swing.JScrollPane opTableScrollPane;
@@ -157,7 +158,6 @@ public class UACalculator2 extends JFrame implements UACalc {
   private javax.swing.JMenuItem equationCheckerMI;
   private javax.swing.JMenuItem assocCheckerMI;
   private javax.swing.JMenuItem commutivityCheckerMI;
-
 
 
 
@@ -392,6 +392,7 @@ public class UACalculator2 extends JFrame implements UACalc {
     varPropIdemMenu = new javax.swing.JMenu();
     omittedIdealMI = new javax.swing.JMenuItem();
     typeSetMI = new javax.swing.JMenuItem();
+    fixedKQwnuMI= new javax.swing.JMenuItem();
     CDIdempotentMI = new javax.swing.JMenuItem();
     CMIdempotentMI = new javax.swing.JMenuItem();
     kPermIdempotentMI = new javax.swing.JMenuItem();
@@ -925,7 +926,15 @@ xxx;
         }
     });
     maltsevMenu.add(wnuMI);
-    
+ 
+    fixedKQwnuMI.setText("Quasi k-WNU");
+    fixedKQwnuMI.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            fixedKQwnuMIActionPerformed(evt);
+        }
+    });
+    maltsevMenu.add(fixedKQwnuMI);
+   
     taylorTermMenu.setText("Taylor Term");
     maltsevMenu.add(taylorTermMenu);
     
@@ -946,7 +955,7 @@ xxx;
     });
     taylorTermMenu.add(mmstMI);
     
-    
+
 
     jMenuBar1.add(maltsevMenu);
     
@@ -961,6 +970,7 @@ xxx;
     });
     varPropIdemMenu.add(typeSetMI);
     
+
     
     omittedIdealMI.setText("Largest Omitted Types Ideal");
     omittedIdealMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1727,6 +1737,9 @@ xxx;
     getComputationsController().setupWeak3EdgeTermTask();
   }
   
+  private void fixedKQwnuMIActionPerformed(java.awt.event.ActionEvent evt) {
+    getComputationsController().setupFixedKQwnuTask();
+  } 
   private void omittedIdealMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupOmittedIdealIdempotentTask();
   }
@@ -1734,7 +1747,8 @@ xxx;
   private void typeSetMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupTypeSetIdempotentTask();
   }
-  
+
+ 
   private void CDIdempotentMIActionPerformed(java.awt.event.ActionEvent evt) {
     getComputationsController().setupCDIdempotentTask();
   }
