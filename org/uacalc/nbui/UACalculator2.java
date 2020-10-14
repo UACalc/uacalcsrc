@@ -929,9 +929,9 @@ xxx;
  
     fixedKQwnuMI.setText("Quasi k-WNU");
     fixedKQwnuMI.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            fixedKQwnuMIActionPerformed(evt);
-        }
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        fixedKQwnuMIActionPerformed(evt);
+      }
     });
     maltsevMenu.add(fixedKQwnuMI);
    
