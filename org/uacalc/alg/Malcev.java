@@ -771,12 +771,11 @@ public class Malcev {
         List<IntArray> sub = closer.sgClose();
         found=false;
         //Look for element of the form (q,q,...,q) in sub
-        for (int i=0;i<size;i++) {
-          Arrays.fill(oneColumn,i);
-          IntArray Aarray = new IntArray(oneColumn);
-          if (sub.contains(Aarray)) {
-           found=true;
-           break;
+        //Code suggested by Matt Smedberg.
+        for (IntArray e : sub) {
+          if (e.isConstant()) {
+            found = true;
+            break;
           }
         }
         if (!found) {
