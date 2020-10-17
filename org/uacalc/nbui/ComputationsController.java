@@ -3274,7 +3274,62 @@ public class ComputationsController {
     uacalcUI.getResultTable().setModel(ttm);
     BackgroundExec.getBackgroundExec().execute(omittedTypesTask);
   }
-  
+
+  public void setupFixedKQwnuTask() {
+    final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
+    if (!isAlgOK(gAlg)) return;
+    final SmallAlgebra alg = gAlg.getAlgebra();
+    final int k = getNumberDialog(2, "k-ary quasi weak near unanimity: what k (at least 2).", "k-ary quasi WNU");
+    if (!(k > 1)) return;
+    final ProgressReport report = new ProgressReport(taskTableModel, uacalcUI.getLogTextArea());
+    final TermTableModel ttm = new TermTableModel();
+    termTableModels.add(ttm);
+    setResultTableColWidths();
+    final String desc = "Does " + gAlg.toString(true) + " have an arity k quasi weak near unanimity term.";
+    ttm.setDescription(desc);
+    uacalcUI.getResultTextField().setText(desc);
+    final BackgroundTask<Boolean>  edgeTermTask = new BackgroundTask<Boolean>(report) {
+      public Boolean compute() {
+        report.addStartLine(desc);
+        report.setDescription(desc);
+        boolean ans = Malcev.fixedKQwnu(alg,k,report);
+        return ans;
+      }
+      public void onCompletion(List<BasicSet> ans, Throwable exception, 
+          boolean cancelled, boolean outOfMemory) {
+        System.out.println("exception: " + exception);
+        if (outOfMemory) {
+          report.addEndingLine("Out of memory!!!");
+          ttm.setDescription(desc + " (insufficient memory)");
+          updateResultTextField(this, ttm);
+          return;
+        }
+        if (!cancelled) {
+          report.addEndingLine("Done");
+          String extra = ans == null ? " It does have a " + k + "-ary quasi WNU." : 
+            " It does not have a " + k + "-ary quasi WNU.";
+          ttm.setDescription(desc + " " + extra);
+          updateResultTextField(this, ttm);
+          List<Term> fake = new ArrayList<Term>();
+          ttm.setTerms(fake);
+
+          if ( this.equals(getCurrentTask())) setResultTableColWidths();
+        }
+        else {
+          report.addEndingLine("Computation cancelled");
+          ttm.setDescription(desc + " (cancelled)");
+          updateResultTextField(this, ttm);
+          uacalcUI.repaint();
+        }
+      }
+    };
+    addTask(edgeTermTask);
+    MainController.scrollToBottom(uacalcUI.getComputationsTable());
+    uacalcUI.getResultTable().setModel(ttm);
+    BackgroundExec.getBackgroundExec().execute(edgeTermTask);
+  }
+
+
   public void setupEdgeTermIdempotentTask() {
     final GUIAlgebra gAlg = uacalcUI.getMainController().getCurrentAlgebra();
     if (!isAlgOK(gAlg)) return;
