@@ -3288,14 +3288,14 @@ public class ComputationsController {
     final String desc = "Does " + gAlg.toString(true) + " have an arity k quasi weak near unanimity term.";
     ttm.setDescription(desc);
     uacalcUI.getResultTextField().setText(desc);
-    final BackgroundTask<Boolean>  edgeTermTask = new BackgroundTask<Boolean>(report) {
+    final BackgroundTask<Boolean>  qwNUTermTask = new BackgroundTask<Boolean>(report) {
       public Boolean compute() {
         report.addStartLine(desc);
         report.setDescription(desc);
         boolean ans = Malcev.fixedKQwnu(alg,k,report);
         return ans;
       }
-      public void onCompletion(List<BasicSet> ans, Throwable exception, 
+      public void onCompletion(Boolean ans, Throwable exception, 
           boolean cancelled, boolean outOfMemory) {
         System.out.println("exception: " + exception);
         if (outOfMemory) {
@@ -3323,10 +3323,10 @@ public class ComputationsController {
         }
       }
     };
-    addTask(edgeTermTask);
+    addTask(qwNUTermTask);
     MainController.scrollToBottom(uacalcUI.getComputationsTable());
     uacalcUI.getResultTable().setModel(ttm);
-    BackgroundExec.getBackgroundExec().execute(edgeTermTask);
+    BackgroundExec.getBackgroundExec().execute(qwNUTermTask);
   }
 
 
