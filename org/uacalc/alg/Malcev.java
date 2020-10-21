@@ -741,7 +741,7 @@ public class Malcev {
    * 
    * @param testalg  an algebra 
    * @param arity arity (at least 2)
-   * @return Boolean
+   * @return boolean
    */
   public static boolean fixedKQwnu(SmallAlgebra testalg, int arity, ProgressReport report) {
     if (arity < 2) throw new IllegalArgumentException("arity must be at least 2");
@@ -983,7 +983,7 @@ public class Malcev {
   }
   
   /**
-   * This will find a near unamimity term of the given arity
+   * This will find a weak near unamimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
   public static Term weakNUTerm(SmallAlgebra alg, int arity) {
@@ -991,7 +991,7 @@ public class Malcev {
   }
   
   /**
-   * This will find a near unanimity term of the given arity
+   * This will find a weak near unanimity term of the given arity
    * if one exits; otherwise it return <tt>null</tt>.
    */
   public static Term findWeakNUTerm(SmallAlgebra alg, int arity, ProgressReport report) {

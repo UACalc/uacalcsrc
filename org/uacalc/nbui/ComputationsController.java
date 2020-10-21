@@ -3306,8 +3306,11 @@ public class ComputationsController {
         }
         if (!cancelled) {
           report.addEndingLine("Done");
-          String extra = ans == null ? " It does have a " + k + "-ary quasi WNU." : 
-            " It does not have a " + k + "-ary quasi WNU.";
+          String extra;
+          if (ans.equals(Boolean.TRUE)) {
+            extra = " It does have a " + k + "-ary quasi WNU." ; 
+          }
+          else extra = " It does not have a " + k + "-ary quasi WNU.";
           ttm.setDescription(desc + " " + extra);
           updateResultTextField(this, ttm);
           List<Term> fake = new ArrayList<Term>();
