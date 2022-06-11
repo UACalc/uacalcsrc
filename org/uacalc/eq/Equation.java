@@ -61,7 +61,7 @@ public class Equation {
    * or <code>null</code> if it is true.
    * 
    * @param alg
-   * @return
+   * @return where it fails, or <code>null</code> if it is true.
    */
   public int[] findFailure(SmallAlgebra alg, ProgressReport report) {
     Operation leftOp = leftSide.interpretation(alg, getVariableList(), true);

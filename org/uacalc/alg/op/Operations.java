@@ -234,6 +234,7 @@ public class Operations {
     final int[] arr = new int[arity];
     ArrayIncrementor inc = 
       SequenceGenerator.sequenceIncrementor(arr, n - 1);
+    if (op0.intValueAt(arr) != op1.intValueAt(arr)) return arr;
     int size = 1;
     for (int i = 0; i < arity; i++) size = size * n;
     int k = 1;

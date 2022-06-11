@@ -53,6 +53,10 @@ public class Version {
   //  public static final String buildDate = "(Nov 25, 2017)";
  
   // added k-ary qWNU                                  
-  public static final String versionString = "v1.18 ";
-  public static final String buildDate = "(Sep 12, 2020)";
+  //public static final String versionString = "v1.18 ";
+  //public static final String buildDate = "(Sep 12, 2020)";
+ 
+  // fixed a bug in the equation testing
+  public static final String versionString = "v1.19 ";
+  public static final String buildDate = "(Jun 10, 2022)";
 }
