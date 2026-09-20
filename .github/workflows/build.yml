@@ -1,0 +1,144 @@
+# File: .github/workflows/build.yml
+#
+# Two things, both asked for in issue #15.
+#
+# 1. On every push and pull request, build uacalc.jar from this source and
+#    check that the program actually starts, so a change that breaks either is
+#    reported at once rather than discovered at the next release.
+#
+# 2. When a release is published on the Releases page, build the jars from the
+#    tagged source and attach to that release any jar it does not already
+#    carry.  A jar somebody uploaded by hand is left alone, so a release whose
+#    files were attached by hand, as v1.19 was, keeps exactly those.  A release
+#    published with no files gets the whole set, built by GitHub from the
+#    tagged commit.  So making a release is: publish it with a tag such as
+#    v1.20, and wait a minute.
+#
+# On the Java version.  The jars UACalc has always shipped are Java 8
+# bytecode, and this workflow keeps that promise in the only way that really
+# enforces it: it compiles with a Java 8 JDK.  Setting -source and -target on a
+# newer JDK is not enough, because the compiler would still be linking against
+# that newer JDK's class library, so a call to a method Java 8 does not have
+# compiles cleanly, produces a Java 8 class file, and then fails at run time on
+# Java 8; javac says as much, with "bootstrap class path not set in conjunction
+# with -source 8".  Building on the Java 8 JDK makes such a call a compile
+# error instead.  The class-file version is checked below as well, so that
+# changing the JDK here cannot quietly change what the jar requires, and the
+# jar is then started on both Java 8 and Java 21.
+
+name: Build
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build uacalc.jar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the source
+        uses: actions/checkout@v4
+
+      - name: Set up a Java 8 JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+
+      - name: Install Ant
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ant
+
+      - name: Build the jars
+        run: |
+          ant -Ddist.dir="$PWD/dist" -Dclass.dir="$PWD/classes" dist-jar
+          ls -l dist/lib
+
+      # A positive check rather than a compiler flag: whatever JDK this job
+      # uses, the jar has to be loadable by Java 8, whose class-file version is
+      # 52.  Bytes 6 and 7 of a class file are that version.
+      - name: Check the class files are Java 8
+        run: |
+          major=$(unzip -p dist/lib/uacalc.jar org/uacalc/nbui/UACalculator2.class \
+                  | od -An -tu1 -j6 -N2 | awk '{print $1 * 256 + $2}')
+          echo "class-file major version $major (52 is Java 8)"
+          test "$major" -eq 52
+
+      - name: Keep the jars with this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: uacalc-jars
+          path: dist/lib/*.jar
+          if-no-files-found: error
+
+  smoke:
+    name: Start it on Java ${{ matrix.java }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['8', '21']
+    steps:
+      - name: Check out the source
+        uses: actions/checkout@v4
+
+      - name: Set up a Java ${{ matrix.java }} JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Install a virtual framebuffer and xdotool
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends xvfb xdotool
+
+      - name: Fetch the jars the build job made
+        uses: actions/download-artifact@v4
+        with:
+          name: uacalc-jars
+          path: dist/lib
+
+      # See .github/smoke-test.sh: it waits for a visible window named
+      # UACalculator, because a program that hangs while starting stays alive
+      # exactly as a healthy one does, and an exit status cannot tell them
+      # apart.
+      - name: The window appears and the program stays up
+        run: xvfb-run -a .github/smoke-test.sh dist/lib/uacalc.jar
+
+  release:
+    name: Attach the jars to the release
+    if: github.event_name == 'release'
+    needs: [build, smoke]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Fetch the jars the build job made
+        uses: actions/download-artifact@v4
+        with:
+          name: uacalc-jars
+          path: jars-built
+
+      - name: Upload each jar the release does not already have
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          already="$(gh release view "$TAG" --json assets --jq '.assets[].name')"
+          for f in jars-built/*.jar; do
+            name="$(basename "$f")"
+            if printf '%s\n' "$already" | grep -qx "$name"; then
+              echo "$name: already on the release, leaving it as it is"
+            else
+              echo "$name: uploading"
+              gh release upload "$TAG" "$f"
+            fi
+          done

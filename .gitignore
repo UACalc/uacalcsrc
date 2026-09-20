@@ -1268,3 +1268,7 @@
 /bin/
 /bin/
 /bin/
+
+# What the GitHub Actions build writes, when its outputs are kept inside the checkout.
+/dist/
+/classes/
